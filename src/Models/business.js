@@ -30,11 +30,12 @@ const businessSchema = new mongoose.Schema({
         line1: String,
         line2: String,
         city: String,
-        country: string
+        country: String
     }]
         
     
     
 
 }, { timestamps: true });
-module.exports = mongoose.model("Business",businessSchema);
+module.exports = mongoose.model("Business", businessSchema);
+// end
