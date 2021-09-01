@@ -19,16 +19,16 @@ const businessRoute = require("./src/routes/business");
 //connecting to mongodb database
 
 
-mongoose.connect("process.env.MONGODB_URL", {
+mongoose.connect("mongodb://localhost:27017/raisingstars", {
     useNewUrlParser: true,
-    userUnifiedTopology: true,
-    userCreateIndex: true
+   
+    
 })
     .then(() => {
         console.log('DB CONNECTED!!')
     })
-    .catch(() => {
-        console.log("DB NOT CONNECTED!!")
+    .catch((err) => {
+        console.log(`DB NOT CONNECTED!!${err}`)
     });
 
 
@@ -38,7 +38,7 @@ mongoose.connect("process.env.MONGODB_URL", {
 
 
 //initialaising port no
-const port = process.env.PORT || 8000;
+const port = process.env.SERVER_PORT || 8000;
 
 
 

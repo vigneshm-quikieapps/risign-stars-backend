@@ -24,6 +24,7 @@ exports.getBusinessIdById = (req, res, next, id) => {
 exports.createBusiness = (req, res) => {
   let form = new formidable.IncomingForm();
   form.keepExtensions = true;
+  
 
   form.parse(req, (err, fields) => {
     if (err) {
@@ -32,14 +33,14 @@ exports.createBusiness = (req, res) => {
       });
     }
     //destructure the fields
-    const { name, code,tradename,  type, about,address } = fields;
-
-    if (!name || !code || !tradename || !type || !about|| !address) {
+    const { name, code,tradename,  type, about } = fields;
+    
+    if (!name || !code || !tradename || !type || !about) {
       return res.status(400).json({
         error: "Please include all fields"
       });
     }
-
+  
     let business = new Business(fields);
 
    
@@ -49,7 +50,7 @@ exports.createBusiness = (req, res) => {
     business.save((err, business) => {
       if (err) {
         res.status(400).json({
-          error: "Saving tshirt in DB failed"
+          error: "Saving business in DB failed"
         });
       }
       res.json(business);
