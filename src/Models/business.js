@@ -25,13 +25,13 @@ const businessSchema = new mongoose.Schema({
         maxlength: 3200,
         trim: true
     },
-    address: [{
-        postcode: String,
-        line1: String,
-        line2: String,
-        city: String,
-        country: String
-    }]
+
+    postcode: String,
+    line1: String,
+    line2: String,
+    city: String,
+ country: String
+    
         
     
     
