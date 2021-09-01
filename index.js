@@ -13,7 +13,8 @@ require("dotenv").config();
 
 //importing from local files
 const businessRoute = require("./src/routes/business");
-//const evaluationRoute = require("./src/Routes/evaluation")
+const evaluationRoute = require("./src/routes/evaluation");
+
 
 
 //connecting to mongodb database
@@ -53,7 +54,7 @@ app.get("/", (req, res) =>
 
 // my routes
 app.use("/api", businessRoute);
-//app.use("/api", evaluationRoute);
+app.use("/api", evaluationRoute);
 
 //app.use("/api", authRoute);
 

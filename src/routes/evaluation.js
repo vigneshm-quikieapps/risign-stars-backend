@@ -1,7 +1,12 @@
 const express = require("express");
 const router = express.Router();
 const {
-   
+    getAllEvaluations,
+    getEvaluationIdById,
+    getEvaluation,
+    createEvaluation,
+    deleteEvaluation,
+    updateEvaluation
 } = require("../controllers/evaluation");
 
 

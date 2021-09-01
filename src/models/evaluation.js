@@ -18,10 +18,16 @@ const evaluationSchema = new mongoose.Schema({
     type:Number,
     default:0
     },
-    levels:  [{
-        skills: [],
+    levels: {
+         type: Number,
+        default: 1
+    },
+    skills: {
+         type: String,
+        default: []
+    }
         
-    }]
+    
 
 }, { timestamps: true });
 
