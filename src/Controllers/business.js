@@ -21,7 +21,7 @@ exports.getBusinessIdById = (req, res, next, id) => {
 
 //create business
 
-exports.createProduct = (req, res) => {
+exports.createBusiness = (req, res) => {
   let form = new formidable.IncomingForm();
   form.keepExtensions = true;
 
@@ -46,7 +46,7 @@ exports.createProduct = (req, res) => {
     
 
     //save to the DB
-    business.save((err, product) => {
+    business.save((err, business) => {
       if (err) {
         res.status(400).json({
           error: "Saving tshirt in DB failed"
@@ -112,7 +112,7 @@ exports.updateBusiness = (req, res) => {
 
 //all Business listing
 
-exports.getAllBusiness = (req, res) => {
+exports.getAllBusinesses = (req, res) => {
   let limit = req.query.limit ? parseInt(req.query.limit) : "";
   //limit setter to export or send limited business to client or front end
   //let limit = req.query.limit ? parseInt(req.query.limit) : 8;

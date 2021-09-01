@@ -1,5 +1,13 @@
 const express = require("express");
 const router = express.Router();
+const {
+    getBusinessIdById,
+    getBusiness,
+    getAllBusinesses,
+    createBusiness,
+    deleteBusiness,
+    updateBusiness
+} = require("../controllers/business");
 
 
 
@@ -24,7 +32,7 @@ router.put( "/business/:businessId",updateBusiness);
   
   
 //listing route
-router.get("/business", getAllBusiness);
+router.get("/business", getAllBusinesses);
 
 
 
