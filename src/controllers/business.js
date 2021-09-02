@@ -2,7 +2,7 @@ const formidable = require("formidable");
 const Business = require("../models/business");
 const _ = require("lodash");
 
-const {  validationResult } = require("express-validator");
+
 
 
 
@@ -23,13 +23,7 @@ module.exports.getBusinessIdById = (req, res, next, id) => {
 //create business
 
 module.exports.createBusiness = (req, res) => {
-   const errors = validationResult(req);
-
-     if (!errors.isEmpty()) {
-    return res.status(422).json({
-      error: errors.array()[0].msg
-      });
-    }
+  
   let form = new formidable.IncomingForm();
   form.keepExtensions = true;
   
@@ -42,7 +36,7 @@ module.exports.createBusiness = (req, res) => {
     }
     //destructure the fields
    const { name, code,tradename,  type, about, postcode,line1 , city, country } = fields;
-    
+
     if (!name || !code || !tradename || !type || !about ||!postcode ||!line1 || !city ||!country) {
       return res.status(400).json({
        error: "Please include all fields"

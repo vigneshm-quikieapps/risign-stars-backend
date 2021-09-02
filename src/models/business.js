@@ -3,14 +3,12 @@ const mongoose = require("mongoose");
 const businessSchema = new mongoose.Schema({
     name: {
         type: String,
-        maxlength: 32,
         required: true,
         trim: true
     },
     code: String,
     tradename: {
         type: String,
-        maxlength: 32,
         required: true,
         trim: true
     },
