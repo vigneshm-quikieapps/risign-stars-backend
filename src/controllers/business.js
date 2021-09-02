@@ -122,14 +122,18 @@ module.exports.updateBusiness = (req, res) => {
 //all Business listing
 
 module.exports.getAllBusinesses = (req, res) => {
-  let limit = req.query.limit ? parseInt(req.query.limit) : "";
+
   //limit setter to export or send limited business to client or front end
-  //let limit = req.query.limit ? parseInt(req.query.limit) : 8;
+
+  let limit = req.query.limit ? parseInt(req.query.limit) : 10;
+  let page = req.query.page;
+  let skip = page ? (parseInt(page) - 1 * limit) : 0
   let sortBy = req.query.sortBy ? req.query.sortBy : "_id";
 
   Business.find()
     .sort([[sortBy, "asc"]])
     .limit(limit)
+    .skip(skip)
     .exec((err, businesses) => {
       if (err) {
         return res.status(400).json({
