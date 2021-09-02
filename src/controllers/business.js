@@ -1,6 +1,5 @@
-const formidable = require("formidable");
 const Business = require("../models/business");
-const _ = require("lodash");
+const {  validationResult } = require("express-validator");
 
 
 
@@ -23,38 +22,22 @@ module.exports.getBusinessIdById = (req, res, next, id) => {
 //create business
 
 module.exports.createBusiness = (req, res) => {
-  
-  let form = new formidable.IncomingForm();
-  form.keepExtensions = true;
-  
+  const errors = validationResult(req);
 
-  form.parse(req, (err, fields) => {
-    if (err) {
-      return res.status(400).json({
-        error: "problem with image"
+     if (!errors.isEmpty()) {
+    return res.status(422).json({
+      error: errors.array()[0].msg
       });
     }
-    //destructure the fields
-   const { name, code,tradename,  type, about, postcode,line1 , city, country } = fields;
-
-    if (!name || !code || !tradename || !type || !about ||!postcode ||!line1 || !city ||!country) {
-      return res.status(400).json({
-       error: "Please include all fields"
-     });
-    }
-  
-    let business = new Business(fields);
-
-    //save to the DB
-    business.save((err, business) => {
-      if (err) {
-        res.status(400).json({
-          error: "Saving business in DB failed"
-        });
-      }
-      res.json(business);
-    });
-  });
+    const business = new Business(req.body);
+    business.save((err,business)=>{
+        if (err) {
+               return res.status(400).json({
+                error: "unable to save evaluation to database"
+            });
+        }
+        res.json(business);
+    })
 };
 
 //get Business
@@ -83,31 +66,28 @@ module.exports.deleteBusiness = (req, res) => {
 
 
 module.exports.updateBusiness = (req, res) => {
-  let form = new formidable.IncomingForm();
-  form.keepExtensions = true;
+   const errors = validationResult(req);
 
-  form.parse(req, (err, fields) => {
-    if (err) {
-      return res.status(400).json({
-        error: "problem with image"
+    if (!errors.isEmpty()) {
+      return res.status(422).json({
+      error: errors.array()[0].msg
       });
-    }
+     }
 
-    //updation code
-    let business = req.business;
-    business = _.extend(business, fields);
-
-   
-   //save to the DB
-    business.save((err, business) => {
-      if (err) {
-        res.status(400).json({
-          error: "Updation of product failed"
-        });
-      }
-      res.json(business);
-    });
-  });
+    Business.findByIdAndUpdate(
+        { _id:req.business._id},
+        {$set : req.body},
+        {new : true ,useFindAndModify:false},
+        (err,business)=>{
+            if(err){
+                return res.status(400).json({
+                    err:"updation failed "
+                });
+            }
+            
+            res.json(business)
+        }
+    )
 };
 
 //all Business listing
