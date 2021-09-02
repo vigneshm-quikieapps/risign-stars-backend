@@ -1,6 +1,6 @@
 const formidable = require("formidable");
 const Business = require("../models/business");
-//const _ = require("loadash");
+const _ = require("loadash");
 
 const {  validationResult } = require("express-validator");
 
@@ -104,7 +104,7 @@ module.exports.updateBusiness = (req, res) => {
 
     //updation code
     let business = req.business;
-   // business = _.extend(business, fields);
+    business = _.extend(business, fields);
 
    
    //save to the DB
