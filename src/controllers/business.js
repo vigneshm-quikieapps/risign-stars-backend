@@ -7,7 +7,7 @@ module.exports.getBusinessIdById = (req, res, next, id) => {
   Business.findById(id).exec((err, business) => {
     if (err) {
       return res.status(400).json({
-        error: "Product not found"
+        error: "Product not found",
       });
     }
     req.business = business;
@@ -22,14 +22,14 @@ module.exports.createBusiness = (req, res) => {
 
   if (!errors.isEmpty()) {
     return res.status(422).json({
-      error: errors.array()[0].msg
+      error: errors.array()[0].msg,
     });
   }
   const business = new Business(req.body);
   business.save((err, business) => {
     if (err) {
       return res.status(400).json({
-        error: "unable to save evaluation to database"
+        error: "unable to save evaluation to database",
       });
     }
     res.json(business);
@@ -47,12 +47,12 @@ module.exports.deleteBusiness = (req, res) => {
   business.remove((err, deletedBusiness) => {
     if (err) {
       return res.status(400).json({
-        error: "Failed to delete the product"
+        error: "Failed to delete the product",
       });
     }
     res.json({
       message: "Deletion was a success",
-      deletedBusiness
+      deletedBusiness,
     });
   });
 };
@@ -62,7 +62,7 @@ module.exports.updateBusiness = (req, res) => {
 
   if (!errors.isEmpty()) {
     return res.status(422).json({
-      error: errors.array()[0].msg
+      error: errors.array()[0].msg,
     });
   }
 
@@ -73,7 +73,7 @@ module.exports.updateBusiness = (req, res) => {
     (err, business) => {
       if (err) {
         return res.status(400).json({
-          err: "updation failed "
+          err: "updation failed ",
         });
       }
 
@@ -99,7 +99,7 @@ module.exports.getAllBusinesses = (req, res) => {
     .exec((err, businesses) => {
       if (err) {
         return res.status(400).json({
-          error: "NO product FOUND"
+          error: "NO product FOUND",
         });
       }
       res.json(businesses);

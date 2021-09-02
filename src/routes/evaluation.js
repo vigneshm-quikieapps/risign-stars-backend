@@ -8,7 +8,7 @@ const {
   getEvaluation,
   createEvaluation,
   deleteEvaluation,
-  updateEvaluation
+  updateEvaluation,
 } = require("../controllers/evaluation");
 
 //parameters
@@ -23,7 +23,7 @@ router.post(
     check("name", "name should be at least 3 char").isLength({ min: 3 }),
     check("status", "status should be active / inactive").optional(),
     check("levelcount", "levelcount should be an Integer").isInt(),
-    check("levels", "password should be at least 3 char").isLength({ min: 1 })
+    check("levels", "password should be at least 3 char").isLength({ min: 1 }),
   ],
   createEvaluation
 );
@@ -45,7 +45,7 @@ router.put(
     check("levelcount", "levelcount should be an Integer").optional().isInt(),
     check("levels", "password should be at least 3 char")
       .optional()
-      .isLength({ min: 1 })
+      .isLength({ min: 1 }),
   ],
   updateEvaluation
 );

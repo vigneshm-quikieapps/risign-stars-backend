@@ -4,11 +4,18 @@ module.exports = {
     commonjs: true,
     es2021: true,
   },
-  extends: ["eslint:recommended", "plugin:node/recommended", "prettier"],
+  extends: [
+    "eslint:recommended",
+    "plugin:node/recommended",
+    "prettier",
+    "plugin:prettier/recommended",
+  ],
   parserOptions: {
     ecmaVersion: 12,
   },
+  plugins: ["prettier"],
   rules: {
+    "prettier/prettier": "error",
     "node/exports-style": ["error", "module.exports"],
     "node/file-extension-in-import": ["error", "always"],
     "node/prefer-global/buffer": ["error", "always"],

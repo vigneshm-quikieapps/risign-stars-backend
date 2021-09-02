@@ -6,7 +6,7 @@ const createUserValidationRules = () => {
     body("email", "should be a valid Email").isEmail().custom(isEmailAvailable),
     body("firstName", "min length should be 2").isLength({ min: 2 }),
     body("lastName", "min length should be 2").isLength({ min: 2 }),
-    body("roles").isArray()
+    body("roles").isArray(),
   ];
 };
 
@@ -18,11 +18,11 @@ const updateUserValidationRules = () => {
       .custom(isEmailAvailable),
     body("firstName", "min length should be 2").optional().isLength({ min: 2 }),
     body("lastName", "min length should be 2").optional().isLength({ min: 2 }),
-    body("roles").optional().isArray()
+    body("roles").optional().isArray(),
   ];
 };
 
 module.exports = {
   createUserValidationRules,
-  updateUserValidationRules
+  updateUserValidationRules,
 };
