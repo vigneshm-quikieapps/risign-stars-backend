@@ -1,22 +1,18 @@
 const Business = require("../models/business");
-const {  validationResult } = require("express-validator");
-
-
-
-
+const { validationResult } = require("express-validator");
 
 //parameter extractor
 
 module.exports.getBusinessIdById = (req, res, next, id) => {
   Business.findById(id).exec((err, business) => {
-      if (err) {
-        return res.status(400).json({
-          error: "Product not found"
-        });
-      }
-      req.business = business;
-      next();
-    });
+    if (err) {
+      return res.status(400).json({
+        error: "Product not found"
+      });
+    }
+    req.business = business;
+    next();
+  });
 };
 
 //create business
@@ -24,28 +20,26 @@ module.exports.getBusinessIdById = (req, res, next, id) => {
 module.exports.createBusiness = (req, res) => {
   const errors = validationResult(req);
 
-     if (!errors.isEmpty()) {
+  if (!errors.isEmpty()) {
     return res.status(422).json({
       error: errors.array()[0].msg
+    });
+  }
+  const business = new Business(req.body);
+  business.save((err, business) => {
+    if (err) {
+      return res.status(400).json({
+        error: "unable to save evaluation to database"
       });
     }
-    const business = new Business(req.body);
-    business.save((err,business)=>{
-        if (err) {
-               return res.status(400).json({
-                error: "unable to save evaluation to database"
-            });
-        }
-        res.json(business);
-    })
+    res.json(business);
+  });
 };
 
 //get Business
 module.exports.getBusiness = (req, res) => {
-  
   return res.json(req.business);
 };
-
 
 // delete controllers
 module.exports.deleteBusiness = (req, res) => {
@@ -63,42 +57,39 @@ module.exports.deleteBusiness = (req, res) => {
   });
 };
 
-
-
 module.exports.updateBusiness = (req, res) => {
-   const errors = validationResult(req);
+  const errors = validationResult(req);
 
-    if (!errors.isEmpty()) {
-      return res.status(422).json({
+  if (!errors.isEmpty()) {
+    return res.status(422).json({
       error: errors.array()[0].msg
-      });
-     }
+    });
+  }
 
-    Business.findByIdAndUpdate(
-        { _id:req.business._id},
-        {$set : req.body},
-        {new : true ,useFindAndModify:false},
-        (err,business)=>{
-            if(err){
-                return res.status(400).json({
-                    err:"updation failed "
-                });
-            }
-            
-            res.json(business)
-        }
-    )
+  Business.findByIdAndUpdate(
+    { _id: req.business._id },
+    { $set: req.body },
+    { new: true, useFindAndModify: false },
+    (err, business) => {
+      if (err) {
+        return res.status(400).json({
+          err: "updation failed "
+        });
+      }
+
+      res.json(business);
+    }
+  );
 };
 
 //all Business listing
 
 module.exports.getAllBusinesses = (req, res) => {
-
-//limit setter to export or send limited business to client or front end
+  //limit setter to export or send limited business to client or front end
 
   let limit = req.query.limit ? parseInt(req.query.limit) : 10;
   let page = req.query.page;
-  let skip = page ? (parseInt(page) - 1 * limit) : 0
+  let skip = page ? parseInt(page) - 1 * limit : 0;
   let sortBy = req.query.sortBy ? req.query.sortBy : "_id";
 
   Business.find()

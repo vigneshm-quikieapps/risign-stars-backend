@@ -1,40 +1,48 @@
 const mongoose = require("mongoose");
 
-const FUNCTIONAL_PRIVILEDGES = ["ACTIVITY_DEFINITION", "ACTIVITY_ENROLMENT", "ACTIVITY_ATTENDANCE"]
+const FUNCTIONAL_PRIVILEDGES = [
+  "ACTIVITY_DEFINITION",
+  "ACTIVITY_ENROLMENT",
+  "ACTIVITY_ATTENDANCE"
+];
 
-const roleSchema = new mongoose.Schema({
+const roleSchema = new mongoose.Schema(
+  {
     name: {
-        type: String,
-        maxlength: 32,
-        required: true,
-        trim: true
+      type: String,
+      maxlength: 32,
+      required: true,
+      trim: true
     },
     description: {
-        type: String,
-        required: true,
+      type: String,
+      required: true
     },
-    functionalPriviledges: [{
+    functionalPriviledges: [
+      {
         type: {
-            type: String,
-            enum: FUNCTIONAL_PRIVILEDGES,
-            required: true,
+          type: String,
+          enum: FUNCTIONAL_PRIVILEDGES,
+          required: true
         },
         permission: {
-            create: Boolean,
-            read: Boolean,
-            update: Boolean,
-            delete: Boolean
+          create: Boolean,
+          read: Boolean,
+          update: Boolean,
+          delete: Boolean
         }
-    }],
+      }
+    ],
     dataPriviledges: {
-        type: {
-            type: String,
-            enum: ['ALL', 'ONE'],
-            required: true
-        },
-        businessId: String,
+      type: {
+        type: String,
+        enum: ["ALL", "ONE"],
+        required: true
+      },
+      businessId: String
     }
-}, { timestamps: true });
-
+  },
+  { timestamps: true }
+);
 
 module.exports = mongoose.model("Role", roleSchema);

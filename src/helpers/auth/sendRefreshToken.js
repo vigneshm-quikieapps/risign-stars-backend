@@ -5,4 +5,4 @@ const sendRefreshToken = (res, token) => {
   });
 };
 
-module.exports = sendRefreshToken
+module.exports = sendRefreshToken;
