@@ -45,9 +45,17 @@ module.exports.createEvaluation = (req,res) => {
 
 //Evaluation listing all
 
-module.exports.getAllEvaluations=(req,res)=>{
+module.exports.getAllEvaluations = (req, res) => {
+    let limit = req.query.limit ? parseInt(req.query.limit) : 10;
+  let page = req.query.page;
+  let skip = page ? (parseInt(page) - 1 * limit) : 0
+  let sortBy = req.query.sortBy ? req.query.sortBy : "_id";
 
-    Evaluation.find().exec((err , evaluation)=>{
+    Evaluation.find()
+        .sort([[sortBy, "asc"]])
+        .skip(skip)
+        .limit(limit)
+        .exec((err, evaluation) => {
          if(err){
              return res.status(400).json({
               err:"cannot find category by id"

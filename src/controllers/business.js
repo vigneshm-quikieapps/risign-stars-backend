@@ -132,8 +132,8 @@ module.exports.getAllBusinesses = (req, res) => {
 
   Business.find()
     .sort([[sortBy, "asc"]])
-    .limit(limit)
     .skip(skip)
+    .limit(limit)
     .exec((err, businesses) => {
       if (err) {
         return res.status(400).json({
