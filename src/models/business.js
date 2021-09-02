@@ -16,7 +16,7 @@ const businessSchema = new mongoose.Schema({
     },
     type: {
         type: String,
-        default: "recieved",
+        required: true,
         enum: ["sole", "limited", "liability", "partnership"]
 
     },
@@ -30,7 +30,7 @@ const businessSchema = new mongoose.Schema({
     line1: String,
     line2: String,
     city: String,
- country: String
+    country: String
     
         
     

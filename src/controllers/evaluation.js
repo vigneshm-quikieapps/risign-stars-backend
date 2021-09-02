@@ -7,7 +7,7 @@ exports.getEvaluationIdById =(req,res,next,id) =>{
   Evaluation.findById(id).exec((err , evaluation)=>{
       if(err){
           return res.status(400).json({
-              err:"cannot find category by id"
+              err:"cannot find evaluation by id"
           });
       };req.evaluation = evaluation;
       next();
@@ -20,15 +20,15 @@ exports.getEvaluationIdById =(req,res,next,id) =>{
 exports.createEvaluation = (req,res) => {
 
     const evaluation = new Evaluation(req.body);
-    category.save((err,evaluation)=>{
-        if(err){
+    evaluation.save((err,eval)=>{
+        if (err) {
+            console.log(err)
+            console.log(req.body)
+            
             return res.status(400).json({
-                error:"unable to save category to database"
+                error:"unable to save evaluation to database"
             });
-        };res.json({
-             message: "Deletion was a success",
-            evaluation
-            });
+        };res.json(eval );
     })
 
 };

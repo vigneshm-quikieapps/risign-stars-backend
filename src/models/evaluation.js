@@ -1,12 +1,15 @@
 const mongoose = require("mongoose");
 
+
+
+
 const evaluationSchema = new mongoose.Schema({
     name: {
         type: String,
         maxlength: 32,
         required: true,
-        trim: true,
-        unique:true
+        trim: true
+    
     },
     status: {
         type: String,
@@ -15,18 +18,13 @@ const evaluationSchema = new mongoose.Schema({
 
     },
     levelcount:{
-    type:Number,
-    default:0
+        type:Number,
+        required: true
+      
     },
-    levels: {
-         type: Number,
-        default: 1
-    },
-    skills: {
-         type: String,
-        default: []
-    }
-        
+    levels: [{
+        skills: []
+    }]
     
 
 }, { timestamps: true });
