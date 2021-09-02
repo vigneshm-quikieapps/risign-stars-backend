@@ -1,6 +1,6 @@
 const formidable = require("formidable");
 const Business = require("../models/business");
-const _ = require("loadash");
+const _ = require("lodash");
 
 const {  validationResult } = require("express-validator");
 
@@ -50,9 +50,6 @@ module.exports.createBusiness = (req, res) => {
     }
   
     let business = new Business(fields);
-
-   
-    
 
     //save to the DB
     business.save((err, business) => {
@@ -123,7 +120,7 @@ module.exports.updateBusiness = (req, res) => {
 
 module.exports.getAllBusinesses = (req, res) => {
 
-  //limit setter to export or send limited business to client or front end
+//limit setter to export or send limited business to client or front end
 
   let limit = req.query.limit ? parseInt(req.query.limit) : 10;
   let page = req.query.page;
