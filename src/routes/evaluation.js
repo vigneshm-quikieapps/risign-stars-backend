@@ -1,5 +1,8 @@
 const express = require("express");
 const router = express.Router();
+const { check } = require("express-validator");
+
+
 const {
     getAllEvaluations,
     getEvaluationIdById,
@@ -18,7 +21,11 @@ router.param("evaluationId",getEvaluationIdById);
 //all of actual routes
 //all of actual routes
 //create route
-router.post("/evaluation/create", createEvaluation);
+router.post("/evaluation/create",[
+    check("name", "name should be at least 3 char").isLength({ min: 3 }),
+    check("levelcount", "levelcount should be an Integer").isInt(),
+    check("levels", "password should be at least 3 char").isLength({ min: 1 })
+  ],createEvaluation);
 
 
 // read routes

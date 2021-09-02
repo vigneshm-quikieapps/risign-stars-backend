@@ -1,5 +1,6 @@
 const Evaluation = require("../models/evaluation");
 
+const {  validationResult } = require("express-validator");
 
 
 //parameter extractor
@@ -9,7 +10,8 @@ module.exports.getEvaluationIdById =(req,res,next,id) =>{
           return res.status(400).json({
               err:"cannot find evaluation by id"
           });
-      };req.evaluation = evaluation;
+      }
+      req.evaluation = evaluation;
       next();
   })
 };
@@ -18,17 +20,24 @@ module.exports.getEvaluationIdById =(req,res,next,id) =>{
 //Evaluation creation 
 
 module.exports.createEvaluation = (req,res) => {
+     const errors = validationResult(req);
 
+     if (!errors.isEmpty()) {
+    return res.status(422).json({
+      error: errors.array()[0].msg
+      });
+    }
     const evaluation = new Evaluation(req.body);
-    evaluation.save((err,eval)=>{
+    evaluation.save((err,evaluation)=>{
         if (err) {
             console.log(err)
             console.log(req.body)
             
             return res.status(400).json({
-                error:"unable to save evaluation to database"
+                error: "unable to save evaluation to database"
             });
-        };res.json(eval );
+        }
+        res.json(evaluation);
     })
 
 };
@@ -43,7 +52,8 @@ module.exports.getAllEvaluations=(req,res)=>{
              return res.status(400).json({
               err:"cannot find category by id"
               });
-      };res.json(evaluation);
+        }
+        res.json(evaluation);
 
 
 });
@@ -63,7 +73,15 @@ module.exports.getEvaluation=(req,res)=>{
 //Evaluation Update
 
 
-module.exports.updateEvaluation = (req , res) => {
+module.exports.updateEvaluation = (req, res) => {
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+      return res.status(422).json({
+      error: errors.array()[0].msg
+      });
+     }
+
     Evaluation.findByIdAndUpdate(
         { _id:req.evaluation._id},
         {$set : req.body},
@@ -90,6 +108,7 @@ module.exports.deleteEvaluation = (req,res)=>{
             return res.status(400).json({
                 err:"unable to delete category"
             });
-        };res.json(evaluation);
+        }
+        res.json(evaluation);
     });
 };

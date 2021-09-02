@@ -26,11 +26,30 @@ const businessSchema = new mongoose.Schema({
         trim: true
     },
 
-    postcode: String,
-    line1: String,
-    line2: String,
-    city: String,
-    country: String
+    postcode: {
+        type: String,
+        required: true,
+        trim: true
+    },
+    line1: {
+        type: String,
+        required: true,
+        trim: true
+    },
+     line2: {
+        type: String,
+        trim: true
+    },
+    city: {
+        type: String,
+        required: true,
+        trim: true
+    },
+   country: {
+        type: String,
+        required: true,
+        trim: true
+    }
     
         
     
