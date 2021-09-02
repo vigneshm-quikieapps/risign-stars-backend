@@ -1,13 +1,13 @@
 const formidable = require("formidable");
 const Business = require("../models/business");
 const _ = require("lodash");
-const business = require("../models/business");
+
 
 
 
 //parameter extractor
 
-exports.getBusinessIdById = (req, res, next, id) => {
+module.exports.getBusinessIdById = (req, res, next, id) => {
   Business.findById(id).exec((err, business) => {
       if (err) {
         return res.status(400).json({
@@ -21,7 +21,7 @@ exports.getBusinessIdById = (req, res, next, id) => {
 
 //create business
 
-exports.createBusiness = (req, res) => {
+module.exports.createBusiness = (req, res) => {
   let form = new formidable.IncomingForm();
   form.keepExtensions = true;
   
@@ -59,14 +59,14 @@ exports.createBusiness = (req, res) => {
 };
 
 //get Business
-exports.getBusiness = (req, res) => {
+module.exports.getBusiness = (req, res) => {
   
   return res.json(req.business);
 };
 
 
 // delete controllers
-exports.deleteBusiness = (req, res) => {
+module.exports.deleteBusiness = (req, res) => {
   let business = req.business;
   business.remove((err, deletedBusiness) => {
     if (err) {
@@ -83,7 +83,7 @@ exports.deleteBusiness = (req, res) => {
 
 
 
-exports.updateBusiness = (req, res) => {
+module.exports.updateBusiness = (req, res) => {
   let form = new formidable.IncomingForm();
   form.keepExtensions = true;
 
@@ -113,7 +113,7 @@ exports.updateBusiness = (req, res) => {
 
 //all Business listing
 
-exports.getAllBusinesses = (req, res) => {
+module.exports.getAllBusinesses = (req, res) => {
   let limit = req.query.limit ? parseInt(req.query.limit) : "";
   //limit setter to export or send limited business to client or front end
   //let limit = req.query.limit ? parseInt(req.query.limit) : 8;

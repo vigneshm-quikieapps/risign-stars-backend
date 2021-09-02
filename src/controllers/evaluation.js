@@ -3,7 +3,7 @@ const Evaluation = require("../models/evaluation");
 
 
 //parameter extractor
-exports.getEvaluationIdById =(req,res,next,id) =>{
+module.exports.getEvaluationIdById =(req,res,next,id) =>{
   Evaluation.findById(id).exec((err , evaluation)=>{
       if(err){
           return res.status(400).json({
@@ -17,7 +17,7 @@ exports.getEvaluationIdById =(req,res,next,id) =>{
 
 //Evaluation creation 
 
-exports.createEvaluation = (req,res) => {
+module.exports.createEvaluation = (req,res) => {
 
     const evaluation = new Evaluation(req.body);
     evaluation.save((err,eval)=>{
@@ -36,7 +36,7 @@ exports.createEvaluation = (req,res) => {
 
 //Evaluation listing all
 
-exports.getAllEvaluations=(req,res)=>{
+module.exports.getAllEvaluations=(req,res)=>{
 
     Evaluation.find().exec((err , evaluation)=>{
          if(err){
@@ -51,7 +51,7 @@ exports.getAllEvaluations=(req,res)=>{
 
 //Evaluation listing
 
-exports.getEvaluation=(req,res)=>{
+module.exports.getEvaluation=(req,res)=>{
 
     return res.json(req.evaluation);
 
@@ -63,7 +63,7 @@ exports.getEvaluation=(req,res)=>{
 //Evaluation Update
 
 
-exports.updateEvaluation = (req , res) => {
+module.exports.updateEvaluation = (req , res) => {
     Evaluation.findByIdAndUpdate(
         { _id:req.evaluation._id},
         {$set : req.body},
@@ -83,7 +83,7 @@ exports.updateEvaluation = (req , res) => {
 
 //Evaluation delete
 
-exports.deleteEvaluation = (req,res)=>{
+module.exports.deleteEvaluation = (req,res)=>{
     const evaluation = req.evaluation;
     evaluation.remove((err,evaluation)=>{
         if(err){
