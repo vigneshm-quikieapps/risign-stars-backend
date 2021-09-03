@@ -3,7 +3,7 @@ const router = express.Router();
 const role = require("../controllers/role");
 const {
   createRoleValidationRules,
-  updateRoleValidationRules
+  updateRoleValidationRules,
 } = require("../validations/role");
 const validate = require("../validations/validate");
 

@@ -5,49 +5,49 @@ const businessSchema = new mongoose.Schema(
     name: {
       type: String,
       required: true,
-      trim: true
+      trim: true,
     },
     code: String,
     tradename: {
       type: String,
       required: true,
-      trim: true
+      trim: true,
     },
     type: {
       type: String,
       required: true,
-      enum: ["sole", "limited", "liability", "partnership"]
+      enum: ["sole", "limited", "liability", "partnership"],
     },
     about: {
       type: String,
       maxlength: 3200,
-      trim: true
+      trim: true,
     },
 
     postcode: {
       type: String,
       required: true,
-      trim: true
+      trim: true,
     },
     line1: {
       type: String,
       required: true,
-      trim: true
+      trim: true,
     },
     line2: {
       type: String,
-      trim: true
+      trim: true,
     },
     city: {
       type: String,
       required: true,
-      trim: true
+      trim: true,
     },
     country: {
       type: String,
       required: true,
-      trim: true
-    }
+      trim: true,
+    },
   },
   { timestamps: true }
 );

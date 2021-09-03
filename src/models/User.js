@@ -9,22 +9,22 @@ const userSchema = new mongoose.Schema(
     email: {
       type: String,
       required: true,
-      unique: true
+      unique: true,
     },
     password: {
       type: String,
       select: false,
-      required: true
+      required: true,
     },
     firstName: {
       type: String,
-      required: true
+      required: true,
     },
     lastName: {
       type: String,
-      required: true
+      required: true,
     },
-    roles: [{}]
+    roles: [{}],
   },
   { timestamps: true }
 );

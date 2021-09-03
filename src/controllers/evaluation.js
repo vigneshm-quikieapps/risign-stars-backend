@@ -7,7 +7,7 @@ module.exports.getEvaluationIdById = (req, res, next, id) => {
   Evaluation.findById(id).exec((err, evaluation) => {
     if (err) {
       return res.status(400).json({
-        err: "cannot find evaluation by id"
+        err: "cannot find evaluation by id",
       });
     }
     req.evaluation = evaluation;
@@ -22,7 +22,7 @@ module.exports.createEvaluation = (req, res) => {
 
   if (!errors.isEmpty()) {
     return res.status(422).json({
-      error: errors.array()[0].msg
+      error: errors.array()[0].msg,
     });
   }
   const evaluation = new Evaluation(req.body);
@@ -32,7 +32,7 @@ module.exports.createEvaluation = (req, res) => {
       console.log(req.body);
 
       return res.status(400).json({
-        error: "unable to save evaluation to database"
+        error: "unable to save evaluation to database",
       });
     }
     res.json(evaluation);
@@ -54,7 +54,7 @@ module.exports.getAllEvaluations = (req, res) => {
     .exec((err, evaluation) => {
       if (err) {
         return res.status(400).json({
-          err: "cannot find category by id"
+          err: "cannot find category by id",
         });
       }
       res.json(evaluation);
@@ -74,7 +74,7 @@ module.exports.updateEvaluation = (req, res) => {
 
   if (!errors.isEmpty()) {
     return res.status(422).json({
-      error: errors.array()[0].msg
+      error: errors.array()[0].msg,
     });
   }
 
@@ -85,7 +85,7 @@ module.exports.updateEvaluation = (req, res) => {
     (err, evaluation) => {
       if (err) {
         return res.status(400).json({
-          err: "you are not "
+          err: "you are not ",
         });
       }
 
@@ -101,7 +101,7 @@ module.exports.deleteEvaluation = (req, res) => {
   evaluation.remove((err, evaluation) => {
     if (err) {
       return res.status(400).json({
-        err: "unable to delete category"
+        err: "unable to delete category",
       });
     }
     res.json(evaluation);

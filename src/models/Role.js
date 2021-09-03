@@ -1,10 +1,8 @@
 const mongoose = require("mongoose");
-
-const FUNCTIONAL_PRIVILEDGES = [
-  "ACTIVITY_DEFINITION",
-  "ACTIVITY_ENROLMENT",
-  "ACTIVITY_ATTENDANCE"
-];
+const {
+  FUNCTIONAL_PRIVILEDGES,
+  DATA_PRIVILEDGES_TYPE,
+} = require("../contants/constant");
 
 const roleSchema = new mongoose.Schema(
   {
@@ -12,35 +10,47 @@ const roleSchema = new mongoose.Schema(
       type: String,
       maxlength: 32,
       required: true,
-      trim: true
+      trim: true,
     },
     description: {
       type: String,
-      required: true
+      required: true,
     },
     functionalPriviledges: [
       {
         type: {
           type: String,
           enum: FUNCTIONAL_PRIVILEDGES,
-          required: true
+          required: true,
         },
         permission: {
-          create: Boolean,
-          read: Boolean,
-          update: Boolean,
-          delete: Boolean
-        }
-      }
+          create: {
+            type: Boolean,
+            default: false,
+          },
+          read: {
+            type: Boolean,
+            default: false,
+          },
+          update: {
+            type: Boolean,
+            default: false,
+          },
+          delete: {
+            type: Boolean,
+            default: false,
+          },
+        },
+      },
     ],
     dataPriviledges: {
       type: {
         type: String,
-        enum: ["ALL", "ONE"],
-        required: true
+        enum: DATA_PRIVILEDGES_TYPE,
+        required: true,
       },
-      businessId: String
-    }
+      businessId: String,
+    },
   },
   { timestamps: true }
 );

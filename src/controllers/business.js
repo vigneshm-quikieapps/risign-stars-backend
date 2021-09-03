@@ -1,5 +1,7 @@
 const Business = require("../models/business");
+
 const { validationResult } = require("express-validator");
+const { STARTS_WITH_FILTER, EQUALS_FILTER } = require("../contants/constant");
 
 //parameter extractor
 
@@ -89,19 +91,41 @@ module.exports.getAllBusinesses = (req, res) => {
 
   let limit = req.query.limit ? parseInt(req.query.limit) : 10;
   let page = req.query.page;
-  let skip = page ? parseInt(page) - 1 * limit : 0;
-  let sortBy = req.query.sortBy ? req.query.sortBy : "_id";
 
-  Business.find()
-    .sort([[sortBy, "asc"]])
-    .skip(skip)
-    .limit(limit)
-    .exec((err, businesses) => {
-      if (err) {
-        return res.status(400).json({
-          error: "NO product FOUND",
-        });
-      }
-      res.json(businesses);
-    });
+  let skip = page ? parseInt(page) - 1 * limit : 0;
+  let sortBy = req.query.sortBy ? req.query.sortBy : "asc";
+
+  /**
+   * query object
+   */
+  let query = Business.find().sort({ _id: sortBy }).skip(skip).limit(limit);
+
+  /**
+   * filter
+   */
+  let { filters = [] } = req.query;
+  for (let { field, type, value } of filters) {
+    switch (type) {
+      case STARTS_WITH_FILTER:
+        query.where(`${field}`, { $regex: new RegExp(`^${value}`, "i") });
+        break;
+      case EQUALS_FILTER:
+        query.where(`${field}`, value);
+        break;
+      default:
+        break;
+    }
+  }
+
+  /**
+   * execute the query
+   */
+  query.exec((err, businesses) => {
+    if (err) {
+      return res.status(400).json({
+        error: "NO product FOUND",
+      });
+    }
+    res.json(businesses);
+  });
 };

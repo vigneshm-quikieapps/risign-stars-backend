@@ -1,6 +1,8 @@
 const express = require("express");
 const router = express.Router();
 const { check } = require("express-validator");
+const { getAllBusinessValidationRules } = require("../validations/business");
+const validate = require("../validations/validate");
 
 const {
   getBusinessIdById,
@@ -8,7 +10,7 @@ const {
   getAllBusinesses,
   createBusiness,
   deleteBusiness,
-  updateBusiness
+  updateBusiness,
 } = require("../controllers/business");
 
 //parameters
@@ -25,18 +27,18 @@ router.post(
       .optional()
       .isLength({ min: 3 }),
     check("tradename", "tradename should be at least 3 char").isLength({
-      min: 3
+      min: 3,
     }),
     check("type", "type should be at least 3 char").isLength({ min: 3 }),
     check("about", "about should be atleast 3 char")
       .optional()
       .isLength({ min: 3 }),
     check("postcode", "postcode should be at least 3 char").isLength({
-      min: 3
+      min: 3,
     }),
     check("line1", "line1 should be at least 3 char").isLength({ min: 3 }),
     check("city", "city should be at least 3 char").isLength({ min: 3 }),
-    check("country", "country should be at least 3 char").isLength({ min: 3 })
+    check("country", "country should be at least 3 char").isLength({ min: 3 }),
   ],
   createBusiness
 );
@@ -77,12 +79,17 @@ router.put(
       .isLength({ min: 3 }),
     check("country", "country should be at least 3 char")
       .optional()
-      .isLength({ min: 3 })
+      .isLength({ min: 3 }),
   ],
   updateBusiness
 );
 
 //listing route
-router.get("/business", getAllBusinesses);
+router.get(
+  "/business",
+  getAllBusinessValidationRules(),
+  validate,
+  getAllBusinesses
+);
 
 module.exports = router;

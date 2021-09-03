@@ -5,22 +5,22 @@ const evaluationSchema = new mongoose.Schema(
     name: {
       type: String,
       required: true,
-      trim: true
+      trim: true,
     },
     status: {
       type: String,
       default: "active",
-      enum: ["active", "inactive"]
+      enum: ["active", "inactive"],
     },
     levelcount: {
       type: Number,
-      required: true
+      required: true,
     },
     levels: [
       {
-        skills: []
-      }
-    ]
+        skills: [],
+      },
+    ],
   },
   { timestamps: true }
 );
