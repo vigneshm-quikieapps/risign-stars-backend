@@ -8,7 +8,7 @@ const Business = require("../models/business");
 const createRoleValidationRules = () => {
   return [
     body("name", "Name should have atleast 3 characters").isLength({ min: 3 }),
-    body("description").optional().isLength({ min: 5 }),
+    body("description", "description should atleast 5 characters").optional().isLength({ min: 5 }),
     body(
       "functionalPriviledges.*.type",
       `page name should be either: ${FUNCTIONAL_PRIVILEDGES.join("/")}`
@@ -58,8 +58,8 @@ const updateRoleValidationRules = () => {
   return [
     body("name", "Name should have atleast 3 characters")
       .optional()
-      .isLength({ min: 5 }),
-    body("description").optional().isLength({ min: 5 }),
+      .isLength({ min: 3 }),
+    body("description", "description should atleast 5 characters").optional().isLength({ min: 5 }),
     body("functionalPriviledges").optional().isArray(),
   ];
 };
