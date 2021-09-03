@@ -1,10 +1,8 @@
 const express = require("express");
 const router = express.Router();
+const { check } = require("express-validator");
 
 // routes
-
-
-
 
 router.post(
   "/signup",
@@ -16,16 +14,17 @@ router.post(
   signup
 );
 
-router.post("/signin",
-[
-  check("email","email is required").isEmail(),
-  check("password","password should be at least 3 sharacters long").isLength({min:3})
-],signin);
-
-
+router.post(
+  "/signin",
+  [
+    check("email", "email is required").isEmail(),
+    check("password", "password should be at least 3 sharacters long").isLength(
+      { min: 3 }
+    )
+  ],
+  signin
+);
 
 router.get("/signout", signout);
 
-
-
-module.exports=router;
+module.exports = router;
