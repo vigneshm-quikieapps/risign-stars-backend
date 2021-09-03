@@ -1,7 +1,8 @@
 const express = require("express");
 const router = express.Router();
 const { check } = require("express-validator");
-
+const {getAllBusinessValidationRules} = require("../validations/business")
+const validate = require("../validations/validate")
 
 
 
@@ -57,7 +58,7 @@ router.put( "/business/:businessId", [
   
   
 //listing route
-router.get("/business", getAllBusinesses);
+router.get("/business", getAllBusinessValidationRules(), validate, getAllBusinesses);
 
 
 
