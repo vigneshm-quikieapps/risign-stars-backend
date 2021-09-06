@@ -43,3 +43,26 @@ module.exports.AttendaceOfAClassByMonth = {
   createdAt: Date,
   updatedAt: Date,
 };
+
+/**
+ * API's
+ * 1. get attendance of a student in a class by date
+ * 2. get attendance of a student in a class by month
+ */
+module.exports.AttendanceOfAStudentInAClass = {
+  id: String,
+  startDate: Date /** starting of a month */,
+  endDate: Date /** end of a month */,
+  records: [
+    {
+      date: Date,
+      attended: Boolean,
+      tardy: Boolean,
+      comments: String,
+    },
+  ],
+  attendedCount: Number,
+  tardyCount: Number,
+  createdAt: Date,
+  updatedAt: Date,
+};
