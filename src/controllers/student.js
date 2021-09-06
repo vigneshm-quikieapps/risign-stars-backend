@@ -54,7 +54,7 @@ module.exports.update = async (req, res) => {
 module.exports.delete = async (req, res) => {
     try {
         let { studentId } = req.params;
-        let { deletedCount } = await User.deleteOne({ _id: studentId });
+        let { deletedCount } = await Student.deleteOne({ _id: studentId });
         if (!deletedCount) {
             throw new DoesNotExistException();
         }
