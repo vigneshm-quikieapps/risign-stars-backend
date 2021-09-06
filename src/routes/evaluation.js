@@ -25,7 +25,7 @@ router.post("/evaluation/create",[
     check("name", "name should be at least 3 char").isLength({ min: 3 }),
     check("status", "status should be active / inactive").optional(),
     check("levelcount", "levelcount should be an Integer").isInt(),
-    check("levels", "password should be at least 3 char").isLength({ min: 1 })
+    check("levels", "levels should be at least 3 char").isLength({ min: 1 })
   ],createEvaluation);
 
 

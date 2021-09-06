@@ -17,8 +17,8 @@ const evaluationSchema = new mongoose.Schema({
 
     },
     levelcount:{
-        type:Number,
-        required: true
+        type:Number
+        
       
     },
     levels: [{
