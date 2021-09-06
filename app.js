@@ -9,7 +9,7 @@ const businessRoute = require("./src/routes/business");
 const evaluationRoute = require("./src/routes/evaluation");
 const roleRoute = require("./src/routes/role");
 const userRoute = require("./src/routes/user");
-
+const studentRoute = require("./src/routes/student")
 //connecting to mongodb database
 let mongoDBUrl =
   process.env.MONGODB_URL || "mongodb://localhost:27017/raisingstars";
@@ -40,6 +40,7 @@ app.use("/api", businessRoute);
 app.use("/api", evaluationRoute);
 app.use("/api", roleRoute);
 app.use("/api", userRoute);
+app.use("/api", studentRoute);
 
 // server listening to the port
 app.listen(port, () =>
