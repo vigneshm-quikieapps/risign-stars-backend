@@ -61,6 +61,8 @@ module.exports.users = {
       businessName: String /** optional */,
     },
   ],
+  emailVerified: Boolean /** default false */,
+  phone: Boolean /** default false */,
   createdAt: Date,
   updateAt: Date,
 };
