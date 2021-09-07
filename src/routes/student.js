@@ -9,11 +9,6 @@ const {
 } = require("../validations/student")
 
 const validate = require("../validations/validate");
-// testing Purpose only
-
-router.get('/student', (req, res) => {
-    return res.send({ message: "hello student" });
-})
 
 // create route
 router.post("/student", createStudentValidationRules(), validate, student.create);

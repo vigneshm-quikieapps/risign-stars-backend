@@ -21,8 +21,10 @@ const levelsValidator = (levels, {req}) => {
 
     let { levelcount } = req.body
     
+    
     /** numbers of levels should be equal to the number of levelcount */
     if(levels.length !== parseInt(levelcount)) {
+        // console.log(levelcount)
         return Promise.reject("number of levels should be equal to levelCount")
     }
     
