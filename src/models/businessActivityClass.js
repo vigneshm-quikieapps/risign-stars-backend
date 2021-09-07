@@ -27,7 +27,8 @@ const businessActivityClassSchema = new mongoose.Schema(
                          },
             starttimemin: {
                 type: Number,
-                default:30,
+                enum: [00,05, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60,],
+                default: 00,
                         },
             starttimemeridian: {
                 type: String,
@@ -41,7 +42,8 @@ const businessActivityClassSchema = new mongoose.Schema(
                         },
             endtimemin: {
                 type: Number,
-                default:30,
+                enum: [00,05, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60,],
+                default:00,
                         },
             endtimemeridian: {
                 type: String,
