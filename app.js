@@ -10,6 +10,9 @@ const evaluationRoute = require("./src/routes/evaluation");
 const roleRoute = require("./src/routes/role");
 const userRoute = require("./src/routes/user");
 const coachRoute= require("./src/routes/coach")
+const activityClassRoute= require("./src/routes/businessActivityClass")
+const activityRoute= require("./src/routes/businessActivity")
+const categoryRoute= require("./src/routes/category")
 
 //connecting to mongodb database
 
@@ -41,6 +44,9 @@ app.use("/api", evaluationRoute);
 app.use("/api", roleRoute);
 app.use("/api", userRoute);
 app.use("/api", coachRoute);
+app.use("/api", activityClassRoute);
+app.use("/api", activityRoute);
+app.use("/api", categoryRoute);
 
 // server listening to the port
 app.listen(port, () =>

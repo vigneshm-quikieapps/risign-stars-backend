@@ -48,7 +48,7 @@ const businessActivitySchema = new mongoose.Schema(
       type: Array,
       default: [
         {
-          type: "age",
+          prop: "age",
           value: 3,
         },
       ]
@@ -57,18 +57,20 @@ const businessActivitySchema = new mongoose.Schema(
     class: [
       {
       type: ObjectId,
-      ref:"businessActivityClass"
+      ref:"BusinessActivityClass"
     },
     ],
+    
     
     charges: [
     {
       name: String,
       amount: String,
       mandatory: Boolean,
-        payFrequency: {
-        type: string,
+      payFrequency: {
+        type: String,
         enum: ["Monthly", "Annual"],
+        default:"Annual"
         },
     },
   ],

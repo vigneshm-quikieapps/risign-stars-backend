@@ -5,7 +5,10 @@ const BusinessActivity = require("../models/businessActivity");
 //parameter extractor
 module.exports.getBusinessActivityIdById = (req, res, next, id) => {
     BusinessActivity.findById(id)
-        .populate("category").populate("business").populate("evaluation").populate("class")
+      .populate("category")
+      .populate("business")
+      .populate("evaluation")
+      .populate("class")
         .exec((err, activity) => {
     if (err) {
       return res.status(400).json({

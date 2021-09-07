@@ -12,8 +12,8 @@ router.param("categoryId",getCategoryById);
 //router.param("userId",getUserById);
 
 //router.get("/category/:categoryId/",);
-router.post("/category/createCategory",createCategory);
-router.get("/categories",getAllCategory);
+router.post("/category/create",createCategory);
+router.get("/category",getAllCategory);
 router.get("/category/:categoryId",getCategory);
 router.put("/category/:categoryId",updateCategory);
 router.delete("/category/:categoryId",removeCategory);

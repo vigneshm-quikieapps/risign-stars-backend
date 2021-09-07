@@ -1,4 +1,4 @@
-const Category = require("../models/Category");
+const Category = require("../models/category");
 
 
 exports.getCategoryById =(req,res,next,id) =>{

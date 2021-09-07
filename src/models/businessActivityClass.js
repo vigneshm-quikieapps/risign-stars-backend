@@ -8,13 +8,13 @@ const businessActivityClassSchema = new mongoose.Schema(
          pattern: {
       type: Object,
       default: {
-        "mon":true,
-        "tue":true,
-        "wed":true,
-        "thu":true,
-        "fri":true,
-        "sat":true,
-        "sun":true,
+        mon:true,
+        tue:true,
+        wed:true,
+        thu:true,
+        fri:true,
+        sat:true,
+        sun:true,
       }
         },
         
