@@ -1,4 +1,6 @@
 const mongoose = require("mongoose");
+const { ObjectId } = mongoose.Schema;
+
 
 const businessActivitySchema = new mongoose.Schema(
   {
@@ -7,47 +9,72 @@ const businessActivitySchema = new mongoose.Schema(
       required: true,
       trim: true,
     },
-    code: String,
-    businessname: {
-      type: String,
-      required: true,
-      trim: true,
-    },
     status: {
       type: String,
       required: true,
-      enum: ["sole", "limited", "liability", "partnership"],
+      enum: ["active", "inactive"],
+      default:"active"
     },
+    registrationform: {
+      type: String,
+      required: true,
+      enum: ["standard", "limited", "liability", "partnership"],
+      default:"standard"
+    },
+    
+  business:{
+        type:ObjectId,
+        ref:"Business",
+        required:true
+    },
+
+    evaluation: {
+      type:ObjectId,
+        ref:"Evaluation",
+        required:true
+    },
+    category:{
+        type:ObjectId,
+        ref:"Category",
+        required:true
+    },
+      
     about: {
       type: String,
       maxlength: 3200,
       trim: true,
     },
+    enrolmentControls: {
+      type: Array,
+      default: [
+        {
+          type: "age",
+          value: 3,
+        },
+      ]
+     },
+  
+    class: [
+      {
+      type: ObjectId,
+      ref:"businessActivityClass"
+    },
+    ],
+    
+    charges: [
+    {
+      name: String,
+      amount: String,
+      mandatory: Boolean,
+        payFrequency: {
+        type: string,
+        enum: ["Monthly", "Annual"],
+        },
+    },
+  ],
 
-   evaluationscheme: {
-      type: String,
-      required: true,
-      trim: true,
-    },
-    age: {
-      type: Number,
-      required: true,
-      trim: true,
-    },
-    coachName: {
-      type: String,
-      trim: true,
-    },
-    city: {
-      type: String,
-      required: true,
-      trim: true,
-    },
-    country: {
-      type: String,
-      required: true,
-      trim: true,
-    },
+
+
   },
   { timestamps: true }
 );
