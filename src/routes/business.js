@@ -11,6 +11,7 @@ const {
   createBusiness,
   deleteBusiness,
   updateBusiness,
+  uploadFile,
 } = require("../controllers/business");
 
 //parameters
@@ -91,5 +92,11 @@ router.get(
   validate,
   getAllBusinesses
 );
+
+router.post("/business/fileupload", uploadFile);
+
+// WORKING ON THE DUMMY DATA
+// router.post("/business/memberdata", storeMemberData);
+// router.get("/business/memberdata", getMemberData);
 
 module.exports = router;
