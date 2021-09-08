@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 const { ObjectId } = mongoose.Schema;
 
 
-const businessActivityClassSchema = new mongoose.Schema(
+const businessSessionSchema = new mongoose.Schema(
     {
 
          pattern: {
@@ -68,4 +68,4 @@ const businessActivityClassSchema = new mongoose.Schema(
          },
   { timestamps: true }
 );
-module.exports = mongoose.model("BusinessActivityClass", businessActivityClassSchema);
+module.exports = mongoose.model("BusinessSession", businessSessionSchema);
