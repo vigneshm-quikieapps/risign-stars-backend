@@ -1,16 +1,21 @@
 const express = require("express");
 const router = express.Router();
 
+const {
+    createEvaluationValidationRules,
+    updateEvaluationValidationRules,
+  } = require("../validations/evaluation");
 
 const {
   getAllProgress,
   getProgressIdById,
   getProgress,
   updateProgress,
+  createProgress,
 } = require("../controllers/progress");
 
 //parameters
-router.param("progress", getProgressIdById);
+router.param("progressId", getProgressIdById);
 
 // router.param("userId", getuserIdById);
 
@@ -19,6 +24,12 @@ router.param("progress", getProgressIdById);
 //all of actual routes
 
 
+// create routes
+router.post(
+    "/progress/create",
+    createEvaluationValidationRules(),
+    createProgress
+  );
 // read routes
 router.get("/progress/:progressId", getProgress);
 
@@ -26,7 +37,7 @@ router.get("/progress/:progressId", getProgress);
 //update route
 router.put(
   "/progress/:progressId",
-  // updateEvaluationValidationRules(),
+  updateEvaluationValidationRules(),
   updateProgress
 );
 
