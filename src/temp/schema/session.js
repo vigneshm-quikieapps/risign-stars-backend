@@ -16,6 +16,11 @@ module.exports.sessions = {
       endTime: Date,
     },
   ],
+  term: {
+    id: String,
+    startDate: Date,
+    endDate: Date,
+  },
   classCapacity: Number,
   waitlistCapacity: Number,
   waitlistEnrolled: Number,

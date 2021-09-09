@@ -9,3 +9,17 @@
  *
  * club membership id
  */
+
+module.exports.default = {
+  evaluationSchemes: {},
+  businesses: {},
+  terms: {},
+  classes: {},
+  sessions: {},
+  attendances: {},
+  users: {},
+  members: {},
+  enrolments: {},
+  progressRecords: {},
+  payments: {},
+};

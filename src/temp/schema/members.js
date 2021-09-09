@@ -12,6 +12,12 @@ module.exports.members = {
   platformId:
     String /** should be a auto increment unique numeric serial ids */,
   userId: String,
+  membership: [
+    {
+      businessId: String,
+      clubMembershipId: String,
+    },
+  ],
   firstName: String,
   lastName: String,
   dob: Date,

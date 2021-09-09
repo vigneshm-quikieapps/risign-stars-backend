@@ -12,9 +12,9 @@
 
 module.exports.AttendanceOfAClassByDate = {
   date: Date,
+  sessionId: String,
   classId: String,
-  activityId: String,
-  activityName: String,
+  className: String,
   members: [
     {
       id: String /** student id */,
@@ -34,6 +34,7 @@ module.exports.AttendanceOfAClassByDate = {
  */
 module.exports.AttendaceOfAClassByMonth = {
   month: Date,
+  sessionId: String,
   classId: String,
   members: [
     {
@@ -56,8 +57,8 @@ module.exports.AttendaceOfAClassByMonth = {
 module.exports.AttendanceOfAStudentInAClass = {
   id: String,
   studentId: String,
+  sessionId: String,
   classId: String,
-  activityId: String,
   startDate: Date /** starting of a month */,
   endDate: Date /** end of a month */,
   records: [

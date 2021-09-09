@@ -1,9 +1,17 @@
+module.exports.ENUM_BUSINESS_TYPE = [
+  "LIMITED_COMPANY",
+  "LIMITED_LIABILITY_PARTNERSHIP",
+  "SOLE_TRADER",
+];
+
+module.exports.ENUM_CLASSES_STATUS = ["ACTIVE", "INACTIVE"];
+
 module.exports.SKILL_PROGRESS_STATUS = [
   "NOT_STARTED",
   "IN_PROGRESS",
   "ATTAINED",
 ];
-module.exports.PAY_FREQUENCY = ["Monthly", "Annual"];
+module.exports.ENUM_PAY_FREQUENCY = ["Monthly", "Annual"];
 
 module.exports.FUNCTIONAL_PRIVILEDGES = [
   "ACTIVITY_DEFINITION",

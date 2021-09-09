@@ -11,28 +11,16 @@
  * 2.
  */
 
-module.exports.Payments = {
+module.exports.payments = {
   id: String,
   sessionId: String,
   classId: String,
-  member: {
+  businessId: String,
+  members: {
     id: String,
     name: String,
   },
   paidAt: Date,
   createdAt: Date,
   updatedAt: Date,
-};
-
-module.exports.default = {
-  clubMembers: {},
-  terms: {},
-  classes: {},
-  sessions: {},
-  enrolments: {},
-  progressRecords: {},
-  evaluationScheme: {},
-  users: {},
-  members: {},
-  payments: {},
 };

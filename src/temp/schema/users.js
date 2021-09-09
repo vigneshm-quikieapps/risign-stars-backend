@@ -21,6 +21,7 @@ const { ENUM_USER_TYPES, ENUM_DATA_PRIVILEDGES_TYPE } = require("./constants");
  */
 module.exports.users = {
   id: String,
+  platformId: String,
   firstName: String,
   lastName: String,
   email: String,

@@ -14,11 +14,13 @@ const {
  * 2b. mark the discontinuationReason to CLASS_TRANSFER.
  *
  */
-module.exports.classMembers = {
+module.exports.enrolments = {
   id: String,
+  sessionId: String,
   classId: String,
-  activityId: String,
+  businessId: String,
   name: String,
+  clubMembershipId: String,
   allergies: String,
   conditions: String,
   startDate: Date,

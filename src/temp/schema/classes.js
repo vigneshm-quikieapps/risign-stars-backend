@@ -1,4 +1,4 @@
-const { PAY_FREQUENCY } = require("./constants");
+const { ENUM_CLASSES_STATUS, ENUM_PAY_FREQUENCY } = require("./constants");
 
 /**
  * API's
@@ -10,9 +10,10 @@ const { PAY_FREQUENCY } = require("./constants");
  */
 module.exports.classes = {
   _id: String,
+  platformId: String,
   name: String,
   businessId: String,
-  status: [String],
+  status: ENUM_CLASSES_STATUS,
   registrationForm: [String],
   evaluationScheme: String,
   about: String,
@@ -40,7 +41,7 @@ module.exports.classes = {
       name: String,
       amount: String,
       mandatory: Boolean,
-      payFrequency: PAY_FREQUENCY,
+      payFrequency: ENUM_PAY_FREQUENCY,
     },
   ],
   createdAt: Date,

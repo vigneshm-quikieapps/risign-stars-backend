@@ -1,4 +1,4 @@
-const EvaluationScheme = require("./evaluation");
+const EvaluationScheme = require("./evaluationSchemes");
 const SKILL_PROGRESS_STATUS = require("./constants");
 
 /**
