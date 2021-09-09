@@ -1,3 +1,7 @@
+/**
+ * API's
+ * 1. CRUD of terms
+ */
 module.exports.terms = {
   id: String,
   businessId: String,
