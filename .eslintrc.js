@@ -9,6 +9,10 @@ module.exports = {
     "plugin:node/recommended",
     "prettier",
     "plugin:prettier/recommended",
+    "error",
+    {
+      endOfLine: "auto",
+    },
   ],
   parserOptions: {
     ecmaVersion: 12,
@@ -31,4 +35,10 @@ module.exports = {
     "node/prefer-promises/dns": "error",
     "node/prefer-promises/fs": "error",
   },
+  "prettier/prettier": [
+    "error",
+    {
+      endOfLine: "auto",
+    },
+  ],
 };
