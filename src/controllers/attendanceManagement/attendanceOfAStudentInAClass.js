@@ -1,7 +1,7 @@
 // Created by Prahalad
 // controller for attendance management
 
-// const mongoose = require('mongoose');
+const mongoose = require('mongoose');
 const AttendanceOfAStudentInAClass = require("../../models/attendanceManagement/attendanceOfAStudentInAClass ")
 const AttendanceOfAClassByDate = require("../../models/attendanceManagement/attendanceOfAClassByDate")
 const AttendanceOfAClassByMonth = require("../../models/attendanceManagement/attendanceOfAClassByMonth")
@@ -62,88 +62,95 @@ module.exports.createAttendanceOfAStudentInAClass = async (req, res) => {
 module.exports.addAttendanceOfAStudentInAClass = async(req, res) => {
 
 
-  AttendanceOfAStudentInAClass.bulkWrite(
-    req.body.members.map((member) => 
-      ({
-        updateOne: {
-          filter: { studentId: member.id, classId: req.body.classId },
-          update: { 
-            $push: {
-              records: [
-                {
-                  date: req.body.date,
-                  attended: member.attended,
-                  tardy: req.body.tardy,
-                  comments: req.body.comments,
-                }
-              ]
-            } 
-          },
-          upsert: true
-        }
-      })
-    )
-  )
+  const session = await mongoose.startSession();
 
-    
-  // AttendanceOfAStudentInAClass.findOneAndUpdate(
-  //   { 
-  //     studentId: req.params.id,
-  //     classId: req.body.classId
-  //   },
-  //   { 
-  //     $push: {
-  //         records: [
-  //           {
-  //             date: req.body.date,
-  //             attended: req.body.attended,
-  //             tardy: req.body.tardy,
-  //             comments: req.body.comments,
-  //           }
-  //         ]
-  //     },
-  //     $inc: req.body.attended && { "attendedCount": 1 },
-  //     $inc: req.body.tardyCount && { "tardyCount": 1 }
-  //   },
-  //   { new: true, useFindAndModify: false },
-  //   (err, attendance) => {
-  //       if (err) {
-  //         return res.status(400).json({
-  //             err: "attendance updation failed",
-  //         });
+  // AttendanceOfAStudentInAClass.bulkWrite(
+  //   req.body.members.map((member) => 
+  //     ({
+  //       updateOne: {
+  //         filter: { studentId: member.id, classId: req.body.classId, activityId: req.body.activityId },
+  //         update: { 
+  //           $push: {
+  //             records: [
+  //               {
+  //                 date: req.body.date,
+  //                 attended: member.attended,
+  //                 tardy: member.tardy,
+  //                 comments: member.comments,
+  //               }
+  //             ]
+  //           },
+  //           $inc: { "attendedCount": member.attended &&  1, "tardyCount": member.tardy &&  1},
+  //         },
+  //         upsert: true
   //       }
+  //     })
+  //   ),
+  //   (err, attendance) => {
+  //           if (err) {
+  //             return res.status(400).json({
+  //                 err: "attendance updation failed",
+  //             });
+  //           }
+    
+  //           res.json(attendance);
+  //       }
+  // )
 
-  //       res.json(attendance);
+
+  // AttendanceOfAClassByMonth.bulkWrite(
+  //   req.body.members.map((member) => 
+  //     ({
+  //       updateOne: {
+  //         filter: { 
+  //           month: req.body.month, 
+  //           classId: req.body.classId, 
+  //           // activityId: req.body.activityId, 
+  //           "members.id": member.id
+  //         },
+  //         update: { 
+  //           $inc:{
+  //             "members.$.attendedCount": member.attended && 1, 
+  //             "members.$.tardyCount": member.tardy && 1,
+  //             // "classCount": 1 
+  //           }
+  //         },
+  //         // upsert: true
+  //       }
+  //     })
+  //   ),
+  //   (err, attendance) => {
+  //     if (err) {
+  //       return res.status(400).json({
+  //           err: "attendance updation failed",
+  //       });
+  //     }
+
+  //     res.json(attendance);
   //   }
-  // );
-
+  // )
   
 
-  // const addNewStudent = new AttendanceOfAClassByDate(req.body);
-  // await addNewStudent.save()
 
+  var id = mongoose.Types.ObjectId()
+    
+  AttendanceOfAClassByDate.updateOne(
+    { _id: id },
+    { 
+      $set: req.body,
+    },
+    { new: true, useFindAndModify: false, upsert: true },
+    (err, attendance) => {
+        if (err) {
+          return res.status(400).json({
+              err: "attendance updation failed",
+          });
+        }
 
-  // AttendanceOfAClassByMonth.findOneAndUpdate(
-  //   { 
-  //     classId: req.body.classId, 
-  //     month: req.body.month,
-  //     "members.id": req.params.id
-  //   },
-  //   { 
-  //     $inc: { "attendedCount": 1 },
-  //     $inc: { "tardyCount": 1 }
-  //   },
-  //   { new: true, useFindAndModify: false },
-  //   (err, attendance) => {
-  //       if (err) {
-  //           return res.status(400).json({
-  //               err: "attendance updation failed",
-  //           });
-  //       }
+        res.json(attendance);
+    }
+  );
 
-  //       res.json(attendance);
-  //   }
-  // );
     
 }
 

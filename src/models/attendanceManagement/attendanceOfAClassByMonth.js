@@ -15,6 +15,11 @@ const attendanceOfAClassByMonthSchema = new mongoose.Schema(
         required: true,
         trim:true
     },
+    classId: {
+        type: String,
+        required: true,
+        trim:true
+    },
     sessionCount: {
         type: Number,
         required: true,

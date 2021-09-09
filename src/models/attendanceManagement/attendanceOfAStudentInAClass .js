@@ -26,7 +26,7 @@ const attendanceOfAStudentInAClassSchema = new mongoose.Schema(
         trim:true
     },
     startDate: {
-        type: String,        // type - Date
+        type: String,           // type - Date
         required: true,
         trim:true
     },                          /** starting of a month */

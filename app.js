@@ -5,8 +5,8 @@ const cors = require("cors");
 require("dotenv").config();
 
 const path = require("path");
-const bodyParser = require("body-parser");
-app.use(bodyParser.json());
+// const bodyParser = require("body-parser");
+// app.use(bodyParser.json());
 //importing from local files
 const businessRoute = require("./src/routes/business");
 const evaluationRoute = require("./src/routes/evaluation");
@@ -24,7 +24,7 @@ const termRoute= require("./src/routes/Term")
 
 //connecting to mongodb database
 
-mongoose.connect("mongodb://localhost:27017/raisingstars", {
+mongoose.connect(process.env.MONGODB_URL || "mongodb://localhost:27017/raisingstars", {
     useNewUrlParser: true
 
 })
