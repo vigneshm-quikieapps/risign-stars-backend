@@ -4,15 +4,15 @@ const Term = require("../models/Term");
 
 //parameter extractor
 module.exports.getTermIdById = (req, res, next, id) => {
-    BusinessClass.findById(id)
+    Term.findById(id)
     .populate("business")
-    .exec((err, Term) => {
+    .exec((err, term) => {
     if (err) {
       return res.status(400).json({
         err: "cannot find  Term by id",
       });
     }
-    req.Term = Term;
+    req.term = term;
     next();
   });
 };
@@ -21,8 +21,8 @@ module.exports.getTermIdById = (req, res, next, id) => {
 
 module.exports.createTerm = (req, res) => {
   
-  const Term = new Term(req.body);
-   Term.save((err, Term) => {
+  const term = new Term(req.body);
+   term.save((err, term) => {
     if (err) {
       console.log(err);
       console.log(req.body);
@@ -31,7 +31,7 @@ module.exports.createTerm = (req, res) => {
         error: "unable to save Term to database",
       });
     }
-    res.json(Term);
+    res.json(term);
   });
 };
 
@@ -48,20 +48,20 @@ module.exports.getAllTerm= (req, res) => {
     .sort([[sortBy, "asc"]])
     .skip(skip)
     .limit(limit)
-    .exec((err, Term) => {
+    .exec((err, term) => {
       if (err) {
         return res.status(400).json({
           err: "cannot find Terms",
         });
       }
-      res.json(Term);
+      res.json(term);
     });
 };
 
 //Term  listing
 
 module.exports.getTerm = (req, res) => {
-  return res.json(req.Term);
+  return res.json(req.term);
 };
 
 //Term  Update
@@ -70,17 +70,17 @@ module.exports.updateTerm = (req, res) => {
   
 
   Term.findByIdAndUpdate(
-    { _id: req.Term._id },
+    { _id: req.term._id },
     { $set: req.body },
     { new: true, useFindAndModify: false },
-    (err, Term) => {
+    (err, term) => {
       if (err) {
         return res.status(400).json({
           err: "sorry  Term Not Updated ",
         });
       }
 
-      res.json(Term);
+      res.json(term);
     }
   );
 };
@@ -88,13 +88,13 @@ module.exports.updateTerm = (req, res) => {
 //Term  delete
 
 module.exports.deleteTerm = (req, res) => {
-  const Term = req.Term;
-  Term.remove((err, Term) => {
+  const term = req.term;
+  term.remove((err, term) => {
     if (err) {
       return res.status(400).json({
         err: "unable to delete  Term",
       });
     }
-    res.json(Term);
+    res.json(term);
   });
 };
