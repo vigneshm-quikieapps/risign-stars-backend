@@ -16,21 +16,20 @@ const notification = require("./src/routes/notification");
 const authRoutes = require("./src/routes/auth");
 
 //connecting to mongodb database
-let mongoDBUrl =
-  process.env.MONGODB_URL || "mongodb://localhost:27017/raisingstars";
+
 mongoose
-  .connect(mongoDBUrl, {
+  .connect("mongodb://localhost:27017/raisingstars", {
     useNewUrlParser: true,
   })
   .then(() => {
     console.log("DB CONNECTED!!");
   })
-  .catch((err) => {
-    console.log(`DB NOT CONNECTED!!${err}`);
+  .catch(() => {
+    console.log("DB NOT CONNECTED!!");
   });
 
 //initialising port no
-const port = process.env.PORT || 3000;
+const port = 8000;
 
 app.use(express.json());
 app.use(cors());
