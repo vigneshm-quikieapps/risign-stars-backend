@@ -13,6 +13,7 @@ const evaluationRoute = require("./src/routes/evaluation");
 const roleRoute = require("./src/routes/role");
 const userRoute = require("./src/routes/user");
 const notification = require("./src/routes/notification");
+const authRoutes = require("./src/routes/auth");
 
 //connecting to mongodb database
 let mongoDBUrl =
@@ -45,6 +46,7 @@ app.use("/api", evaluationRoute);
 app.use("/api", roleRoute);
 app.use("/api", userRoute);
 app.use("/api", notification);
+app.use("/api", authRoutes);
 
 // server listening to the port
 app.listen(port, () =>

@@ -4,6 +4,18 @@ const User = require("../models/User");
 const generatePassword = require("../helpers/auth/generatePassword");
 const generateHash = require("../helpers/auth/generateHash");
 
+exports.getUserById = (req, res, next, id) => {
+  User.findById(id).exec((error, user) => {
+    if (error || !user) {
+      return res.status(400).json({
+        error: "No User was Found in DB",
+      });
+    }
+    req.profile = user;
+    next();
+  });
+};
+
 module.exports.getAll = async (req, res) => {
   try {
     let users = await User.find({});
