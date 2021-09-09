@@ -19,10 +19,20 @@ const progressSchema = new mongoose.Schema(
         levels: [
             {
                 skill: { type: String },
-                attend: {
-                    type: Boolean,
-                    default: false
-                },
+
+                attend:[
+                    {
+                        Day:Date,
+                        attended:Boolean
+                    },
+                ],
+
+                // attend: 
+                // {
+                //     type: Boolean,
+                //     default: false
+
+                // },
                 progress: {
                     type: Boolean,
                     default: true

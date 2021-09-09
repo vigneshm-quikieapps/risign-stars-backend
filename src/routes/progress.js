@@ -12,6 +12,7 @@ const {
   getProgress,
   updateProgress,
   createProgress,
+  addAttendence
 } = require("../controllers/progress");
 
 //parameters
@@ -41,6 +42,12 @@ router.put(
   updateProgress
 );
 
+router.put(
+    "/progress/attendance/:progressId",
+    addAttendence
+
+
+  );
 //listing route
 router.get("/progress", getAllProgress);
 
