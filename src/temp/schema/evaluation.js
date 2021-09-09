@@ -1,6 +1,8 @@
+const EVALUATION_SCHEME_STATUS = require("./constants");
+
 module.exports.EvaluationScheme = {
   name: String,
-  status: ["active", "inactive"],
+  status: EVALUATION_SCHEME_STATUS,
   levelcount: Number,
   levels: [
     {
