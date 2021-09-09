@@ -3,9 +3,9 @@ const SKILL_PROGRESS_STATUS = require("./constants");
 
 /**
  * API's
- * 1. add a progress record of a student in an activity
- * 2. get a progress record of a student in an activity
- * 3. update a progress record of a student in an activity
+ * 1. add a progress record of a student in an class
+ * 2. get a progress record of a student in an class
+ * 3. update a progress record of a student in an class
  *
  * Notes:
  * 1. MemberActivityEvaluationRecord / ProgressRecord
@@ -15,8 +15,9 @@ const SKILL_PROGRESS_STATUS = require("./constants");
 module.exports.ProgressRecord = {
   studentId: String,
   studentName: String,
-  activityId: String,
-  activityName: String,
+  sessionId: String,
+  classId: String,
+  className: String,
   evaluationScheme: EvaluationScheme,
   levels: [
     {

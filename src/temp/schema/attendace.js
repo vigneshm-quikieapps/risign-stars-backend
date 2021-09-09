@@ -33,6 +33,7 @@ module.exports.AttendanceOfAClassByDate = {
  * 1. get an attendance of a class by Month/Quarterly/Half Yearly/Yearly
  */
 module.exports.AttendaceOfAClassByMonth = {
+  id: String,
   month: Date,
   sessionId: String,
   classId: String,
@@ -59,8 +60,7 @@ module.exports.AttendanceOfAStudentInAClass = {
   studentId: String,
   sessionId: String,
   classId: String,
-  startDate: Date /** starting of a month */,
-  endDate: Date /** end of a month */,
+  month: Date,
   records: [
     {
       date: Date,

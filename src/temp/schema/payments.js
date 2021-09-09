@@ -7,7 +7,7 @@
  * FAQ's
  *
  * Notes
- * 1. Bill generation will be done on last date of a month.
+ * 1. Bill generation use cases is yet to be received from client
  * 2.
  */
 
@@ -20,7 +20,14 @@ module.exports.payments = {
     id: String,
     name: String,
   },
+  subAmount: Number /** amount before discount */,
+  discount: Number,
+  amount: Number /** amount after discount */,
+  paid: Number,
+  dueDate: Date,
+  referenceId: String,
   paidAt: Date,
+  comments: String,
   createdAt: Date,
   updatedAt: Date,
 };

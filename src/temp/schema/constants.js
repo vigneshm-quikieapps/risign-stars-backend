@@ -23,6 +23,13 @@ module.exports.FUNCTIONAL_PRIVILEDGES = [
 module.exports.ADDRESS_TYPE = ["PRIMARY", "SECONDARY"];
 
 module.exports.RELATIONSHIPS = [
+  "FRIEND",
+  "GRAND_PARENT",
+  "UNCLE",
+  "AUNT",
+  "OTHER",
+];
+module.exports.RELATIONSHIPS = [
   "FATHER",
   "MOTHER",
   "SON",
@@ -40,6 +47,19 @@ module.exports.RELATIONSHIPS = [
 module.exports.ENUM_DATA_PRIVILEDGES_TYPE = ["ALL", "ONE"];
 module.exports.ENUM_ENUM_USER_TYPES = ["COACH"];
 module.exports.ENUM_EVALUATION_SCHEME_STATUS = ["active", "inactive"];
-module.exports.ENUM_ENROLLED_STATUS = ["REGISTERED", "DROPPED"];
+module.exports.ENUM_ENROLLED_STATUS = [
+  "ENROLLED",
+  "WAITLISTED",
+  "DROPPED",
+  "SUSPEND",
+  "RETURN_FROM_SUSPENSION",
+];
 module.exports.ENUM_DISCONTINUATION_REASON = ["CLASS_TRANSFER", "CANCELLED"];
 module.exports.ENUM_DAY = ["MON", "TUE", "WEB", "THU", "FRI", "SAT"];
+module.exports.ENUM_SESSION_STATUS = [
+  "NOT_OPEN_FOR_ENROLMENT",
+  "OPEN_FOR_ENROLMENT",
+  "WAITLIST_ENROLMENT",
+  "CLOSED_FOR_ENROLMENT",
+  "CANCEL",
+];

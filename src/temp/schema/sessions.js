@@ -1,4 +1,4 @@
-const { ENUM_DAY } = require("./constants");
+const { ENUM_DAY, ENUM_SESSION_STATUS } = require("./constants");
 
 /**
  * get details of a class
@@ -9,6 +9,7 @@ module.exports.sessions = {
   id: String,
   sessionId: String,
   sessionName: String,
+  status: ENUM_SESSION_STATUS,
   pattern: [
     {
       day: ENUM_DAY,
