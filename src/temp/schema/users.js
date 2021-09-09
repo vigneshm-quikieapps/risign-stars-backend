@@ -104,9 +104,10 @@ module.exports.roles = {
  * API's
  * 1. get a list of child
  * 2. CRUD a child
- * 3. Provide Consent for a child
+ * 3. add addresses and emergengy contact
+ * 4. Provide Consent for a child
  */
-module.exports.students = {
+module.exports.members = {
   id: String,
   userId: String,
   firstName: String,

@@ -10,7 +10,7 @@ const SKILL_PROGRESS_STATUS = ["NOT_STARTED", "IN_PROGRESS", "ATTAINED"];
  * 4.
  * 5.
  */
-module.exports.Activity = {
+module.exports.Classes = {
   _id: String,
   name: String,
   businessId: String,
