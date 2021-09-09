@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 const express = require("express");
 const router = express.Router();
 const { check } = require("express-validator");
@@ -13,10 +14,14 @@ const {
   updateBusiness,
 } = require("../controllers/business");
 
+
+
+
 //parameters
 router.param("businessId", getBusinessIdById);
 
 //all of actual routes
+// eslint-disable-next-line prettier/prettier
 //all of actual routes
 //create route 
 router.post(

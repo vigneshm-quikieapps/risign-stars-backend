@@ -1,8 +1,8 @@
+/* eslint-disable prettier/prettier */
 const express = require("express");
 const router = express.Router();
 const user = require("../controllers/user");
-const {
-  createUserValidationRules,
+const { createUserValidationRules,
   updateUserValidationRules,
 } = require("../validations/user");
 const validate = require("../validations/validate");
