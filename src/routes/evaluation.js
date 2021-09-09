@@ -18,6 +18,9 @@ const {
 //parameters
 router.param("evaluationId", getEvaluationIdById);
 
+// router.param("userId", getuserIdById);
+
+
 //all of actual routes
 //all of actual routes
 //create route
@@ -36,7 +39,7 @@ router.delete("/evaluation/:evaluationId", deleteEvaluation);
 //update route
 router.put(
   "/evaluation/:evaluationId",
-  updateEvaluationValidationRules(),
+  // updateEvaluationValidationRules(),
   updateEvaluation
 );
 

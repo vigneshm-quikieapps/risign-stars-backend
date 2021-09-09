@@ -9,6 +9,7 @@ const businessRoute = require("./src/routes/business");
 const evaluationRoute = require("./src/routes/evaluation");
 const roleRoute = require("./src/routes/role");
 const userRoute = require("./src/routes/user");
+const progressRoute = require("./src/routes/progress");
 const studentRoute = require("./src/routes/student")
 const coachRoute= require("./src/routes/coach")
 const SessionRoute= require("./src/routes/businessSession")
@@ -45,6 +46,7 @@ app.use("/api", businessRoute);
 app.use("/api", evaluationRoute);
 app.use("/api", roleRoute);
 app.use("/api", userRoute);
+app.use("/api", progressRoute);
 app.use("/api", studentRoute);
 app.use("/api", coachRoute);
 app.use("/api", SessionRoute);
