@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
-//const { check } = require("express-validator");
+const { check } = require("express-validator");
+const { TERM_STATUS } = require("../contants/constant");
 
 
 
@@ -24,7 +25,15 @@ router.param("businessClassId", getBusinessClassIdById);
 //all of actual routes
 //create route
 router.post(
-  "/businessClass/create",
+  "/businessClass/create",[
+    check("name", "name should be at least 3 char").isLength({ min: 3 }),
+    check("status", "status should  only be [active, inactive]").optional().isIn(TERM_STATUS),
+    check("registrationform", "registrationform should only be standard").optional().isIn("standard"),
+    check("about", "about should be atleast 3 char").optional().isLength({ min: 3 }),
+    check("enrolmentControls", "enrolmentControls should be an Array and should not be empty ").isArray().notEmpty(),
+    check("session", "session should be an Array and should not be empty ").isArray().notEmpty(),
+    check("charges", "charges should be an Array and should not be empty").isArray().notEmpty(),
+  ],
   createBusinessClass
 );
 
@@ -36,7 +45,15 @@ router.delete("/businessClass/:businessClassId", deleteBusinessClass);
 
 //update route
 router.put(
-  "/businessClass/:businessClassId",
+  "/businessClass/:businessClassId",[
+    check("name", "name should be at least 3 char").optional().isLength({ min: 3 }),
+    check("status", "status should  only be [active, inactive]").optional().isIn(TERM_STATUS),
+    check("registrationform", "registrationform should only be standard").optional().isIn("standard"),
+    check("about", "about should be atleast 3 char").optional().isLength({ min: 3 }),
+    check("enrolmentControls", "enrolmentControls should be an Array and should not be empty ").optional().isArray().notEmpty(),
+    check("session", "session should be an Array and should not be empty ").optional().isArray().notEmpty(),
+    check("charges", "charges should be an Array and should not be empty").optional().isArray().notEmpty(),
+  ],
   updateBusinessClass
 );
 
