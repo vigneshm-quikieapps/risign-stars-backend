@@ -21,12 +21,12 @@ const termSchema = new mongoose.Schema({
         required:true
     },
     startdate: {
-        type: Date,
-        required:true
+        type: Date
+        
     },
     enddate: {
-        type: Date,
-        required:true
+        type: Date
+        
     },
     classsequence: {
         type: Number,
