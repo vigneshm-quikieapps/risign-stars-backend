@@ -62,37 +62,60 @@ module.exports.createAttendanceOfAStudentInAClass = async (req, res) => {
 module.exports.addAttendanceOfAStudentInAClass = async(req, res) => {
 
 
-    
-  AttendanceOfAStudentInAClass.findOneAndUpdate(
-    { 
-      studentId: req.params.id,
-      classId: req.body.classId
-    },
-    { 
-      $push: {
-          records: [
-              {
+  AttendanceOfAStudentInAClass.bulkWrite(
+    req.body.members.map((member) => 
+      ({
+        updateOne: {
+          filter: { studentId: member.id, classId: req.body.classId },
+          update: { 
+            $push: {
+              records: [
+                {
                   date: req.body.date,
-                  attended: req.body.attended,
+                  attended: member.attended,
                   tardy: req.body.tardy,
                   comments: req.body.comments,
-              }
-          ]
-      },
-      $inc: req.body.attended && { "attendedCount": 1 },
-      $inc: req.body.tardyCount && { "tardyCount": 1 }
-    },
-    { new: true, useFindAndModify: false },
-    (err, attendance) => {
-        if (err) {
-          return res.status(400).json({
-              err: "attendance updation failed",
-          });
+                }
+              ]
+            } 
+          },
+          upsert: true
         }
+      })
+    )
+  )
 
-        res.json(attendance);
-    }
-  );
+    
+  // AttendanceOfAStudentInAClass.findOneAndUpdate(
+  //   { 
+  //     studentId: req.params.id,
+  //     classId: req.body.classId
+  //   },
+  //   { 
+  //     $push: {
+  //         records: [
+  //           {
+  //             date: req.body.date,
+  //             attended: req.body.attended,
+  //             tardy: req.body.tardy,
+  //             comments: req.body.comments,
+  //           }
+  //         ]
+  //     },
+  //     $inc: req.body.attended && { "attendedCount": 1 },
+  //     $inc: req.body.tardyCount && { "tardyCount": 1 }
+  //   },
+  //   { new: true, useFindAndModify: false },
+  //   (err, attendance) => {
+  //       if (err) {
+  //         return res.status(400).json({
+  //             err: "attendance updation failed",
+  //         });
+  //       }
+
+  //       res.json(attendance);
+  //   }
+  // );
 
   
 
@@ -100,27 +123,27 @@ module.exports.addAttendanceOfAStudentInAClass = async(req, res) => {
   // await addNewStudent.save()
 
 
-  AttendanceOfAClassByMonth.findOneAndUpdate(
-    { 
-      classId: req.body.classId, 
-      month: req.body.month,
-      "members.id": req.params.id
-    },
-    { 
-      $inc: { "attendedCount": 1 },
-      $inc: { "tardyCount": 1 }
-    },
-    { new: true, useFindAndModify: false },
-    (err, attendance) => {
-        if (err) {
-            return res.status(400).json({
-                err: "attendance updation failed",
-            });
-        }
+  // AttendanceOfAClassByMonth.findOneAndUpdate(
+  //   { 
+  //     classId: req.body.classId, 
+  //     month: req.body.month,
+  //     "members.id": req.params.id
+  //   },
+  //   { 
+  //     $inc: { "attendedCount": 1 },
+  //     $inc: { "tardyCount": 1 }
+  //   },
+  //   { new: true, useFindAndModify: false },
+  //   (err, attendance) => {
+  //       if (err) {
+  //           return res.status(400).json({
+  //               err: "attendance updation failed",
+  //           });
+  //       }
 
-        res.json(attendance);
-    }
-  );
+  //       res.json(attendance);
+  //   }
+  // );
     
 }
 
