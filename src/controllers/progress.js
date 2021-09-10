@@ -7,7 +7,7 @@ module.exports.getProgressIdById = (req, res, next, id) => {
     Progress.findById(id).exec((err, progress) => {
         if (err) {
             return res.status(400).json({
-                err: "cannot find evaluation by id",
+                err: "cannot find progress by id",
             });
         }
         req.progress = progress;
@@ -39,27 +39,6 @@ module.exports.createProgress = (req, res) => {
     });
 };
 
-//pogress listing all
-
-// module.exports.getAllProgress = (req, res) => {
-//   let limit = req.query.limit ? parseInt(req.query.limit) : 10;
-//   let page = req.query.page;
-//   let skip = page ? parseInt(page) - 1 * limit : 0;
-//   let sortBy = req.query.sortBy ? req.query.sortBy : "_id";
-
-//   Evaluation.find()
-//     .sort([[sortBy, "asc"]])
-//     .skip(skip)
-//     .limit(limit)
-//     .exec((err, progress) => {
-//       if (err) {
-//         return res.status(400).json({
-//           err: "cannot find category by id",
-//         });
-//       }
-//       res.json(progress);
-//     });
-// };
 //pogress listing all
 
 module.exports.getAllProgress = async (req, res) => {
@@ -118,7 +97,7 @@ module.exports.updateProgress = (req, res) => {
     );
 };
 
-
+//push new attendence ink progress
 
 module.exports.addAttendence = (req, res) => {
     // const errors = validationResult(req);

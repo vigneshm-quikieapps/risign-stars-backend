@@ -2,9 +2,9 @@ const express = require("express");
 const router = express.Router();
 
 const {
-    createEvaluationValidationRules,
-    updateEvaluationValidationRules,
-  } = require("../validations/evaluation");
+    createProgressValidationRules,
+    updateProgressValidationRules,
+  } = require("../validations/progress");
 
 const {
   getAllProgress,
@@ -28,7 +28,7 @@ router.param("progressId", getProgressIdById);
 // create routes
 router.post(
     "/progress/create",
-    createEvaluationValidationRules(),
+    createProgressValidationRules(),
     createProgress
   );
 // read routes
@@ -38,7 +38,7 @@ router.get("/progress/:progressId", getProgress);
 //update route
 router.put(
   "/progress/:progressId",
-  updateEvaluationValidationRules(),
+  updateProgressValidationRules(),
   updateProgress
 );
 
