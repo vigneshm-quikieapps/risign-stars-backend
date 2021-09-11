@@ -16,7 +16,7 @@ const EVALUATION_STATUS = [
 ];
 const ADDRESS_TYPE = Array;
 const RELATIONSHIPS = "relationship";
-const ENUM_ENROLLED_STATUS = Boolean;
+const ENUM_ENROLLED_STATUS = ["true","false"];
 const  ENUM_DISCONTINUATION_REASON = String;
 const ENUM_CLASSES_STATUS = Boolean;
 const ENUM_PAY_FREQUENCY = String;
