@@ -11,7 +11,6 @@ const termSchema = new mongoose.Schema({
     },
     code: {
         type: Number,
-        unique: true,
         required:true
 
        },
@@ -21,12 +20,12 @@ const termSchema = new mongoose.Schema({
         required:true
     },
     startdate: {
-        type: Date
-        
+        type: Date,
+        required:true
     },
     enddate: {
-        type: Date
-        
+        type: Date,
+        required:true
     },
     classsequence: {
         type: Number,
