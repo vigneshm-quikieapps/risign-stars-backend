@@ -1,4 +1,5 @@
 const Category = require("../models/category");
+const { validationResult } = require("express-validator");
 
 
 exports.getCategoryById =(req,res,next,id) =>{
@@ -13,7 +14,13 @@ exports.getCategoryById =(req,res,next,id) =>{
 };
 
 exports.createCategory = (req,res) => {
+    const errors = validationResult(req);
 
+    if (!errors.isEmpty()) {
+    return res.status(422).json({
+      error: errors.array()[0].msg,
+    });
+  }
     const category = new Category(req.body);
     category.save((err,cat)=>{
         if(err){
@@ -47,7 +54,14 @@ exports.getCategory=(req,res)=>{
 };
 
 
-exports.updateCategory = (req,res) => {
+exports.updateCategory = (req, res) => {
+     const errors = validationResult(req);
+
+  if (!errors.isEmpty()) {
+    return res.status(422).json({
+      error: errors.array()[0].msg,
+    });
+  }
     const category = req.category;
     category.name = req.body.name;
     category.save((err,cat)=>{

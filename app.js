@@ -29,7 +29,8 @@ mongoose
   });
 
 //initialising port no
-const port = 8000;
+// const port =  8000;
+const port = process.env.PORT || 3000;
 
 app.use(express.json());
 app.use(cors());
