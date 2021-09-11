@@ -13,6 +13,7 @@ const {
     updateBusinessSession,
     deleteBusinessSession
 } = require("../controllers/businessSession");
+const { termIdValidation } = require("../validations/businessSession");
 
 
 
@@ -27,9 +28,10 @@ router.param("businessSessionId", getBusinessSessionIdById);
 router.post(
   "/businessSession/create",[
     check("name", "name should be at least 3 char").isLength({ min: 3 }),
-   check("pattern.*.day", "pattern day  should be an  in [mon, tue, wed, thu, fri, sat, sun]").isIn("mon", "tue", "wed", "thu", "fri", "sat", "sun"),
-   check("pattern.*.starttime", "starttime   should be a date in format: 'MM-DD-YYYY'").isDate({format: 'MM-DD-YYYY'}),
-   check("pattern.*.endtime", "endtime   should be a date in format: 'MM-DD-YYYY'").isDate({format: 'MM-DD-YYYY'}),
+    check("term").custom(termIdValidation),
+    check("pattern.*.day", "pattern day  should be an  in [mon, tue, wed, thu, fri, sat, sun]").isIn("mon", "tue", "wed", "thu", "fri", "sat", "sun"),
+    check("pattern.*.starttime", "starttime   should be a date in format: 'MM-DD-YYYY'").isDate({format: 'MM-DD-YYYY'}),
+    check("pattern.*.endtime", "endtime   should be a date in format: 'MM-DD-YYYY'").isDate({format: 'MM-DD-YYYY'}),
     check("fullcapacity", "fullcapacity should be a Numbre/Integer  ").optional().isInt(),
     check("waitcapacity", "waitcapacity should be a Numbre/Integer  ").optional().isInt(),
     check("coach", "coach should be a Coach Id and it should not be Empty!!").isLength({ min: 10 }),
@@ -46,9 +48,10 @@ router.delete("/businessSession/:businessSessionId", deleteBusinessSession);
 router.put(
   "/businessSession/:businessSessionId",[
     check("name", "name should be at least 3 char").optional().isLength({ min: 3 }),
-   check("pattern.*.day", "pattern day  should be an  in [mon, tue, wed, thu, fri, sat, sun]").optional().isIn("mon", "tue", "wed", "thu", "fri", "sat", "sun"),
-   check("pattern.*.starttime", "starttime   should be a date in format: 'MM-DD-YYYY'").optional().isDate({format: 'MM-DD-YYYY'}),
-   check("pattern.*.endtime", "endtime   should be a date in format: 'MM-DD-YYYY'").optional().isDate({format: 'MM-DD-YYYY'}),
+    check("term").optional().custom(termIdValidation),
+    check("pattern.*.day", "pattern day  should be an  in [mon, tue, wed, thu, fri, sat, sun]").optional().isIn("mon", "tue", "wed", "thu", "fri", "sat", "sun"),
+    check("pattern.*.starttime", "starttime   should be a date in format: 'MM-DD-YYYY'").optional().isDate({format: 'MM-DD-YYYY'}),
+    check("pattern.*.endtime", "endtime   should be a date in format: 'MM-DD-YYYY'").optional().isDate({format: 'MM-DD-YYYY'}),
     check("fullcapacity", "fullcapacity should be a Numbre/Integer  ").optional().isInt(),
     check("waitcapacity", "waitcapacity should be a Numbre/Integer  ").optional().isInt(),
     check("coach", "coach should be a Coach Id and it should not be Empty!!").optional().isLength({ min: 10 }),

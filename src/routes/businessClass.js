@@ -13,6 +13,7 @@ const {
   createBusinessClass,
   deleteBusinessClass
 } = require("../controllers/businessClass");
+const { businessIdValidation, evaluationIdValidation, categoryIdValidation, sessionIdValidation } = require("../validations/businessClass");
 
 
 
@@ -27,6 +28,10 @@ router.param("businessClassId", getBusinessClassIdById);
 router.post(
   "/businessClass/create",[
     check("name", "name should be at least 3 char").isLength({ min: 3 }),
+    check("business").custom(businessIdValidation),
+    check("evaluation").custom(evaluationIdValidation),
+    check("category").custom(categoryIdValidation),
+    check("session").custom(sessionIdValidation),
     check("status", "status should  only be [active, inactive]").optional().isIn(TERM_STATUS),
     check("registrationform", "registrationform should only be standard").optional().isIn("standard"),
     check("about", "about should be atleast 3 char").optional().isLength({ min: 3 }),
@@ -47,6 +52,10 @@ router.delete("/businessClass/:businessClassId", deleteBusinessClass);
 router.put(
   "/businessClass/:businessClassId",[
     check("name", "name should be at least 3 char").optional().isLength({ min: 3 }),
+    check("business").optional().custom(businessIdValidation),
+    check("evaluation").optional().custom(evaluationIdValidation),
+    check("category").optional().custom(categoryIdValidation),
+    check("session").optional().custom(sessionIdValidation),
     check("status", "status should  only be [active, inactive]").optional().isIn(TERM_STATUS),
     check("registrationform", "registrationform should only be standard").optional().isIn("standard"),
     check("about", "about should be atleast 3 char").optional().isLength({ min: 3 }),

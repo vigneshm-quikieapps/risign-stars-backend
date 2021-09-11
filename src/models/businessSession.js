@@ -8,6 +8,10 @@ const businessSessionSchema = new mongoose.Schema(
             type: String,
             required:true
         },
+        term:{
+            type: ObjectId,
+            ref:"Term"
+        },
         pattern: [
             {
                 day: {

@@ -3,7 +3,7 @@ const isEmailAvailable = require("../helpers/user/isEmailAvailable");
 const {DATA_PRIVILEDGES_TYPE} = require("../contants/constant");
 const Business = require("../models/business");
 
-const businessIdValidation = async (businessId, { req }) => {
+const businessIdValidation = async(businessId, {req }) => {
   try {
     if (req.body.dataPriviledges.type != "ALL") {
       if (!businessId) {

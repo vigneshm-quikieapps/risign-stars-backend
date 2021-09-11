@@ -1,7 +1,7 @@
 const { body } = require("express-validator");
 const {
-  FUNCTIONAL_PRIVILEDGES,
-  DATA_PRIVILEDGES_TYPE,
+  FUNCTIONAL_PRIVILEDGES
+
 } = require("../contants/constant");
 
 const createRoleValidationRules = () => {
