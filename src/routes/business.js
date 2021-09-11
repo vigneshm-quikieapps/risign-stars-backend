@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 const express = require("express");
 const router = express.Router();
 const { check } = require("express-validator");
@@ -11,12 +12,17 @@ const {
   createBusiness,
   deleteBusiness,
   updateBusiness,
+  uploadFile,
 } = require("../controllers/business");
+
+
+
 
 //parameters
 router.param("businessId", getBusinessIdById);
 
 //all of actual routes
+// eslint-disable-next-line prettier/prettier
 //all of actual routes
 //create route 
 router.post(
@@ -91,5 +97,11 @@ router.get(
   validate,
   getAllBusinesses
 );
+
+router.post("/business/fileupload", uploadFile);
+
+// WORKING ON THE DUMMY DATA
+// router.post("/business/memberdata", storeMemberData);
+// router.get("/business/memberdata", getMemberData);
 
 module.exports = router;

@@ -24,8 +24,13 @@ module.exports.classes = {
   members: [
     {
       name: String,
+<<<<<<< HEAD
       allergies: String,
       conditions: String,
+=======
+      allergies: [{}],
+      conditions: [{}],
+>>>>>>> origin/development
       startDate: Date,
       registeredDate: Date,
       enrolledStatus: ["REGISTERED", "DROPPED"],

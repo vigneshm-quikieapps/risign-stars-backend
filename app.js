@@ -4,6 +4,9 @@ const app = express();
 const cors = require("cors");
 require("dotenv").config();
 
+const path = require("path");
+const bodyParser = require("body-parser");
+app.use(bodyParser.json());
 //importing from local files
 const businessRoute = require("./src/routes/business");
 const evaluationRoute = require("./src/routes/evaluation");
@@ -16,18 +19,24 @@ const classRoute = require("./src/routes/class");
 //connecting to mongodb database
 let mongoDBUrl =
   process.env.MONGODB_URL || "mongodb://localhost:27017/mycustomers";
+const notification = require("./src/routes/notification");
+const authRoutes = require("./src/routes/auth");
+
+//connecting to mongodb database
+
 mongoose
-  .connect(mongoDBUrl, {
+  .connect("mongodb://localhost:27017/raisingstars", {
     useNewUrlParser: true,
   })
   .then(() => {
     console.log("DB CONNECTED!!");
   })
-  .catch((err) => {
-    console.log(`DB NOT CONNECTED!!${err}`);
+  .catch(() => {
+    console.log("DB NOT CONNECTED!!");
   });
 
 //initialising port no
+// const port =  8000;
 const port = process.env.PORT || 3000;
 
 app.use(express.json());
@@ -47,6 +56,8 @@ app.use("/api", memberRoute);
 app.use("/api", enrolementRoute);
 app.use("/api", classRoute);
 
+app.use("/api", notification);
+app.use("/api", authRoutes);
 
 // server listening to the port
 app.listen(port, () =>

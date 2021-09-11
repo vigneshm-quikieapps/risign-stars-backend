@@ -14,12 +14,21 @@ const EVALUATION_STATUS = [
   EVALUATION_STATUS_ACTIVE,
   EVALUATION_STATUS_INACTIVE,
 ];
+<<<<<<< HEAD
 const ADDRESS_TYPE = Array;
 const RELATIONSHIPS = "relationship";
 const ENUM_ENROLLED_STATUS = ["true","false"];
 const  ENUM_DISCONTINUATION_REASON = String;
 const ENUM_CLASSES_STATUS = Boolean;
 const ENUM_PAY_FREQUENCY = String;
+=======
+const TERM_STATUS_ACTIVE = "active";
+const TERM_STATUS_INACTIVE = "inactive";
+const TERM_STATUS = [
+  TERM_STATUS_ACTIVE,
+  TERM_STATUS_INACTIVE,
+];
+>>>>>>> origin/development
 
 module.exports = {
   EVALUATION_STATUS_ACTIVE,
@@ -30,6 +39,7 @@ module.exports = {
   EQUALS_FILTER,
   FILTER_TYPES,
   DATA_PRIVILEDGES_TYPE,
+<<<<<<< HEAD
   CRUD,
   ADDRESS_TYPE,
   RELATIONSHIPS,
@@ -37,4 +47,7 @@ module.exports = {
   ENUM_ENROLLED_STATUS,
   ENUM_CLASSES_STATUS,
   ENUM_PAY_FREQUENCY
+=======
+  CRUD,TERM_STATUS
+>>>>>>> origin/development
 };
