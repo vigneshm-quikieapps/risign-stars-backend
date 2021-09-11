@@ -18,7 +18,7 @@ const businessClassSchema = new mongoose.Schema(
     registrationform: {
       type: String,
       required: true,
-      enum: ["standard", "limited", "liability", "partnership"],
+      enum: ["standard"],
       default:"standard"
     },
     
@@ -44,15 +44,10 @@ const businessClassSchema = new mongoose.Schema(
       maxlength: 3200,
       trim: true,
     },
-    enrolmentControls: {
-      type: Array,
-      default: [
-        {
-          prop: "age",
-          value: 3,
-        },
-      ]
-     },
+    enrolmentControls: [{
+      prop: String,//ie age
+      value:Number//ie 1-3
+    },],
   
     session: [
       {

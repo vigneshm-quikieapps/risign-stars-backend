@@ -1,6 +1,6 @@
 const BusinessClass = require("../models/businessClass");
 
-//const { validationResult } = require("express-validator");
+const { validationResult } = require("express-validator");
 
 //parameter extractor
 module.exports.getBusinessClassIdById = (req, res, next, id) => {
@@ -23,7 +23,13 @@ module.exports.getBusinessClassIdById = (req, res, next, id) => {
 //Business Class creation
 
 module.exports.createBusinessClass = (req, res) => {
-  
+   const errors = validationResult(req);
+
+  if (!errors.isEmpty()) {
+    return res.status(422).json({
+      error: errors.array()[0].msg,
+    });
+  }
   const Class = new BusinessClass(req.body);
    Class.save((err, Class) => {
     if (err) {
@@ -70,7 +76,13 @@ module.exports.getBusinessClass = (req, res) => {
 //Business Class Update
 
 module.exports.updateBusinessClass = (req, res) => {
-  
+   const errors = validationResult(req);
+
+  if (!errors.isEmpty()) {
+    return res.status(422).json({
+      error: errors.array()[0].msg,
+    });
+  }
 
   BusinessClass.findByIdAndUpdate(
     { _id: req.Class._id },
