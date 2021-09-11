@@ -9,10 +9,13 @@ const businessRoute = require("./src/routes/business");
 const evaluationRoute = require("./src/routes/evaluation");
 const roleRoute = require("./src/routes/role");
 const userRoute = require("./src/routes/user");
-const studentRoute = require("./src/routes/student")
+const memberRoute = require("./src/routes/Member");
+const enrolementRoute = require("./src/routes/enrolement");
+const classRoute = require("./src/routes/class");
+
 //connecting to mongodb database
 let mongoDBUrl =
-  process.env.MONGODB_URL || "mongodb://localhost:27017/raisingstars";
+  process.env.MONGODB_URL || "mongodb://localhost:27017/mycustomers";
 mongoose
   .connect(mongoDBUrl, {
     useNewUrlParser: true,
@@ -40,7 +43,10 @@ app.use("/api", businessRoute);
 app.use("/api", evaluationRoute);
 app.use("/api", roleRoute);
 app.use("/api", userRoute);
-app.use("/api", studentRoute);
+app.use("/api", memberRoute);
+app.use("/api", enrolementRoute);
+app.use("/api", classRoute);
+
 
 // server listening to the port
 app.listen(port, () =>
