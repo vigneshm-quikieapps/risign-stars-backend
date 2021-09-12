@@ -18,7 +18,7 @@ const classRoute = require("./src/routes/class");
 const sessionRoute = require("./src/routes/session")
 //connecting to mongodb database
 let mongoDBUrl =
-  process.env.MONGODB_URL || "mongodb://localhost:27017/mycustomers";
+  process.env.MONGODB_URL || "mongodb://localhost:27017/raisingstars";
 const notification = require("./src/routes/notification");
 const authRoutes = require("./src/routes/auth");
 const registrationRoute = require("./src/routes/registration");
