@@ -23,14 +23,14 @@ const memberSchema = new mongoose.Schema(
     dob: Date,
     contacts: [
       {
-        type: ADDRESS_TYPE,
+        addressType: ADDRESS_TYPE,
         firstName: String,
         lastName: String,
         contact: String,
         relationShip: RELATIONSHIPS,
       },
     ],
-    updatedBy: [String] /** array of ids of who updated this record */,
+    updatedBy: [String],
     createdAt: Date,
     updatedAt: Date,
   },

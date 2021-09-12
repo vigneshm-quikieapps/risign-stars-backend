@@ -15,17 +15,18 @@ const userRoute = require("./src/routes/user");
 const memberRoute = require("./src/routes/Member");
 const enrolementRoute = require("./src/routes/enrolement");
 const classRoute = require("./src/routes/class");
-
+const sessionRoute = require("./src/routes/session")
 //connecting to mongodb database
 let mongoDBUrl =
   process.env.MONGODB_URL || "mongodb://localhost:27017/mycustomers";
 const notification = require("./src/routes/notification");
 const authRoutes = require("./src/routes/auth");
+const registrationRoute = require("./src/routes/registration");
 
 //connecting to mongodb database
 
 mongoose
-  .connect("mongodb://localhost:27017/raisingstars", {
+  .connect("mongodb://localhost:27017/mycustomers", {
     useNewUrlParser: true,
   })
   .then(() => {
@@ -58,6 +59,9 @@ app.use("/api", classRoute);
 
 app.use("/api", notification);
 app.use("/api", authRoutes);
+
+app.use("/api", sessionRoute);
+app.use("/api", registrationRoute);
 
 // server listening to the port
 app.listen(port, () =>

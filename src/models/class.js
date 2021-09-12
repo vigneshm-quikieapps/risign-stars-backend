@@ -6,7 +6,7 @@ const {
 
 const classSchema = new mongoose.Schema(
   {
-     
+    id: String,
     platformId: String,
     name: String,
     businessId: String,
@@ -16,19 +16,9 @@ const classSchema = new mongoose.Schema(
     about: String,
     enrolmentControls: [
       {
-        type: Array,
-        name: "age",
-        enum:
-          ["7","8"] 
-      },
-      {
-        type: Array,
-        name: "gender",
-        enum: [
-          "MALE",
-          "FEMALE",
-        ] 
-      },
+        age:["6","7"],
+        gender:["MALE","FEMALE"]
+      }
     ],
     classes: [
      

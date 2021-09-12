@@ -26,8 +26,9 @@ module.exports.getAll = async (req, res) => {
 
   module.exports.create = async (req, res) => {
     try {
+      Class.init()
         let data = req.body
-        let member = await Cclasses.create(data)
+        let member = await Class.create(data)
         return res.status(201).send({ message: "Member Added Successfully", member })
     } catch (err) {
         console.error(err);
