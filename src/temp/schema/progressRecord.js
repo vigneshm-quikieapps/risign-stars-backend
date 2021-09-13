@@ -18,7 +18,8 @@ module.exports.ProgressRecord = {
   sessionId: String,
   classId: String,
   className: String,
-  evaluationScheme: EvaluationScheme,
+  // evaluationScheme: EvaluationScheme,
+  levelCount: Number,
   levels: [
     {
       skills: [
@@ -29,6 +30,7 @@ module.exports.ProgressRecord = {
           completedAt: Date /** when the shill is marked as attained */,
         },
       ],
+      status: ["NOT_STARTED", "IN_PROGRESS", "AWARDED"],
     },
   ],
   createdAt: Date,

@@ -19,7 +19,7 @@ module.exports.enrolments = {
   sessionId: String,
   classId: String,
   businessId: String,
-  name: String,
+  memberId: String,
   clubMembershipId: String,
   consent: {
     allergies: String,

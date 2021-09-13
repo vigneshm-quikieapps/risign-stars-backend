@@ -21,12 +21,11 @@ const { ENUM_USER_TYPES, ENUM_DATA_PRIVILEDGES_TYPE } = require("./constants");
  */
 module.exports.users = {
   id: String,
-  platformId: String,
-  firstName: String,
-  lastName: String,
+  name: String,
   email: String,
   contact: String,
-  address: String,
+  // address: String,
+  status: ["ACTIVE", "INACTIVE"],
   password: String,
   user_types: ENUM_USER_TYPES,
   roles: [
@@ -34,12 +33,10 @@ module.exports.users = {
     {
       id: String,
       name: String,
-      businessId: String /** optional */,
-      businessName: String /** optional */,
     },
   ],
   emailVerified: Boolean /** default false */,
-  phone: Boolean /** default false */,
+  phoneVerified: Boolean /** default false */,
   dataPriviledges: {
     type: ENUM_DATA_PRIVILEDGES_TYPE,
     businessId: String,

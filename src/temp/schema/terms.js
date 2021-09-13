@@ -5,11 +5,12 @@
 module.exports.terms = {
   id: String,
   businessId: String,
-  code: String,
+  code: String /** unique for a business */,
   label: String,
   startDate: Date,
   endDate: Date,
-  sessionSequence: String,
   createdAt: Date,
-  updatedAt: Date,
+  createdBy: "userId",
+  lastUpdatedAt: Date,
+  lastUpdatedBy: "userid",
 };

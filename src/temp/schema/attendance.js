@@ -20,7 +20,6 @@ module.exports.AttendanceOfAClassByDate = {
       id: String /** student id */,
       name: String /** student name */,
       attended: Boolean,
-      tardy: Boolean,
       comments: String,
     },
   ],
@@ -42,7 +41,6 @@ module.exports.AttendaceOfAClassByMonth = {
       id: String /** student id */,
       name: String /** student name */,
       attendedCount: Number,
-      tardyCount: Number,
     },
   ],
   classCount: Number,
@@ -65,12 +63,10 @@ module.exports.AttendanceOfAStudentInAClass = {
     {
       date: Date,
       attended: Boolean,
-      tardy: Boolean,
       comments: String,
     },
   ],
   attendedCount: Number,
-  tardyCount: Number,
   createdAt: Date,
   updatedAt: Date,
 };

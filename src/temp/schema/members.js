@@ -9,23 +9,19 @@ const { ADDRESS_TYPE, RELATIONSHIPS } = require("./constants");
  */
 module.exports.members = {
   id: String,
-  platformId:
-    String /** should be a auto increment unique numeric serial ids */,
-  userId: String,
+  userId: String /** PARENT ID */,
   membership: [
     {
       businessId: String,
       clubMembershipId: String,
     },
   ],
-  firstName: String,
-  lastName: String,
+  name: String,
   dob: Date,
   contacts: [
     {
       type: ADDRESS_TYPE,
-      firstName: String,
-      lastName: String,
+      name: String,
       contact: String,
       relationShip: RELATIONSHIPS,
     },
