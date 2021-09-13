@@ -12,7 +12,7 @@ module.exports.getBusinessClassIdById = (req, res, next, id) => {
         .exec((err, Class) => {
     if (err) {
       return res.status(400).json({
-        err: "cannot find business Class by id",
+        err: "cannot find business Class by id enter a valid ID",
       });
     }
     req.Class = Class;
@@ -99,8 +99,24 @@ module.exports.updateBusinessClass = (req, res) => {
     }
   );
 };
+//middleware for resticting deletion if session is present
+module.exports.isBusinessClassRestricted = (req, res, next) => {
+  let Class = req.Class;
+  if (!Class) {
+    return res.status(400).json({
+      err: "Please Enter A valid Bussiness ID ",
+    });
+  }
+  if (Class.session) {
+    return res.status(400).json({
+      err: "Class deletion is Restricted as there are active Sessions Present ",
+    });
+  }
+    
+   next();
+  
 
-//Business Class delete
+};
 
 module.exports.deleteBusinessClass = (req, res) => {
   const Class = req.Class;

@@ -2,9 +2,8 @@ const express = require("express");
 const { check } = require("express-validator");
 const router = express.Router();
 
-//const { getUserById } = require("../controllers/user");
 const { getCategoryById,createCategory,getCategory,getAllCategory, updateCategory,removeCategory } = require("../controllers/category");
-
+const { checkIsUnique } = require("../validations/Category")
 
 
 
@@ -14,7 +13,8 @@ router.param("categoryId",getCategoryById);
 
 //router.get("/category/:categoryId/",);
 router.post("/category/create", [
-    check("name", "name should be at least 3 char").isLength({ min: 3 })],createCategory);
+    check("name", "name should be at least 3 char").isLength({ min: 3 }).custom(checkIsUnique)
+], createCategory);
 
 router.get("/category",getAllCategory);
 router.get("/category/:categoryId",getCategory);

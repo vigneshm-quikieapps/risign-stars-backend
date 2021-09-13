@@ -11,7 +11,8 @@ const {
   getAllBusinessClass,
   updateBusinessClass,
   createBusinessClass,
-  deleteBusinessClass
+  deleteBusinessClass,
+  isBusinessClassRestricted
 } = require("../controllers/businessClass");
 const { businessIdValidation, evaluationIdValidation, categoryIdValidation, sessionIdValidation } = require("../validations/businessClass");
 
@@ -36,7 +37,6 @@ router.post(
     check("registrationform", "registrationform should only be standard").optional().isIn("standard"),
     check("about", "about should be atleast 3 char").optional().isLength({ min: 3 }),
     check("enrolmentControls", "enrolmentControls should be an Array and should not be empty ").isArray().notEmpty(),
-    check("session", "session should be an Array and should not be empty ").isArray().notEmpty(),
     check("charges", "charges should be an Array and should not be empty").isArray().notEmpty(),
   ],
   createBusinessClass
@@ -46,7 +46,7 @@ router.post(
 router.get("/businessClass/:businessClassId", getBusinessClass);
 
 //delete route
-router.delete("/businessClass/:businessClassId", deleteBusinessClass);
+router.delete("/businessClass/:businessClassId",isBusinessClassRestricted, deleteBusinessClass);
 
 //update route
 router.put(
@@ -60,7 +60,6 @@ router.put(
     check("registrationform", "registrationform should only be standard").optional().isIn("standard"),
     check("about", "about should be atleast 3 char").optional().isLength({ min: 3 }),
     check("enrolmentControls", "enrolmentControls should be an Array and should not be empty ").optional().isArray().notEmpty(),
-    check("session", "session should be an Array and should not be empty ").optional().isArray().notEmpty(),
     check("charges", "charges should be an Array and should not be empty").optional().isArray().notEmpty(),
   ],
   updateBusinessClass
