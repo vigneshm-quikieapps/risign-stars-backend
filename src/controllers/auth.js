@@ -9,6 +9,7 @@ const generatePassword = require("../helpers/auth/generatePassword");
 const generateHash = require("../helpers/auth/generateHash");
 const createAccessToken = require("../helpers/auth/createAccessToken");
 const verifyRefreshToken = require("../helpers/auth/verifyRefreshToken");
+const OTP = require("../helpers/auth/otp");
 
 // Signup Method
 module.exports.signup = (req, res) => {
@@ -144,3 +145,28 @@ module.exports.refreshToken = async (req, res) => {
 //   return res.status(422).send({ message: "Email is already Register" });
 
 // }
+
+/**
+ * method for sending the otp via appropriate channel (e.g. sms, email)
+ * @param {*} otp
+ */
+const sendOTP = (otp) => {
+  console.log({ otp });
+};
+
+/**
+ * generate the otp, send the otp via appropriate channel (e.g. sms, email)
+ * @param {*} req
+ * @param {*} res
+ * @returns
+ */
+module.exports.getOTP = async (req, res) => {
+  try {
+    let { contact } = req.body;
+    let otp = await OTP.generate(contact);
+    sendOTP(otp);
+    return res.send({ otp });
+  } catch (err) {
+    return res.status(422).send({ message: err.message });
+  }
+};
