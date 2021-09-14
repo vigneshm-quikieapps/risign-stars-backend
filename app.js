@@ -12,30 +12,33 @@ const businessRoute = require("./src/routes/business");
 const evaluationRoute = require("./src/routes/evaluation");
 const roleRoute = require("./src/routes/role");
 const userRoute = require("./src/routes/user");
+const memberRoute = require("./src/routes/Member");
+const enrolementRoute = require("./src/routes/enrolement");
+const classRoute = require("./src/routes/class");
+const sessionRoute = require("./src/routes/session")
+//connecting to mongodb database
+let mongoDBUrl =
+  process.env.MONGODB_URL || "mongodb://localhost:27017/raisingstars";
 const notification = require("./src/routes/notification");
-const progressRoute = require("./src/routes/progress");
-const studentRoute = require("./src/routes/student")
-const coachRoute= require("./src/routes/coach")
-const SessionRoute= require("./src/routes/businessSession")
-const classRoute= require("./src/routes/businessClass")
-const categoryRoute= require("./src/routes/category")
-const termRoute= require("./src/routes/Term")
+const authRoutes = require("./src/routes/auth");
+const registrationRoute = require("./src/routes/registration");
 
 //connecting to mongodb database
 
-mongoose.connect("mongodb://localhost:27017/raisingstars", {
-    useNewUrlParser: true
-
-})
-    .then(() => {
-        console.log('DB CONNECTED!!')
-    })
-    .catch(() => {
-        console.log("DB NOT CONNECTED!!")
-    });
+mongoose
+  .connect("mongodb://localhost:27017/mycustomers", {
+    useNewUrlParser: true,
+  })
+  .then(() => {
+    console.log("DB CONNECTED!!");
+  })
+  .catch(() => {
+    console.log("DB NOT CONNECTED!!");
+  });
 
 //initialising port no
-const port =  8000;
+// const port =  8000;
+const port = process.env.PORT || 3000;
 
 app.use(express.json());
 app.use(cors());
@@ -50,14 +53,15 @@ app.use("/api", businessRoute);
 app.use("/api", evaluationRoute);
 app.use("/api", roleRoute);
 app.use("/api", userRoute);
-app.use("/api", notification);
-app.use("/api", progressRoute);
-app.use("/api", studentRoute);
-app.use("/api", coachRoute);
-app.use("/api", SessionRoute);
+app.use("/api", memberRoute);
+app.use("/api", enrolementRoute);
 app.use("/api", classRoute);
-app.use("/api", categoryRoute);
-app.use("/api", termRoute);
+
+app.use("/api", notification);
+app.use("/api", authRoutes);
+
+app.use("/api", sessionRoute);
+app.use("/api", registrationRoute);
 
 // server listening to the port
 app.listen(port, () =>

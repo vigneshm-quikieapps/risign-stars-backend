@@ -18,15 +18,37 @@ const progressSchema = new mongoose.Schema(
         },
         levels: [
             {
-                skill: { type: String },
-                attend: {
-                    type: Boolean,
-                    default: false
-                },
-                progress: {
-                    type: Boolean,
-                    default: true
-                }
+                skills: [
+                    {
+                        name: { type: String },
+                        status: { type: String, default: "Not_Started" },
+                        StartedAt: { type: Date },
+                        completedAt: { type: Date }
+                    }
+                ],
+
+                // attend: [
+                //     {
+                //         Day: Date,
+                //         attended: Boolean
+                //     },
+                // ],
+
+                // progress: [
+                //     {
+                //         Day: Date,
+                //         progress: Boolean
+                //     },
+                // ],
+
+                // skills: [
+                //     {
+                //         names: String,
+                //         status: "Not_STARTED",
+                //         Day: Date,
+                //         DAY: Date
+                //     }
+                // ]
 
             },
         ],

@@ -1,4 +1,6 @@
 const mongoose = require("mongoose");
+const crypto = require("crypto");
+const uuidv4 = require("uuid/v1");
 const {
  
   DATA_PRIVILEDGES_TYPE
@@ -13,12 +15,13 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true,
       unique: true,
+      lowercase: true,
     },
-    password: {
+    encry_password: {
       type: String,
-      select: false,
       required: true,
     },
+    salt: String,
     firstName: {
       type: String,
       required: true,
@@ -28,6 +31,9 @@ const userSchema = new mongoose.Schema(
       required: true,
     },
     roles: [{}],
+    contact: {
+      type: String,
+      required: true},
      dataPriviledges: {
       type: {
         type: String,
@@ -39,5 +45,35 @@ const userSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
+
+// Code for Encrypting the Password, Generating the salt and for Password comparison
+userSchema
+  .virtual("password")
+  .set(function (password) {
+    this._password = password; // private variables _password to store it
+    this.salt = uuidv4();
+    this.encry_password = this.securePassword(password);
+  })
+  .get(function () {
+    return this._password;
+  });
+
+userSchema.methods = {
+  autheticate: function (plainpassword) {
+    return this.securePassword(plainpassword) === this.encry_password;
+  },
+
+  securePassword: function (plainpassword) {
+    if (!plainpassword) return "";
+    try {
+      return crypto
+        .createHmac("sha256", this.salt)
+        .update(plainpassword)
+        .digest("hex");
+    } catch (err) {
+      return "";
+    }
+  },
+};
 
 module.exports = mongoose.model("User", userSchema);

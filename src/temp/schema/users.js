@@ -1,3 +1,6 @@
+<<<<<<< HEAD
+const { ENUM_USER_TYPES, ENUM_DATA_PRIVILEDGES_TYPE } = require("./constants");
+=======
 const FUNCTIONAL_PRIVILEDGES = [
   "ACTIVITY_DEFINITION",
   "ACTIVITY_ENROLMENT",
@@ -24,6 +27,7 @@ const RELATIONSHIPS = [
 ];
 
 const DATA_PRIVILEDGES_TYPE = ["ALL", "ONE"];
+>>>>>>> origin/development
 
 /**
  * API's
@@ -46,12 +50,20 @@ const DATA_PRIVILEDGES_TYPE = ["ALL", "ONE"];
  */
 module.exports.users = {
   id: String,
+<<<<<<< HEAD
+  platformId: String,
+=======
+>>>>>>> origin/development
   firstName: String,
   lastName: String,
   email: String,
   contact: String,
   address: String,
   password: String,
+<<<<<<< HEAD
+  user_types: ENUM_USER_TYPES,
+=======
+>>>>>>> origin/development
   roles: [
     /** name of roles */
     {
@@ -61,6 +73,17 @@ module.exports.users = {
       businessName: String /** optional */,
     },
   ],
+<<<<<<< HEAD
+  emailVerified: Boolean /** default false */,
+  phone: Boolean /** default false */,
+  dataPriviledges: {
+    type: ENUM_DATA_PRIVILEDGES_TYPE,
+    businessId: String,
+    businessName: String,
+  },
+  createdAt: Date,
+  updateAt: Date,
+=======
   createdAt: Date,
   updateAt: Date,
 };
@@ -133,4 +156,5 @@ module.exports.students = {
   },
   createdAt: Date,
   updatedAt: Date,
+>>>>>>> origin/development
 };

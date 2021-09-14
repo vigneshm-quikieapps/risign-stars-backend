@@ -30,8 +30,9 @@ router.post(
   [
     check("name", "name should be at least 3 char").isLength({ min: 3 }),
     check("code", "code should be atleast 3 char")
-      .optional()
-      .isLength({ min: 3 }),
+      // .optional()
+      // .isLength({ min: 3 })
+      .isString(),
     check("tradename", "tradename should be at least 3 char").isLength({
       min: 3,
     }),
