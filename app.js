@@ -3,10 +3,8 @@ const express = require("express");
 const app = express();
 const cors = require("cors");
 require("dotenv").config();
-
 const path = require("path");
-const bodyParser = require("body-parser");
-app.use(bodyParser.json());
+
 //importing from local files
 const businessRoute = require("./src/routes/business");
 const evaluationRoute = require("./src/routes/evaluation");
@@ -16,7 +14,6 @@ const notification = require("./src/routes/notification");
 const authRoutes = require("./src/routes/auth");
 
 //connecting to mongodb database
-
 mongoose
   .connect("mongodb://localhost:27017/raisingstars", {
     useNewUrlParser: true,

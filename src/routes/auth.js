@@ -6,6 +6,7 @@ const {
   signin,
   isSignedIn,
   refreshToken,
+  getOTP,
 } = require("../controllers/auth");
 const { createUserValidationRules } = require("../validations/user");
 const validate = require("../validations/validate");
@@ -49,6 +50,7 @@ router.post(
 
 // REFRESH TOKEN
 router.post("/refereshtoken", refreshToken);
+router.post("/get-otp", getOTP);
 
 // Testing Route
 router.get("/testroute", isSignedIn, (req, res) => {
