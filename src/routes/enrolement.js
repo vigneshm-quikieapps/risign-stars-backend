@@ -11,7 +11,7 @@ router.put("/enrolement/consent/:id", enrolement.updateConsent);
 router.get("/enrolement/consent/:id", enrolement.getConsent);
 router.put("/enrolement/AdditionalSection/:id", enrolement.updateAdditionalSection);
 router.get("/enrolement/AdditionalSection/:id", enrolement.getAdditionalSection);
-router.put("/enrolement/registration/:enrolementId",enrolement.updateRegistration);
+router.put("/enrolement/registration/:enrolementId/:sessionId",enrolement.updateRegistration,enrolement.updateSessionCapacity,enrolement.updateRegistration);
 
 
 

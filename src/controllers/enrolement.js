@@ -1,4 +1,5 @@
 const enrolement = require("../models/enrolement");
+const BusinessSession = require("../models/businessSession");
 
 
 
@@ -12,7 +13,26 @@ module.exports.create= async (req, res) => {
         console.error(err);
         return res.status(422).send({ message: err.message });
     }
-  };
+};
+  
+module.exports.create= async (req, res) => {
+    try {
+      let businessId = req.body.businessId
+      let sessionId = req.body.sessionId
+      
+    } catch (err) {
+        console.error(err);
+        return res.status(422).send({ message: err.message });
+    }
+};
+
+
+
+
+
+
+
+
 //getAllMember
   module.exports.getAll= async (req, res) => {
     try {
@@ -80,24 +100,42 @@ module.exports.getAdditionalSection= async (req, res) => {
 //update registration
 module.exports.updateRegistration= async (req, res) => {
   try {
-     let users = await  enrolement.findById(req.params.id);
+     let users = await  enrolement.findById(req.params.enrolementId);
      if(!users){
        throw new Error()
      }
     let options = { new: true };
 
-    let student = await enrolement.findByIdAndUpdate(req.params.id,
-
-      req.body, options);
-      //  {"discontinuationReason":"CLASS_TRANSFER"}, options);
-
-
-    //next();
+    let student = await enrolement.findByIdAndUpdate(req.params.enrolementId,{"discontinuationReason":"CLASS_TRANSFER"}, options);
      
 
       return res.send({"updatedenrolement":student});
     } catch (err) {
      
       return res.status(422).send({ message: err.message });
-    }
+  }
+    next();
+  
+};
+module.exports.updateSessionCapacity= async (req, res,next) => {
+  try {
+     let session = await  BusinessSession.findById(req.params.sessionId);
+     if(!session){
+       throw new Error("")
+     }
+    let options = { new: true };
+   if(session.fullcapacityfilled=0){
+       throw new Error("session is already zero")
+     }
+    let student = await BusinessSession.findByIdAndUpdate(req.params.sessionId,{"fullcapacityfilled":session.fullcapacityfilled-1}, options);
+     
+
+    return res.send({ "updatedenrolement": student });
+
+    } catch (err) {
+     
+      return res.status(422).send({ message: err.message });
+  }
+    next();
+  
 };
