@@ -77,3 +77,27 @@ module.exports.getAdditionalSection= async (req, res) => {
 };
 
 
+//update registration
+module.exports.updateRegistration= async (req, res) => {
+  try {
+     let users = await  enrolement.findById(req.params.id);
+     if(!users){
+       throw new Error()
+     }
+    let options = { new: true };
+
+    let student = await enrolement.findByIdAndUpdate(req.params.id,
+
+      req.body, options);
+      //  {"discontinuationReason":"CLASS_TRANSFER"}, options);
+
+
+    //next();
+     
+
+      return res.send({"updatedenrolement":student});
+    } catch (err) {
+     
+      return res.status(422).send({ message: err.message });
+    }
+};

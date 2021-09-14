@@ -20,26 +20,6 @@ const sessionRoute = require("./src/routes/session")
 let mongoDBUrl =
   process.env.MONGODB_URL || "mongodb://localhost:27017/raisingstars";
 const notification = require("./src/routes/notification");
-const progressRoute = require("./src/routes/progress");
-const studentRoute = require("./src/routes/student")
-const coachRoute= require("./src/routes/coach")
-const SessionRoute= require("./src/routes/businessSession")
-const classRoute= require("./src/routes/businessClass")
-const categoryRoute= require("./src/routes/category")
-const termRoute= require("./src/routes/Term")
-
-//connecting to mongodb database
-
-mongoose.connect("mongodb://localhost:27017/raisingstars", {
-    useNewUrlParser: true
-
-})
-    .then(() => {
-        console.log('DB CONNECTED!!')
-    })
-    .catch(() => {
-        console.log("DB NOT CONNECTED!!")
-    });
 const authRoutes = require("./src/routes/auth");
 const registrationRoute = require("./src/routes/registration");
 
@@ -78,13 +58,7 @@ app.use("/api", enrolementRoute);
 app.use("/api", classRoute);
 
 app.use("/api", notification);
-app.use("/api", progressRoute);
-app.use("/api", studentRoute);
-app.use("/api", coachRoute);
-app.use("/api", SessionRoute);
-app.use("/api", classRoute);
-app.use("/api", categoryRoute);
-app.use("/api", termRoute);
+app.use("/api", authRoutes);
 
 app.use("/api", sessionRoute);
 app.use("/api", registrationRoute);

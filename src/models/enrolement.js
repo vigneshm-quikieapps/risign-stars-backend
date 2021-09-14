@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const { ObjectId } = mongoose.Schema;
 const {
   ENUM_ENROLLED_STATUS,
   ENUM_DISCONTINUATION_REASON,
@@ -6,33 +7,53 @@ const {
 
 const enrolementSchema = new mongoose.Schema(
   {
-    id: String,
-    sessionId: String,
-    classId: String,
-    businessId: String,
+    // name: String,
+    
+    // sessionId: String,
+    // student Id:should link it here
+    sessionId: {
     name: String,
-    clubMembershipId: String,
-    consent: {
-      allergies: String,
-      condition: String,
-      photographConsent: Boolean,
-      signedByParent: Boolean,
-      signedAt: Date,
+
+      // type: ObjectId,
+      // ref: "BusinessSession"
     },
-    newsletter: {
-      email: Boolean,
-      telephone: Boolean,
-      sms: Boolean,
+    classId:{
+    name: String,
+
+      // type: ObjectId,
+      // ref: "BusinessClass"
     },
-    startDate: Date,
-    registeredDate: Date,
-      enrolledStatus: ENUM_ENROLLED_STATUS,
-      discontinuationReason: ENUM_DISCONTINUATION_REASON,
+    businessId: {
+    name: String,
+
+      // type: ObjectId,
+      // ref: "Business"
+    },
+    // name: String,
+    // clubMembershipId: String,
+    // consent: {
+    //   allergies: String,
+    //   condition: String,
+    //   photographConsent: Boolean,
+    //   signedByParent: Boolean,
+    //   signedAt: Date,
+    // },
+    // newsletter: {
+    //   email: Boolean,
+    //   telephone: Boolean,
+    //   sms: Boolean,
+    // },
+    // startDate: Date,
+    // registeredDate: Date,
+    enrolledStatus: ENUM_ENROLLED_STATUS,
+    discontinuationReason: {
+      type:String,
+      enum:["CLASS_TRANSFER", "CANCELLED"]
+    },
     droppedDate: Date,
-    createdAt: Date,
-    updatedAt: Date,
+ 
   },
-{ timestamps: true }
+  { timestamps: true }
 )
 
 module.exports = mongoose.model("Enrolement", enrolementSchema)
