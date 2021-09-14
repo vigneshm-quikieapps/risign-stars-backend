@@ -10,7 +10,7 @@ const attendanceOfAStudentInAClassSchema = new mongoose.Schema(
         required: true,
         trim:true
     },
-    membersId: {
+    studentId: {
         type: String,
         required: true,
         trim:true
@@ -25,16 +25,11 @@ const attendanceOfAStudentInAClassSchema = new mongoose.Schema(
         required: true,
         trim:true
     },
-    startDate: {
-        type: String,           // type - Date
+    attendanceMonth: {
+        type: Date,           // type - Date
         required: true,
         trim:true
-    },                          /** starting of a month */
-    endDate: {
-        type: String,           // type - Date
-        required: true,
-        trim:true
-    },                          /** end of a month */
+    },                          /** starting of a month */                         /** end of a month */
     records: [
         {
             date: {
@@ -52,19 +47,10 @@ const attendanceOfAStudentInAClassSchema = new mongoose.Schema(
                 required: true,
                 trim:true
             },
-            comments: {
-                type: String,
-                required: true,
-                trim:true
-            },
+            
         },
     ],
     attendedCount: {
-        type: Number,
-        required: true,
-        trim:true
-    },
-    tardyCount: {
         type: Number,
         required: true,
         trim:true

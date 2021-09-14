@@ -1,33 +1,46 @@
+// Created by Prahalad
+// routes for attendance management
+
 const express = require("express");
 const router = express.Router();
+
   
 const {
-    createAttendanceOfAStudentInAClass,
-    GetAllAttendanceOfAStudentInAClass,
-    addAttendanceOfAStudentInAClass
-} = require("../controllers/attendanceManagement/attendanceOfAStudentInAClass")
-
-const {
-    GetAllAttendanceOfAClassByDate,
-    createAttendanceOfAClassByDate,
-    addAttendanceOfAClassByDate
-} = require("../controllers/attendanceManagement/attendanceOfAClassByDate")
-
-
-const {
+    addAttendanceOfAStudentInAClass,
+    GetAllAttendanceByDate,
     GetAllAttendanceOfAClassByMonth,
-    createAttendanceOfAClassByMonth,
-    addAttendanceOfAClassByMonth
-} = require("../controllers/attendanceManagement/attendanceOfAClassByMonth")
-
-// router.get("/attendance", GetAllAttendanceOfAStudentInAClass)
-router.post("/attendance/create", createAttendanceOfAStudentInAClass)
-router.put("/attendance/update", addAttendanceOfAStudentInAClass)
+    GetAttendanceOfAStudentByDate,
+    GetAttendanceOfAStudentByMonth,
+} = require("../controllers/attendanceManagement")
 
 
-router.get("/attendance", GetAllAttendanceOfAClassByDate)
-// router.post("/attendance/create", createAttendanceOfAClassByMonth)
-// router.put("/attendance/:id", addAttendanceOfAClassByMonth)
+const {
+    addAttendance,
+    classbydate,
+    classbymonth,
+    studentsbyclass,
+    studentsbymonth
+} = require("../validations/attendanceManagment")
+
+
+//add attendance of a student in a class
+router.put("/attendance/addattendance",addAttendance(), addAttendanceOfAStudentInAClass)
+
+
+// get all the attendance of a class by date
+router.get("/attendance/classbydate",classbydate(), GetAllAttendanceByDate)
+
+
+// get all the attendance of a class by month
+router.get("/attendance/classbymonth",classbymonth(), GetAllAttendanceOfAClassByMonth)
+
+
+// get attendance of a student in a class by date
+router.get("/attendance/studentbydate",studentsbyclass(), GetAttendanceOfAStudentByDate)
+
+
+// get attendance of a student in a class by month
+router.get("/attendance/studentbymonth",studentsbymonth(), GetAttendanceOfAStudentByMonth)
 
 
 module.exports = router;

@@ -6,7 +6,7 @@ const mongoose = require("mongoose");
 const attendanceOfAClassByDateSchema = new mongoose.Schema(
   {
     date: {
-      type: String,
+      type: Date,
       required: true,
       trim:true
     },
@@ -38,11 +38,6 @@ const attendanceOfAClassByDateSchema = new mongoose.Schema(
           trim:true
         },
         attended: {
-          type: Boolean,
-          required: true,
-          trim:true
-        },
-        tardy: {
           type: Boolean,
           required: true,
           trim:true

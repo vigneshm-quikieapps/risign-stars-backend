@@ -5,8 +5,8 @@ const mongoose = require("mongoose");
 
 const attendanceOfAClassByMonthSchema = new mongoose.Schema(
   {
-    month: {
-        type: String,
+    attendanceMonth: {
+        type: Date,
         required: true,
         trim:true
     },
@@ -20,7 +20,7 @@ const attendanceOfAClassByMonthSchema = new mongoose.Schema(
         required: true,
         trim:true
     },
-    sessionCount: {
+    classCount: {
         type: Number,
         required: true,
         trim: true
@@ -42,11 +42,7 @@ const attendanceOfAClassByMonthSchema = new mongoose.Schema(
                 required: true,
                 trim:true
             },
-            tardyCount: {
-                type: Number,
-                required: true,
-                trim:true
-            },
+            
         },
     ],
   },
