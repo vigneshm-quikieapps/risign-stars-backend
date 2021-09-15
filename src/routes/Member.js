@@ -12,10 +12,11 @@ const  validate  = require("../validations/validate");
 
 
 router.get("/member", member.getAllMember);
-router.post("/member",createMemberValidationRules(),validate, member.create);
+router.post("/member", member.create);
 router.put("/member/:id",createMemberValidationRules(),validate, member.update);
 router.get("/member/:id", member.getEmergencyContact);
 router.delete("/member/:id", member.delete);
+router.put("/member/:memberId/:businessId",member.addMembership);
 
 
 module.exports = router;

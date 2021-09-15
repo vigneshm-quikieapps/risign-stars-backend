@@ -1,6 +1,7 @@
 const BusinessClass = require("../models/businessClass");
 
 const { validationResult } = require("express-validator");
+const { STARTS_WITH_FILTER, EQUALS_FILTER } = require("../contants/constant");
 
 //parameter extractor
 module.exports.getBusinessClassIdById = (req, res, next, id) => {
@@ -44,27 +45,49 @@ module.exports.createBusinessClass = (req, res) => {
   });
 };
 
-//Business Class listing all
+//Business Class listing all / search for Class
+module.exports.getAllBusinessClass = (req, res) => {
+  //limit setter to export or send limited business to client or front end
 
-module.exports.getAllBusinessClass= (req, res) => {
-  let limit = req.query.limit ? parseInt(req.query.limit) : "";
+  let limit = req.query.limit ? parseInt(req.query.limit) : 10;
   let page = req.query.page;
-  let skip = page ? parseInt(page) - 1 * limit : "";
-  let sortBy = req.query.sortBy ? req.query.sortBy : "_id";
 
-    BusinessClass.find()
-    .populate("category").populate("business").populate("evaluation").populate("session")
-    .sort([[sortBy, "asc"]])
-    .skip(skip)
-    .limit(limit)
-    .exec((err, Class) => {
-      if (err) {
-        return res.status(400).json({
-          err: "cannot find Business Classes",
-        });
-      }
-      res.json(Class);
-    });
+  let skip = page ? parseInt(page) - 1 * limit : 0;
+  let sortBy = req.query.sortBy ? req.query.sortBy : "asc";
+
+  /**
+   * query object
+   */
+  let query = BusinessClass.find().sort({ _id: sortBy }).skip(skip).limit(limit);
+
+  /**
+   * filter
+   */
+  let { filters = [] } = req.query;
+  for (let { field, type, value } of filters) {
+    switch (type) {
+      case STARTS_WITH_FILTER:
+        query.where(`${field}`, { $regex: new RegExp(`^${value}`, "i") });
+        break;
+      case EQUALS_FILTER:
+        query.where(`${field}`, value);
+        break;
+      default:
+        break;
+    }
+  }
+
+  /**
+   * execute the query
+   */
+  query.exec((err, Class) => {
+    if (err) {
+      return res.status(400).json({
+        error: "NO Class FOUND",
+      });
+    }
+    res.json(Class);
+  });
 };
 
 //Business Class listing

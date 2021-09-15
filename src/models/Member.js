@@ -8,14 +8,16 @@ const memberSchema = new mongoose.Schema(
   
 
   {
+     userId: String,
     id: String,
-    platformId:
-      String /** should be a auto increment unique numeric serial ids */,
-    userId: String,
+
+   
+   
     membership: [
       {
         businessId: String,
-        clubMembershipId: String,
+        clubMembershipId:String
+      
       },
     ],
     firstName: String,

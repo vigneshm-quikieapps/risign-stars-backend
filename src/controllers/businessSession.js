@@ -1,6 +1,7 @@
 const BusinessSession = require("../models/businessSession");
 
 const { validationResult } = require("express-validator");
+const { STARTS_WITH_FILTER, EQUALS_FILTER } = require("../contants/constant");
 
 //parameter extractor
 module.exports.getBusinessSessionIdById = (req, res, next, id) => {
@@ -41,27 +42,49 @@ module.exports.createBusinessSession = (req, res) => {
   });
 };
 
-//Business Session listing all
+//Business Session listing all /search for Class
+module.exports.getAllBusinessSession = (req, res) => {
+  //limit setter to export or send limited business to client or front end
 
-module.exports.getAllBusinessSession= (req, res) => {
-  let limit = req.query.limit ? parseInt(req.query.limit) : "";
+  let limit = req.query.limit ? parseInt(req.query.limit) : 10;
   let page = req.query.page;
-  let skip = page ? parseInt(page) - 1 * limit : "";
-  let sortBy = req.query.sortBy ? req.query.sortBy : "_id";
 
-    BusinessSession.find()
-    .populate("coach")
-    .sort([[sortBy, "asc"]])
-    .skip(skip)
-    .limit(limit)
-    .exec((err,Session) => {
-      if (err) {
-        return res.status(400).json({
-          err: "cannot find Business Sessions",
-        });
-      }
-      res.json(Session);
-    });
+  let skip = page ? parseInt(page) - 1 * limit : 0;
+  let sortBy = req.query.sortBy ? req.query.sortBy : "asc";
+
+  /**
+   * query object
+   */
+  let query = BusinessSession.find().sort({ _id: sortBy }).skip(skip).limit(limit);
+
+  /**
+   * filter
+   */
+  let { filters = [] } = req.query;
+  for (let { field, type, value } of filters) {
+    switch (type) {
+      case STARTS_WITH_FILTER:
+        query.where(`${field}`, { $regex: new RegExp(`^${value}`, "i") });
+        break;
+      case EQUALS_FILTER:
+        query.where(`${field}`, value);
+        break;
+      default:
+        break;
+    }
+  }
+
+  /**
+   * execute the query
+   */
+  query.exec((err, Session) => {
+    if (err) {
+      return res.status(400).json({
+        error: "NO Session FOUND",
+      });
+    }
+    res.json(Session);
+  });
 };
 
 //Business Session listing

@@ -26,7 +26,7 @@ const registrationRoute = require("./src/routes/registration");
 //connecting to mongodb database
 
 mongoose
-  .connect("mongodb://localhost:27017/mycustomers", {
+  .connect("mongodb://localhost:27017/raisingstars", {
     useNewUrlParser: true,
   })
   .then(() => {
@@ -38,7 +38,7 @@ mongoose
 
 //initialising port no
 // const port =  8000;
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 8000;
 
 app.use(express.json());
 app.use(cors());
