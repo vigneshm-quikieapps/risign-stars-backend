@@ -7,10 +7,20 @@ const onConnect = () => {
 };
 
 const onError = (error) => {
+  let redisTroubleshoot = [
+    {
+      hint: "redis connection",
+    },
+    {
+      hint: "Please check your internet connection",
+    },
+    {
+      hint: "if your .env has the following configured: REDIS_HOSTNAME, REDIS_PORT, REDIS_PASSWORD",
+    },
+  ];
   console.error(error);
-  console.error(
-    "Please check redis connection OR Please check your internet connection"
-  );
+  console.error("Redis Error: Please check the following");
+  console.table(redisTroubleshoot);
 };
 
 let host = process.env.REDIS_HOSTNAME || "localhost";
