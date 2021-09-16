@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const { ObjectId } = mongoose.Schema;
 
 const evaluationSchema = new mongoose.Schema(
   {
@@ -21,6 +22,14 @@ const evaluationSchema = new mongoose.Schema(
         skills: [],
       },
     ],
+    updatedBy:  {
+       type: ObjectId,
+            ref:"User"
+    },
+    createdBy: {
+       type: ObjectId,
+            ref:"User"
+    }
   },
   { timestamps: true }
 );

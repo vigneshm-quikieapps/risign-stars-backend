@@ -1,4 +1,6 @@
 const mongoose = require("mongoose");
+const { ObjectId } = mongoose.Schema;
+
 const registrationSchema = new mongoose.Schema(
 {
     id: String,
@@ -29,8 +31,14 @@ const registrationSchema = new mongoose.Schema(
         droppedDate: Date,
       },
     ],
-    createdAt: Date,
-    updatedAt: Date,
+    updatedBy:  {
+       type: ObjectId,
+            ref:"User"
+    },
+    createdBy: {
+       type: ObjectId,
+            ref:"User"
+    }
   },
   { timestamps: true }
   );

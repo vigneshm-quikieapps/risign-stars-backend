@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const { ObjectId } = mongoose.Schema;
 
 const progressSchema = new mongoose.Schema(
     {
@@ -52,6 +53,14 @@ const progressSchema = new mongoose.Schema(
 
             },
         ],
+    updatedBy:  {
+       type: ObjectId,
+            ref:"User"
+    },
+    createdBy: {
+       type: ObjectId,
+            ref:"User"
+    }
 
 
     },

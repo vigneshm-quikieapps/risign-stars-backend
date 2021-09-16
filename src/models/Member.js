@@ -1,4 +1,6 @@
 const mongoose = require('mongoose')
+const { ObjectId } = mongoose.Schema;
+
 const {
   ADDRESS_TYPE,
   RELATIONSHIPS
@@ -32,9 +34,14 @@ const memberSchema = new mongoose.Schema(
         relationShip: RELATIONSHIPS,
       },
     ],
-    updatedBy: [String],
-    createdAt: Date,
-    updatedAt: Date,
+    updatedBy:  {
+       type: ObjectId,
+            ref:"User"
+    },
+    createdBy: {
+       type: ObjectId,
+            ref:"User"
+    }
   },
   { timestamps: true }
 )

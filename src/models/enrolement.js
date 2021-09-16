@@ -45,7 +45,15 @@ const enrolementSchema = new mongoose.Schema(
       enum:["CLASS_TRANSFER", "CANCELLED"]
     },
     droppedDate: Date,
- 
+    
+    updatedBy:  {
+       type: ObjectId,
+            ref:"User"
+    },
+    createdBy: {
+       type: ObjectId,
+            ref:"User"
+    }
   },
   { timestamps: true }
 )

@@ -13,9 +13,12 @@ const evaluationRoute = require("./src/routes/evaluation");
 const roleRoute = require("./src/routes/role");
 const userRoute = require("./src/routes/user");
 const memberRoute = require("./src/routes/Member");
-const enrolementRoute = require("./src/routes/enrolement");
+const enrolementRoute = require("./src/routes/businessClass");
 const classRoute = require("./src/routes/class");
-const sessionRoute = require("./src/routes/session")
+const sessionRoute = require("./src/routes/businessSession")
+const termRoute = require("./src/routes/Term")
+const categoryRoute = require("./src/routes/category")
+const coachRoute = require("./src/routes/coach")
 //connecting to mongodb database
 let mongoDBUrl =
   process.env.MONGODB_URL || "mongodb://localhost:27017/raisingstars";
@@ -56,6 +59,9 @@ app.use("/api", userRoute);
 app.use("/api", memberRoute);
 app.use("/api", enrolementRoute);
 app.use("/api", classRoute);
+app.use("/api", termRoute);
+app.use("/api", categoryRoute);
+app.use("/api", coachRoute);
 
 app.use("/api", notification);
 app.use("/api", authRoutes);
