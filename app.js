@@ -20,6 +20,7 @@ const sessionRoute = require("./src/routes/businessSession")
 const termRoute = require("./src/routes/Term")
 const categoryRoute = require("./src/routes/category")
 const coachRoute = require("./src/routes/coach")
+const accountRoutes = require("./src/routes/account");
 //connecting to mongodb database
 let mongoDBUrl =
   process.env.MONGODB_URL || "mongodb://localhost:27017/raisingstars";
@@ -28,17 +29,19 @@ const authRoutes = require("./src/routes/auth");
 const registrationRoute = require("./src/routes/registration");
 
 //connecting to mongodb database
-
-mongoose.connect(process.env.MONGODB_URL || "mongodb://localhost:27017/raisingstars", {
-    useNewUrlParser: true
-
-})
-    .then(() => {
-        console.log('DB CONNECTED!!')
-    })
-    .catch(() => {
-        console.log("DB NOT CONNECTED!!")
-    });
+mongoose
+  .connect(
+    process.env.MONGODB_URL || "mongodb://localhost:27017/raisingstars",
+    {
+      useNewUrlParser: true,
+    }
+  )
+  .then(() => {
+    console.log("DB CONNECTED!!");
+  })
+  .catch(() => {
+    console.log("DB NOT CONNECTED!!");
+  });
 
 //initialising port no
 // const port =  8000;
@@ -67,6 +70,7 @@ app.use("/api", coachRoute);
 
 app.use("/api", notification);
 app.use("/api", authRoutes);
+app.use("/api", accountRoutes);
 
 app.use("/api", sessionRoute);
 app.use("/api", registrationRoute);

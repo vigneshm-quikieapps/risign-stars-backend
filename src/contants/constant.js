@@ -4,7 +4,7 @@ const FUNCTIONAL_PRIVILEDGES = [
   "ACTIVITY_ATTENDANCE",
 ];
 const CRUD = ["create", "read", "update", "delete"];
-const DATA_PRIVILEDGES_TYPE = ["ALL", "ONE"];
+const DATA_PRIVILEDGES_TYPE = ["ALL", "LIST"];
 const STARTS_WITH_FILTER = "STARTS_WITH";
 const EQUALS_FILTER = "EQUALS";
 const FILTER_TYPES = [STARTS_WITH_FILTER, EQUALS_FILTER];
@@ -56,6 +56,7 @@ module.exports = {
   EQUALS_FILTER,
   FILTER_TYPES,
   DATA_PRIVILEDGES_TYPE,
+<<<<<<< HEAD
   CRUD,TERM_STATUS,
   PROGRESS_STATUS,
   ADDRESS_TYPE,
@@ -66,4 +67,8 @@ module.exports = {
   ENUM_PAY_FREQUENCY,
   TERM_STATUS,
   ENUM_BUSINESS_TYPE
+=======
+  CRUD,
+  TERM_STATUS,
+>>>>>>> auth
 };
