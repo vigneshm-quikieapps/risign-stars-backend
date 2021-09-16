@@ -38,8 +38,7 @@ const createMemberValidationRules = () => {
       body("contacts.*.lastName", "min length should be 2 and max length should be 70").optional().isLength({ min: 2, max:70 }),
       body("contacts.*.contact", "min length should be 2").optional().isLength({ min: 2 }),
       body("contacts.*.relationShip", "invalid relationship").optional().isIn(RELATIONSHIPS),
-      body("updatedBy", "updatedBy should be a valid userId").optional().isLength({ min: 12 }),
-      body("createdBy", "createdBy should be a valid userId").optional().isLength({ min: 12 }),
+      body("updatedBy", "updatedBy should be a valid userId").isLength({ min: 12 }),
 
     ];
   };

@@ -35,6 +35,9 @@ router.post(
     check("fullcapacity", "fullcapacity should be a Numbre/Integer  ").optional().isInt(),
     check("waitcapacity", "waitcapacity should be a Numbre/Integer  ").optional().isInt(),
     check("coach", "coach should be a Coach Id and it should not be Empty!!").isLength({ min: 10 }),
+    check("updatedBy", "updatedBy should be a valid userId").optional().isLength({ min: 12 }),
+    check("createdBy", "createdBy should be a valid userId").isLength({ min: 12 }),
+  
    ],createBusinessSession
 );
 
@@ -55,6 +58,9 @@ router.put(
     check("fullcapacity", "fullcapacity should be a Numbre/Integer  ").optional().isInt(),
     check("waitcapacity", "waitcapacity should be a Numbre/Integer  ").optional().isInt(),
     check("coach", "coach should be a Coach Id and it should not be Empty!!").optional().isLength({ min: 10 }),
+    check("updatedBy", "updatedBy should be a valid userId").isLength({ min: 12 }),
+  
+  
    ],updateBusinessSession
 );
 //listing route
