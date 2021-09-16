@@ -56,7 +56,6 @@ module.exports = {
   EQUALS_FILTER,
   FILTER_TYPES,
   DATA_PRIVILEDGES_TYPE,
-<<<<<<< HEAD
   CRUD,TERM_STATUS,
   PROGRESS_STATUS,
   ADDRESS_TYPE,
@@ -67,8 +66,4 @@ module.exports = {
   ENUM_PAY_FREQUENCY,
   TERM_STATUS,
   ENUM_BUSINESS_TYPE
-=======
-  CRUD,
-  TERM_STATUS,
->>>>>>> auth
 };
