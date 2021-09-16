@@ -1,8 +1,5 @@
-const DoesNotExistException = require("../exceptions/DoesNotExistException");
+const DoesNotExistError = require("../exceptions/DoesNotExistError");
 const User = require("../models/User");
-
-const generatePassword = require("../helpers/auth/generatePassword");
-const generateHash = require("../helpers/auth/generateHash");
 
 exports.getUserById = (req, res, next, id) => {
   User.findById(id).exec((error, user) => {
@@ -28,10 +25,8 @@ module.exports.getAll = async (req, res) => {
 
 module.exports.create = async (req, res) => {
   try {
-    let password = generatePassword();
-
     let data = req.body;
-    data.password = generateHash(password);
+    data.password = User.generatePassword();
 
     let user = await User.create(data);
     return res.status(201).send({ message: "added successfully", user });
@@ -46,7 +41,7 @@ module.exports.get = async (req, res) => {
     let { userId } = req.params;
     let user = await User.findById(userId);
     if (!user) {
-      throw new DoesNotExistException();
+      throw new DoesNotExistError();
     }
     return res.send({ user });
   } catch (err) {
@@ -61,7 +56,7 @@ module.exports.update = async (req, res) => {
     let options = { new: true };
     let role = await User.findByIdAndUpdate(userId, req.body, options);
     if (!role) {
-      throw new DoesNotExistException();
+      throw new DoesNotExistError();
     }
     return res.send({ message: "updated successfully", role });
   } catch (err) {
@@ -75,7 +70,7 @@ module.exports.delete = async (req, res) => {
     let { userId } = req.params;
     let { deletedCount } = await User.deleteOne({ _id: userId });
     if (!deletedCount) {
-      throw new DoesNotExistException();
+      throw new DoesNotExistError();
     }
     return res.send({ message: "deleted successfully" });
   } catch (err) {

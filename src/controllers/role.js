@@ -1,4 +1,4 @@
-const DoesNotExistException = require("../exceptions/DoesNotExistException");
+const DoesNotExistError = require("../exceptions/DoesNotExistError");
 const Role = require("../models/Role");
 
 module.exports.getAll = async (req, res) => {
@@ -26,7 +26,7 @@ module.exports.get = async (req, res) => {
     let { roleId } = req.params;
     let role = await Role.findById(roleId);
     if (!role) {
-      throw new DoesNotExistException();
+      throw new DoesNotExistError();
     }
     return res.send({ role });
   } catch (err) {
@@ -41,7 +41,7 @@ module.exports.update = async (req, res) => {
     let options = { new: true };
     let role = await Role.findByIdAndUpdate(roleId, req.body, options);
     if (!role) {
-      throw new DoesNotExistException();
+      throw new DoesNotExistError();
     }
     return res.send({ message: "updated successfully", role });
   } catch (err) {
@@ -55,7 +55,7 @@ module.exports.delete = async (req, res) => {
     let { roleId } = req.params;
     let { deletedCount } = await Role.deleteOne({ _id: roleId });
     if (!deletedCount) {
-      throw new DoesNotExistException();
+      throw new DoesNotExistError();
     }
     return res.send({ message: "deleted successfully" });
   } catch (err) {

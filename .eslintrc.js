@@ -6,6 +6,7 @@ module.exports = {
   },
   extends: [
     "eslint:recommended",
+    "airbnb-base",
     "plugin:node/recommended",
     "prettier",
     "plugin:prettier/recommended",
@@ -17,7 +18,7 @@ module.exports = {
   parserOptions: {
     ecmaVersion: 12,
   },
-  plugins: ["prettier"],
+  plugins: ["prettier", "unused-imports"],
   rules: {
     "prettier/prettier": [
       "error",
@@ -34,6 +35,16 @@ module.exports = {
     "node/prefer-global/url": ["error", "always"],
     "node/prefer-promises/dns": "error",
     "node/prefer-promises/fs": "error",
+    "no-unused-vars": "off",
+    "unused-imports/no-unused-imports": "error",
+    "unused-imports/no-unused-vars": [
+      "warn",
+      {
+        vars: "all",
+        varsIgnorePattern: "^_",
+        args: "after-used",
+        argsIgnorePattern: "^_",
+      },
+    ],
   },
- 
 };

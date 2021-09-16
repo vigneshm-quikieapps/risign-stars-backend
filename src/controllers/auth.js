@@ -1,87 +1,39 @@
-const mongoose = require("mongoose");
-const express = require("express");
-const { check, validationResult } = require("express-validator");
-// const jwt = require("jsonwebtoken");
-const expressJwt = require("express-jwt");
-const jwt = require("jsonwebtoken");
 const User = require("../models/User");
-const generatePassword = require("../helpers/auth/generatePassword");
-const generateHash = require("../helpers/auth/generateHash");
-const createAccessToken = require("../helpers/auth/createAccessToken");
-const verifyRefreshToken = require("../helpers/auth/verifyRefreshToken");
-const OTP = require("../helpers/auth/otp");
+const Otp = require("../services");
+const { Email, Sms } = require("../services/notification");
+const DoesNotExistError = require("../exceptions/DoesNotExistError");
+const expressJwt = require("express-jwt");
+const { generateTokens, RefreshToken } = require("../services/auth");
 
 // Signup Method
-module.exports.signup = (req, res) => {
-  const errors = validationResult(req);
-
-  if (!errors.isEmpty()) {
-    return res.status(422).json({
-      errors: errors.array()[0].msg,
-    });
+module.exports.signup = async (req, res) => {
+  try {
+    let data = req.body;
+    data = { ...data, emailVerfied: true, mobileNoVerfified: true };
+    await User.create(data);
+    return res.status(201).send({ message: "created successfully" });
+  } catch (err) {
+    return res.status(400).send({ message: err.message });
   }
-
-  const user = new User(req.body);
-  user.save((err, user) => {
-    if (err) {
-      return res.status(400).send({
-        Message: "Email has already Registereds",
-      });
-    }
-    res.json({ user });
-  });
-  const token = jwt.sign({ _id: user._id }, "ACCESS_TOKEN", {
-    expiresIn: "20s",
-  });
-  const refreshToken = jwt.sign({ _id: user._id }, "REFRESH_TOKEN", {
-    expiresIn: "1y",
-  });
 };
 
 // Signed Method
-exports.signin = (req, res) => {
-  const { email, password } = req.body;
-  const errors = validationResult(req);
+exports.signin = async (req, res) => {
+  try {
+    const { email, password } = req.body;
 
-  if (!errors.isEmpty()) {
-    return res.status(422).json({
-      errors: errors.array()[0].msg,
-    });
+    let user = await User.findOne({ email });
+    if (!user || !user.isValidPassword(password)) {
+      throw new DoesNotExistError();
+    }
+
+    let data = generateTokens({ user });
+    RefreshToken.send(res, data.refreshToken);
+
+    return res.send(data);
+  } catch (err) {
+    return res.status(422).send({ message: err.message });
   }
-
-  User.findOne({ email }, (err, user) => {
-    if (err || !user) {
-      return res.status(400).json({
-        error: "USER does not exit",
-      });
-    }
-    if (!user.autheticate(password)) {
-      return res.status(401).json({
-        error: "Email and Passoword does not Match",
-      });
-    }
-    // creating the token
-    const token = jwt.sign({ _id: user._id }, "ACCESS_TOKEN", {
-      expiresIn: "20s",
-    });
-    const refreshToken = jwt.sign({ _id: user._id }, "REFRESH_TOKEN", {
-      expiresIn: "15days",
-    });
-
-    console.log("====================================");
-    console.log("token", token);
-    console.log("====================================");
-
-    console.log("====================================");
-    console.log("refreshToken", refreshToken);
-    console.log("====================================");
-    res.send({ token, refreshToken });
-    // put token in cookie
-    res.cookie("token", token, { expire: new Date() + 9999 }); // exipry time
-    //  send response to frontend
-    const { _id, name, email, role } = user;
-    return res.json({ token, user: { _id, name, email, role } });
-  });
 };
 
 // Protected Routes
@@ -108,50 +60,32 @@ exports.isAuthenticated = (req, res, next) => {
 // Refresh Token
 module.exports.refreshToken = async (req, res) => {
   try {
-    const { refreshToken } = req.body;
-    if (!refreshToken) {
-      res.send({ Message: "Refresh Token is Not resent" });
-    }
-    const userId = await verifyRefreshToken(refreshToken);
-    const token = jwt.sign({ userId }, "TEMPU", { expiresIn: "50s" });
-    const newRefreshToken = jwt.sign({ userId }, "REFRESHTOKEN", {
-      expiresIn: "1y",
-    });
-    res.send({ userId, token, newRefreshToken });
-  } catch (error) {
-    console.log("====================================");
-    console.log(error);
-    console.log("====================================");
-    res.send({ error });
+    const user = await User.findById(req.userId);
+    const data = generateTokens({ user });
+    return res.send(data);
+  } catch (err) {
+    return res.status(400).send({ message: err.message });
   }
 };
 
-// if (!errors.isEmpty()) {
-//   return res.status(422).json({
-//     errors: errors.array()[0].msg,
-//   });
-// }
-// try {
-//   // let password = generatePassword();
-
-//   let data = req.body;
-//   // data.password = generateHash(password);
-
-//   let user = await User.create(data);
-
-//   // return res.status(201).send(token);
-//   return res.status(201).send({ message: "added successfully", user });
-// } catch (err) {
-//   return res.status(422).send({ message: "Email is already Register" });
-
-// }
-
 /**
+ * validate
+ * 1. check if mobile number is valid
+ *
  * method for sending the otp via appropriate channel (e.g. sms, email)
  * @param {*} otp
  */
-const sendOTP = (otp) => {
-  console.log({ otp });
+const sendOTPViaSMS = async ({ to, otp }) => {
+  let payload = {
+    body: `${otp} is the OTP for your phone verification`,
+    to,
+  };
+  try {
+    let response = await Sms.send(payload);
+    console.log({ response });
+  } catch (err) {
+    console.error(err);
+  }
 };
 
 /**
@@ -160,11 +94,43 @@ const sendOTP = (otp) => {
  * @param {*} res
  * @returns
  */
-module.exports.getOTP = async (req, res) => {
+module.exports.getOTPMobileNo = async (req, res) => {
   try {
-    let { contact } = req.body;
-    let otp = await OTP.generate(contact);
-    sendOTP(otp);
+    let { mobileNo } = req.body;
+    let otp = await Otp.generate(mobileNo);
+
+    /**
+     * Enable this before going production
+     */
+    // sendOTPViaSMS({ to: mobileNo, otp });
+    return res.send({ message: `OTP has been sent to ${mobileNo}`, otp });
+  } catch (err) {
+    return res.status(422).send({ message: err.message });
+  }
+};
+
+const sendOTPViaEmail = ({ to, otp }) => {
+  console.log({ to, otp });
+  const msg = {
+    to: "tomonso.ejang@gmail.com", // Change to your recipient
+    from: "sarphu@quikieapps.com", // Change to your verified sender
+    subject: "Sending with SendGrid is Fun",
+    text: "and easy to do anywhere, even with Node.js",
+    html: `<strong>${otp} is the OTP for your email verification</strong>`,
+  };
+  Email.send(msg);
+};
+
+module.exports.getOTPEmail = async (req, res) => {
+  try {
+    let { email } = req.body;
+    let otp = await Otp.generate(email);
+
+    /**
+     * Enable this before going production
+     */
+    // sendOTPViaEmail({ to: email, otp });
+    VerifyEmail.send({ to: email, otp });
     return res.send({ otp });
   } catch (err) {
     return res.status(422).send({ message: err.message });

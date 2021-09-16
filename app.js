@@ -12,10 +12,13 @@ const roleRoute = require("./src/routes/role");
 const userRoute = require("./src/routes/user");
 const notification = require("./src/routes/notification");
 const authRoutes = require("./src/routes/auth");
+const accountRoutes = require("./src/routes/account");
 
 //connecting to mongodb database
+let mongoUrl =
+  process.env.MONGODB_URL || "mongodb://localhost:27017/raisingstars";
 mongoose
-  .connect("mongodb://localhost:27017/raisingstars", {
+  .connect(mongoUrl, {
     useNewUrlParser: true,
   })
   .then(() => {
@@ -44,6 +47,7 @@ app.use("/api", roleRoute);
 app.use("/api", userRoute);
 app.use("/api", notification);
 app.use("/api", authRoutes);
+app.use("/api", accountRoutes);
 
 // server listening to the port
 app.listen(port, () =>
