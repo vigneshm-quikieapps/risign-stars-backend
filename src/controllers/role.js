@@ -1,15 +1,54 @@
+const { EQUALS_FILTER, STARTS_WITH_FILTER } = require("../contants/constant");
 const DoesNotExistException = require("../exceptions/DoesNotExistException");
 const Role = require("../models/Role");
 
-module.exports.getAll = async (req, res) => {
-  try {
-    let roles = await Role.find({});
-    return res.send({ roles });
-  } catch (err) {
-    console.error(err);
-    return res.status(422).send({ message: err.message });
+
+
+//search for Role/ get all role
+module.exports.getAll = (req, res) => {
+  //limit setter to export or send limited business to client or front end
+
+  let limit = req.query.limit ? parseInt(req.query.limit) : 10;
+  let page = req.query.page;
+
+  let skip = page ? parseInt(page) - 1 * limit : 0;
+  let sortBy = req.query.sortBy ? req.query.sortBy : "asc";
+
+  /**
+   * query object
+   */
+  let query = Role.find().sort({ _id: sortBy }).skip(skip).limit(limit);
+
+  /**
+   * filter
+   */
+  let { filters = [] } = req.query;
+  for (let { field, type, value } of filters) {
+    switch (type) {
+      case STARTS_WITH_FILTER:
+        query.where(`${field}`, { $regex: new RegExp(`^${value}`, "i") });
+        break;
+      case EQUALS_FILTER:
+        query.where(`${field}`, value);
+        break;
+      default:
+        break;
+    }
   }
+
+  /**
+   * execute the query
+   */
+  query.exec((err, Role) => {
+    if (err) {
+      return res.status(400).json({
+        error: "NO Role FOUND",
+      });
+    }
+    res.json(Role);
+  });
 };
+
 
 module.exports.create = async (req, res) => {
   try {

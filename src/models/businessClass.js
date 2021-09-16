@@ -68,6 +68,14 @@ const businessClassSchema = new mongoose.Schema(
         },
     },
   ],
+    updatedBy:  {
+       type: ObjectId,
+            ref:"User"
+    },
+    createdBy: {
+       type: ObjectId,
+            ref:"User"
+    }
 
 
 
