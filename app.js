@@ -5,25 +5,29 @@ const cors = require("cors");
 require("dotenv").config();
 const path = require("path");
 
+// const bodyParser = require("body-parser");
+// app.use(bodyParser.json());
 //importing from local files
 const businessRoute = require("./src/routes/business");
 const evaluationRoute = require("./src/routes/evaluation");
 const roleRoute = require("./src/routes/role");
 const userRoute = require("./src/routes/user");
+const attendanceRoute = require("./src/routes/attendance")
 const notification = require("./src/routes/notification");
 const authRoutes = require("./src/routes/auth");
 
 //connecting to mongodb database
-mongoose
-  .connect("mongodb://localhost:27017/raisingstars", {
-    useNewUrlParser: true,
-  })
-  .then(() => {
-    console.log("DB CONNECTED!!");
-  })
-  .catch(() => {
-    console.log("DB NOT CONNECTED!!");
-  });
+
+mongoose.connect(process.env.MONGODB_URL || "mongodb://localhost:27017/raisingstars", {
+    useNewUrlParser: true
+
+})
+    .then(() => {
+        console.log('DB CONNECTED!!')
+    })
+    .catch(() => {
+        console.log("DB NOT CONNECTED!!")
+    });
 
 //initialising port no
 // const port =  8000;
@@ -42,6 +46,7 @@ app.use("/api", businessRoute);
 app.use("/api", evaluationRoute);
 app.use("/api", roleRoute);
 app.use("/api", userRoute);
+app.use("/api", attendanceRoute);
 app.use("/api", notification);
 app.use("/api", authRoutes);
 
