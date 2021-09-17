@@ -1,8 +1,8 @@
 const DoesNotExistError = require("../exceptions/DoesNotExistError");
 const User = require("../models/User");
 
-const generatePassword = require("../helpers/auth/generatePassword");
-const generateHash = require("../helpers/auth/generateHash");
+// const generatePassword = require("../helpers/auth/generatePassword");
+// const generateHash = require("../helpers/auth/generateHash");
 const { STARTS_WITH_FILTER, EQUALS_FILTER } = require("../contants/constant");
 
 exports.getUserById = (req, res, next, id) => {
