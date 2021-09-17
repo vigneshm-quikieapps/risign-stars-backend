@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const { ObjectId } = mongoose.Schema;
 
 const { SKILL_PROGRESS_STATUS } = require("../contants/constant")
 
@@ -53,6 +54,14 @@ const progressSchema = new mongoose.Schema(
                 },
             },
         ],
+    updatedBy:  {
+       type: ObjectId,
+            ref:"User"
+    },
+    createdBy: {
+       type: ObjectId,
+            ref:"User"
+    }
 
 
     },

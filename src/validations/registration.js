@@ -24,6 +24,9 @@ const createRegistrationValidationRules = () => {
       body("members.*.enrolledStatus", "invalid value").isIn(ENUM_ENROLLED_STATUS),
       body("members.*.discontinuationReason", "invalid value").isIn(ENUM_DISCONTINUATION_REASON),
       body("members.*.droppedDate", 'must be a valid date').isDate().trim(),
+        body("updatedBy", "updatedBy should be a valid userId").optional().isLength({ min: 12 }),
+    body("createdBy", "createdBy should be a valid userId").isLength({ min: 12 }),
+  
       
     ];
   };

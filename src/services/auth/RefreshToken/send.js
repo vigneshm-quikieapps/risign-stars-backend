@@ -1,8 +1,6 @@
-const sendRefreshToken = (res, token) => {
+module.exports = (res, token) => {
   res.cookie("jid", token, {
     httpOnly: true,
     path: "/refresh_token",
   });
 };
-
-module.exports = sendRefreshToken;

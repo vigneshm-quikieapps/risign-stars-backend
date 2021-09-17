@@ -30,8 +30,9 @@ router.post(
   [
     check("name", "name should be at least 3 char").isLength({ min: 3 }),
     check("code", "code should be atleast 3 char")
-      .optional()
-      .isLength({ min: 3 }),
+      // .optional()
+      // .isLength({ min: 3 })
+      .isString(),
     check("tradename", "tradename should be at least 3 char").isLength({
       min: 3,
     }),
@@ -45,6 +46,8 @@ router.post(
     check("line1", "line1 should be at least 3 char").isLength({ min: 3 }),
     check("city", "city should be at least 3 char").isLength({ min: 3 }),
     check("country", "country should be at least 3 char").isLength({ min: 3 }),
+    check("updatedBy", "updatedBy should be a valid userId").optional().isLength({ min: 12 }),
+    check("createdBy", "createdBy should be a valid userId").isLength({ min: 12 }),
   ],
   createBusiness
 );
@@ -86,6 +89,10 @@ router.put(
     check("country", "country should be at least 3 char")
       .optional()
       .isLength({ min: 3 }),
+    check("updatedBy", "updatedBy should be a valid userId").isLength({ min: 12 }),
+    check("createdBy", "createdBy should be a valid userId").optional().isLength({ min: 12 }),
+    
+
   ],
   updateBusiness
 );

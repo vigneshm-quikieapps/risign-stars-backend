@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const { ObjectId } = mongoose.Schema;
 
 const businessSchema = new mongoose.Schema(
   {
@@ -48,6 +49,14 @@ const businessSchema = new mongoose.Schema(
       required: true,
       trim: true,
     },
+    updatedBy:  {
+       type: ObjectId,
+            ref:"User"
+    },
+    createdBy: {
+       type: ObjectId,
+            ref:"User"
+    }
   },
   { timestamps: true }
 );

@@ -1,54 +1,44 @@
 const express = require("express");
 const router = express.Router();
-const { check } = require("express-validator");
 const {
   signup,
   signin,
   isSignedIn,
   refreshToken,
+  getOTPEmail,
+  getOTPMobileNo,
 } = require("../controllers/auth");
-const { createUserValidationRules } = require("../validations/user");
+const {
+  getOTPEmailValidationRules,
+  getOTPMobileNoValidationRules,
+  refreshTokenValidationRules,
+} = require("../validations/auth");
+const {
+  signUpValidationRules,
+  signInValidationRules,
+} = require("../validations/user");
 const validate = require("../validations/validate");
-// ROUTES
-// Signup Route
+
+router.post("/sign-up", signUpValidationRules(), validate, signup);
+router.post("/sign-in", signInValidationRules(), validate, signin);
 router.post(
-  "/signup",
-  [
-    check("firstName", "name should be at least 2 char").isLength({ min: 3 }),
-    check("lastName", "name should be at least 2 char").isLength({ min: 3 }),
-    check("email", "email is required")
-      .isEmail()
-      .custom(createUserValidationRules),
-    check("password", "password should be at least 3 char").isLength({
-      min: 3,
-    }),
-    check("contact", "Contact must be 10 Digit No").isLength({
-      min: 10,
-      max: 10,
-    }),
-  ],
-  signup
+  "/refresh-token",
+  refreshTokenValidationRules(),
+  validate,
+  refreshToken
 );
-
-// Signin Route
 router.post(
-  "/signin",
-  [
-    check("email").isEmail().withMessage("Please provide a valid Email"),
-
-    check("password")
-      .isLength({ min: 1 })
-      .withMessage("Password Field is Requried")
-      .matches(/\d/),
-  ],
-  signin
+  "/get-otp/email",
+  getOTPEmailValidationRules(),
+  validate,
+  getOTPEmail
 );
-
-// Signout Route
-// router.get("/signout", signout);
-
-// REFRESH TOKEN
-router.post("/refereshtoken", refreshToken);
+router.post(
+  "/get-otp/mobile-no",
+  getOTPMobileNoValidationRules(),
+  validate,
+  getOTPMobileNo
+);
 
 // Testing Route
 router.get("/testroute", isSignedIn, (req, res) => {

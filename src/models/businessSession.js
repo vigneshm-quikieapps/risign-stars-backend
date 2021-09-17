@@ -27,14 +27,31 @@ const businessSessionSchema = new mongoose.Schema(
             type: Number,
             default:30,
         },
+        fullcapacityfilled:{
+            type: Number,
+            default:0,
+        },
         waitcapacity: {
             type: Number,
             default:10,
         },
+         waitcapacityfilled:{
+            type: Number,
+            default:0,
+        },
+
         coach: {
             type: ObjectId,
             ref:"Coach"
-        }
+        },
+        updatedBy:  {
+            type: ObjectId,
+            ref:"User"
+        },
+        createdBy: {
+             type: ObjectId,
+            ref:"User"
+    }
 
          },
   { timestamps: true }
