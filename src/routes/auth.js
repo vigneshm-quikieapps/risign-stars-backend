@@ -41,8 +41,8 @@ router.post(
 );
 
 // Testing Route
-router.get("/testroute", isSignedIn, (req, res) => {
-  res.json(req.auth);
+router.get("/testroute", (req, res) => {
+  res.send("hello");
 });
 
 module.exports = router;

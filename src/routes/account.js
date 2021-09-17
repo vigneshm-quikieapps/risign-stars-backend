@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 
 const account = require("../controllers/account");
+const { isAuthenticated } = require("../middlewares/auth");
 const {
   forgotPasswordValidationRules,
   resetPasswordValidationRules,
@@ -11,21 +12,22 @@ const {
 const validate = require("../validations/validate");
 
 router.post(
-  "/account/password/forgot",
+  "/password/forgot",
   forgotPasswordValidationRules(),
   validate,
   account.forgotPassword
 );
 
 router.post(
-  "/account/password/reset",
+  "/password/reset",
   resetPasswordValidationRules(),
   validate,
   account.resetPassword
 );
 
 router.post(
-  "/account/password/change",
+  "/password/change",
+  isAuthenticated,
   changePasswordValidationRules(),
   validate,
   account.changePassword

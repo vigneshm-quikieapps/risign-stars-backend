@@ -1,7 +1,5 @@
 const mongoose = require("mongoose");
-const {
-  FUNCTIONAL_PRIVILEDGES
-} = require("../contants/constant");
+const { FUNCTIONAL_PRIVILEDGES } = require("../contants/constant");
 
 const roleSchema = new mongoose.Schema(
   {
@@ -42,7 +40,6 @@ const roleSchema = new mongoose.Schema(
         },
       },
     ],
-   
   },
   { timestamps: true }
 );

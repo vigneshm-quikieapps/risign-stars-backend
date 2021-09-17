@@ -89,7 +89,8 @@ const signUpValidationRules = () => {
 const createUserValidationRules = () => {
   return [
     ...commonUserValidationRules,
-    body("roles").isArray(),
+    body("roles.*.id", "It should be an array"),
+    body("roles.*.name", "It should be an array"),
     body(
       "dataPriviledges.type",
       `data priviledges type should be: ${DATA_PRIVILEDGES_TYPE.join("/")}`
@@ -105,7 +106,8 @@ const updateUserValidationRules = () => {
       .optional()
       .isEmail()
       .custom(isEmailAvailable),
-    body("roles").optional().isArray(),
+    body("roles.*.id"),
+    body("roles.*.name"),
     body(
       "dataPriviledges.type",
       `data priviledges type should be: ${DATA_PRIVILEDGES_TYPE.join("/")}`

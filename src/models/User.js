@@ -15,11 +15,6 @@ const UserSchema = new mongoose.Schema(
       unique: true,
       lowercase: true,
     },
-    // encry_password: {
-    //   type: String,
-    //   required: true,
-    // },
-    // salt: String,
     name: {
       type: String,
       required: true,
@@ -61,13 +56,15 @@ const UserSchema = new mongoose.Schema(
     password: {
       type: String,
     },
-    dataPriviledges: {
-      type: {
-        type: String,
-        enum: DATA_PRIVILEDGES_TYPE,
+    dataPriviledges: [
+      {
+        type: {
+          type: String,
+          enum: DATA_PRIVILEDGES_TYPE,
+        },
+        businessId: String,
       },
-      businessId: String,
-    },
+    ],
   },
   { timestamps: true }
 );
