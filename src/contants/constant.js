@@ -67,3 +67,4 @@ module.exports = {
   TERM_STATUS,
   ENUM_BUSINESS_TYPE
 };
+
