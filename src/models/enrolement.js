@@ -11,6 +11,7 @@ const enrolementSchema = new mongoose.Schema(
     classId: String,
     businessId: String,
     name: String,
+    memberId: String,
     clubMembershipId: String,
     consent: {
       allergies: String,
@@ -26,11 +27,15 @@ const enrolementSchema = new mongoose.Schema(
     },
     startDate: Date,
     registeredDate: Date,
-      enrolledStatus: ENUM_ENROLLED_STATUS,
-      discontinuationReason: ENUM_DISCONTINUATION_REASON,
+    enrolledStatus: {
+      type: String,
+      enum: ENUM_ENROLLED_STATUS
+    },
+    discontinuationReason: {
+      type: String, 
+      enum: ENUM_DISCONTINUATION_REASON
+    },
     droppedDate: Date,
-    createdAt: Date,
-    updatedAt: Date,
   },
 { timestamps: true }
 )
