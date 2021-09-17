@@ -1,8 +1,8 @@
-const mongoose = require('mongoose')
+const mongoose = require("mongoose");
 const {
-    ENUM_CLASSES_STATUS, ENUM_PAY_FREQUENCY
+  ENUM_CLASSES_STATUS,
+  ENUM_PAY_FREQUENCY,
 } = require("../contants/constant");
-
 
 const classSchema = new mongoose.Schema(
   {
@@ -16,13 +16,11 @@ const classSchema = new mongoose.Schema(
     about: String,
     enrolmentControls: [
       {
-        age:["6","7"],
-        gender:["MALE","FEMALE"]
-      }
+        age: ["6", "7"],
+        gender: ["MALE", "FEMALE"],
+      },
     ],
-    classes: [
-     
-    ],
+    classes: [],
     charges: [
       {
         name: String,
@@ -35,5 +33,5 @@ const classSchema = new mongoose.Schema(
     updatedAt: Date,
   },
   { timestamps: true }
-)
-  module.exports = mongoose.model("class", classSchema)
+);
+module.exports = mongoose.model("class", classSchema);

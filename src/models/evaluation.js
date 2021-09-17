@@ -22,14 +22,14 @@ const evaluationSchema = new mongoose.Schema(
         skills: [],
       },
     ],
-    updatedBy:  {
-       type: ObjectId,
-            ref:"User"
+    updatedBy: {
+      type: ObjectId,
+      ref: "User",
     },
     createdBy: {
-       type: ObjectId,
-            ref:"User"
-    }
+      type: ObjectId,
+      ref: "User",
+    },
   },
   { timestamps: true }
 );

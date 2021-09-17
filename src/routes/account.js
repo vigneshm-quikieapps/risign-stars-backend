@@ -11,6 +11,9 @@ const {
 
 const validate = require("../validations/validate");
 
+/**
+ * RBAC not required in this endpoints
+ */
 router.post(
   "/password/forgot",
   forgotPasswordValidationRules(),

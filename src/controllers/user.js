@@ -17,14 +17,15 @@ exports.getUserById = (req, res, next, id) => {
   });
 };
 
-
 module.exports.create = async (req, res) => {
   try {
     let data = req.body;
-    data.password = User.generatePassword();
-
+    let password = User.generatePassword();
+    data.password = password;
     let user = await User.create(data);
-    return res.status(201).send({ message: "added successfully", user });
+    return res
+      .status(201)
+      .send({ message: "added successfully", user, password });
   } catch (err) {
     console.error(err);
     return res.status(422).send({ message: err.message });
@@ -89,7 +90,6 @@ module.exports.getAll = (req, res) => {
     res.json(User);
   });
 };
-
 
 module.exports.update = async (req, res) => {
   try {

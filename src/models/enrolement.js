@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 const { ObjectId } = mongoose.Schema;
 const {
   ENUM_ENROLLED_STATUS,
@@ -7,21 +7,21 @@ const {
 
 const enrolementSchema = new mongoose.Schema(
   {
-   memberName:String,
+    memberName: String,
     memberId: {
       type: ObjectId,
     },
     sessionId: {
-       type: ObjectId,
-       ref: "BusinessSession"
+      type: ObjectId,
+      ref: "BusinessSession",
     },
-    classId:{
-   type: ObjectId,
-       ref: "BusinessClass"
+    classId: {
+      type: ObjectId,
+      ref: "BusinessClass",
     },
     businessId: {
-     type: ObjectId,
-       ref: "Business"
+      type: ObjectId,
+      ref: "Business",
     },
     name: String,
     clubMembershipId: String,
@@ -41,21 +41,21 @@ const enrolementSchema = new mongoose.Schema(
     registeredDate: Date,
     enrolledStatus: ENUM_ENROLLED_STATUS,
     discontinuationReason: {
-      type:String,
-      enum:["CLASS_TRANSFER", "CANCELLED"]
+      type: String,
+      enum: ["CLASS_TRANSFER", "CANCELLED"],
     },
     droppedDate: Date,
-    
-    updatedBy:  {
-       type: ObjectId,
-            ref:"User"
+
+    updatedBy: {
+      type: ObjectId,
+      ref: "User",
     },
     createdBy: {
-       type: ObjectId,
-            ref:"User"
-    }
+      type: ObjectId,
+      ref: "User",
+    },
   },
   { timestamps: true }
-)
+);
 
-module.exports = mongoose.model("Enrolement", enrolementSchema)
+module.exports = mongoose.model("Enrolement", enrolementSchema);

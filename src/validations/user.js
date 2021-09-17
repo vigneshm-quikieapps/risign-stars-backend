@@ -1,13 +1,13 @@
 const { body } = require("express-validator");
 const isEmailAvailable = require("../helpers/user/isEmailAvailable");
-const { DATA_PRIVILEDGES_TYPE } = require("../contants/constant");
+const { DATA_PRIVILEGES_TYPE } = require("../contants/constant");
 const Business = require("../models/business");
 const { USER, ADDRESS } = require("../contants/validation");
 const Otp = require("../services/otp");
 
 const businessIdValidation = async (businessId, { req }) => {
   try {
-    if (req.body.dataPriviledges.type != "ALL") {
+    if (req.body.dataPrivileges.type != "ALL") {
       if (!businessId) {
         throw new Error();
       }
@@ -89,13 +89,14 @@ const signUpValidationRules = () => {
 const createUserValidationRules = () => {
   return [
     ...commonUserValidationRules,
-    body("roles.*.id", "It should be an array"),
-    body("roles.*.name", "It should be an array"),
+    body("roles", "should be an array").isArray(),
+    body("roles.*.id", "should contain id").isArray(),
+    body("roles.*.name", "should contain name").isArray(),
     body(
-      "dataPriviledges.type",
-      `data priviledges type should be: ${DATA_PRIVILEDGES_TYPE.join("/")}`
-    ).isIn(DATA_PRIVILEDGES_TYPE),
-    body("dataPriviledges.businessId").custom(businessIdValidation),
+      "dataPrivileges.type",
+      `data privileges type should be: ${DATA_PRIVILEGES_TYPE.join("/")}`
+    ).isIn(DATA_PRIVILEGES_TYPE),
+    body("dataPrivileges.businessId").custom(businessIdValidation),
   ];
 };
 
@@ -109,12 +110,12 @@ const updateUserValidationRules = () => {
     body("roles.*.id"),
     body("roles.*.name"),
     body(
-      "dataPriviledges.type",
-      `data priviledges type should be: ${DATA_PRIVILEDGES_TYPE.join("/")}`
+      "dataPrivileges.type",
+      `data privileges type should be: ${DATA_PRIVILEGES_TYPE.join("/")}`
     )
       .optional()
-      .isIn(DATA_PRIVILEDGES_TYPE),
-    body("dataPriviledges.businessId").optional().custom(businessIdValidation),
+      .isIn(DATA_PRIVILEGES_TYPE),
+    body("dataPrivileges.businessId").optional().custom(businessIdValidation),
   ];
 };
 
