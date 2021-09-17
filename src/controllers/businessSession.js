@@ -5,9 +5,7 @@ const { STARTS_WITH_FILTER, EQUALS_FILTER } = require("../contants/constant");
 
 //parameter extractor
 module.exports.getBusinessSessionIdById = (req, res, next, id) => {
-    BusinessSession.findById(id)
-        .populate("coach")
-        .exec((err, Session) => {
+    BusinessSession.findById(id).exec((err, Session) => {
     if (err) {
       return res.status(400).json({
         err: "cannot find business Session by id",
