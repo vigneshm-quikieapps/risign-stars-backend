@@ -1,23 +1,21 @@
-const Category = require("../models/category");
-
-
-
+const Category = require("../models/Category");
 
 module.exports.checkIsUnique = async (name) => {
-    try {
-        
-        if (!name) {
-            throw new Error();
-        }
+  try {
+    if (!name) {
+      throw new Error();
+    }
 
-      let exist = await Category.findOne({ name })
+    let exist = await Category.findOne({ name });
 
-      if (exist) {
-        throw new Error();
-      }
+    if (exist) {
+      throw new Error();
+    }
 
     return true;
   } catch (err) {
-    return Promise.reject(`'${name}' already exists!! Please Enter a Unique Name for Category `);
+    return Promise.reject(
+      `'${name}' already exists!! Please Enter a Unique Name for Category `
+    );
   }
 };
