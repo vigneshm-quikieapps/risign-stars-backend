@@ -61,7 +61,7 @@ module.exports.ProgressRecord = {
       skills: [
         {
           name: String,
-          status: SKILL_PROGRESS_STATUS,
+          status: "string",
           startedAt: Date /** when the skill is marked as inProgress */,
           completedAt: Date /** when the shill is marked as attained */,
         },

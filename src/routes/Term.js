@@ -20,6 +20,8 @@ router.post("/Term/create",[
     check("startdate", "starttime   should be a date").isDate({format: 'MM-DD-YYYY'}),
     check("startdate", "endtime   should be a date").isDate({format: 'MM-DD-YYYY'}),
     check("classsequence", "classsequence should be a Numbre/Integer  ").isInt(),
+     check("updatedBy", "updatedBy should be a valid userId").optional().isLength({ min: 12 }),
+    check("createdBy", "createdBy should be a valid userId").isLength({ min: 12 }),
    ],createTerm);
   
 router.get("/Term",getAllTerm);
@@ -31,6 +33,8 @@ router.put("/Term/:TermId",[
     check("startdate", "starttime   should be a date in format: 'MM-DD-YYYY'").optional(),
     check("startdate", "endtime   should be a date in format: 'MM-DD-YYYY'").optional(),
     check("classsequence", "classsequence should be a Numbre/Integer  ").optional().isInt(),
+     check("updatedBy", "updatedBy should be a valid userId").isLength({ min: 12 }),
+  
    ],updateTerm);
   
 router.delete("/Term/:TermId",deleteTerm);

@@ -30,7 +30,9 @@ const createRoleValidationRules = () => {
       "functionPriviledges.*.permission.delete",
       "permission.delete must be boolean"
     ).isBoolean(),
-   
+    body("updatedBy", "updatedBy should be a valid userId").optional().isLength({ min: 12 }),
+    body("createdBy", "createdBy should be a valid userId").isLength({ min: 12 }),
+  
   ];
 };
 
@@ -72,6 +74,9 @@ const updateRoleValidationRules = () => {
     )
       .optional()
       .isBoolean(),
+      body("updatedBy", "updatedBy should be a valid userId").isLength({ min: 12 }),
+    
+  
     
   ];
 };

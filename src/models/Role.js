@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const { ObjectId } = mongoose.Schema;
 const { FUNCTIONAL_PRIVILEDGES } = require("../contants/constant");
 
 const roleSchema = new mongoose.Schema(
@@ -40,6 +41,14 @@ const roleSchema = new mongoose.Schema(
         },
       },
     ],
+    updatedBy: {
+      type: ObjectId,
+      ref: "User",
+    },
+    createdBy: {
+      type: ObjectId,
+      ref: "User",
+    },
   },
   { timestamps: true }
 );

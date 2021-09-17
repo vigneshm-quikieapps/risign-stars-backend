@@ -30,6 +30,14 @@ const termSchema = new mongoose.Schema({
     classsequence: {
         type: Number,
         required:true
+    },
+    updatedBy:  {
+       type: ObjectId,
+            ref:"User"
+    },
+    createdBy: {
+       type: ObjectId,
+            ref:"User"
     }
 
 
