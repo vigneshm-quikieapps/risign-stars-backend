@@ -11,7 +11,7 @@
     "redis-gui": "redis-commander --redis-host $(grep REDIS_HOST .env | cut -d '=' -f2) --redis-port $(grep REDIS_PORT .env | cut -d '=' -f2) --redis-password $(grep REDIS_PASSWORD .env | cut -d '=' -f2)",
     "pre-red": "redis-commander --cc",
     "red": "redis-commander",
-    "lint": "eslint --cache --fix",
+    "lint": "eslint --cache --fix src/**/*.js",
     "format": "prettier --write src/**/*.js",
     "prepare": "husky install"
   },
