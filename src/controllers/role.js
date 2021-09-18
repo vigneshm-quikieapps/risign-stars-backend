@@ -1,8 +1,6 @@
 const { EQUALS_FILTER, STARTS_WITH_FILTER } = require("../contants/constant");
-const DoesNotExistException = require("../exceptions/DoesNotExistException");
+const DoesNotExistError = require("../exceptions/DoesNotExistError");
 const Role = require("../models/Role");
-
-
 
 //search for Role/ get all role
 module.exports.getAll = (req, res) => {
@@ -48,7 +46,6 @@ module.exports.getAll = (req, res) => {
     res.json(Role);
   });
 };
-
 
 module.exports.create = async (req, res) => {
   try {
