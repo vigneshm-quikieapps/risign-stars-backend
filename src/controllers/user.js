@@ -5,7 +5,7 @@ const User = require("../models/User");
 // const generateHash = require("../helpers/auth/generateHash");
 const { STARTS_WITH_FILTER, EQUALS_FILTER } = require("../contants/constant");
 
-exports.getUserById = (req, res, next, id) => {
+module.exports.getUserById = (req, res, next, id) => {
   User.findById(id).exec((error, user) => {
     if (error || !user) {
       return res.status(400).json({
@@ -68,7 +68,9 @@ module.exports.getAll = (req, res) => {
   for (let { field, type, value } of filters) {
     switch (type) {
       case STARTS_WITH_FILTER:
-        query.where(`${field}`, { $regex: new RegExp(`^${value}`, "i") });
+        query.where(`${field}`, {
+          $regex: new RegExp(`^${value}`, "i"),
+        });
         break;
       case EQUALS_FILTER:
         query.where(`${field}`, value);

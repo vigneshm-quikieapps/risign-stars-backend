@@ -116,7 +116,7 @@ module.exports.updateRegistration = async (req, res) => {
   }
   // next();
 };
-module.exports.updateSessionCapacity = async (req, res, next) => {
+module.exports.updateSessionCapacity = async (req, res) => {
   try {
     let session = await BusinessSession.findById(req.params.sessionId);
     if (!session) {

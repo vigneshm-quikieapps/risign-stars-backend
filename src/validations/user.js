@@ -79,7 +79,9 @@ const signUpValidationRules = () => {
     body("line2", ADDRESS.LINE2.MESSAGE)
       .optional()
       .isLength({ min: ADDRESS.LINE2.LENGTH }),
-    body("city", ADDRESS.CITY.MESSAGE).isLength({ min: ADDRESS.CITY.LENGTH }),
+    body("city", ADDRESS.CITY.MESSAGE).isLength({
+      min: ADDRESS.CITY.LENGTH,
+    }),
     body("country", ADDRESS.COUNTRY.MESSAGE).isLength({
       min: ADDRESS.CITY.LENGTH,
     }),

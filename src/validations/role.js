@@ -3,7 +3,9 @@ const { FUNCTIONAL_PRIVILEDGES } = require("../contants/constant");
 
 const createRoleValidationRules = () => {
   return [
-    body("name", "Name should have atleast 3 characters").isLength({ min: 3 }),
+    body("name", "Name should have atleast 3 characters").isLength({
+      min: 3,
+    }),
     body("description", "description should atleast 5 characters")
       .optional()
       .isLength({ min: 5 }),

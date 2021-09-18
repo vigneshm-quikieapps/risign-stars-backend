@@ -67,7 +67,9 @@ module.exports.getAllBusinessSession = (req, res) => {
   for (let { field, type, value } of filters) {
     switch (type) {
       case STARTS_WITH_FILTER:
-        query.where(`${field}`, { $regex: new RegExp(`^${value}`, "i") });
+        query.where(`${field}`, {
+          $regex: new RegExp(`^${value}`, "i"),
+        });
         break;
       case EQUALS_FILTER:
         query.where(`${field}`, value);

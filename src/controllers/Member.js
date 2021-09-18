@@ -87,7 +87,10 @@ module.exports.addMembership = async (req, res) => {
         { $push: { membership: body } },
         { new: true, useFindAndModify: false }
       );
-      return res.json({ updatedMsg: "new membership id created", updated });
+      return res.json({
+        updatedMsg: "new membership id created",
+        updated,
+      });
     }
     console.log(business);
     let Membership = business.membership.find(
@@ -126,7 +129,9 @@ module.exports.getAllMember = (req, res) => {
   for (let { field, type, value } of filters) {
     switch (type) {
       case STARTS_WITH_FILTER:
-        query.where(`${field}`, { $regex: new RegExp(`^${value}`, "i") });
+        query.where(`${field}`, {
+          $regex: new RegExp(`^${value}`, "i"),
+        });
         break;
       case EQUALS_FILTER:
         query.where(`${field}`, value);

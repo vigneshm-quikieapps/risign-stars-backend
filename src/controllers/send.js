@@ -1,6 +1,5 @@
 // Sending Notification to the Device using Firebase Admin
-const admin = require("firebase-admin");
-const fetch = require("node-fetch");
+// const admin = require("firebase-admin");
 const Notification = require("../models/notification");
 
 module.exports.saveNotificationData = (req, res) => {

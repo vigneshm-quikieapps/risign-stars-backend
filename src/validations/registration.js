@@ -25,8 +25,12 @@ const createRegistrationValidationRules = () => {
     body("coach.*.name", "min length should be 2").isLength({ min: 2 }),
     body("members").isObject(),
     body("members.*.name", "min length should be 2").isLength({ min: 2 }),
-    body("members.*.allergies", "min length should be 2").isLength({ min: 2 }),
-    body("members.*.conditions", "min length should be 2").isLength({ min: 2 }),
+    body("members.*.allergies", "min length should be 2").isLength({
+      min: 2,
+    }),
+    body("members.*.conditions", "min length should be 2").isLength({
+      min: 2,
+    }),
     body("members.*.startDate", "must be a valid date").isDate().trim(),
     body("members.*.registeredDate", "must be a valid date").isDate().trim(),
     body("members.*.enrolledStatus", "invalid value").isIn(

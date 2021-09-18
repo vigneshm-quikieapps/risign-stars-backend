@@ -14,8 +14,12 @@ const createEnrolementValidationRules = () => {
     ),
     body("clubMembershipId", "min length should be 2").isLength({ min: 2 }),
     body("consent").isObject(),
-    body("consent.allergies", "min length should be 2").isLength({ min: 2 }),
-    body("consent.condition", "min length should be 2").isLength({ min: 2 }),
+    body("consent.allergies", "min length should be 2").isLength({
+      min: 2,
+    }),
+    body("consent.condition", "min length should be 2").isLength({
+      min: 2,
+    }),
     body("consent.photographConsent", "value should be boolean").isBoolean(
       true
     ),
@@ -43,8 +47,12 @@ const createEnrolementValidationRules = () => {
 const putEnrolementConsentValidationRules = () => {
   return [
     body("consent").isObject(),
-    body("consent.allergies", "min length should be 2").isLength({ min: 2 }),
-    body("consent.condition", "min length should be 2").isLength({ min: 2 }),
+    body("consent.allergies", "min length should be 2").isLength({
+      min: 2,
+    }),
+    body("consent.condition", "min length should be 2").isLength({
+      min: 2,
+    }),
     body("consent.photographConsent", "value should be boolean").isBoolean(
       true
     ),

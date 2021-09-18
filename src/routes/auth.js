@@ -3,7 +3,6 @@ const router = express.Router();
 const {
   signup,
   signin,
-  isSignedIn,
   refreshToken,
   getOTPEmail,
   getOTPMobileNo,

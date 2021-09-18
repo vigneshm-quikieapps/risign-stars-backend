@@ -19,7 +19,9 @@ router.post(
   [
     check("business").custom(businessIdValidation),
     check("code", "code should be a Numbre/Integer  ").isInt(),
-    check("label", "label should be atleast 3 chatecters").isLength({ min: 3 }),
+    check("label", "label should be atleast 3 chatecters").isLength({
+      min: 3,
+    }),
     check("startdate", "starttime   should be a date").isDate({
       format: "MM-DD-YYYY",
     }),
