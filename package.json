@@ -11,7 +11,9 @@
     "redis-gui": "redis-commander --redis-host $(grep REDIS_HOST .env | cut -d '=' -f2) --redis-port $(grep REDIS_PORT .env | cut -d '=' -f2) --redis-password $(grep REDIS_PASSWORD .env | cut -d '=' -f2)",
     "pre-red": "redis-commander --cc",
     "red": "redis-commander",
-    "lint": "eslint"
+    "lint": "eslint --cache --fix",
+    "format": "prettier --write src/**/*.js",
+    "prepare": "husky install"
   },
   "author": "",
   "license": "ISC",
@@ -48,9 +50,15 @@
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-prettier": "^4.0.0",
     "eslint-plugin-unused-imports": "^1.1.4",
+    "husky": "^7.0.2",
     "jest": "^27.1.1",
+    "lint-staged": "^11.1.2",
     "nodemon": "^2.0.12",
     "prettier": "^2.3.2",
     "redis-commander": "^0.7.2"
+  },
+  "lint-staged": {
+    "*.js": "eslint --cache --fix",
+    "src/**/*.js": "prettier --write"
   }
 }
