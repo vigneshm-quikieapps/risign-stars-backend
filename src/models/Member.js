@@ -17,7 +17,7 @@ const memberSchema = new mongoose.Schema(
    
     membership: [
       {
-        business: String,
+        businessId: String,
         clubMembershipId:String
       
       },
