@@ -17,7 +17,7 @@ module.exports.getProgressIdById = (req, res, next, id) => {
 
 //pogress creation
 
-module.exports.createProgress = async(data) => {
+module.exports.createProgress = async(data, session) => {
     // const errors = validationResult(req);
 
     // if (!errors.isEmpty()) {
@@ -26,7 +26,7 @@ module.exports.createProgress = async(data) => {
     //     });
     // }
     const progress = new Progress(data);
-    await progress.save()
+    await progress.save().session(session)
     // progress.save((err, progress) => {
     //     if (err) {
     //         console.log(err);

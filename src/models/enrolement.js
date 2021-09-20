@@ -7,7 +7,7 @@ const {
 
 const enrolementSchema = new mongoose.Schema(
   {
-   memberName:String,
+  //  memberName:String,
     memberId: {
       type: ObjectId,
     },
@@ -16,11 +16,11 @@ const enrolementSchema = new mongoose.Schema(
        ref: "BusinessSession"
     },
     classId:{
-   type: ObjectId,
+      type: ObjectId,
        ref: "BusinessClass"
     },
     businessId: {
-     type: ObjectId,
+      type: ObjectId,
        ref: "Business"
     },
     name: String,
