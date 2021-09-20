@@ -1,12 +1,11 @@
 const { body } = require("express-validator");
-const {
-  FUNCTIONAL_PRIVILEDGES
-
-} = require("../contants/constant");
+const { FUNCTIONAL_PRIVILEDGES } = require("../contants/constant");
 
 const createRoleValidationRules = () => {
   return [
-    body("name", "Name should have atleast 3 characters").isLength({ min: 3 }),
+    body("name", "Name should have atleast 3 characters").isLength({
+      min: 3,
+    }),
     body("description", "description should atleast 5 characters")
       .optional()
       .isLength({ min: 5 }),
@@ -30,9 +29,12 @@ const createRoleValidationRules = () => {
       "functionPriviledges.*.permission.delete",
       "permission.delete must be boolean"
     ).isBoolean(),
-    body("updatedBy", "updatedBy should be a valid userId").optional().isLength({ min: 12 }),
-    body("createdBy", "createdBy should be a valid userId").isLength({ min: 12 }),
-  
+    body("updatedBy", "updatedBy should be a valid userId")
+      .optional()
+      .isLength({ min: 12 }),
+    body("createdBy", "createdBy should be a valid userId").isLength({
+      min: 12,
+    }),
   ];
 };
 
@@ -74,10 +76,9 @@ const updateRoleValidationRules = () => {
     )
       .optional()
       .isBoolean(),
-      body("updatedBy", "updatedBy should be a valid userId").isLength({ min: 12 }),
-    
-  
-    
+    body("updatedBy", "updatedBy should be a valid userId").isLength({
+      min: 12,
+    }),
   ];
 };
 

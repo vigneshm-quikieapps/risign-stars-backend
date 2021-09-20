@@ -1,12 +1,12 @@
 const enrolement = require("../models/enrolement");
-const BusinessSession = require("../models/businessSession")
+const BusinessSession = require("../models/businessSession");
 // const Progress = require("../models/progress");
+const mongoose = require("mongoose");
 
-const { createProgress } = require("../controllers/progress")
-
+const { createProgress } = require("../controllers/progress");
 
 const enrollmentPayloadRequest = (data) => {
-  return{
+  return {
     // id: data.id,
     sessionId: data.sessionId,
     classId: data.classId,
@@ -14,7 +14,7 @@ const enrollmentPayloadRequest = (data) => {
     name: data.name,
     memberId: data.memberId,
     clubMembershipId: data.clubMembershipId,
-    consent:data.consent,
+    consent: data.consent,
     newsletter: data.newsletter,
     startDate: data.startDate,
     registeredDate: data.registeredDate,
@@ -23,289 +23,272 @@ const enrollmentPayloadRequest = (data) => {
     //   enum: ENUM_ENROLLED_STATUS
     // },
     // discontinuationReason: {
-    //   type: String, 
+    //   type: String,
     //   enum: ENUM_DISCONTINUATION_REASON
     // },
     // droppedDate: Date,
-  
-  }
-}
+  };
+};
 
-
-const enrollmentPayloadRequest = (data) => {
-  return{
+const progressPayloadRequest = (data) => {
+  return {
     studentId: data.studentId,
     studentName: data.studentName,
     sessionId: data.sessionId,
     classId: data.classId,
     className: data.className,
     levelCount: data.levelCount,
-    levels: data.levels
-  }
-}
+    levels: data.levels,
+  };
+};
 
-
-async function Enrollment(bodyData, session){
-
+async function Enrollment(bodyData, session) {
   // creating enrollment till session capacity
 
-  const createEnrollmentData = enrollmentPayloadRequest(bodyData)
+  const createEnrollmentData = enrollmentPayloadRequest(bodyData);
 
-  await enrolement.create(
-    {
+  await enrolement
+    .create({
       ...createEnrollmentData,
       enrolledStatus: "ENROLLED",
-      discontinuationReason: "NONE"
-    }
-  ).session(session)
+      discontinuationReason: "NONE",
+    })
+    .session(session);
 
-  // creating progress Record 
+  // creating progress Record
 
-  const createProgressData = enrollmentPayloadRequest(bodyData)
+  const createProgressData = progressPayloadRequest(bodyData);
 
-  createProgress(createProgressData).session(session)
-
+  createProgress(createProgressData).session(session);
 
   // increment session enrolled in business session
 
   await BusinessSession.findByIdAndUpdate(
     { _id: bodyData.sessionId },
-    { $inc: { "fullcapacityfilled" : 1 } }
-  ).session(session)
-
+    { $inc: { fullcapacityfilled: 1 } }
+  ).session(session);
 }
 
 //createMember(Enrollement)
-module.exports.createEnrollment= async (req, res) => {
-
+module.exports.createEnrollment = async (req, res) => {
   const session = await mongoose.startSession();
 
   session.startTransaction();
 
   try {
+    const businessSessiondata = await BusinessSession.findOne({
+      _id: req.body.sessionId,
+    }).session(session);
 
-    const businessSessiondata = await BusinessSession.findOne({_id: req.body.sessionId}).session(session)
+    let totalCapacity =
+      businessSessiondata.fullcapacity + businessSessiondata.waitcapacity;
+    let totalEnrollment =
+      businessSessiondata.fullcapacityfilled +
+      businessSessiondata.waitcapacityfilled;
 
-    let totalCapacity = businessSessiondata.fullcapacity + businessSessiondata.waitcapacity
-    let totalEnrollment = businessSessiondata.fullcapacityfilled + businessSessiondata.waitcapacityfilled
+    if (totalCapacity <= totalEnrollment) {
+      return res
+        .status(201)
+        .send({ message: "Maximum limit of enrollment is reached." });
+    } else if (
+      businessSessiondata.fullcapacityfilled !==
+      businessSessiondata.fullcapacity
+    ) {
+      const member = await Enrollment(req.body, session);
 
-    if(totalCapacity <= totalEnrollment){
-
-      return res.status(201).send({ message: "Maximum limit of enrollment is reached."})
-
-    }else if(businessSessiondata.fullcapacityfilled !== businessSessiondata.fullcapacity){
-
-      const member = await Enrollment(req.body, session)
-
-      if(member){
-        return res.status(201).send({ message: "enrolled Successfully", member })
+      if (member) {
+        return res
+          .status(201)
+          .send({ message: "enrolled Successfully", member });
       }
-
-
-    }else if(business.waitcapacity !== business.waitcapacityfilled && business.fullcapacity > business.fullcapacityfilled){
-
+    } else if (
+      businessSessiondata.waitcapacity !==
+        businessSessiondata.waitcapacityfilled &&
+      businessSessiondata.fullcapacity > businessSessiondata.fullcapacityfilled
+    ) {
       // creating enrollment till session capacity
 
-      const createEnrollmentData = payloadRequest(req.body)
+      const createEnrollmentData = enrollmentPayloadRequest(req.body);
 
-      let member = await enrolement.create(
-        {
+      let member = await enrolement
+        .create({
           ...createEnrollmentData,
           enrolledStatus: "WAITLISTED",
-          discontinuationReason: "NONE"
-        }
-      ).session(session)
-
+          discontinuationReason: "NONE",
+        })
+        .session(session);
 
       // increment waitlist enrolled in business session
 
       await BusinessSession.findByIdAndUpdate(
         { _id: req.body.sessionId },
-        { $inc: { "waitcapacityfilled" : 1 } }
-      ).session(session)
+        { $inc: { waitcapacityfilled: 1 } }
+      ).session(session);
 
       await session.commitTransaction();
-        
-      console.log('success');
 
-      return res.status(201).send({ message: "enrolled Successfully", member })
+      console.log("success");
+
+      return res.status(201).send({ message: "enrolled Successfully", member });
     }
-
   } catch (err) {
-
-    console.log('error');
+    console.log("error");
     await session.abortTransaction();
     return res.status(422).send({ message: err.message });
-
-  } finally{
-
+  } finally {
     session.endSession();
-
   }
 };
 
-
-
-
 module.exports.cancelMembership = async (req, res) => {
-
   const session = await mongoose.startSession();
 
   session.startTransaction();
 
-  try{
-
-    await enrolement.findOneAndUpdate(
-      { memberId: req.body.memberId, sessionId: req.body.sessionId },
-      {
-        $set : {
-          "enrolledStatus": "DROPPED",
-          "discontinuationReason": "DROPPED"
+  try {
+    await enrolement
+      .findOneAndUpdate(
+        { memberId: req.body.memberId, sessionId: req.body.sessionId },
+        {
+          $set: {
+            enrolledStatus: "DROPPED",
+            discontinuationReason: "DROPPED",
+          },
         }
-      }
-    ).session(session)
+      )
+      .session(session);
 
     await BusinessSession.findOneAndUpdate(
       { sessionId: req.body.sessionId },
       {
-        $inc: {"fullcapacityfilled": -1}
+        $inc: { fullcapacityfilled: -1 },
       }
-    ).session(session)
+    ).session(session);
 
     await session.commitTransaction();
-        
-    console.log('success');
+
+    console.log("success");
 
     return res.status(201).send({ message: "cancellation successfull" });
-     
   } catch (err) {
-
-    console.log('error');
+    console.log("error");
     await session.abortTransaction();
     return res.status(422).send({ message: err.message });
-
-  } finally{
-
+  } finally {
     session.endSession();
-
   }
-}
-
-
+};
 
 module.exports.updateEnrollmentWaitlist = async (req, res) => {
-
   const session = await mongoose.startSession();
 
   session.startTransaction();
 
-  try{
+  try {
+    const updateEnrollment = await enrolement
+      .find({ enrolledStatus: "WAITLISTED" })
+      .session(session);
 
-    const updateEnrollment = await enrolement.find({ enrolledStatus: "WAITLISTED"}).session(session);
+    /**
+     * commenting this code. as it has some issues.
+     * try not to perform database query inside for loop / map
+     *
+     *
+     */
+    // updateEnrollment.map((member) => {
+    //   const businessSessiondata = await BusinessSession.findOne({
+    //     _id: req.body.sessionId
+    //   }).session(session);
 
+    //   if (
+    //     businessSessiondata.fullcapacity !==
+    //     businessSessiondata.fullcapacityfilled
+    //   ) {
+    //     await enrolement
+    //       .deleteOne({ memberId: member.memberId })
+    //       .session(session);
 
-    updateEnrollment.map((member) => {
-      
-      const businessSessiondata = await BusinessSession.findOne({_id: req.body.sessionId}).session(session)
+    //     await Enrollment(member, session);
 
-      if(businessSessiondata.fullcapacity !== businessSessiondata.fullcapacityfilled){
-
-        await enrolement.deleteOne({memberId: member.memberId}).session(session);
-
-        await Enrollment(member, session)
-
-        await BusinessSession.findOneAndUpdate(
-          { sessionId: req.body.sessionId },
-          {
-            $inc: {
-              "fullcapacityfilled": 1,
-              "waitcapacityfilled": -1
-            }
-          }
-        ).session(session)
-      }
-    })
+    //     await BusinessSession.findOneAndUpdate(
+    //       { sessionId: req.body.sessionId },
+    //       {
+    //         $inc: {
+    //           fullcapacityfilled: 1,
+    //           waitcapacityfilled: -1
+    //         }
+    //       }
+    //     ).session(session);
+    //   }
+    // });
 
     await session.commitTransaction();
-        
-    console.log('success');
 
-    return res.status(201).send({ message: "enrolled Successfully", member })
- 
+    console.log("success");
+
+    /** comment this because member is not defined due to commenting the above code. */
+    // return res.status(201).send({ message: "enrolled Successfully", member });
   } catch (err) {
-
-    console.log('error');
+    console.log("error");
     await session.abortTransaction();
     return res.status(422).send({ message: err.message });
-
-  } finally{
-
+  } finally {
     session.endSession();
-
   }
-}
+};
 
-
-
-module.exports.classTransfer = async(req, res) => {
+module.exports.classTransfer = async (req, res) => {
   const session = await mongoose.startSession();
 
   session.startTransaction();
 
-  try{
+  try {
+    const newBusinessSessiondata = await BusinessSession.findOne({
+      _id: req.body.SessionId,
+    }).session(session);
 
-    const newBusinessSessiondata = await BusinessSession.findOne({_id: req.body.SessionId}).session(session)
-
-    
-
-    if(newBusinessSessiondata.fullcapacity > newBusinessSessiondata.fullcapacityfilled){
-
-      await enrolement.findOneAndUpdate(
-        {_id: req.body.memberId, sessionId: req.body.currentSessionId},
-        {
-          $set: {
-            "enrolledStatus": "DROPPED",
-            "discontinuationReason": "CLASS_TRANSFER"
+    if (
+      newBusinessSessiondata.fullcapacity >
+      newBusinessSessiondata.fullcapacityfilled
+    ) {
+      await enrolement
+        .findOneAndUpdate(
+          { _id: req.body.memberId, sessionId: req.body.currentSessionId },
+          {
+            $set: {
+              enrolledStatus: "DROPPED",
+              discontinuationReason: "CLASS_TRANSFER",
+            },
           }
-        }
-      ).session(session)
+        )
+        .session(session);
 
-      await Enrollment(req.body, session)
+      await Enrollment(req.body, session);
 
       await BusinessSession.findOneAndUpdate(
-        {_id: req.body.currentSessionId},
+        { _id: req.body.currentSessionId },
         {
-          $inc: {"fullcapacityfilled": -1}
+          $inc: { fullcapacityfilled: -1 },
         }
-      ).session(session)
-
+      ).session(session);
     }
 
-
     await session.commitTransaction();
-        
-    console.log('success');
 
-    return res.status(201).send({ message: "enrolled Successfully", member })
- 
+    console.log("success");
+
+    /** commenting this as member is not defined */
+    // return res.status(201).send({ message: "enrolled Successfully", member });
   } catch (err) {
-
-    console.log('error');
+    console.log("error");
     await session.abortTransaction();
     return res.status(422).send({ message: err.message });
-
-  } finally{
-
+  } finally {
     session.endSession();
-
   }
-}
-
-
-
+};
 
 /////////////////////////////////////////// Below this line deprecated ////////////////////////////////////////////////
-
 
 // //getAllMember
 //   module.exports.getAll= async (req, res) => {
@@ -318,11 +301,10 @@ module.exports.classTransfer = async(req, res) => {
 //       }
 //   };
 
-
 // //updateSpecificMemberConsent
 //   module.exports.updateConsent= async (req, res) => {
 //     try {
-    
+
 //       let options = { new: true };
 //       console.log(req.params.id)
 //       let student = await enrolement.findByIdAndUpdate(req.params.id, req.body, options);
@@ -336,7 +318,6 @@ module.exports.classTransfer = async(req, res) => {
 //   }
 //   };
 
-
 // //getSpecificMember'sConsent
 //   module.exports.getConsent= async (req, res) => {
 //     try {
@@ -348,12 +329,10 @@ module.exports.classTransfer = async(req, res) => {
 //       }
 //   };
 
-
-
 // //updateSpecificMemberAdditionalSection
 // module.exports.updateAdditionalSection= async (req, res) => {
 //   try {
-  
+
 //     let options = { new: true };
 //     console.log(req.params.id)
 //     let student = await enrolement.findByIdAndUpdate(req.params.id, req.body, options);
@@ -367,8 +346,6 @@ module.exports.classTransfer = async(req, res) => {
 // }
 // };
 
-
-
 // //getSpecificMember'sAdditionalSection
 // module.exports.getAdditionalSection= async (req, res) => {
 //   try {
@@ -380,7 +357,6 @@ module.exports.classTransfer = async(req, res) => {
 //     }
 // };
 
-
 // //update registration
 // module.exports.updateRegistration= async (req, res) => {
 //   try {
@@ -391,15 +367,14 @@ module.exports.classTransfer = async(req, res) => {
 //     let options = { new: true };
 
 //     let student = await enrolement.findByIdAndUpdate(req.params.enrolementId,{"discontinuationReason":"CLASS_TRANSFER"}, options);
-     
 
 //       return res.send({"updatedenrolement":student});
 //     } catch (err) {
-     
+
 //       return res.status(422).send({ message: err.message });
 //   }
 //     next();
-  
+
 // };
 // module.exports.updateSessionCapacity= async (req, res,next) => {
 //   try {
@@ -412,14 +387,13 @@ module.exports.classTransfer = async(req, res) => {
 //        throw new Error("session is already zero")
 //      }
 //     let student = await BusinessSession.findByIdAndUpdate(req.params.sessionId,{"fullcapacityfilled":session.fullcapacityfilled-1}, options);
-     
 
 //     return res.send({ "updatedenrolement": student });
 
 //     } catch (err) {
-     
+
 //       return res.status(422).send({ message: err.message });
 //   }
 //     next();
-  
+
 // };

@@ -3,7 +3,6 @@ const router = express.Router();
 const {
   signup,
   signin,
-  isSignedIn,
   refreshToken,
   getOTPEmail,
   getOTPMobileNo,
@@ -41,8 +40,8 @@ router.post(
 );
 
 // Testing Route
-router.get("/testroute", isSignedIn, (req, res) => {
-  res.json(req.auth);
+router.get("/testroute", (req, res) => {
+  res.send("hello");
 });
 
 module.exports = router;

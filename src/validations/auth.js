@@ -1,8 +1,6 @@
 const { body } = require("express-validator");
 const { lookup } = require("../services/mobile");
-const { USER } = require("../contants/validation");
-const User = require("../models/User");
-const { AccessToken, RefreshToken } = require("../services/auth");
+const { RefreshToken } = require("../services/auth");
 
 const isValidMobile = async (mobileNo) => {
   /** mobile no is required */

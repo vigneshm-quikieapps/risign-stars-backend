@@ -5,7 +5,7 @@ const { STARTS_WITH_FILTER, EQUALS_FILTER } = require("../contants/constant");
 
 //parameter extractor
 module.exports.getBusinessSessionIdById = (req, res, next, id) => {
-    BusinessSession.findById(id).exec((err, Session) => {
+  BusinessSession.findById(id).exec((err, Session) => {
     if (err) {
       return res.status(400).json({
         err: "cannot find business Session by id",
@@ -19,7 +19,7 @@ module.exports.getBusinessSessionIdById = (req, res, next, id) => {
 //Business Session creation
 
 module.exports.createBusinessSession = (req, res) => {
-   const errors = validationResult(req);
+  const errors = validationResult(req);
 
   if (!errors.isEmpty()) {
     return res.status(422).json({
@@ -53,7 +53,10 @@ module.exports.getAllBusinessSession = (req, res) => {
   /**
    * query object
    */
-  let query = BusinessSession.find().sort({ _id: sortBy }).skip(skip).limit(limit);
+  let query = BusinessSession.find()
+    .sort({ _id: sortBy })
+    .skip(skip)
+    .limit(limit);
 
   /**
    * filter
@@ -62,7 +65,9 @@ module.exports.getAllBusinessSession = (req, res) => {
   for (let { field, type, value } of filters) {
     switch (type) {
       case STARTS_WITH_FILTER:
-        query.where(`${field}`, { $regex: new RegExp(`^${value}`, "i") });
+        query.where(`${field}`, {
+          $regex: new RegExp(`^${value}`, "i"),
+        });
         break;
       case EQUALS_FILTER:
         query.where(`${field}`, value);
@@ -94,7 +99,7 @@ module.exports.getBusinessSession = (req, res) => {
 //Business Session Update
 
 module.exports.updateBusinessSession = (req, res) => {
-   const errors = validationResult(req);
+  const errors = validationResult(req);
 
   if (!errors.isEmpty()) {
     return res.status(422).json({

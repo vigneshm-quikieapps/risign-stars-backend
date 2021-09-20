@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const { DATA_PRIVILEDGES_TYPE } = require("../contants/constant");
+const { DATA_PRIVILEGES_TYPE } = require("../contants/constant");
 var bcrypt = require("bcryptjs");
 const generatePassword = require("../services/auth/generatePassword");
 
@@ -15,11 +15,6 @@ const UserSchema = new mongoose.Schema(
       unique: true,
       lowercase: true,
     },
-    // encry_password: {
-    //   type: String,
-    //   required: true,
-    // },
-    // salt: String,
     name: {
       type: String,
       required: true,
@@ -36,12 +31,10 @@ const UserSchema = new mongoose.Schema(
     },
     postcode: {
       type: String,
-      required: true,
       trim: true,
     },
     line1: {
       type: String,
-      required: true,
       trim: true,
     },
     line2: {
@@ -50,24 +43,24 @@ const UserSchema = new mongoose.Schema(
     },
     city: {
       type: String,
-      required: true,
       trim: true,
     },
     country: {
       type: String,
-      required: true,
       trim: true,
     },
     password: {
       type: String,
     },
-    dataPriviledges: {
-      type: {
-        type: String,
-        enum: DATA_PRIVILEDGES_TYPE,
+    dataPrivileges: [
+      {
+        type: {
+          type: String,
+          enum: DATA_PRIVILEGES_TYPE,
+        },
+        businessId: String,
       },
-      businessId: String,
-    },
+    ],
   },
   { timestamps: true }
 );
