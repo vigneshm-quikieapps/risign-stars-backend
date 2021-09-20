@@ -1,7 +1,7 @@
 const { StatusCodes } = require("http-status-codes");
 const UnauthorizedError = require("../../exceptions/UnauthorizedError");
 const { verify } = require("jsonwebtoken");
-const hasAllPermission = require("./utils/hasAllPermission");
+const { hasPermission, hasAllPermission } = require("./utils");
 const getRoleIds = require("./utils/getRoleIds");
 
 const isAuthorized = (page, action) => async (req, res, next) => {

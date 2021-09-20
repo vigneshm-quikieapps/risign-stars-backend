@@ -1,8 +1,10 @@
-const hasPermission = (roles, { page, action }) => {
-    let roleIndex = roles.findIndex(({ functionalPriviledges }) =>
-      hasFunctionalPrivileges(functionalPriviledges, { page, action })
-    );
-    return roleIndex > -1;
-  };
+const hasFunctionalPrivileges = require("./hasFunctionalPrivileges");
 
-  module.exports = hasPermission
+const hasPermission = (roles, { page, action }) => {
+  let roleIndex = roles.findIndex(({ functionalPriviledges }) =>
+    hasFunctionalPrivileges(functionalPriviledges, { page, action })
+  );
+  return roleIndex > -1;
+};
+
+module.exports = hasPermission;
