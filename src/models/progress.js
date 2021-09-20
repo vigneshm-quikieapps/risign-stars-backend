@@ -1,56 +1,57 @@
 const mongoose = require("mongoose");
 const { ObjectId } = mongoose.Schema;
 
+const { SKILL_PROGRESS_STATUS } = require("../contants/constant")
+
 const progressSchema = new mongoose.Schema(
     {
-        name: {
+        studentId: {
             type: String,
-            required: true,
-            trim: true,
+            required:true
         },
-        status: {
+        studentName: {
             type: String,
-            default: "active",
-            enum: ["active", "inactive"],
+            required:true
         },
-        levelcount: {
+        sessionId: {
+            type: String,
+            required:true
+        },
+        classId: {
+            type: String,
+            required:true
+        },
+        className: {
+            type: String,
+            required:true
+        },
+        // evaluationScheme: EvaluationScheme,
+        levelCount: {
             type: Number,
-            required: true,
+            required:true
         },
         levels: [
             {
                 skills: [
                     {
-                        name: { type: String },
-                        status: { type: String, default: "Not_Started" },
-                        StartedAt: { type: Date },
-                        completedAt: { type: Date }
-                    }
+                    name: {
+                        type: String,
+                        required:true
+                    },
+                    status: {
+                        type: String,
+                        required:true,
+                        enum: SKILL_PROGRESS_STATUS
+                    },
+                    startedAt: Date /** when the skill is marked as inProgress */,
+                    completedAt: Date /** when the shill is marked as attained */,
+                    },
                 ],
-
-                // attend: [
-                //     {
-                //         Day: Date,
-                //         attended: Boolean
-                //     },
-                // ],
-
-                // progress: [
-                //     {
-                //         Day: Date,
-                //         progress: Boolean
-                //     },
-                // ],
-
-                // skills: [
-                //     {
-                //         names: String,
-                //         status: "Not_STARTED",
-                //         Day: Date,
-                //         DAY: Date
-                //     }
-                // ]
-
+                status: {
+                    type: String,
+                    required:true,
+                    enum: SKILL_PROGRESS_STATUS
+                },
             },
         ],
     updatedBy:  {
