@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 const { ObjectId } = mongoose.Schema;
 
 const registrationSchema = new mongoose.Schema(
-{
+  {
     id: String,
     pattern: [
       {
@@ -31,16 +31,16 @@ const registrationSchema = new mongoose.Schema(
         droppedDate: Date,
       },
     ],
-    updatedBy:  {
-       type: ObjectId,
-            ref:"User"
+    updatedBy: {
+      type: ObjectId,
+      ref: "User",
     },
     createdBy: {
-       type: ObjectId,
-            ref:"User"
-    }
+      type: ObjectId,
+      ref: "User",
+    },
   },
   { timestamps: true }
-  );
-  
-  module.exports = mongoose.model("Registration", registrationSchema);
+);
+
+module.exports = mongoose.model("Registration", registrationSchema);

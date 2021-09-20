@@ -3,6 +3,7 @@ const { USER } = require("../contants/validation");
 const ResetPasswordEmail = require("../services/notification/Email/ResetPasswordEmail");
 const { body } = require("express-validator");
 const User = require("../models/User");
+const { AccessToken } = require("../services/auth");
 
 const isRegisteredEmail = async (email, { req }) => {
   try {

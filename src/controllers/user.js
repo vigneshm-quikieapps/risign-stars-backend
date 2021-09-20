@@ -5,7 +5,7 @@ const User = require("../models/User");
 // const generateHash = require("../helpers/auth/generateHash");
 const { STARTS_WITH_FILTER, EQUALS_FILTER } = require("../contants/constant");
 
-exports.getUserById = (req, res, next, id) => {
+module.exports.getUserById = (req, res, next, id) => {
   User.findById(id).exec((error, user) => {
     if (error || !user) {
       return res.status(400).json({
@@ -17,14 +17,15 @@ exports.getUserById = (req, res, next, id) => {
   });
 };
 
-
 module.exports.create = async (req, res) => {
   try {
     let data = req.body;
-    data.password = User.generatePassword();
-
+    let password = User.generatePassword();
+    data.password = password;
     let user = await User.create(data);
-    return res.status(201).send({ message: "added successfully", user });
+    return res
+      .status(201)
+      .send({ message: "added successfully", user, password });
   } catch (err) {
     console.error(err);
     return res.status(422).send({ message: err.message });
@@ -67,7 +68,9 @@ module.exports.getAll = (req, res) => {
   for (let { field, type, value } of filters) {
     switch (type) {
       case STARTS_WITH_FILTER:
-        query.where(`${field}`, { $regex: new RegExp(`^${value}`, "i") });
+        query.where(`${field}`, {
+          $regex: new RegExp(`^${value}`, "i"),
+        });
         break;
       case EQUALS_FILTER:
         query.where(`${field}`, value);
@@ -89,7 +92,6 @@ module.exports.getAll = (req, res) => {
     res.json(User);
   });
 };
-
 
 module.exports.update = async (req, res) => {
   try {
