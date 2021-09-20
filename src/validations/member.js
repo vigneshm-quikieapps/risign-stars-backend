@@ -40,11 +40,10 @@ const createMemberValidationRules = () => {
       body("contacts.*.relationShip", "invalid relationship").optional().isIn(RELATIONSHIPS),
       body("updatedBy", "updatedBy should be a valid userId").isLength({ min: 12 }),
 
-    ];
-  };
-  module.exports = {
-    createMemberValidationRules,
-    updateMemberValidationRules
-    
-  };
-  
+  ];
+};
+
+module.exports = {
+  createMemberValidationRules,
+  updateMemberValidationRules,
+};

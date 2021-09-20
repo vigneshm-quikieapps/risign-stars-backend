@@ -1,10 +1,9 @@
 const mongoose = require("mongoose");
 const { ENUM_BUSINESS_TYPE } = require("../contants/constant");
 const sessionSchema = new mongoose.Schema(
-    {
+  {
     id: String,
-    platformId:
-      String,
+    platformId: String,
     name: String,
     code: String,
     tradename: String,
@@ -17,6 +16,6 @@ const sessionSchema = new mongoose.Schema(
     country: String,
   },
   { timestamps: true }
-  );
-  
-  module.exports = mongoose.model("Session", sessionSchema);
+);
+
+module.exports = mongoose.model("Session", sessionSchema);

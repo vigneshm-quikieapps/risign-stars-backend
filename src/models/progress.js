@@ -1,70 +1,68 @@
 const mongoose = require("mongoose");
 const { ObjectId } = mongoose.Schema;
 
+const { SKILL_PROGRESS_STATUS } = require("../contants/constant");
+
 const progressSchema = new mongoose.Schema(
-    {
-        name: {
-            type: String,
-            required: true,
-            trim: true,
-        },
-        status: {
-            type: String,
-            default: "active",
-            enum: ["active", "inactive"],
-        },
-        levelcount: {
-            type: Number,
-            required: true,
-        },
-        levels: [
-            {
-                skills: [
-                    {
-                        name: { type: String },
-                        status: { type: String, default: "Not_Started" },
-                        StartedAt: { type: Date },
-                        completedAt: { type: Date }
-                    }
-                ],
-
-                // attend: [
-                //     {
-                //         Day: Date,
-                //         attended: Boolean
-                //     },
-                // ],
-
-                // progress: [
-                //     {
-                //         Day: Date,
-                //         progress: Boolean
-                //     },
-                // ],
-
-                // skills: [
-                //     {
-                //         names: String,
-                //         status: "Not_STARTED",
-                //         Day: Date,
-                //         DAY: Date
-                //     }
-                // ]
-
+  {
+    studentId: {
+      type: String,
+      required: true,
+    },
+    studentName: {
+      type: String,
+      required: true,
+    },
+    sessionId: {
+      type: String,
+      required: true,
+    },
+    classId: {
+      type: String,
+      required: true,
+    },
+    className: {
+      type: String,
+      required: true,
+    },
+    levelCount: {
+      type: Number,
+      required: true,
+    },
+    levels: [
+      {
+        skills: [
+          {
+            name: {
+              type: String,
+              required: true,
             },
+            status: {
+              type: String,
+              required: true,
+              enum: SKILL_PROGRESS_STATUS,
+            },
+            startedAt: Date /** when the skill is marked as inProgress */,
+            completedAt: Date /** when the shill is marked as attained */,
+          },
         ],
-    updatedBy:  {
-       type: ObjectId,
-            ref:"User"
+        status: {
+          type: String,
+          required: true,
+          enum: SKILL_PROGRESS_STATUS,
+        },
+      },
+    ],
+    updatedBy: {
+      type: ObjectId,
+      ref: "User",
     },
     createdBy: {
-       type: ObjectId,
-            ref:"User"
-    }
-
-
+      type: ObjectId,
+      ref: "User",
     },
-    { timestamps: true }
+  },
+  { timestamps: true }
 );
 
 module.exports = mongoose.model("Progress", progressSchema);

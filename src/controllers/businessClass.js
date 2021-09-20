@@ -5,26 +5,26 @@ const { STARTS_WITH_FILTER, EQUALS_FILTER } = require("../contants/constant");
 
 //parameter extractor
 module.exports.getBusinessClassIdById = (req, res, next, id) => {
-    BusinessClass.findById(id)
-      .populate("category")
-      .populate("business")
-      .populate("evaluation")
-      .populate("session")
-        .exec((err, Class) => {
-    if (err) {
-      return res.status(400).json({
-        err: "cannot find business Class by id enter a valid ID",
-      });
-    }
-    req.Class = Class;
-    next();
-  });
+  BusinessClass.findById(id)
+    .populate("category")
+    .populate("business")
+    .populate("evaluation")
+    .populate("session")
+    .exec((err, Class) => {
+      if (err) {
+        return res.status(400).json({
+          err: "cannot find business Class by id enter a valid ID",
+        });
+      }
+      req.Class = Class;
+      next();
+    });
 };
 
 //Business Class creation
 
 module.exports.createBusinessClass = (req, res) => {
-   const errors = validationResult(req);
+  const errors = validationResult(req);
 
   if (!errors.isEmpty()) {
     return res.status(422).json({
@@ -32,7 +32,7 @@ module.exports.createBusinessClass = (req, res) => {
     });
   }
   const Class = new BusinessClass(req.body);
-   Class.save((err, Class) => {
+  Class.save((err, Class) => {
     if (err) {
       console.log(err);
       console.log(req.body);
@@ -58,7 +58,10 @@ module.exports.getAllBusinessClass = (req, res) => {
   /**
    * query object
    */
-  let query = BusinessClass.find().sort({ _id: sortBy }).skip(skip).limit(limit);
+  let query = BusinessClass.find()
+    .sort({ _id: sortBy })
+    .skip(skip)
+    .limit(limit);
 
   /**
    * filter
@@ -67,7 +70,9 @@ module.exports.getAllBusinessClass = (req, res) => {
   for (let { field, type, value } of filters) {
     switch (type) {
       case STARTS_WITH_FILTER:
-        query.where(`${field}`, { $regex: new RegExp(`^${value}`, "i") });
+        query.where(`${field}`, {
+          $regex: new RegExp(`^${value}`, "i"),
+        });
         break;
       case EQUALS_FILTER:
         query.where(`${field}`, value);
@@ -99,7 +104,7 @@ module.exports.getBusinessClass = (req, res) => {
 //Business Class Update
 
 module.exports.updateBusinessClass = (req, res) => {
-   const errors = validationResult(req);
+  const errors = validationResult(req);
 
   if (!errors.isEmpty()) {
     return res.status(422).json({
@@ -135,10 +140,8 @@ module.exports.isBusinessClassRestricted = (req, res, next) => {
       err: "Class deletion is Restricted as there are active Sessions Present ",
     });
   }
-    
-   next();
-  
 
+  next();
 };
 
 module.exports.deleteBusinessClass = (req, res) => {

@@ -1,7 +1,7 @@
 const Category = require("../models/Category");
 const { validationResult } = require("express-validator");
 
-exports.getCategoryById = (req, res, next, id) => {
+module.exports.getCategoryById = (req, res, next, id) => {
   Category.findById(id).exec((err, cat) => {
     if (err) {
       return res.status(400).json({
@@ -13,7 +13,7 @@ exports.getCategoryById = (req, res, next, id) => {
   });
 };
 
-exports.createCategory = (req, res) => {
+module.exports.createCategory = (req, res) => {
   const errors = validationResult(req);
 
   if (!errors.isEmpty()) {
@@ -32,7 +32,7 @@ exports.createCategory = (req, res) => {
   });
 };
 
-exports.getAllCategory = (req, res) => {
+module.exports.getAllCategory = (req, res) => {
   Category.find().exec((err, categories) => {
     if (err) {
       return res.status(400).json({
@@ -43,11 +43,11 @@ exports.getAllCategory = (req, res) => {
   });
 };
 
-exports.getCategory = (req, res) => {
+module.exports.getCategory = (req, res) => {
   return res.json(req.category);
 };
 
-exports.updateCategory = (req, res) => {
+module.exports.updateCategory = (req, res) => {
   const errors = validationResult(req);
 
   if (!errors.isEmpty()) {
@@ -67,7 +67,7 @@ exports.updateCategory = (req, res) => {
   });
 };
 
-exports.removeCategory = (req, res) => {
+module.exports.removeCategory = (req, res) => {
   const category = req.category;
   category.remove((err, cat) => {
     if (err) {
