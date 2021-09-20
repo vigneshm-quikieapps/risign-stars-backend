@@ -29,7 +29,7 @@ router.param("businessClassId", getBusinessClassIdById);
 router.post(
   "/businessClass/create",[
     check("name", "name should be at least 3 char").isLength({ min: 3 }),
-    check("business").custom(businessIdValidation),
+    check("businessId").custom(businessIdValidation),
     check("evaluation").custom(evaluationIdValidation),
     check("category").custom(categoryIdValidation),
     check("session").custom(sessionIdValidation),

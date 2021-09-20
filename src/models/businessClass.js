@@ -22,7 +22,7 @@ const businessClassSchema = new mongoose.Schema(
       default:"standard"
     },
     
-  business:{
+  businessId:{
         type:ObjectId,
         ref:"Business",
         required:true

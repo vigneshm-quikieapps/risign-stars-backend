@@ -41,8 +41,8 @@ const businessSessionSchema = new mongoose.Schema(
         },
 
         coach: {
-            type: ObjectId,
-            ref:"Coach"
+            type: String,
+            
         },
         updatedBy:  {
             type: ObjectId,
