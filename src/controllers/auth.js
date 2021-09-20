@@ -1,5 +1,5 @@
 const User = require("../models/User");
-const Otp = require("../services");
+const { Otp } = require("../services");
 const { Email, Sms } = require("../services/notification");
 const DoesNotExistError = require("../exceptions/DoesNotExistError");
 const expressJwt = require("express-jwt");
