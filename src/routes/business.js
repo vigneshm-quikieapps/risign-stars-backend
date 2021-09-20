@@ -51,15 +51,17 @@ router.post(
     }),
     check("line1", "line1 should be at least 3 char").isLength({ min: 3 }),
     check("city", "city should be at least 3 char").isLength({ min: 3 }),
-    check("country", "country should be at least 3 char").isLength({
-      min: 3,
-    }),
+    check("country", "country should be at least 3 char").isLength({ min: 3 }),
     check("updatedBy", "updatedBy should be a valid userId")
       .optional()
       .isLength({ min: 12 }),
     check("createdBy", "createdBy should be a valid userId").isLength({
       min: 12,
     }),
+    check("facebok", "facebok should be a valid url").isURL(),
+    check("instagram", "createdBy should be a valid url").isURL(),
+    check("linkedin", "createdBy should be a valid url").isURL(),
+    check("pinterest", "createdBy should be a valid url").isURL(),
   ],
   createBusiness
 );
@@ -112,6 +114,10 @@ router.put(
     check("createdBy", "createdBy should be a valid userId")
       .optional()
       .isLength({ min: 12 }),
+    check("facebok", "facebok should be a valid url").optional().isURL(),
+    check("instagram", "instagram should be a valid url").optional().isURL(),
+    check("linkedin", "linkedin should be a valid url").optional().isURL(),
+    check("pinterest", "pinterest should be a valid url").optional().isURL(),
   ],
   updateBusiness
 );

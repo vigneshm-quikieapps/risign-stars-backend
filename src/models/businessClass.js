@@ -20,13 +20,11 @@ const businessClassSchema = new mongoose.Schema(
       enum: ["standard"],
       default: "standard",
     },
-
-    business: {
+    businessId: {
       type: ObjectId,
       ref: "Business",
       required: true,
     },
-
     evaluation: {
       type: ObjectId,
       ref: "Evaluation",
@@ -37,7 +35,6 @@ const businessClassSchema = new mongoose.Schema(
       ref: "Category",
       required: true,
     },
-
     about: {
       type: String,
       maxlength: 3200,
@@ -49,7 +46,6 @@ const businessClassSchema = new mongoose.Schema(
         value: Number, //ie 1-3
       },
     ],
-
     session: {
       type: ObjectId,
       ref: "BusinessSession",
@@ -79,4 +75,3 @@ const businessClassSchema = new mongoose.Schema(
   { timestamps: true }
 );
 module.exports = mongoose.model("BusinessClass", businessClassSchema);
-// end

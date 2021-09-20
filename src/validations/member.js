@@ -6,7 +6,7 @@ const createMemberValidationRules = () => {
   return [
     body("userId", "min length should be 2").isLength({ min: 2 }),
     body("membership").isArray(),
-    body("membership.*.business", "min length should be 2").custom(
+    body("membership.*.businessId", "min length should be 2").custom(
       businessIdValidation
     ),
     body("membership.*.clubMembershipId", "min length should be 2").isLength({
@@ -31,9 +31,7 @@ const createMemberValidationRules = () => {
       "contacts.*.lastName",
       "min length should be 2 and max length should be 70"
     ).isLength({ min: 2, max: 70 }),
-    body("contacts.*.contact", "min length should be 2").isLength({
-      min: 2,
-    }),
+    body("contacts.*.contact", "min length should be 2").isLength({ min: 2 }),
     body("contacts.*.relationShip", "invalid relationship").isIn(RELATIONSHIPS),
     body("updatedBy", "updatedBy should be a valid userId")
       .optional()
@@ -43,6 +41,7 @@ const createMemberValidationRules = () => {
     }),
   ];
 };
+
 const updateMemberValidationRules = () => {
   return [
     body("userId", "min length should be 2").optional().isLength({ min: 2 }),
@@ -87,6 +86,7 @@ const updateMemberValidationRules = () => {
     }),
   ];
 };
+
 module.exports = {
   createMemberValidationRules,
   updateMemberValidationRules,

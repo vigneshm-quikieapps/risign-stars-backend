@@ -7,7 +7,7 @@ const {
 
 const enrolementSchema = new mongoose.Schema(
   {
-    memberName: String,
+    //  memberName:String,
     memberId: {
       type: ObjectId,
     },
@@ -24,6 +24,7 @@ const enrolementSchema = new mongoose.Schema(
       ref: "Business",
     },
     name: String,
+    // memberId: String,
     clubMembershipId: String,
     consent: {
       allergies: String,
@@ -39,13 +40,15 @@ const enrolementSchema = new mongoose.Schema(
     },
     startDate: Date,
     registeredDate: Date,
-    enrolledStatus: ENUM_ENROLLED_STATUS,
+    enrolledStatus: {
+      type: String,
+      enum: ENUM_ENROLLED_STATUS,
+    },
     discontinuationReason: {
       type: String,
-      enum: ["CLASS_TRANSFER", "CANCELLED"],
+      enum: ENUM_DISCONTINUATION_REASON,
     },
     droppedDate: Date,
-
     updatedBy: {
       type: ObjectId,
       ref: "User",
