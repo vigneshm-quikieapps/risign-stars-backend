@@ -4,7 +4,9 @@ module.exports.ENUM_BUSINESS_TYPE = [
   "SOLE_TRADER",
 ];
 
-module.exports.ENUM_CLASSES_STATUS = ["ACTIVE", "INACTIVE"];
+module.exports.ENUM_BUSINESS_STATUS = ["ACTIVE", "INACTIVE"];
+
+module.exports.ENUM_CLASSES_STATUS = ["LIVE", "DRAFT", "INACTIVE"];
 
 module.exports.SKILL_PROGRESS_STATUS = [
   "NOT_STARTED",
@@ -13,7 +15,7 @@ module.exports.SKILL_PROGRESS_STATUS = [
 ];
 module.exports.ENUM_PAY_FREQUENCY = ["Monthly", "Annual"];
 
-module.exports.FUNCTIONAL_PRIVILEDGES = [
+module.exports.FUNCTIONAL_PRIVILEGES = [
   "ACTIVITY_DEFINITION",
   "ACTIVITY_ENROLMENT",
   "ACTIVITY_ATTENDANCE",
@@ -44,8 +46,8 @@ module.exports.RELATIONSHIPS = [
   "NIECE",
   "COUSIN",
 ];
-module.exports.ENUM_DATA_PRIVILEDGES_TYPE = ["ALL", "ONE"];
-module.exports.ENUM_ENUM_USER_TYPES = ["COACH"];
+module.exports.ENUM_DATA_PRIVILEGES_TYPE = ["ALL", "LIST"];
+module.exports.ENUM_ENUM_USER_TYPES = ["BUSINESS_ADMIN", "COACH"];
 module.exports.ENUM_EVALUATION_SCHEME_STATUS = ["active", "inactive"];
 module.exports.ENUM_ENROLLED_STATUS = [
   "ENROLLED",
@@ -55,11 +57,11 @@ module.exports.ENUM_ENROLLED_STATUS = [
   "RETURN_FROM_SUSPENSION",
 ];
 module.exports.ENUM_DISCONTINUATION_REASON = ["CLASS_TRANSFER", "CANCELLED"];
-module.exports.ENUM_DAY = ["MON", "TUE", "WEB", "THU", "FRI", "SAT"];
+module.exports.ENUM_DAY = ["MON", "TUE", "WED", "THU", "FRI", "SAT"];
 module.exports.ENUM_SESSION_STATUS = [
   "NOT_OPEN_FOR_ENROLMENT",
   "OPEN_FOR_ENROLMENT",
   "WAITLIST_ENROLMENT",
   "CLOSED_FOR_ENROLMENT",
-  "CANCEL",
+  "CANCELLED",
 ];

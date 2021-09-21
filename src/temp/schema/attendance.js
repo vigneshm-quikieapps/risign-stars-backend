@@ -5,11 +5,9 @@
  * 1. list of the attendance of a class by a particular date.
  * 2. list of the attendance of a class by month
  * 3.
-
  *
  * Note:
  * Here, members are student (child).
-
  */
 
 module.exports.AttendanceOfAClassByDate = {
@@ -21,14 +19,14 @@ module.exports.AttendanceOfAClassByDate = {
     {
       id: String /** student id */,
       name: String /** student name */,
-
       attended: Boolean,
-      tardy: Boolean,
       comments: String,
     },
   ],
   createdAt: Date,
-  updatedAt: Date,
+  createdBy: String /** userId */,
+  lastUpdatedAt: Date,
+  lastUpdatedBy: String /** userId */,
 };
 
 /**
@@ -36,6 +34,7 @@ module.exports.AttendanceOfAClassByDate = {
  * 1. get an attendance of a class by Month/Quarterly/Half Yearly/Yearly
  */
 module.exports.AttendaceOfAClassByMonth = {
+  id: String,
   month: Date,
   sessionId: String,
   classId: String,
@@ -48,7 +47,9 @@ module.exports.AttendaceOfAClassByMonth = {
   ],
   classCount: Number,
   createdAt: Date,
-  updatedAt: Date,
+  createdBy: String /** userId */,
+  lastUpdatedAt: Date,
+  lastUpdatedBy: String /** userId */,
 };
 
 /**
@@ -71,5 +72,7 @@ module.exports.AttendanceOfAStudentInAClass = {
   ],
   attendedCount: Number,
   createdAt: Date,
-  updatedAt: Date,
+  createdBy: String /** userId */,
+  lastUpdatedAt: Date,
+  lastUpdatedBy: String /** userId */,
 };

@@ -29,5 +29,7 @@ module.exports.payments = {
   paidAt: Date,
   comments: String,
   createdAt: Date,
-  updatedAt: Date,
+  createdBy: String /** userId */,
+  lastUpdatedAt: Date,
+  lastUpdatedBy: String /** userId */,
 };
