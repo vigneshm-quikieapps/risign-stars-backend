@@ -1,7 +1,7 @@
 /**
  * WARNING: do not update this values,
  * if any changes required in functional privileges
- * make the functional priviledges as object,
+ * make the functional privileges as object,
  * keys should remain the same, values can then be updated
  * keys will be used for application,
  * values can be used for displaying in ui

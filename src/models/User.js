@@ -87,7 +87,7 @@ UserSchema.statics.isEmailAvailable = async (email) => {
   try {
     let user = await this.findOne({ email });
     if (user) {
-      throw new Error("Email already already taken");
+      throw new Error("Email already taken");
     }
     return true;
   } catch (err) {

@@ -16,6 +16,7 @@ const termRoute = require("./Term");
 const categoryRoute = require("./category");
 const coachRoute = require("./coach");
 const registrationRoute = require("./registration");
+const testRoute = require("./testRoute");
 
 const routes = (app) => {
   // API routes
@@ -35,6 +36,7 @@ const routes = (app) => {
   app.use("/api", coachRoute);
   app.use("/api", sessionRoute);
   app.use("/api", registrationRoute);
+  app.use("/api/test", testRoute);
 
   // test route
   app.get("/", (req, res) => {

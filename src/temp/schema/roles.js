@@ -9,7 +9,7 @@ const { FUNCTIONAL_PRIVILEGES } = require("./constants");
  * 5. delete a role
  *
  * Note:
- * 3a. on creating a role, add the business name to dataPriviledges
+ * 3a. on creating a role, add the business name to dataPrivileges
  * 4a. on updating a role, update the relevant information in the roles section of users (collection)
  */
 module.exports.roles = {
@@ -27,4 +27,8 @@ module.exports.roles = {
       },
     },
   ],
+  createdAt: Date,
+  createdBy: String /** User id */,
+  updatedAt: Date,
+  updatedBy: String /** User id */,
 };

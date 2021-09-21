@@ -4,7 +4,6 @@ const { Email, Sms } = require("../services/notification");
 const DoesNotExistError = require("../exceptions/DoesNotExistError");
 const expressJwt = require("express-jwt");
 const { generateTokens, RefreshToken } = require("../services/auth");
-const { VerifyEmail } = require("../services/notification/Email");
 
 // Signup Method
 module.exports.signup = async (req, res) => {
@@ -124,7 +123,6 @@ module.exports.getOTPEmail = async (req, res) => {
     let otp = await Otp.generate(email);
 
     sendOTPViaEmail({ to: email, otp });
-    // VerifyEmail.send({ to: email, otp });
     return res.send({ otp, message: "OTP has been sent to email" });
   } catch (err) {
     return res.status(422).send({ message: err.message });

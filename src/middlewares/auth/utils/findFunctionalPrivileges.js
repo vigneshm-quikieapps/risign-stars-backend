@@ -1,8 +1,8 @@
 const findFunctionalPrivilegesIndex = (
-  functionalPriviledges,
+  functionalPrivileges,
   { page, action }
 ) => {
-  return functionalPriviledges.findIndex(
+  return functionalPrivileges.findIndex(
     ({ type, permission }) => type === page && permission[action]
   );
 };
