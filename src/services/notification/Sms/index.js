@@ -1,7 +1,5 @@
-const send = require("./send");
-const getClient = require("./getClient");
+const OTPSms = require("./OTPSms");
 
 module.exports = {
-  send,
-  getClient,
+  OTPSms,
 };

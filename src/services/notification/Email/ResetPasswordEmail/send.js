@@ -1,4 +1,4 @@
-const Email = require("../index");
+const sendEmail = require("../sendEmail");
 const generateLink = require("./generateLink");
 
 const send = async ({ user }) => {
@@ -12,7 +12,7 @@ const send = async ({ user }) => {
     html: `Please click on the following link ${link} to reset your password. \n\n 
     If you did not request this, please ignore this email and your password will remain unchanged.\n`,
   };
-  Email.send(msg);
+  sendEmail(msg);
 };
 
 module.exports = send;
