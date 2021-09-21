@@ -9,7 +9,7 @@ const { generateTokens, RefreshToken } = require("../services/auth");
 module.exports.signup = async (req, res) => {
   try {
     let data = req.body;
-    data = { ...data, mobileNoVerfified: true };
+    data = { ...data, mobileNoVerified: true };
     await User.create(data);
     return res.status(201).send({ message: "created successfully" });
   } catch (err) {

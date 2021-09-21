@@ -82,10 +82,10 @@ const signUpValidationRules = () => {
     body("postcode", ADDRESS.POSTCODE.MESSAGE).isLength({
       min: ADDRESS.POSTCODE.LENGTH,
     }),
-    body("line1", ADDRESS.LINE1.MESSAGE).isLength({
+    body("addressLine1", ADDRESS.LINE1.MESSAGE).isLength({
       min: ADDRESS.POSTCODE.LENGTH,
     }),
-    body("line2", ADDRESS.LINE2.MESSAGE)
+    body("addressLine2", ADDRESS.LINE2.MESSAGE)
       .optional()
       .isLength({ min: ADDRESS.LINE2.LENGTH }),
     body("city", ADDRESS.CITY.MESSAGE).isLength({
