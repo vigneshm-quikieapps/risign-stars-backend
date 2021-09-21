@@ -108,9 +108,8 @@ module.exports.getOTPMobileNo = async (req, res) => {
 };
 
 const sendOTPViaEmail = ({ to, otp }) => {
-  console.log({ to, otp });
   const msg = {
-    to: "tomonso.ejang@gmail.com", // Change to your recipient
+    to, // Change to your recipient
     from: "sarphu@quikieapps.com", // Change to your verified sender
     subject: "Sending with SendGrid is Fun",
     text: "and easy to do anywhere, even with Node.js",
@@ -125,8 +124,8 @@ module.exports.getOTPEmail = async (req, res) => {
     let otp = await Otp.generate(email);
 
     sendOTPViaEmail({ to: email, otp });
-    VerifyEmail.send({ to: email, otp });
-    return res.send({ otp });
+    // VerifyEmail.send({ to: email, otp });
+    return res.send({ otp, message: "OTP has been sent to email" });
   } catch (err) {
     return res.status(422).send({ message: err.message });
   }
