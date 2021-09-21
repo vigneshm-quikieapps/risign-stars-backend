@@ -60,7 +60,7 @@ const verifyMobileNoOtp = async (otp, { req }) => {
 
 const commonUserValidationRules = [
   body("name", USER.NAME.MESSAGE).isLength({ min: USER.NAME.LENGTH }),
-  body("email", USER.EMAIL.MESSAGE).isEmail().custom(isEmailAvailable),
+  body("email", USER.EMAIL.MESSAGE).isEmail().bail().custom(isEmailAvailable),
 ];
 
 const signUpValidationRules = () => {
@@ -75,7 +75,9 @@ const signUpValidationRules = () => {
         max: 13,
       })
       .bail()
-      .custom(isValidMobile),
+      .custom(isValidMobile)
+      .bail()
+      .custom(isMobileNoAvailable),
     body("mobileNoOTP").custom(verifyMobileNoOtp),
     body("postcode", ADDRESS.POSTCODE.MESSAGE).isLength({
       min: ADDRESS.POSTCODE.LENGTH,
@@ -120,6 +122,7 @@ const updateUserValidationRules = () => {
     body("email", USER.EMAIL.MESSAGE)
       .optional()
       .isEmail()
+      .bail()
       .custom(isEmailAvailable),
     body("mobileNo", USER.MOBILE_NO.MESSAGE)
       .optional()
