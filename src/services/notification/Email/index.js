@@ -1,5 +1,9 @@
-const send = require("./send");
+const OTPEmail = require("./OTPEmail");
+const ResetPasswordEmail = require("./ResetPasswordEmail");
+const VerifyEmail = require("./VerifyEmail");
 
 module.exports = {
-  send,
+  OTPEmail,
+  ResetPasswordEmail,
+  VerifyEmail,
 };

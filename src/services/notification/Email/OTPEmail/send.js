@@ -1,8 +1,8 @@
 const sendEmail = require("../sendEmail");
 
-module.exports = ({ to, otp }) => {
+const send = ({ to, otp }) => {
   const msg = {
-    to: "tomonso.ejang@gmail.com", // Change to your recipient
+    to, // Change to your recipient
     from: "sarphu@quikieapps.com", // Change to your verified sender
     subject: "Sending with SendGrid is Fun",
     text: "and easy to do anywhere, even with Node.js",
@@ -10,3 +10,5 @@ module.exports = ({ to, otp }) => {
   };
   sendEmail(msg);
 };
+
+module.exports = send;
