@@ -31,6 +31,11 @@ module.exports = {
     "node/prefer-global/url": ["error", "always"],
     "node/prefer-promises/dns": "error",
     "node/prefer-promises/fs": "error",
+    "jest/no-disabled-tests": "warn",
+    "jest/no-focused-tests": "error",
+    "jest/no-identical-title": "error",
+    "jest/prefer-to-have-length": "warn",
+    "jest/valid-expect": "error",
     "no-unused-vars": "off",
     "unused-imports/no-unused-imports": "error",
     "unused-imports/no-unused-vars": [

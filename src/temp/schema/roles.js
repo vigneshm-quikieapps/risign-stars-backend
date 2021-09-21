@@ -1,4 +1,4 @@
-const { FUNCTIONAL_PRIVILEDGES } = require("./constants");
+const { FUNCTIONAL_PRIVILEGES } = require("./constants");
 
 /**
  * API's
@@ -13,11 +13,12 @@ const { FUNCTIONAL_PRIVILEDGES } = require("./constants");
  * 4a. on updating a role, update the relevant information in the roles section of users (collection)
  */
 module.exports.roles = {
-  name: String,
+  name: String /** unique */,
+  code: String /** unique */,
   description: String,
-  functionalPriviledges: [
+  functionalPrivileges: [
     {
-      type: FUNCTIONAL_PRIVILEDGES,
+      type: FUNCTIONAL_PRIVILEGES,
       permission: {
         create: Boolean,
         read: Boolean,
