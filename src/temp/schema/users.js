@@ -1,4 +1,4 @@
-const { ENUM_USER_TYPES, ENUM_DATA_PRIVILEDGES_TYPE } = require("./constants");
+const { ENUM_USER_TYPES, ENUM_DATA_PRIVILEGES_TYPE } = require("./constants");
 
 /**
  * API's
@@ -37,11 +37,13 @@ module.exports.users = {
   ],
   emailVerified: Boolean /** default false */,
   phoneVerified: Boolean /** default false */,
-  dataPriviledges: {
-    type: ENUM_DATA_PRIVILEDGES_TYPE,
+  dataPrivileges: {
+    type: ENUM_DATA_PRIVILEGES_TYPE,
     businessId: String,
     businessName: String,
   },
   createdAt: Date,
-  updateAt: Date,
+  createdBy: String /** User id */,
+  updatedAt: Date,
+  updatedBy: String /** User id */,
 };

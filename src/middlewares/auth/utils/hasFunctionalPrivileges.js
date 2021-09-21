@@ -1,8 +1,8 @@
 const findFunctionalPrivilegesIndex = require("./findFunctionalPrivileges");
 
-const hasFunctionalPrivileges = (functionalPriviledges, { page, action }) => {
+const hasFunctionalPrivileges = (functionalPrivileges, { page, action }) => {
   return (
-    findFunctionalPrivilegesIndex(functionalPriviledges, { page, action }) > -1
+    findFunctionalPrivilegesIndex(functionalPrivileges, { page, action }) > -1
   );
 };
 

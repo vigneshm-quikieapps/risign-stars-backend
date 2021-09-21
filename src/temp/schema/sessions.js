@@ -31,4 +31,8 @@ module.exports.sessions = {
     id: String,
     name: String,
   },
+  createdAt: Date,
+  createdBy: String /** User id */,
+  updatedAt: Date,
+  updatedBy: String /** User id */,
 };
