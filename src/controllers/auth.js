@@ -20,9 +20,9 @@ module.exports.signup = async (req, res) => {
 // Signed Method
 module.exports.signin = async (req, res) => {
   try {
-    const { email, password } = req.body;
+    const { mobileNo, password } = req.body;
 
-    let user = await User.findOne({ email });
+    let user = await User.findOne({ mobileNo });
     if (!user || !user.isValidPassword(password)) {
       throw new DoesNotExistError();
     }
