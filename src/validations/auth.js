@@ -1,25 +1,6 @@
 const { body } = require("express-validator");
-const { lookup } = require("../services/mobile");
 const { RefreshToken } = require("../services/auth");
-
-const isValidMobile = async (mobileNo) => {
-  /** mobile no is required */
-  if (!mobileNo) {
-    return Promise.reject("Mobile number is required");
-  }
-
-  /** check if the mobile no is valid */
-  try {
-    let phone_number = await lookup(mobileNo);
-    if (!phone_number) {
-      throw new Error();
-    }
-    return true;
-  } catch (err) {
-    console.error(err);
-    return Promise.reject("Please enter a valid mobile number");
-  }
-};
+const { isValidMobile } = require("./mobileNo");
 
 const getOTPEmailValidationRules = () => {
   return [body("email", "should be a valid Email").isEmail()];

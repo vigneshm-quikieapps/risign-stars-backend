@@ -25,9 +25,11 @@ const UserSchema = new mongoose.Schema(
     },
     emailVerified: {
       type: Boolean,
+      default: false,
     },
     mobileNoVerified: {
       type: Boolean,
+      default: false,
     },
     postcode: {
       type: String,

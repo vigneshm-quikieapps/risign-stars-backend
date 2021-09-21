@@ -4,6 +4,7 @@ const { DATA_PRIVILEGES_TYPE } = require("../contants/constant");
 const Business = require("../models/business");
 const { USER, ADDRESS } = require("../contants/validation");
 const Otp = require("../services/otp");
+const { isMobileNoAvailable, isValidMobile } = require("./mobileNo");
 
 const businessIdValidation = async (businessId, { req }) => {
   try {
@@ -43,10 +44,14 @@ const verifyOtp = async (contact, otp) => {
   }
 };
 
-const verifyEmailOtp = async (otp, { req }) => {
-  let { email } = req.body;
-  return verifyOtp(email, otp);
-};
+/**
+ * keep this for verifying otp sent to email
+ * It may be required in the future
+ */
+// const verifyEmailOtp = async (otp, { req }) => {
+//   let { email } = req.body;
+//   return verifyOtp(email, otp);
+// };
 
 const verifyMobileNoOtp = async (otp, { req }) => {
   let { mobileNo } = req.body;
@@ -64,11 +69,13 @@ const signUpValidationRules = () => {
     body("password", USER.PASSWORD.MESSAGE).isLength({
       min: USER.PASSWORD.LENGTH,
     }),
-    body("mobileNo", "mobileNo must be 10 Digit No").isLength({
-      min: 10,
-      max: 13,
-    }),
-    body("emailOTP").custom(verifyEmailOtp),
+    body("mobileNo", "mobileNo must be 10 Digit No")
+      .isLength({
+        min: 10,
+        max: 13,
+      })
+      .bail()
+      .custom(isValidMobile),
     body("mobileNoOTP").custom(verifyMobileNoOtp),
     body("postcode", ADDRESS.POSTCODE.MESSAGE).isLength({
       min: ADDRESS.POSTCODE.LENGTH,
@@ -91,14 +98,19 @@ const signUpValidationRules = () => {
 const createUserValidationRules = () => {
   return [
     ...commonUserValidationRules,
+    body("mobileNo", USER.MOBILE_NO.MESSAGE)
+      .custom(isValidMobile)
+      .bail()
+      .custom(isMobileNoAvailable),
     body("roles", "should be an array").isArray(),
     body("roles.*.id", "should contain id").isArray(),
     body("roles.*.name", "should contain name").isArray(),
+    body("dataPrivileges", "should be an array").isArray(),
     body(
-      "dataPrivileges.type",
+      "dataPrivileges.*.type",
       `data privileges type should be: ${DATA_PRIVILEGES_TYPE.join("/")}`
     ).isIn(DATA_PRIVILEGES_TYPE),
-    body("dataPrivileges.businessId").custom(businessIdValidation),
+    body("dataPrivileges.*.businessId").custom(businessIdValidation),
   ];
 };
 
@@ -109,21 +121,48 @@ const updateUserValidationRules = () => {
       .optional()
       .isEmail()
       .custom(isEmailAvailable),
+    body("mobileNo", USER.MOBILE_NO.MESSAGE)
+      .optional()
+      .custom(isValidMobile)
+      .bail()
+      .custom(isMobileNoAvailable),
+    body("roles", "should be an array").isArray(),
     body("roles.*.id"),
     body("roles.*.name"),
+    body("dataPrivileges", "should be an array").isArray(),
     body(
-      "dataPrivileges.type",
+      "dataPrivileges.*.type",
       `data privileges type should be: ${DATA_PRIVILEGES_TYPE.join("/")}`
     )
       .optional()
       .isIn(DATA_PRIVILEGES_TYPE),
-    body("dataPrivileges.businessId").optional().custom(businessIdValidation),
+    body("dataPrivileges.*.businessId").optional().custom(businessIdValidation),
   ];
 };
 
+/**
+ * Do not remove
+ * sign in using email validation rules.
+ * Might be required in the future
+ *
+ * @returns
+ */
+// const signInEmailValidationRules = () => {
+//   return [
+//     body("email", USER.EMAIL.MESSAGE).isEmail(),
+//     body("password", USER.PASSWORD.MESSAGE).isLength({
+//       min: USER.PASSWORD.LENGTH,
+//     }),
+//   ];
+// };
+
+/**
+ * Sign in using mobileNo Validation rules
+ * @returns
+ */
 const signInValidationRules = () => {
   return [
-    body("email", USER.EMAIL.MESSAGE).isEmail(),
+    body("mobileNo", USER.MOBILE_NO.MESSAGE).isEmail(),
     body("password", USER.PASSWORD.MESSAGE).isLength({
       min: USER.PASSWORD.LENGTH,
     }),

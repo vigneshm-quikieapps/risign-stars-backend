@@ -12,6 +12,9 @@ const USER = {
   EMAIL: {
     MESSAGE: "Invalid Email",
   },
+  MOBILE_NO: {
+    MESSAGE: "Invalid Mobile Number",
+  },
 };
 
 let POSTCODE_LENGTH = 6;
