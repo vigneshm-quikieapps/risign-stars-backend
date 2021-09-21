@@ -25,19 +25,21 @@ const UserSchema = new mongoose.Schema(
     },
     emailVerified: {
       type: Boolean,
+      default: false,
     },
     mobileNoVerified: {
       type: Boolean,
+      default: false,
     },
     postcode: {
       type: String,
       trim: true,
     },
-    line1: {
+    addressLine1: {
       type: String,
       trim: true,
     },
-    line2: {
+    addressLine2: {
       type: String,
       trim: true,
     },
