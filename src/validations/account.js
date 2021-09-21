@@ -4,6 +4,8 @@ const ResetPasswordEmail = require("../services/notification/Email/ResetPassword
 const { body } = require("express-validator");
 const User = require("../models/User");
 const { AccessToken } = require("../services/auth");
+const { isValidMobile } = require("./mobileNo");
+const { ResetPasswordOTP } = require("../services/otp");
 
 const isRegisteredEmail = async (email, { req }) => {
   try {
@@ -33,6 +35,23 @@ const isValidResetPasswordToken = async (token, { req }) => {
   }
 };
 
+const isValidResetPasswordOTP = async (otp, { req }) => {
+  try {
+    let contact = req.body.mobileNo;
+
+    const valid = await ResetPasswordOTP.verify({ otp, contact });
+
+    if (!valid) {
+      throw new Error("invalid");
+    }
+
+    return true;
+  } catch (err) {
+    console.error(err);
+    return Promise.reject("Invalid Reset Password OTP");
+  }
+};
+
 const forgotPasswordValidationRules = () => {
   return [
     body("email", "Invalid email").isEmail().bail().custom(isRegisteredEmail),
@@ -45,6 +64,28 @@ const resetPasswordValidationRules = () => {
       min: USER.PASSWORD.LENGTH,
     }),
     body("token", "Invalid Token").custom(isValidResetPasswordToken),
+  ];
+};
+
+/**
+ * forgot password using mobile validation
+ * @returns
+ */
+const forgotPasswordMobileValidationRules = () => {
+  return [body("mobileNo", "Invalid mobile number").custom(isValidMobile)];
+};
+
+/**
+ * reset password using mobile validation
+ * @returns
+ */
+const resetPasswordMobileValidationRules = () => {
+  return [
+    body("mobileNo", "Invalid mobile number").custom(isValidMobile),
+    body("password", USER.PASSWORD.MESSAGE).isLength({
+      min: USER.PASSWORD.LENGTH,
+    }),
+    body("otp", "Invalid otp").custom(isValidResetPasswordOTP),
   ];
 };
 
@@ -96,4 +137,6 @@ module.exports = {
   forgotPasswordValidationRules,
   resetPasswordValidationRules,
   changePasswordValidationRules,
+  forgotPasswordMobileValidationRules,
+  resetPasswordMobileValidationRules,
 };

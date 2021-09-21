@@ -3,7 +3,7 @@ const isEmailAvailable = require("../helpers/user/isEmailAvailable");
 const { DATA_PRIVILEGES_TYPE } = require("../contants/constant");
 const Business = require("../models/business");
 const { USER, ADDRESS } = require("../contants/validation");
-const Otp = require("../services/otp");
+const { VerifyContactOTP } = require("../services/otp");
 const { isMobileNoAvailable, isValidMobile } = require("./mobileNo");
 
 const businessIdValidation = async (businessId, { req }) => {
@@ -26,17 +26,17 @@ const businessIdValidation = async (businessId, { req }) => {
 
 /**
  * contact may either be email or mobileNo
- * @param {*} contact
+ * @param {*} to
  * @param {*} otp
  * @returns
  */
-const verifyOtp = async (contact, otp) => {
+const verifyOtp = async (to, otp) => {
   if (!otp) {
     return Promise.reject("otp is required");
   }
 
   try {
-    await Otp.verify(contact, otp);
+    await VerifyContactOTP.verify(to, otp);
     return true;
   } catch (err) {
     console.error(err.message);

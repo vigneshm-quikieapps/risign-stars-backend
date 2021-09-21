@@ -28,6 +28,23 @@ router.post(
   account.resetPassword
 );
 
+/**
+ * forgot password using mobile
+ */
+router.post(
+  "/password/forgot/using-mobile-no",
+  forgotPasswordValidationRules(),
+  validate,
+  account.forgotPasswordMobile
+);
+
+router.post(
+  "/password/reset/using-mobile-no",
+  resetPasswordValidationRules(),
+  validate,
+  account.resetPasswordMobile
+);
+
 router.post(
   "/password/change",
   isAuthenticated,

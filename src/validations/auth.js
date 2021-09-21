@@ -14,8 +14,8 @@ const getOTPMobileNoValidationRules = () => {
 
 const verifyRefreshToken = (refreshToken, { req }) => {
   try {
-    let userId = RefreshToken.verify(refreshToken);
-    req.userId = userId;
+    let userData = RefreshToken.verify(refreshToken);
+    req.userData = userData;
     return true;
   } catch (err) {
     return Promise.reject(err.message);

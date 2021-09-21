@@ -1,13 +1,10 @@
-const generate = require("./generate");
-const verify = require("./verify");
-const constants = require("./constants");
+const ResetPasswordOTP = require("./ResetPasswordOTP");
+const VerifyContactOTP = require("./VerifyContactOTP");
 
 /**
- *
  * OTP
  */
 module.exports = {
-  generate,
-  verify,
-  ...constants,
+  ResetPasswordOTP,
+  VerifyContactOTP,
 };

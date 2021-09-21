@@ -1,5 +1,7 @@
-const OTPSms = require("./OTPSms");
+const ResetPasswordSms = require("./ResetPasswordSms");
+const VerifyMobileSms = require("./VerifyMobileSms");
 
 module.exports = {
-  OTPSms,
+  ResetPasswordSms,
+  VerifyMobileSms,
 };
