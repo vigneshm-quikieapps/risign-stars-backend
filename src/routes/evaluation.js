@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 const express = require("express");
 const router = express.Router();
 const {
@@ -16,6 +17,8 @@ const {
 
 //parameters
 router.param("evaluationId", getEvaluationIdById);
+
+// router.param("userId", getuserIdById);
 
 //all of actual routes
 //all of actual routes

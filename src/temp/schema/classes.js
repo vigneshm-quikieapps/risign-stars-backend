@@ -10,7 +10,6 @@ const { ENUM_CLASSES_STATUS, ENUM_PAY_FREQUENCY } = require("./constants");
  */
 module.exports.classes = {
   _id: String,
-  platformId: String,
   name: String,
   businessId: String,
   status: ENUM_CLASSES_STATUS,
@@ -45,5 +44,7 @@ module.exports.classes = {
     },
   ],
   createdAt: Date,
-  updatedAt: Date,
+  createdBy: String /** userId */,
+  lastUpdatedAt: Date,
+  lastUpdatedBy: String /** userId */,
 };

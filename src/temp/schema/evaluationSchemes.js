@@ -10,5 +10,7 @@ module.exports.evaluationSchemes = {
     },
   ],
   createdAt: Date,
-  updatedAt: Date,
+  createdBy: String /** userId */,
+  lastUpdatedAt: Date,
+  lastUpdatedBy: String /** userId */,
 };

@@ -24,4 +24,8 @@ module.exports.businesses = {
   social: {
     facebook: String,
   },
+  createdAt: Date,
+  createdBy: String /** userId */,
+  lastUpdatedAt: Date,
+  lastUpdatedBy: String /** userId */,
 };

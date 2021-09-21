@@ -1,31 +1,11 @@
 const { body } = require("express-validator");
-const {
-  FUNCTIONAL_PRIVILEDGES,
-  DATA_PRIVILEDGES_TYPE,
-} = require("../contants/constant");
-const Business = require("../models/business");
-
-const businessIdValidation = async (businessId, { req }) => {
-  try {
-    if (req.body.dataPriviledges.type != "ALL") {
-      if (!businessId) {
-        throw new Error();
-      }
-
-      let business = await Business.findById(businessId);
-      if (!business) {
-        throw new Error();
-      }
-    }
-    return true;
-  } catch (err) {
-    return Promise.reject(`Please select a valid Business`);
-  }
-};
+const { FUNCTIONAL_PRIVILEDGES } = require("../contants/constant");
 
 const createRoleValidationRules = () => {
   return [
-    body("name", "Name should have atleast 3 characters").isLength({ min: 3 }),
+    body("name", "Name should have atleast 3 characters").isLength({
+      min: 3,
+    }),
     body("description", "description should atleast 5 characters")
       .optional()
       .isLength({ min: 5 }),
@@ -49,11 +29,12 @@ const createRoleValidationRules = () => {
       "functionPriviledges.*.permission.delete",
       "permission.delete must be boolean"
     ).isBoolean(),
-    body(
-      "dataPriviledges.type",
-      `data priviledges type should be: ${DATA_PRIVILEDGES_TYPE.join("/")}`
-    ).isIn(DATA_PRIVILEDGES_TYPE),
-    body("dataPriviledges.businessId").custom(businessIdValidation),
+    body("updatedBy", "updatedBy should be a valid userId")
+      .optional()
+      .isLength({ min: 12 }),
+    body("createdBy", "createdBy should be a valid userId").isLength({
+      min: 12,
+    }),
   ];
 };
 
@@ -95,13 +76,9 @@ const updateRoleValidationRules = () => {
     )
       .optional()
       .isBoolean(),
-    body(
-      "dataPriviledges.type",
-      `data priviledges type should be: ${DATA_PRIVILEDGES_TYPE.join("/")}`
-    )
-      .optional()
-      .isIn(DATA_PRIVILEDGES_TYPE),
-    body("dataPriviledges.businessId").optional().custom(businessIdValidation),
+    body("updatedBy", "updatedBy should be a valid userId").isLength({
+      min: 12,
+    }),
   ];
 };
 

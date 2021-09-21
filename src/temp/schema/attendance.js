@@ -24,7 +24,9 @@ module.exports.AttendanceOfAClassByDate = {
     },
   ],
   createdAt: Date,
-  updatedAt: Date,
+  createdBy: String /** userId */,
+  lastUpdatedAt: Date,
+  lastUpdatedBy: String /** userId */,
 };
 
 /**
@@ -45,7 +47,9 @@ module.exports.AttendaceOfAClassByMonth = {
   ],
   classCount: Number,
   createdAt: Date,
-  updatedAt: Date,
+  createdBy: String /** userId */,
+  lastUpdatedAt: Date,
+  lastUpdatedBy: String /** userId */,
 };
 
 /**
@@ -68,5 +72,7 @@ module.exports.AttendanceOfAStudentInAClass = {
   ],
   attendedCount: Number,
   createdAt: Date,
-  updatedAt: Date,
+  createdBy: String /** userId */,
+  lastUpdatedAt: Date,
+  lastUpdatedBy: String /** userId */,
 };

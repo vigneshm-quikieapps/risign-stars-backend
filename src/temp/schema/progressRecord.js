@@ -1,4 +1,3 @@
-const EvaluationScheme = require("./evaluationSchemes");
 const SKILL_PROGRESS_STATUS = require("./constants");
 
 /**
@@ -13,12 +12,11 @@ const SKILL_PROGRESS_STATUS = require("./constants");
  * for each student a particular evaluation scheme which is latest (latest means added/updated just before his joining) to his admission date is to be used
  */
 module.exports.ProgressRecord = {
-  studentId: String,
-  studentName: String,
+  memberId: String,
+  memberName: String,
   sessionId: String,
   classId: String,
   className: String,
-  // evaluationScheme: EvaluationScheme,
   levelCount: Number,
   levels: [
     {
@@ -34,5 +32,7 @@ module.exports.ProgressRecord = {
     },
   ],
   createdAt: Date,
+  createdBy: String /** User id */,
   updatedAt: Date,
+  updatedBy: String /** User id */,
 };

@@ -10,7 +10,7 @@ module.exports.terms = {
   startDate: Date,
   endDate: Date,
   createdAt: Date,
-  createdBy: "userId",
+  createdBy: String /** userId */,
   lastUpdatedAt: Date,
-  lastUpdatedBy: "userid",
+  lastUpdatedBy: String /** userId */,
 };

@@ -1,8 +1,6 @@
 const mongoose = require("mongoose");
-const {
-  FUNCTIONAL_PRIVILEDGES,
-  DATA_PRIVILEDGES_TYPE,
-} = require("../contants/constant");
+const { ObjectId } = mongoose.Schema;
+const { FUNCTIONAL_PRIVILEDGES } = require("../contants/constant");
 
 const roleSchema = new mongoose.Schema(
   {
@@ -43,13 +41,13 @@ const roleSchema = new mongoose.Schema(
         },
       },
     ],
-    dataPriviledges: {
-      type: {
-        type: String,
-        enum: DATA_PRIVILEDGES_TYPE,
-        required: true,
-      },
-      businessId: String,
+    updatedBy: {
+      type: ObjectId,
+      ref: "User",
+    },
+    createdBy: {
+      type: ObjectId,
+      ref: "User",
     },
   },
   { timestamps: true }

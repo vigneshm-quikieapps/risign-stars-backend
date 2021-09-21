@@ -1,6 +1,10 @@
+/* eslint-disable prettier/prettier */
 const express = require("express");
+const { ROLES } = require("../contants/pages");
+const { CREATE, READ, UPDATE, DELETE } = require("../contants/rest");
 const router = express.Router();
 const role = require("../controllers/role");
+const { isAuthorized } = require("../middlewares/auth");
 const {
   createRoleValidationRules,
   updateRoleValidationRules,
@@ -8,17 +12,24 @@ const {
 const validate = require("../validations/validate");
 
 // create route
-router.post("/roles", createRoleValidationRules(), validate, role.create);
+router.post(
+  "/roles",
+  isAuthorized(ROLES, CREATE),
+  createRoleValidationRules(),
+  validate,
+  role.create
+);
 
 // read routes
-router.get("/roles/:roleId", role.get);
+router.get("/roles/:roleId", isAuthorized(ROLES, READ), role.get);
 
 //delete route
-router.delete("/roles/:roleId", role.delete);
+router.delete("/roles/:roleId", isAuthorized(ROLES, DELETE), role.delete);
 
 //update route
 router.put(
   "/roles/:roleId",
+  isAuthorized(ROLES, UPDATE),
   updateRoleValidationRules(),
   validate,
   role.update

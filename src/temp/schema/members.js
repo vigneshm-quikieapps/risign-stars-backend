@@ -9,7 +9,8 @@ const { ADDRESS_TYPE, RELATIONSHIPS } = require("./constants");
  */
 module.exports.members = {
   id: String,
-  userId: String /** PARENT ID */,
+  userId:
+    String /** In terms of business: PARENT ID,  terms of database: id in User model/collection */,
   membership: [
     {
       businessId: String,
@@ -18,6 +19,13 @@ module.exports.members = {
   ],
   name: String,
   dob: Date,
+  consent: {
+    allergies: String,
+    condition: String,
+    photographConsent: Boolean,
+    signedByParent: Boolean,
+    signedAt: Date,
+  },
   contacts: [
     {
       type: ADDRESS_TYPE,
@@ -26,7 +34,8 @@ module.exports.members = {
       relationShip: RELATIONSHIPS,
     },
   ],
-  updatedBy: [String] /** array of ids of who updated this record */,
   createdAt: Date,
-  updatedAt: Date,
+  createdBy: String /** userId */,
+  lastUpdatedAt: Date,
+  lastUpdatedBy: String /** userId */,
 };

@@ -1,30 +1,47 @@
 const express = require("express");
 const router = express.Router();
-const { check } = require("express-validator");
+const {
+  signup,
+  signin,
+  refreshToken,
+  getOTPEmail,
+  getOTPMobileNo,
+} = require("../controllers/auth");
+const {
+  getOTPEmailValidationRules,
+  getOTPMobileNoValidationRules,
+  refreshTokenValidationRules,
+} = require("../validations/auth");
+const {
+  signUpValidationRules,
+  signInValidationRules,
+} = require("../validations/user");
+const validate = require("../validations/validate");
 
-// routes
-
+router.post("/sign-up", signUpValidationRules(), validate, signup);
+router.post("/sign-in", signInValidationRules(), validate, signin);
 router.post(
-  "/signup",
-  [
-    check("name", "name should be at least 3 char").isLength({ min: 3 }),
-    check("email", "email is required").isEmail(),
-    check("password", "password should be at least 3 char").isLength({ min: 3 })
-  ],
-  signup
+  "/refresh-token",
+  refreshTokenValidationRules(),
+  validate,
+  refreshToken
+);
+router.post(
+  "/get-otp/email",
+  getOTPEmailValidationRules(),
+  validate,
+  getOTPEmail
+);
+router.post(
+  "/get-otp/mobile-no",
+  getOTPMobileNoValidationRules(),
+  validate,
+  getOTPMobileNo
 );
 
-router.post(
-  "/signin",
-  [
-    check("email", "email is required").isEmail(),
-    check("password", "password should be at least 3 sharacters long").isLength(
-      { min: 3 }
-    )
-  ],
-  signin
-);
-
-router.get("/signout", signout);
+// Testing Route
+router.get("/testroute", (req, res) => {
+  res.send("hello");
+});
 
 module.exports = router;

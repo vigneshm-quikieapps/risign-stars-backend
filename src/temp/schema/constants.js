@@ -46,7 +46,7 @@ module.exports.RELATIONSHIPS = [
   "NIECE",
   "COUSIN",
 ];
-module.exports.ENUM_DATA_PRIVILEDGES_TYPE = ["ALL", "LIST"];
+module.exports.ENUM_DATA_PRIVILEGES_TYPE = ["ALL", "LIST"];
 module.exports.ENUM_ENUM_USER_TYPES = ["BUSINESS_ADMIN", "COACH"];
 module.exports.ENUM_EVALUATION_SCHEME_STATUS = ["active", "inactive"];
 module.exports.ENUM_ENROLLED_STATUS = [
@@ -57,7 +57,7 @@ module.exports.ENUM_ENROLLED_STATUS = [
   "RETURN_FROM_SUSPENSION",
 ];
 module.exports.ENUM_DISCONTINUATION_REASON = ["CLASS_TRANSFER", "CANCELLED"];
-module.exports.ENUM_DAY = ["MON", "TUE", "WEB", "THU", "FRI", "SAT"];
+module.exports.ENUM_DAY = ["MON", "TUE", "WED", "THU", "FRI", "SAT"];
 module.exports.ENUM_SESSION_STATUS = [
   "NOT_OPEN_FOR_ENROLMENT",
   "OPEN_FOR_ENROLMENT",
