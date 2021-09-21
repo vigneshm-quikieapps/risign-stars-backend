@@ -13,7 +13,7 @@ const isUniqueCode = async (code) => {
 const isUniqueName = async (name) => {
   let roleCount = await Role.count({ name });
   if (roleCount) {
-    return Promise.reject("code already exists");
+    return Promise.reject("name already exists");
   }
   return true;
 };

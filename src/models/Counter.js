@@ -26,14 +26,18 @@ var counterSchema = new mongoose.Schema(
 
 counterSchema.index({ type: 1, year: -1 });
 
-counterSchema.statics.genClubMemberShipId = async function () {
+counterSchema.statics.genClubMemberShipId = async function (session) {
   let year = new Date().getFullYear();
   let filter = { type: CLUB_MEMBERSHIP_ID, year };
   let update = {
     type: CLUB_MEMBERSHIP_ID,
     year,
   };
+
   let options = { upsert: true, new: true };
+  if (session) {
+    options = { ...options, session };
+  }
 
   let counter = await this.findOne(filter);
 
@@ -43,7 +47,6 @@ counterSchema.statics.genClubMemberShipId = async function () {
   } else {
     update = { ...update, $inc: { sequence_value: 1 } };
   }
-
   return await this.findOneAndUpdate(filter, update, options);
 };
 
