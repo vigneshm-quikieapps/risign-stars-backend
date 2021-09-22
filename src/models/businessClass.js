@@ -46,10 +46,10 @@ const businessClassSchema = new mongoose.Schema(
         value: Number, //ie 1-3
       },
     ],
-    session: {
+    session: [{
       type: ObjectId,
       ref: "BusinessSession",
-    },
+    }],
 
     charges: [
       {
