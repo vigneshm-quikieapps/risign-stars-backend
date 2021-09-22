@@ -20,18 +20,10 @@ const businessClassSchema = new mongoose.Schema(
       enum: ["standard"],
       default: "standard",
     },
-<<<<<<< HEAD
-    
-  businessId:{
-        type:ObjectId,
-        ref:"Business",
-        required:true
-=======
     businessId: {
       type: ObjectId,
       ref: "Business",
       required: true,
->>>>>>> refs/remotes/origin/development
     },
     evaluation: {
       type: ObjectId,

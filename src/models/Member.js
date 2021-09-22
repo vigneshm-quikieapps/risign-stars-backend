@@ -11,12 +11,7 @@ const memberSchema = new mongoose.Schema(
     membership: [
       {
         businessId: String,
-<<<<<<< HEAD
-        clubMembershipId:String
-      
-=======
         clubMembershipId: String,
->>>>>>> refs/remotes/origin/development
       },
     ],
     firstName: String,

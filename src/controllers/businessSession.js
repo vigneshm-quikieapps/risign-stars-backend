@@ -53,7 +53,7 @@ module.exports.getAllBusinessSession = (req, res) => {
   /**
    * query object
    */
-  let query = BusinessSession.find()
+  let query = BusinessSession.find({ Class: req.params.classId })
     .sort({ _id: sortBy })
     .skip(skip)
     .limit(limit);
