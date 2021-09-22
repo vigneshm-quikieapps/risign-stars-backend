@@ -1,6 +1,6 @@
 const enrolement = require("../models/enrolement");
 const BusinessSession = require("../models/businessSession");
-// const Progress = require("../models/progress");
+const Progress = require("../models/progress");
 const mongoose = require("mongoose");
 
 const { createProgress } = require("../controllers/progress");
@@ -8,7 +8,7 @@ const { createProgress } = require("../controllers/progress");
 const enrollmentPayloadRequest = (data) => {
   return {
     // id: data.id,
-    sessionId: data.sessionId,
+    sessionId: data.sessionId, 
     classId: data.classId,
     businessId: data.businessId,
     name: data.name,
@@ -18,6 +18,7 @@ const enrollmentPayloadRequest = (data) => {
     newsletter: data.newsletter,
     startDate: data.startDate,
     registeredDate: data.registeredDate,
+    
     // enrolledStatus: {
     //   type: String,
     //   enum: ENUM_ENROLLED_STATUS
@@ -42,7 +43,37 @@ const progressPayloadRequest = (data) => {
   };
 };
 
-async function Enrollment(bodyData, session) {
+
+const classTransferEnrollmentPayloadRequest = (data) => {
+  return {
+    sessionId: data.newSessionId, 
+    classId: data.classId,
+    businessId: data.businessId,
+    name: data.name,
+    memberId: data.memberId,
+    clubMembershipId: data.clubMembershipId,
+    consent: data.consent,
+    newsletter: data.newsletter,
+    startDate: data.startDate,
+    registeredDate: data.registeredDate,
+
+  };
+};
+
+const classTransferprogressPayloadRequest = (data) => {
+  return {
+    studentId: data.studentId,
+    studentName: data.studentName,
+    sessionId: data.newSessionId,
+    classId: data.classId,
+    className: data.className,
+    levelCount: data.levelCount,
+    levels: data.levels,
+  };
+};
+
+
+async function enrollment(bodyData, session) {
   // creating enrollment till session capacity
 
   const createEnrollmentData = enrollmentPayloadRequest(bodyData);
@@ -69,6 +100,76 @@ async function Enrollment(bodyData, session) {
   ).session(session);
 }
 
+
+async function waitlistEnrollment(bodyData, session) {
+  // creating enrollment till session capacity
+
+  const createEnrollmentData = await enrollmentPayloadRequest(bodyData);
+
+  await enrolement
+    .create({
+      ...createEnrollmentData,
+      enrolledStatus: "WAITLISTED",
+      discontinuationReason: "NONE",
+    })
+    .session(session);
+
+  // increment waitlist enrolled in business session
+
+  await BusinessSession.findByIdAndUpdate(
+    { _id: req.body.sessionId },
+    { $inc: { waitcapacityfilled: 1 } }
+  ).session(session);
+}
+
+
+async function classTransferfunctionality(bodyData, session){
+
+  await enrolement
+    .findOneAndUpdate(
+      { _id: bodyData.memberId, sessionId: bodyData.currentSessionId, classId: bodyData.classId },
+      {
+        $set: {
+          enrolledStatus: "DROPPED",
+          discontinuationReason: "CLASS_TRANSFER",
+        },
+      }
+    )
+    .session(session);
+
+
+  const createEnrollmentData = classTransferEnrollmentPayloadRequest(bodyData);
+
+  await enrolement
+    .create({
+      ...createEnrollmentData,
+      enrolledStatus: "ENROLLED",
+      discontinuationReason: "NONE",
+    })
+    .session(session);
+
+  // creating progress Record
+
+  const createProgressData = classTransferprogressPayloadRequest(bodyData);
+
+  createProgress(createProgressData).session(session);
+
+  // increment session enrolled in business session
+
+  await BusinessSession.findByIdAndUpdate(
+    { _id: bodyData.newSessionId },
+    { $inc: { fullcapacityfilled: 1 } }
+  ).session(session);
+
+  await BusinessSession.findOneAndUpdate(
+    { _id: bodyData.currentSessionId },
+    {
+      $inc: { fullcapacityfilled: -1 },
+    }
+  ).session(session);
+}
+
+
 //createMember(Enrollement)
 module.exports.createEnrollment = async (req, res) => {
   const session = await mongoose.startSession();
@@ -91,39 +192,20 @@ module.exports.createEnrollment = async (req, res) => {
         .status(201)
         .send({ message: "Maximum limit of enrollment is reached." });
     } else if (
-      businessSessiondata.fullcapacityfilled !==
+      businessSessiondata.fullcapacityfilled <=
       businessSessiondata.fullcapacity
     ) {
-      const member = await Enrollment(req.body, session);
+      const member = await enrollment(req.body, session);
 
       if (member) {
         return res
           .status(201)
           .send({ message: "enrolled Successfully", member });
       }
-    } else if (
-      businessSessiondata.waitcapacity !==
-        businessSessiondata.waitcapacityfilled &&
-      businessSessiondata.fullcapacity > businessSessiondata.fullcapacityfilled
-    ) {
+    } else {
       // creating enrollment till session capacity
 
-      const createEnrollmentData = enrollmentPayloadRequest(req.body);
-
-      let member = await enrolement
-        .create({
-          ...createEnrollmentData,
-          enrolledStatus: "WAITLISTED",
-          discontinuationReason: "NONE",
-        })
-        .session(session);
-
-      // increment waitlist enrolled in business session
-
-      await BusinessSession.findByIdAndUpdate(
-        { _id: req.body.sessionId },
-        { $inc: { waitcapacityfilled: 1 } }
-      ).session(session);
+      let member = await waitlistEnrollment(req.body, session)
 
       await session.commitTransaction();
 
@@ -140,6 +222,9 @@ module.exports.createEnrollment = async (req, res) => {
   }
 };
 
+
+
+// cancel Membership
 module.exports.cancelMembership = async (req, res) => {
   const session = await mongoose.startSession();
 
@@ -161,7 +246,7 @@ module.exports.cancelMembership = async (req, res) => {
     await BusinessSession.findOneAndUpdate(
       { sessionId: req.body.sessionId },
       {
-        $inc: { fullcapacityfilled: -1 },
+        $inc: { "fullcapacityfilled": -1 },
       }
     ).session(session);
 
@@ -179,48 +264,49 @@ module.exports.cancelMembership = async (req, res) => {
   }
 };
 
+
+
+// update Enrollment for waitlist
 module.exports.updateEnrollmentWaitlist = async (req, res) => {
   const session = await mongoose.startSession();
 
   session.startTransaction();
 
   try {
-    const updateEnrollment = await enrolement
-      .find({ enrolledStatus: "WAITLISTED" })
+
+
+    const businessSessiondata = await BusinessSession
+      .findOne({_id: req.body.sessionId})
       .session(session);
 
-    /**
-     * commenting this code. as it has some issues.
-     * try not to perform database query inside for loop / map
-     *
-     *
-     */
-    // updateEnrollment.map((member) => {
-    //   const businessSessiondata = await BusinessSession.findOne({
-    //     _id: req.body.sessionId
-    //   }).session(session);
+    let capacityLeft = businessSessiondata.fullcapacity - businessSessiondata.fullcapacityfilled
 
-    //   if (
-    //     businessSessiondata.fullcapacity !==
-    //     businessSessiondata.fullcapacityfilled
-    //   ) {
-    //     await enrolement
-    //       .deleteOne({ memberId: member.memberId })
-    //       .session(session);
+    let updatedEnrollemnt = await enrolement
+      .updateMany({ enrolledStatus: "WAITLISTED" })
+      .limit(capacityLeft)
+      .session(session);
 
-    //     await Enrollment(member, session);
+    let createDocumentProgress = updatedEnrollemnt.map(li => {
+      return(
+        li.name,
+        li.sessionId,
+        li.classId,
+        li.memberId
+      )
+    })
 
-    //     await BusinessSession.findOneAndUpdate(
-    //       { sessionId: req.body.sessionId },
-    //       {
-    //         $inc: {
-    //           fullcapacityfilled: 1,
-    //           waitcapacityfilled: -1
-    //         }
-    //       }
-    //     ).session(session);
-    //   }
-    // });
+    await Progress.insertMany(createDocumentProgress).session(session)
+
+    await BusinessSession.findOneAndUpdate(
+      { sessionId: req.body.sessionId },
+      {
+        $inc: {
+          "fullcapacityfilled": capacityLeft,
+          "waitcapacityfilled": -capacityLeft
+        }
+      }
+    ).session(session);
+  
 
     await session.commitTransaction();
 
@@ -237,48 +323,29 @@ module.exports.updateEnrollmentWaitlist = async (req, res) => {
   }
 };
 
+
+
+// class transfer
 module.exports.classTransfer = async (req, res) => {
   const session = await mongoose.startSession();
 
-  session.startTransaction();
+  session.startTransaction(); 
 
   try {
     const newBusinessSessiondata = await BusinessSession.findOne({
       _id: req.body.SessionId,
     }).session(session);
 
-    if (
-      newBusinessSessiondata.fullcapacity >
-      newBusinessSessiondata.fullcapacityfilled
-    ) {
-      await enrolement
-        .findOneAndUpdate(
-          { _id: req.body.memberId, sessionId: req.body.currentSessionId },
-          {
-            $set: {
-              enrolledStatus: "DROPPED",
-              discontinuationReason: "CLASS_TRANSFER",
-            },
-          }
-        )
-        .session(session);
+    if ( newBusinessSessiondata.fullcapacity > newBusinessSessiondata.fullcapacityfilled) {
 
-      await Enrollment(req.body, session);
-
-      await BusinessSession.findOneAndUpdate(
-        { _id: req.body.currentSessionId },
-        {
-          $inc: { fullcapacityfilled: -1 },
-        }
-      ).session(session);
+      await classTransferfunctionality(req.body, session)
     }
 
     await session.commitTransaction();
 
     console.log("success");
 
-    /** commenting this as member is not defined */
-    // return res.status(201).send({ message: "enrolled Successfully", member });
+    return res.status(201).send({ message: "enrolled Successfully"});
   } catch (err) {
     console.log("error");
     await session.abortTransaction();
@@ -287,6 +354,10 @@ module.exports.classTransfer = async (req, res) => {
     session.endSession();
   }
 };
+
+
+
+
 
 /////////////////////////////////////////// Below this line deprecated ////////////////////////////////////////////////
 

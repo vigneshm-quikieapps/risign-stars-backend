@@ -2,10 +2,10 @@ const express = require("express");
 const router = express.Router();
 
 const enrolement = require("../controllers/enrolement");
-// const { createEnrolementValidationRules, putEnrolementConsentValidationRules, putEnrolementAdditionalValidationRules } = require("../validations/enrolement");
+const { createEnrolementValidationRules, putEnrolementConsentValidationRules, putEnrolementAdditionalValidationRules } = require("../validations/enrolement");
 // const validate = require("../validations/validate");
 
-router.post("/enrolement/create-enrollment", enrolement.createEnrollment);
+router.post("/enrolement/create-enrollment",createEnrolementValidationRules(), enrolement.createEnrollment);
 router.post("/enrolement/cancel-membership", enrolement.cancelMembership);
 router.post(
   "/enrolement/update-enrollment",
