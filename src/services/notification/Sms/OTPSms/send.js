@@ -1,16 +1,23 @@
-const sendSms = require("../sendSms");
+const client = require("../getClient");
+const messagingServiceSid = process.env.TWILIO_MESSAGING_SERVICE_ID;
 
-const send = async ({ to, otp }) => {
-  let payload = {
-    body: `${otp} is the OTP for your phone verification`,
-    to,
-  };
-  try {
-    let response = await sendSms(payload);
-    console.log({ response });
-  } catch (err) {
-    console.error(err);
+/**
+ * send sms to phone number
+ * @param {*} param0
+ */
+const send = async ({ to, body }) => {
+  if (!messagingServiceSid) {
+    /**
+     * Please add messaging service id to .env file
+     */
+    throw new Error("Invalid Messaging Service Id");
   }
+
+  return client.messages.create({
+    body,
+    messagingServiceSid,
+    to,
+  });
 };
 
 module.exports = send;

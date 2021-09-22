@@ -1,5 +1,5 @@
-const InvalidOTPError = require("../../exceptions/InvalidOTPError");
-const { length } = require("./constants");
+const InvalidOTPError = require("../../../exceptions/InvalidOTPError");
+const { length } = require("../../../contants/otp");
 const get = require("./get");
 
 /**
@@ -7,9 +7,7 @@ const get = require("./get");
  * @param {number} otp
  * @returns
  */
-module.exports = async (contact, otp) => {
-  let key = `otp:${contact}`;
-
+module.exports = async (key, otp) => {
   if (!otp || String(otp).length !== length) {
     throw new InvalidOTPError();
   }

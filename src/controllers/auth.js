@@ -1,10 +1,11 @@
 const User = require("../models/User");
 const { Otp } = require("../services");
-const { OTPSms } = require("../services/notification/Sms");
+const { VerifyMobileSms } = require("../services/notification/Sms");
 const DoesNotExistError = require("../exceptions/DoesNotExistError");
 const expressJwt = require("express-jwt");
 const { generateTokens, RefreshToken } = require("../services/auth");
 const { OTPEmail } = require("../services/notification/Email");
+const { VerifyContactOTP } = require("../services/otp");
 
 // Signup Method
 module.exports.signup = async (req, res) => {
@@ -61,7 +62,7 @@ module.exports.isAuthenticated = (req, res, next) => {
 // Refresh Token
 module.exports.refreshToken = async (req, res) => {
   try {
-    const user = await User.findById(req.userId);
+    const user = await User.findById(req.userData._id);
     const data = generateTokens({ user });
     return res.send(data);
   } catch (err) {
@@ -78,9 +79,8 @@ module.exports.refreshToken = async (req, res) => {
 module.exports.getOTPMobileNo = async (req, res) => {
   try {
     let { mobileNo } = req.body;
-    let otp = await Otp.generate(mobileNo);
-
-    OTPSms.send({ to: mobileNo, otp });
+    let otp = await VerifyContactOTP.generate(mobileNo);
+    VerifyMobileSms.send({ to: mobileNo, otp });
     return res.send({ message: `OTP has been sent to ${mobileNo}`, otp });
   } catch (err) {
     return res.status(422).send({ message: err.message });
@@ -90,8 +90,7 @@ module.exports.getOTPMobileNo = async (req, res) => {
 module.exports.getOTPEmail = async (req, res) => {
   try {
     let { email } = req.body;
-    let otp = await Otp.generate(email);
-
+    let otp = await VerifyContactOTP.generate(email);
     OTPEmail.send({ to: email, otp });
     return res.send({ otp, message: "OTP has been sent to email" });
   } catch (err) {
