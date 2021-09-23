@@ -1,4 +1,4 @@
-const InvalidOTPError = require("../../../../exceptions/InvalidOTPError");
+const InvalidOTPError = require("../../../exceptions/InvalidOTPError");
 const otp = require("../index");
 
 describe("OTP", () => {

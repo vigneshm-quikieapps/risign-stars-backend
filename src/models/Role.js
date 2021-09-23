@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 const { ObjectId } = mongoose.Schema;
-const { FUNCTIONAL_PRIVILEDGES } = require("../contants/constant");
+const { FUNCTIONAL_PRIVILEGES } = require("../contants/constant");
 
 const roleSchema = new mongoose.Schema(
   {
@@ -8,17 +8,22 @@ const roleSchema = new mongoose.Schema(
       type: String,
       maxlength: 32,
       required: true,
+      unique: true,
       trim: true,
+    },
+    code: {
+      type: String,
+      required: true,
+      unique: true,
     },
     description: {
       type: String,
-      required: true,
     },
-    functionalPriviledges: [
+    functionalPrivileges: [
       {
         type: {
           type: String,
-          enum: FUNCTIONAL_PRIVILEDGES,
+          enum: FUNCTIONAL_PRIVILEGES,
           required: true,
         },
         permission: {

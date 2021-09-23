@@ -19,15 +19,9 @@ module.exports.enrolments = {
   sessionId: String,
   classId: String,
   businessId: String,
-  name: String,
+  memberId: String,
+  name: String /** Name of member */,
   clubMembershipId: String,
-  consent: {
-    allergies: String,
-    condition: String,
-    photographConsent: Boolean,
-    signedByParent: Boolean,
-    signedAt: Date,
-  },
   newsletter: {
     email: Boolean,
     telephone: Boolean,
@@ -39,5 +33,7 @@ module.exports.enrolments = {
   discontinuationReason: ENUM_DISCONTINUATION_REASON,
   droppedDate: Date,
   createdAt: Date,
-  updatedAt: Date,
+  createdBy: String /** userId */,
+  lastUpdatedAt: Date,
+  lastUpdatedBy: String /** userId */,
 };

@@ -1,16 +1,17 @@
 const User = require("../models/User");
-const Otp = require("../services");
-const { Email, Sms } = require("../services/notification");
+const { Otp } = require("../services");
+const { VerifyMobileSms } = require("../services/notification/Sms");
 const DoesNotExistError = require("../exceptions/DoesNotExistError");
 const expressJwt = require("express-jwt");
 const { generateTokens, RefreshToken } = require("../services/auth");
-const { VerifyEmail } = require("../services/notification/Email");
+const { OTPEmail } = require("../services/notification/Email");
+const { VerifyContactOTP } = require("../services/otp");
 
 // Signup Method
 module.exports.signup = async (req, res) => {
   try {
     let data = req.body;
-    data = { ...data, emailVerfied: true, mobileNoVerfified: true };
+    data = { ...data, mobileNoVerified: true };
     await User.create(data);
     return res.status(201).send({ message: "created successfully" });
   } catch (err) {
@@ -21,9 +22,9 @@ module.exports.signup = async (req, res) => {
 // Signed Method
 module.exports.signin = async (req, res) => {
   try {
-    const { email, password } = req.body;
+    const { mobileNo, password } = req.body;
 
-    let user = await User.findOne({ email });
+    let user = await User.findOne({ mobileNo });
     if (!user || !user.isValidPassword(password)) {
       throw new DoesNotExistError();
     }
@@ -61,31 +62,11 @@ module.exports.isAuthenticated = (req, res, next) => {
 // Refresh Token
 module.exports.refreshToken = async (req, res) => {
   try {
-    const user = await User.findById(req.userId);
+    const user = await User.findById(req.userData._id);
     const data = generateTokens({ user });
     return res.send(data);
   } catch (err) {
     return res.status(400).send({ message: err.message });
-  }
-};
-
-/**
- * validate
- * 1. check if mobile number is valid
- *
- * method for sending the otp via appropriate channel (e.g. sms, email)
- * @param {*} otp
- */
-const sendOTPViaSMS = async ({ to, otp }) => {
-  let payload = {
-    body: `${otp} is the OTP for your phone verification`,
-    to,
-  };
-  try {
-    let response = await Sms.send(payload);
-    console.log({ response });
-  } catch (err) {
-    console.error(err);
   }
 };
 
@@ -98,35 +79,20 @@ const sendOTPViaSMS = async ({ to, otp }) => {
 module.exports.getOTPMobileNo = async (req, res) => {
   try {
     let { mobileNo } = req.body;
-    let otp = await Otp.generate(mobileNo);
-
-    sendOTPViaSMS({ to: mobileNo, otp });
+    let otp = await VerifyContactOTP.generate(mobileNo);
+    VerifyMobileSms.send({ to: mobileNo, otp });
     return res.send({ message: `OTP has been sent to ${mobileNo}`, otp });
   } catch (err) {
     return res.status(422).send({ message: err.message });
   }
 };
 
-const sendOTPViaEmail = ({ to, otp }) => {
-  console.log({ to, otp });
-  const msg = {
-    to: "tomonso.ejang@gmail.com", // Change to your recipient
-    from: "sarphu@quikieapps.com", // Change to your verified sender
-    subject: "Sending with SendGrid is Fun",
-    text: "and easy to do anywhere, even with Node.js",
-    html: `<strong>${otp} is the OTP for your email verification</strong>`,
-  };
-  Email.send(msg);
-};
-
 module.exports.getOTPEmail = async (req, res) => {
   try {
     let { email } = req.body;
-    let otp = await Otp.generate(email);
-
-    sendOTPViaEmail({ to: email, otp });
-    VerifyEmail.send({ to: email, otp });
-    return res.send({ otp });
+    let otp = await VerifyContactOTP.generate(email);
+    OTPEmail.send({ to: email, otp });
+    return res.send({ otp, message: "OTP has been sent to email" });
   } catch (err) {
     return res.status(422).send({ message: err.message });
   }

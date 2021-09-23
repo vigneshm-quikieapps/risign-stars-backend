@@ -1,7 +1,7 @@
-const send = require("./send");
-const getClient = require("./getClient");
+const ResetPasswordSms = require("./ResetPasswordSms");
+const VerifyMobileSms = require("./VerifyMobileSms");
 
 module.exports = {
-  send,
-  getClient,
+  ResetPasswordSms,
+  VerifyMobileSms,
 };

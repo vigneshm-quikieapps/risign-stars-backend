@@ -1,4 +1,4 @@
-const cache = require("../cache");
+const cache = require("../../cache");
 
 /** store the value to cache with the specified key */
 module.exports = async (key, value, ...options) => {

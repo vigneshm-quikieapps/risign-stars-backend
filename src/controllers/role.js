@@ -51,8 +51,8 @@ module.exports.getAll = (req, res) => {
 
 module.exports.create = async (req, res) => {
   try {
-    let role = await Role.create(req.body);
-    return res.status(201).send({ message: "added successfully", role });
+    await Role.create({ ...req.body, createdBy: req.userData._id });
+    return res.status(201).send({ message: "added successfully" });
   } catch (err) {
     console.error(err);
     return res.status(422).send({ message: err.message });
@@ -77,11 +77,15 @@ module.exports.update = async (req, res) => {
   try {
     let { roleId } = req.params;
     let options = { new: true };
-    let role = await Role.findByIdAndUpdate(roleId, req.body, options);
+    let role = await Role.findByIdAndUpdate(
+      roleId,
+      { ...req.body, updatedBy: req.userData._id },
+      options
+    );
     if (!role) {
       throw new DoesNotExistError();
     }
-    return res.send({ message: "updated successfully", role });
+    return res.send({ message: "updated successfully" });
   } catch (err) {
     console.error(err);
     return res.status(422).send({ message: err.message });

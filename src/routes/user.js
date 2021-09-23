@@ -37,5 +37,10 @@ router.put(
 
 // listing route
 router.get("/users", isAuthorized(USER, READ), user.getAll);
+router.get(
+  "/users/coaches/:businessId",
+  isAuthorized(USER, READ),
+  user.getAllCoach
+);
 
 module.exports = router;

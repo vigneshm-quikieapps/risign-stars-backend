@@ -1,4 +1,4 @@
-const { Email } = require("../index");
+const sendEmail = require("../sendEmail");
 
 module.exports = ({ to, otp }) => {
   const msg = {
@@ -8,5 +8,5 @@ module.exports = ({ to, otp }) => {
     text: "and easy to do anywhere, even with Node.js",
     html: `<strong>${otp} is the OTP for your email verification</strong>`,
   };
-  Email.send(msg);
+  sendEmail(msg);
 };

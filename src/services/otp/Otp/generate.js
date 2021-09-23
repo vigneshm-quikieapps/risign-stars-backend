@@ -1,4 +1,4 @@
-const { length, expiresIn } = require("./constants");
+const { length, expiresIn } = require("../../../contants/otp");
 const otpGenerator = require("otp-generator");
 const set = require("./set");
 const get = require("./get");
@@ -10,8 +10,7 @@ const get = require("./get");
  * @param {*} contact
  * @returns
  */
-module.exports = async (contact) => {
-  let key = `otp:${contact}`;
+module.exports = async (key) => {
   let otp = await get(key);
 
   if (!otp) {

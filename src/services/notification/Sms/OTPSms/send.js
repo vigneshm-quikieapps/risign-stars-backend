@@ -1,11 +1,11 @@
-const client = require("./getClient");
+const client = require("../getClient");
 const messagingServiceSid = process.env.TWILIO_MESSAGING_SERVICE_ID;
 
 /**
  * send sms to phone number
  * @param {*} param0
  */
-module.exports = async ({ body, to }) => {
+const send = async ({ to, body }) => {
   if (!messagingServiceSid) {
     /**
      * Please add messaging service id to .env file
@@ -19,3 +19,5 @@ module.exports = async ({ body, to }) => {
     to,
   });
 };
+
+module.exports = send;
