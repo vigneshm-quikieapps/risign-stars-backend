@@ -9,14 +9,12 @@ const {
  *
  * sessionId
  * memberId
- * businessId
  *
  *
  * business admin is enrolling a member into a session
  *
  * sessionId
  * memberId
- * businessId
  *
  * @returns
  */
