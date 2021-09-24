@@ -6,18 +6,36 @@ const {
 
 const BusinessSession = require("../models/businessSession");
 
+const Members = require("../models/Member")
 
-const sessionIdValidation = async (sessionId) => {
+
+const isValidSession = async (sessionId, {req}) => {
   try {
-    let business = await BusinessSession.findById(sessionId);
-    if (!business) {
+    let businessSession = await BusinessSession.findById(sessionId);
+    if (!businessSession) {
       throw new Error();
     }
+    req.businessSessionData = businessSession
     return true;
   } catch (err) {
-    return Promise.reject(`Please select a valid session`);
+    return Promise.reject(`should be a valid session`);
   }
 };
+
+
+const isValidMember = async (memberId, {req}) => {
+  try {
+    let member = await Members.findById(memberId);
+    if (!member) {
+      throw new Error();
+    }
+    req.memberData = member
+    return true;
+  } catch (err) {
+    return Promise.reject(`should be a valid member id`);
+  }
+};
+
 
 
 /**
@@ -38,14 +56,14 @@ const sessionIdValidation = async (sessionId) => {
  */
 const createEnrolementValidationRules = () => {
   return [
-    body("sessionId", "min length should be 2").custom(sessionIdValidation),
+    body("sessionId", "min length should be 2").custom(isValidSession),
     // body("classId", "min length should be 2").isLength({ min: 2 }),
     // body("businessId", "min length should be 2").isLength({ min: 2 }),
-    body("memberId", "min length should be 2").isLength({ min: 2 }),
+    body("memberId", "min length should be 2").custom(isValidMember),
     // body("name", "min length should be 2 and max length should be 70").isLength(
     //   { min: 2, max: 70 }
     // ),
-    body("clubMembershipId", "min length should be 2").isLength({ min: 2 }),
+    // body("clubMembershipId", "min length should be 2").isLength({ min: 2 }),
     body("consent").isObject(),
     body("consent.allergies", "min length should be 2").isLength({
       min: 2,
