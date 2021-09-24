@@ -1,5 +1,3 @@
-const BusinessSession = require("../../models/businessSession");
-
 const mongoose = require("mongoose");
 const enrolment = require("./enrolment");
 const waitlistEnrolment = require("./waitlistEnrolment");
@@ -14,41 +12,32 @@ const newEnrolment = async (req, res) => {
   session.startTransaction();
 
   try {
-    const businessSessiondata = await BusinessSession.findOne({
-      _id: req.body.sessionId,
-    }).session(session);
+    let { businessSessionData } = req;
 
-    let totalCapacity =
-      businessSessiondata.fullcapacity + businessSessiondata.waitcapacity;
-    let totalEnrollment =
-      businessSessiondata.fullcapacityfilled +
-      businessSessiondata.waitcapacityfilled;
+    let { fullcapacityfilled, fullcapacity, waitcapacity, waitcapacityfilled } =
+      businessSessionData;
+
+    let totalCapacity = fullcapacity + waitcapacity;
+    let totalEnrollment = fullcapacityfilled + waitcapacityfilled;
+
+    /**
+     * check membership id of a member for this particular businessId (from members collections, membership array)
+     * if available, get the membership id
+     * else generate membership id and store it in the membership array
+     */
 
     if (totalCapacity <= totalEnrollment) {
-      return res
-        .status(201)
-        .send({ message: "Maximum limit of enrolment is reached." });
-    } else if (
-      businessSessiondata.fullcapacityfilled <= businessSessiondata.fullcapacity
-    ) {
-      const member = await enrolment(req.body, session);
-
-      if (member) {
-        return res
-          .status(201)
-          .send({ message: "enrolled Successfully", member });
-      }
-    } else {
-      // creating enrolment till session capacity
-
-      let member = await waitlistEnrolment(req.body, session);
-
-      await session.commitTransaction();
-
-      console.log("success");
-
-      return res.status(201).send({ message: "enrolled Successfully", member });
+      throw new Error("Maximum limit of enrolment is reached");
     }
+
+    if (fullcapacityfilled <= fullcapacity) {
+      await enrolment(req.body, session);
+    } else {
+      // creating enrolment till session capacit
+      await waitlistEnrolment(req.body, session);
+    }
+    await session.commitTransaction();
+    return res.status(201).send({ message: "enrolled Successful in waitlist" });
   } catch (err) {
     console.log("error");
     await session.abortTransaction();

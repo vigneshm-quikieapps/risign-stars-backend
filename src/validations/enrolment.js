@@ -1,11 +1,6 @@
 const { body } = require("express-validator");
-const {
-  ENUM_DISCONTINUATION_REASON,
-  ENUM_ENROLLED_STATUS,
-} = require("../contants/constant");
 
 const BusinessSession = require("../models/businessSession");
-
 
 const sessionIdValidation = async (sessionId) => {
   try {
@@ -18,7 +13,6 @@ const sessionIdValidation = async (sessionId) => {
     return Promise.reject(`Please select a valid session`);
   }
 };
-
 
 /**
  * parent is enrolling a member into a session
@@ -43,7 +37,7 @@ const createEnrolementValidationRules = () => {
     // body("name", "min length should be 2 and max length should be 70").isLength(
     //   { min: 2, max: 70 }
     // ),
-    body("clubMembershipId", "min length should be 2").isLength({ min: 2 }),
+    // body("clubMembershipId", "min length should be 2").isLength({ min: 2 }),
     body("consent").isObject(),
     body("consent.allergies", "min length should be 2").isLength({
       min: 2,
