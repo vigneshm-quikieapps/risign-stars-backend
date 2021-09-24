@@ -4,6 +4,22 @@ const {
   ENUM_ENROLLED_STATUS,
 } = require("../contants/constant");
 
+const BusinessSession = require("../models/businessSession");
+
+
+const sessionIdValidation = async (sessionId) => {
+  try {
+    let business = await BusinessSession.findById(sessionId);
+    if (!business) {
+      throw new Error();
+    }
+    return true;
+  } catch (err) {
+    return Promise.reject(`Please select a valid session`);
+  }
+};
+
+
 /**
  * parent is enrolling a member into a session
  *
@@ -20,7 +36,7 @@ const {
  */
 const createEnrolementValidationRules = () => {
   return [
-    body("sessionId", "min length should be 2").isLength({ min: 2 }),
+    body("sessionId", "min length should be 2").custom(sessionIdValidation),
     // body("classId", "min length should be 2").isLength({ min: 2 }),
     // body("businessId", "min length should be 2").isLength({ min: 2 }),
     body("memberId", "min length should be 2").isLength({ min: 2 }),

@@ -1,9 +1,12 @@
+const { check } = require("express-validator");
+
 const Business = require("../models/business");
 const BusinessSession = require("../models/businessSession");
 const Evaluation = require("../models/evaluation");
 const Category = require("../models/Category");
+const { TERM_STATUS } = require("../contants/constant");
 
-module.exports.businessIdValidation = async (businessId) => {
+const businessIdValidation = async (businessId) => {
   try {
     if (!businessId) {
       throw new Error();
@@ -20,7 +23,7 @@ module.exports.businessIdValidation = async (businessId) => {
   }
 };
 
-module.exports.categoryIdValidation = async (category) => {
+const categoryIdValidation = async (category) => {
   try {
     if (!category) {
       throw new Error();
@@ -37,7 +40,7 @@ module.exports.categoryIdValidation = async (category) => {
   }
 };
 
-module.exports.evaluationIdValidation = async (evaluation) => {
+const evaluationIdValidation = async (evaluation) => {
   try {
     if (!evaluation) {
       throw new Error();
@@ -54,7 +57,7 @@ module.exports.evaluationIdValidation = async (evaluation) => {
   }
 };
 
-module.exports.sessionIdValidation = async (session) => {
+const sessionIdValidation = async (session) => {
   try {
     if (!session) {
       throw new Error();
@@ -69,4 +72,79 @@ module.exports.sessionIdValidation = async (session) => {
   } catch (err) {
     return Promise.reject(`Please select a valid session`);
   }
+};
+const createClassValidationRules = () => {
+  return [
+    check("name", "name should be at least 3 char").isLength({ min: 3 }),
+    check("businessId").custom(businessIdValidation),
+    check("evaluationId").custom(evaluationIdValidation),
+    check("categoryId").custom(categoryIdValidation),
+    check("sessionIds").custom(sessionIdValidation),
+    check("status", "status should  only be [active, inactive]")
+      .optional()
+      .isIn(TERM_STATUS),
+    check("registrationform", "registrationform should only be standard")
+      .optional()
+      .isIn("standard"),
+    check("about", "about should be atleast 3 char")
+      .optional()
+      .isLength({ min: 3 }),
+    check(
+      "enrolmentControls",
+      "enrolmentControls should be an Array and should not be empty "
+    )
+      .isArray()
+      .notEmpty(),
+    check("charges", "charges should be an Array and should not be empty")
+      .isArray()
+      .notEmpty(),
+    check("updatedBy", "updatedBy should be a valid userId").isLength({
+      min: 3,
+    }),
+    check("createdBy", "createdBy should be a valid userId").isLength({
+      min: 3,
+    }),
+  ];
+};
+const updateClassValidationRules = () => {
+  return [
+    check("name", "name should be at least 3 char")
+      .optional()
+      .isLength({ min: 3 }),
+    check("business").optional().custom(businessIdValidation),
+    check("evaluationId").optional().custom(evaluationIdValidation),
+    check("categoryId").optional().custom(categoryIdValidation),
+    check("sessionIds").optional().custom(sessionIdValidation),
+    check("status", "status should  only be [active, inactive]")
+      .optional()
+      .isIn(TERM_STATUS),
+    check("registrationform", "registrationform should only be standard")
+      .optional()
+      .isIn("standard"),
+    check("about", "about should be atleast 3 char")
+      .optional()
+      .isLength({ min: 3 }),
+    check(
+      "enrolmentControls",
+      "enrolmentControls should be an Array and should not be empty "
+    )
+      .optional()
+      .isArray()
+      .notEmpty(),
+    check("charges", "charges should be an Array and should not be empty")
+      .optional()
+      .isArray()
+      .notEmpty(),
+    check("updatedBy", "updatedBy should be a valid userId").isLength({
+      min: 3,
+    }),
+  ];
+};
+module.exports = {
+  createClassValidationRules,
+  updateClassValidationRules,
+  businessIdValidation,
+  categoryIdValidation,
+  evaluationIdValidation,
+  sessionIdValidation,
 };

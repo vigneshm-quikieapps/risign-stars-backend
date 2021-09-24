@@ -5,32 +5,20 @@ const { STARTS_WITH_FILTER, EQUALS_FILTER } = require("../contants/constant");
 
 //parameter extractor
 module.exports.getBusinessClassIdById = (req, res, next, id) => {
-  BusinessClass.findById(id)
-    .populate("category")
-    .populate("business")
-    .populate("evaluation")
-    .populate("session")
-    .exec((err, Class) => {
-      if (err) {
-        return res.status(400).json({
-          err: "cannot find business Class by id enter a valid ID",
-        });
-      }
-      req.Class = Class;
-      next();
-    });
+  BusinessClass.findById(id).exec((err, Class) => {
+    if (err) {
+      return res.status(400).json({
+        err: "cannot find business Class by id enter a valid ID",
+      });
+    }
+    req.Class = Class;
+    next();
+  });
 };
 
 //Business Class creation
 
 module.exports.createBusinessClass = (req, res) => {
-  const errors = validationResult(req);
-
-  if (!errors.isEmpty()) {
-    return res.status(422).json({
-      error: errors.array()[0].msg,
-    });
-  }
   const Class = new BusinessClass(req.body);
   Class.save((err, Class) => {
     if (err) {
@@ -58,7 +46,9 @@ module.exports.getAllBusinessClass = (req, res) => {
   /**
    * query object
    */
-  let query = BusinessClass.find()
+  let cond = { businessId: req.params.businessId };
+
+  let query = BusinessClass.find(cond)
     .sort({ _id: sortBy })
     .skip(skip)
     .limit(limit);
@@ -104,14 +94,6 @@ module.exports.getBusinessClass = (req, res) => {
 //Business Class Update
 
 module.exports.updateBusinessClass = (req, res) => {
-  const errors = validationResult(req);
-
-  if (!errors.isEmpty()) {
-    return res.status(422).json({
-      error: errors.array()[0].msg,
-    });
-  }
-
   BusinessClass.findByIdAndUpdate(
     { _id: req.Class._id },
     { $set: req.body },

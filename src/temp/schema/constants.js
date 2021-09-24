@@ -47,7 +47,7 @@ module.exports.RELATIONSHIPS = [
   "COUSIN",
 ];
 module.exports.ENUM_DATA_PRIVILEGES_TYPE = ["ALL", "LIST"];
-module.exports.ENUM_ENUM_USER_TYPES = ["BUSINESS_ADMIN", "COACH"];
+module.exports.ENUM_USER_TYPES = ["BUSINESS_ADMIN", "COACH"];
 module.exports.ENUM_EVALUATION_SCHEME_STATUS = ["active", "inactive"];
 module.exports.ENUM_ENROLLED_STATUS = [
   "ENROLLED",

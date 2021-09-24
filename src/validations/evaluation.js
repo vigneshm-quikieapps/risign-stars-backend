@@ -36,7 +36,7 @@ const levelsValidator = (levels, { req }) => {
 
 const createEvaluationValidationRules = () => {
   return [
-    check("name", "name should be at least 3 char").isLength({ min: 3 }),
+    check("name", "name should be at least 3 char uniqu ").isLength({ min: 3 }),
     check("status", "status should be active / inactive")
       .optional()
       .isIn(EVALUATION_STATUS),
@@ -53,7 +53,7 @@ const createEvaluationValidationRules = () => {
 
 const updateEvaluationValidationRules = () => {
   return [
-    check("name", "name should be at least 3 char")
+    check("name", "name should be at least 3 char uniqu")
       .optional()
       .isLength({ min: 3 }),
     check("status", "status should be active / inactive")
