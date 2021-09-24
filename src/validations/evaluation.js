@@ -19,10 +19,10 @@ const levelsValidator = (levels, { req }) => {
     return false;
   }
 
-  let { levelcount } = req.body;
+  let { levelCount } = req.body;
 
-  /** numbers of levels should be equal to the number of levelcount */
-  if (levels.length !== parseInt(levelcount)) {
+  /** numbers of levels should be equal to the number of levelCount */
+  if (levels.length !== parseInt(levelCount)) {
     return Promise.reject("number of levels should be equal to levelCount");
   }
 
@@ -40,7 +40,7 @@ const createEvaluationValidationRules = () => {
     check("status", "status should be active / inactive")
       .optional()
       .isIn(EVALUATION_STATUS),
-    check("levelcount", "levelcount should be an Integer").isInt(),
+    check("levelCount", "levelCount should be an Integer").isInt(),
     check("levels", "levels should be a array").custom(levelsValidator),
     check("updatedBy", "updatedBy should be a valid userId")
       .optional()
@@ -59,7 +59,7 @@ const updateEvaluationValidationRules = () => {
     check("status", "status should be active / inactive")
       .optional()
       .isIn(EVALUATION_STATUS),
-    check("levelcount", "levelcount should be an Integer").optional().isInt(),
+    check("levelCount", "levelCount should be an Integer").optional().isInt(),
     check("levels").optional().isLength({ min: 1 }).custom(levelsValidator),
     check("updatedBy", "updatedBy should be a valid userId").isLength({
       min: 12,

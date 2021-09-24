@@ -1,5 +1,7 @@
 const express = require("express");
 const router = express.Router();
+const { User, Progress, Enrolment } = require("../models");
+const mongoose = require("mongoose");
 
 const {
   newEnrolment,
@@ -24,7 +26,12 @@ router.post(
   withdrawEnrolment
 );
 router.post("/update-waitlist", validate, updateWaitlistEnrolment);
-router.post("/transfer", validate, transferEnrolment);
+router.post(
+  "/transfer",
+  classTransferValidation(),
+  validate,
+  transferEnrolment
+);
 
 // router.get("/enrolement", enrolement.getAll);
 // router.put("/enrolement/consent/:id",putEnrolementConsentValidationRules(),validate, enrolement.updateConsent);

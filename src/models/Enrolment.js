@@ -48,6 +48,10 @@ const enrolmentSchema = new mongoose.Schema(
       type: String,
       enum: ENUM_DISCONTINUATION_REASON,
     },
+    transferedTo: {
+      type: ObjectId,
+      /** new enrolment id, if class transfer */
+    },
     droppedDate: Date,
     updatedBy: {
       type: ObjectId,

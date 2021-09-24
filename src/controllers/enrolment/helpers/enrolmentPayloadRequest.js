@@ -8,7 +8,7 @@
  */
 const enrolmentPayloadRequest = (req) => {
   let data = req.body;
-  let { classId, businessId, id } = req.sessionData;
+  let { classId, businessId, id } = req.businessSessionData;
   let { clubMembershipId } = req;
 
   return {

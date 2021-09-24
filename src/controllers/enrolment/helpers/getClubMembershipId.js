@@ -1,4 +1,4 @@
-const { Member, Counter, Business } = require("../../models");
+const { Member, Counter, Business } = require("../../../models");
 const { Types } = require("mongoose");
 
 const getClubMembershipId = async (req, session) => {

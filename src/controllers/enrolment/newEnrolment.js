@@ -1,7 +1,10 @@
 const mongoose = require("mongoose");
-const enrolment = require("./enrolment");
-const waitlistEnrolment = require("./waitlistEnrolment");
-const getClubMembershipId = require("./getClubMembershipId");
+const {
+  enrolInASession,
+  getClubMembershipId,
+  waitlistEnrolInASession,
+} = require("./helpers");
+const { Enrolment } = require("../../models");
 
 /**
  * enrol a member into a class/session
@@ -15,6 +18,8 @@ const newEnrolment = async (req, res) => {
 
   try {
     let { businessSessionData } = req;
+    let { classId } = businessSessionData;
+    let { memberId } = req.body;
 
     let { fullcapacityfilled, fullcapacity, waitcapacity, waitcapacityfilled } =
       businessSessionData;
@@ -23,15 +28,27 @@ const newEnrolment = async (req, res) => {
     let numberOfMembersApplied = fullcapacityfilled + waitcapacityfilled;
 
     /**
+     * member should be enrolled only in one session for a particular class
+     */
+    let filterEnrolment = {
+      classId,
+      memberId: mongoose.Types.ObjectId(memberId),
+    };
+
+    let enrolment = await Enrolment.findOne(filterEnrolment);
+
+    if (enrolment) {
+      throw new Error(
+        "member can enrol in only one session for a particular class"
+      );
+    }
+
+    /**
      * check membership id of a member for this particular businessId (from members collections, membership array)
      * if available, get the membership id
      * else generate membership id and store it in the membership array
      */
-
-    req.clubMembershipId = await getClubMembershipId(
-      businessSessionData,
-      session
-    );
+    req.clubMembershipId = await getClubMembershipId(req, session);
 
     /**
      * if total number of students applied is greater than total number of applicable
@@ -48,16 +65,16 @@ const newEnrolment = async (req, res) => {
      */
     let message = "enrolled successful";
     if (fullcapacityfilled <= fullcapacity) {
-      await enrolment(req, session);
+      await enrolInASession(req, session);
     } else {
       // creating enrolment till session capacity
       message = "enrolled successful in waitlist";
-      await waitlistEnrolment(req.body, session);
+      await waitlistEnrolInASession(req.body, session);
     }
     await session.commitTransaction();
     return res.status(201).send({ message });
   } catch (err) {
-    console.log("error");
+    console.log(err);
     await session.abortTransaction();
     return res.status(422).send({ message: err.message });
   } finally {

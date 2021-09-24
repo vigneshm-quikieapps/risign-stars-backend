@@ -9,8 +9,9 @@ const withdrawEnrolment = async (req, res) => {
   session.startTransaction();
 
   try {
+    let { enrolmentId } = req.params;
     await Enrolment.findOneAndUpdate(
-      { memberId: req.body.memberId, sessionId: req.body.sessionId },
+      { _id: mongoose.Types.ObjectId(enrolmentId) },
       {
         $set: {
           enrolledStatus: "DROPPED",
@@ -27,9 +28,6 @@ const withdrawEnrolment = async (req, res) => {
     ).session(session);
 
     await session.commitTransaction();
-
-    console.log("success");
-
     return res.status(201).send({ message: "cancellation successfull" });
   } catch (err) {
     console.log("error");

@@ -1,18 +1,37 @@
 const { body, param } = require("express-validator");
-const { BusinessSession, Member } = require("../models");
-const Enrolment = require("../models/Enrolment");
+const { BusinessSession, Member, Enrolment } = require("../models");
 
-const isValidSession = async (sessionId, { req }) => {
-  try {
-    let businessSession = await BusinessSession.findById(sessionId);
-    if (!businessSession) {
-      throw new Error();
+const checkValidSession =
+  (dataField) =>
+  async (sessionId, { req }) => {
+    try {
+      let businessSession = await BusinessSession.findById(sessionId);
+      if (!businessSession) {
+        throw new Error();
+      }
+      req[dataField] = businessSession;
+      return true;
+    } catch (err) {
+      return Promise.reject(`should be a valid session`);
     }
-    req.businessSessionData = businessSession;
-    return true;
-  } catch (err) {
-    return Promise.reject(`should be a valid session`);
-  }
+  };
+
+const isValidSession = async (sessionId, params) => {
+  return checkValidSession("businessSessionData")(sessionId, params);
+  // try {
+  //   let businessSession = await BusinessSession.findById(sessionId);
+  //   if (!businessSession) {
+  //     throw new Error();
+  //   }
+  //   req.businessSessionData = businessSession;
+  //   return true;
+  // } catch (err) {
+  //   return Promise.reject(`should be a valid session`);
+  // }
+};
+
+const isValidNewSession = async (newSessionId, params) => {
+  return checkValidSession("newSessionData")(newSessionId, params);
 };
 
 const isValidMember = async (memberId, { req }) => {
@@ -28,16 +47,17 @@ const isValidMember = async (memberId, { req }) => {
   }
 };
 
-const isValidEnrollment = async (enrolmentId, { req }) => {
+const isValidEnrolment = async (enrolmentId, { req }) => {
   try {
     let enrolment = await Enrolment.findById(enrolmentId);
     if (!enrolment) {
       throw new Error();
     }
+
     req.enrolmentData = enrolment;
     return true;
   } catch (err) {
-    return Promise.reject(`should be a valid enrolement id`);
+    return Promise.reject(`should be a valid enrolment`);
   }
 };
 
@@ -59,13 +79,10 @@ const isValidEnrollment = async (enrolmentId, { req }) => {
 const createEnrolementValidationRules = () => {
   return [
     body("sessionId", "min length should be 2").custom(isValidSession),
-    // body("classId", "min length should be 2").isLength({ min: 2 }),
-    // body("businessId", "min length should be 2").isLength({ min: 2 }),
     body("memberId", "min length should be 2").custom(isValidMember),
     // body("name", "min length should be 2 and max length should be 70").isLength(
     //   { min: 2, max: 70 }
     // ),
-    // body("clubMembershipId", "min length should be 2").isLength({ min: 2 }),
     body("consent").isObject(),
     body("consent.allergies", "min length should be 2").isLength({
       min: 2,
@@ -82,24 +99,12 @@ const createEnrolementValidationRules = () => {
     body("newsletter.telephone", "value should be boolean").isBoolean(true),
     body("newsletter.sms", "value should be boolean").isBoolean(true),
     // body("startDate", "must be a valid date").isDate().trim(),
-    // body("registeredDate", "must be a valid date").isDate().trim(),
-    // body("enrolledStatus", "invalid value").isIn(ENUM_ENROLLED_STATUS),
-    // body("discontinuationReason", "invalid value").isIn(
-    //   ENUM_DISCONTINUATION_REASON
-    // ),
-    // body("droppedDate", "must be a valid date").isDate().trim(),
-    // body("updatedBy", "updatedBy should be a valid userId")
-    //   .optional()
-    //   .isLength({ min: 12 }),
-    // body("createdBy", "createdBy should be a valid userId").isLength({
-    //   min: 12,
-    // }),
   ];
 };
 
 const withdrawEnrolmentValidationRules = () => {
   return [
-    param("enrolmentId", "min length should be 2").custom(isValidEnrollment),
+    param("enrolmentId", "min length should be 2").custom(isValidEnrolment),
   ];
 };
 
@@ -109,9 +114,12 @@ const updateWaitlistEnrollment = () => {
 
 const classTransferValidation = () => {
   return [
-    body("newSessionId", "min length should be 2").custom(isValidSession),
-    body("currentSessionId", "min length should be 2").custom(isValidSession),
-    body("memberId", "min length should be 2").custom(isValidMember),
+    body("newSessionId", "min length should be 2").custom(isValidNewSession),
+    body("enrolmentId").custom(isValidEnrolment),
+    // body("currentSessionId", "min length should be 2").custom(
+    //   isValidCurrentSession
+    // ),
+    // body("memberId", "min length should be 2").custom(isValidMember),
     // body("classId", "min length should be 2").isLength({ min: 2 }),
     // createEnrolementValidationRules(),
   ];

@@ -12,6 +12,9 @@ var counterSchema = new mongoose.Schema(
       enum: ENUM_COUNTER_TYPES,
       required: true,
     },
+    businessId: {
+      types: String,
+    },
     year: {
       type: String,
       required: true,
@@ -28,9 +31,14 @@ counterSchema.index({ type: 1, year: -1 });
 
 counterSchema.statics.genClubMemberShipId = async function (business, session) {
   let year = new Date().getFullYear();
-  let filter = { type: CLUB_MEMBERSHIP_ID, year, businessId: business.id };
+  let filter = {
+    type: CLUB_MEMBERSHIP_ID,
+    year,
+    businessId: mongoose.Types.ObjectId(business.id),
+  };
   let update = {
     type: CLUB_MEMBERSHIP_ID,
+    businessId: mongoose.Types.ObjectId(business.id),
     year,
   };
 
@@ -51,7 +59,7 @@ counterSchema.statics.genClubMemberShipId = async function (business, session) {
   counter = await this.findOneAndUpdate(filter, update, options);
 
   let { sequence_value } = counter;
-  let twoDigityear = year.slice(2);
+  let twoDigityear = String(year).slice(2);
 
   return `${business.code}${twoDigityear}${sequence_value}`;
 };
