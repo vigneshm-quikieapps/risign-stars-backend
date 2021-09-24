@@ -1,5 +1,6 @@
 const { body } = require("express-validator");
 const { BusinessSession, Member } = require("../models");
+const Enrolment = require("../models/Enrolment")
 
 const isValidSession = async (sessionId, { req }) => {
   try {
@@ -14,6 +15,8 @@ const isValidSession = async (sessionId, { req }) => {
   }
 };
 
+
+
 const isValidMember = async (memberId, { req }) => {
   try {
     let member = await Member.findById(memberId);
@@ -26,6 +29,22 @@ const isValidMember = async (memberId, { req }) => {
     return Promise.reject(`should be a valid member id`);
   }
 };
+
+
+
+const isValidEnrollment = async (enrolmentId, { req }) => {
+  try {
+    let enrolment = await Enrolment.findById(enrolmentId);
+    if (!enrolment) {
+      throw new Error();
+    }
+    req.enrolmentData = enrolment;
+    return true;
+  } catch (err) {
+    return Promise.reject(`should be a valid enrolement id`);
+  }
+};
+
 
 /**
  * parent is enrolling a member into a session
@@ -40,7 +59,8 @@ const isValidMember = async (memberId, { req }) => {
  * memberId
  *
  * @returns
- */
+*/
+
 const createEnrolementValidationRules = () => {
   return [
     body("sessionId", "min length should be 2").custom(isValidSession),
@@ -82,17 +102,24 @@ const createEnrolementValidationRules = () => {
   ];
 };
 
+
+const withdrawEnrolmentValidationRules = () => {
+  return [
+    check("enrolmentId", "min length should be 2").custom(isValidEnrollment)
+  ]
+}
+
 const updateWaitlistEnrollment = () => {
-  return [body("sessionId", "min length should be 2").isLength({ min: 2 })];
+  return [body("sessionId", "min length should be 2").custom(isValidSession)];
 };
 
 const classTransferValidation = () => {
   return [
-    body("newSessionId", "min length should be 2").isLength({ min: 2 }),
-    body("currentSessionId", "min length should be 2").isLength({ min: 2 }),
-    body("memberId", "min length should be 2").isLength({ min: 2 }),
+    body("newSessionId", "min length should be 2").custom(isValidSession),
+    body("currentSessionId", "min length should be 2").custom(isValidSession),
+    body("memberId", "min length should be 2").custom(isValidMember),
     // body("classId", "min length should be 2").isLength({ min: 2 }),
-    createEnrolementValidationRules(),
+    // createEnrolementValidationRules(),
   ];
 };
 
@@ -121,6 +148,7 @@ const classTransferValidation = () => {
 // };
 module.exports = {
   createEnrolementValidationRules,
+  withdrawEnrolmentValidationRules,
   updateWaitlistEnrollment,
   classTransferValidation,
 };

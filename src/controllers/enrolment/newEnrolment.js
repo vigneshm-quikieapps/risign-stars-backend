@@ -1,6 +1,9 @@
 const mongoose = require("mongoose");
 const enrolment = require("./enrolment");
 const waitlistEnrolment = require("./waitlistEnrolment");
+// const {Member, Counter, Business} = require("../../models")
+const getClubMembershipId = require("./getClubMembershipId")
+
 
 //createMember(Enrolment)
 // module.exports.createEnrolment = async (req, res) => {
@@ -24,7 +27,10 @@ const newEnrolment = async (req, res) => {
      * check membership id of a member for this particular businessId (from members collections, membership array)
      * if available, get the membership id
      * else generate membership id and store it in the membership array
-     */
+    */
+
+
+    await getClubMembershipId(businessSessionData, session)
 
     if (totalCapacity <= totalEnrollment) {
       throw new Error("Maximum limit of enrolment is reached");
