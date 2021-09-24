@@ -21,13 +21,6 @@ module.exports.getBusinessIdById = (req, res, next, id) => {
 //create business
 
 module.exports.createBusiness = (req, res) => {
-  const errors = validationResult(req);
-
-  if (!errors.isEmpty()) {
-    return res.status(422).json({
-      error: errors.array()[0].msg,
-    });
-  }
   const business = new Business(req.body);
   business.save((err, business) => {
     if (err) {
@@ -61,14 +54,6 @@ module.exports.deleteBusiness = (req, res) => {
 };
 
 module.exports.updateBusiness = (req, res) => {
-  const errors = validationResult(req);
-
-  if (!errors.isEmpty()) {
-    return res.status(422).json({
-      error: errors.array()[0].msg,
-    });
-  }
-
   Business.findByIdAndUpdate(
     { _id: req.business._id },
     { $set: req.body },

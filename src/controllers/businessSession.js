@@ -2,6 +2,7 @@ const BusinessSession = require("../models/businessSession");
 
 const { validationResult } = require("express-validator");
 const { STARTS_WITH_FILTER, EQUALS_FILTER } = require("../contants/constant");
+const { json } = require("express");
 
 //parameter extractor
 module.exports.getBusinessSessionIdById = (req, res, next, id) => {
@@ -19,13 +20,6 @@ module.exports.getBusinessSessionIdById = (req, res, next, id) => {
 //Business Session creation
 
 module.exports.createBusinessSession = (req, res) => {
-  const errors = validationResult(req);
-
-  if (!errors.isEmpty()) {
-    return res.status(422).json({
-      error: errors.array()[0].msg,
-    });
-  }
   const Session = new BusinessSession(req.body);
   Session.save((err, Session) => {
     if (err) {
@@ -53,7 +47,9 @@ module.exports.getAllBusinessSession = (req, res) => {
   /**
    * query object
    */
-  let query = BusinessSession.find()
+  let cond = { classId: req.params.classId };
+
+  let query = BusinessSession.find(cond)
     .sort({ _id: sortBy })
     .skip(skip)
     .limit(limit);
@@ -99,14 +95,6 @@ module.exports.getBusinessSession = (req, res) => {
 //Business Session Update
 
 module.exports.updateBusinessSession = (req, res) => {
-  const errors = validationResult(req);
-
-  if (!errors.isEmpty()) {
-    return res.status(422).json({
-      error: errors.array()[0].msg,
-    });
-  }
-
   BusinessSession.findByIdAndUpdate(
     { _id: req.businessSession._id },
     { $set: req.body },

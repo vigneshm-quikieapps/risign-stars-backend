@@ -105,8 +105,8 @@ const createUserValidationRules = () => {
       .bail()
       .custom(isMobileNoAvailable),
     body("roles", "should be an array").isArray(),
-    body("roles.*.id", "should contain id").isArray(),
-    body("roles.*.name", "should contain name").isArray(),
+    body("roles.*.id", "should contain id"),
+    body("roles.*.name", "should contain name"),
     body("dataPrivileges", "should be an array").isArray(),
     body(
       "dataPrivileges.*.type",
