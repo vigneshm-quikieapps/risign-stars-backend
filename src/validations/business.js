@@ -55,9 +55,9 @@ const createBusinessValidationRules = () => {
       min: 12,
     }),
     check("facebok", "facebok should be a valid url").isURL(),
-    check("instagram", "createdBy should be a valid url").isURL(),
-    check("linkedin", "createdBy should be a valid url").isURL(),
-    check("pinterest", "createdBy should be a valid url").isURL(),
+    check("instagram", "instagram should be a valid url").isURL(),
+    check("linkedin", "linkedin should be a valid url").isURL(),
+    check("pinterest", "pinterest should be a valid url").isURL(),
   ];
 };
 const updateBusinessValidationRules = () => {
