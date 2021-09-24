@@ -7,9 +7,13 @@ const businessSessionSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    term: {
+    termId: {
       type: ObjectId,
       ref: "Term",
+    },
+    businessId: {
+      type: ObjectId,
+      ref: "Business",
     },
     pattern: [
       {
@@ -37,11 +41,11 @@ const businessSessionSchema = new mongoose.Schema(
       type: Number,
       default: 0,
     },
-    Class: {
+    classId: {
       type: ObjectId,
       ref: "BusinessClass",
     },
-    coach: {
+    coachId: {
       type: ObjectId,
       ref: "User",
     },

@@ -25,12 +25,12 @@ const businessClassSchema = new mongoose.Schema(
       ref: "Business",
       required: true,
     },
-    evaluation: {
+    evaluationId: {
       type: ObjectId,
       ref: "Evaluation",
       required: true,
     },
-    category: {
+    categoryId: {
       type: ObjectId,
       ref: "Category",
       required: true,
@@ -42,11 +42,20 @@ const businessClassSchema = new mongoose.Schema(
     },
     enrolmentControls: [
       {
-        prop: String, //ie age
-        value: Number, //ie 1-3
+        type: {
+          type: String,
+          enum: ["SELECT", "RADIO"],
+          default: "SELECT",
+        },
+        name: {
+          type: String,
+          enum: ["age", "gender"],
+        },
+        values: [],
+        /** should be an array of values from 1 to 16, It is going to be multi select dropdown in UI */
       },
     ],
-    session: [
+    sessionIds: [
       {
         type: ObjectId,
         ref: "BusinessSession",
@@ -65,12 +74,10 @@ const businessClassSchema = new mongoose.Schema(
       },
     ],
     updatedBy: {
-      type: ObjectId,
-      ref: "User",
+      type: String,
     },
     createdBy: {
-      type: ObjectId,
-      ref: "User",
+      type: String,
     },
   },
   { timestamps: true }

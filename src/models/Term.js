@@ -30,12 +30,10 @@ const termSchema = new mongoose.Schema(
       required: true,
     },
     updatedBy: {
-      type: ObjectId,
-      ref: "User",
+      type: String,
     },
     createdBy: {
-      type: ObjectId,
-      ref: "User",
+      type: String,
     },
   },
   { timestamps: true }

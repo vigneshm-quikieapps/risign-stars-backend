@@ -20,13 +20,6 @@ module.exports.getTermIdById = (req, res, next, id) => {
 //Business Class creation
 
 module.exports.createTerm = (req, res) => {
-  const errors = validationResult(req);
-
-  if (!errors.isEmpty()) {
-    return res.status(422).json({
-      error: errors.array()[0].msg,
-    });
-  }
   const term = new Term(req.body);
   term.save((err, term) => {
     if (err) {
@@ -71,14 +64,6 @@ module.exports.getTerm = (req, res) => {
 //Term  Update
 
 module.exports.updateTerm = (req, res) => {
-  const errors = validationResult(req);
-
-  if (!errors.isEmpty()) {
-    return res.status(422).json({
-      error: errors.array()[0].msg,
-    });
-  }
-
   Term.findByIdAndUpdate(
     { _id: req.term._id },
     { $set: req.body },

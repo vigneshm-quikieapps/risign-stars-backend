@@ -38,4 +38,16 @@ router.put(
 // listing route
 router.get("/", isAuthorized(USER, READ), user.getAll);
 
+/* 
+
+  note: to sudharshan
+  /businesess/:businessId/coaches
+
+*/
+router.get(
+  "/coaches/:businessId",
+  isAuthorized(USER, READ),
+  user.getAllCoach
+);
+
 module.exports = router;
