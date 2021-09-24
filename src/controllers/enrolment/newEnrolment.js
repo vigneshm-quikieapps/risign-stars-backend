@@ -7,6 +7,8 @@ const waitlistEnrolment = require("./waitlistEnrolment");
 //createMember(Enrolment)
 // module.exports.createEnrolment = async (req, res) => {
 const newEnrolment = async (req, res) => {
+  // let data = req.body;
+  // return res.send({ data });
   const session = await mongoose.startSession();
 
   session.startTransaction();
