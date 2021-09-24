@@ -26,7 +26,10 @@ var counterSchema = new mongoose.Schema(
 
 counterSchema.index({ type: 1, year: -1 });
 
-counterSchema.statics.genClubMemberShipId = async function (businessId, session) {
+counterSchema.statics.genClubMemberShipId = async function (
+  businessId,
+  session
+) {
   let year = new Date().getFullYear();
   let filter = { type: CLUB_MEMBERSHIP_ID, year, businessId };
   let update = {

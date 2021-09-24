@@ -2,13 +2,14 @@ const mongoose = require("mongoose");
 const enrolment = require("./enrolment");
 const waitlistEnrolment = require("./waitlistEnrolment");
 
-//createMember(Enrolment)
-// module.exports.createEnrolment = async (req, res) => {
+/**
+ * enrol a member into a class/session
+ * @param {*} req
+ * @param {*} res
+ * @returns
+ */
 const newEnrolment = async (req, res) => {
-  // let data = req.body;
-  // return res.send({ data });
   const session = await mongoose.startSession();
-
   session.startTransaction();
 
   try {
@@ -17,8 +18,8 @@ const newEnrolment = async (req, res) => {
     let { fullcapacityfilled, fullcapacity, waitcapacity, waitcapacityfilled } =
       businessSessionData;
 
-    let totalCapacity = fullcapacity + waitcapacity;
-    let totalEnrollment = fullcapacityfilled + waitcapacityfilled;
+    let numberOfMembersApplicable = fullcapacity + waitcapacity;
+    let numberOfMembersApplied = fullcapacityfilled + waitcapacityfilled;
 
     /**
      * check membership id of a member for this particular businessId (from members collections, membership array)
@@ -26,12 +27,21 @@ const newEnrolment = async (req, res) => {
      * else generate membership id and store it in the membership array
      */
 
-    if (totalCapacity <= totalEnrollment) {
+    /**
+     * if total number of students applied is greater than total number of applicable
+     * numberOfMembersApplied: number of member applied
+     * numberOfMembersApplicable: total number of members applicable should not be greater than the sum of fullCapacity and waitlistCapacity
+     */
+    if (numberOfMembersApplied >= numberOfMembersApplicable) {
       throw new Error("Maximum limit of enrolment is reached");
     }
 
+    /**
+     * if seats is available in fullCapacity, enrol the member
+     * else waitlist the member
+     */
     if (fullcapacityfilled <= fullcapacity) {
-      await enrolment(req.body, session);
+      await enrolment(req, session);
     } else {
       // creating enrolment till session capacit
       await waitlistEnrolment(req.body, session);

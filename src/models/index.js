@@ -3,7 +3,7 @@ const BusinessClass = require("./businessClass");
 const BusinessSession = require("./businessSession");
 const Category = require("./Category");
 const Counter = require("./Counter");
-const Evaluation = require("./evaluation");
+const EvaluationScheme = require("./evaluation");
 const Member = require("./Member");
 const Progress = require("./progress");
 const Role = require("./Role");
@@ -16,7 +16,7 @@ module.exports = {
   BusinessSession,
   Category,
   Counter,
-  Evaluation,
+  EvaluationScheme,
   Member,
   Progress,
   Role,

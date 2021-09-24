@@ -1,26 +1,25 @@
-const enrolmentPayloadRequest = (data) => {
+/**
+ * TODO
+ * startDate
+ *
+ *
+ * @param {*} req
+ * @returns
+ */
+const enrolmentPayloadRequest = (req) => {
+  let data = req.body;
+  let { classId, businessId, id } = req.sessionData;
+
   return {
-    // id: data.id,
-    sessionId: data.sessionId,
-    classId: data.classId,
-    businessId: data.businessId,
-    name: data.name,
+    sessionId: id,
+    classId,
+    businessId,
     memberId: data.memberId,
     clubMembershipId: data.clubMembershipId,
     consent: data.consent,
     newsletter: data.newsletter,
-    startDate: data.startDate,
-    registeredDate: data.registeredDate,
-
-    // enrolledStatus: {
-    //   type: String,
-    //   enum: ENUM_ENROLLED_STATUS
-    // },
-    // discontinuationReason: {
-    //   type: String,
-    //   enum: ENUM_DISCONTINUATION_REASON
-    // },
-    // droppedDate: Date,
+    startDate: new Date(),
+    registeredDate: new Date(),
   };
 };
 
