@@ -37,9 +37,13 @@ const businessSessionSchema = new mongoose.Schema(
       type: Number,
       default: 0,
     },
+    Class: {
+      type: ObjectId,
+      ref: "BusinessClass",
+    },
     coach: {
       type: ObjectId,
-      ref: "Coach",
+      ref: "User",
     },
     updatedBy: {
       type: ObjectId,

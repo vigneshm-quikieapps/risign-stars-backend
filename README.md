@@ -37,3 +37,8 @@ check if redis if configured properly in .env file
 4. How can I view the redis database?
 - `npm run redis-gui`
 - now open `localhost:8081` or the url displayed in the console in your `browser`
+
+5. How to dump database from mongodb?
+- `mongodump --uri 'URI_TO_MONGODB_DATABASE'`
+- or you can use the command `npm run db-dump`.
+Note: make sure `MONGODB_URL` is set in .env file before using the command `npm run db-dump`

@@ -9,28 +9,28 @@ const authRoutes = require("./auth");
 const accountRoutes = require("./account");
 
 const memberRoute = require("./Member");
-const enrolementRoute = require("./businessClass");
-const classRoute = require("./class");
+const classRoute = require("./businessClass");
 const sessionRoute = require("./businessSession");
 const termRoute = require("./Term");
 const categoryRoute = require("./category");
 const coachRoute = require("./coach");
 const registrationRoute = require("./registration");
 const testRoute = require("./testRoute");
+const enrolmentRoute = require("./enrolment");
 
 const routes = (app) => {
   // API routes
   app.use("/api/account", accountRoutes);
   app.use("/api", businessRoute);
   app.use("/api", evaluationRoute);
-  app.use("/api", roleRoute);
-  app.use("/api", userRoute);
+  app.use("/api/roles", roleRoute);
+  app.use("/api/users", userRoute);
   app.use("/api", attendanceRoute);
   app.use("/api", notification);
   app.use("/api", authRoutes);
   app.use("/api", memberRoute);
-  app.use("/api", enrolementRoute);
   app.use("/api", classRoute);
+  app.use("/api/enrolments", enrolmentRoute);
   app.use("/api", termRoute);
   app.use("/api", categoryRoute);
   app.use("/api", coachRoute);

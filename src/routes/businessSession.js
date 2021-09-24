@@ -12,7 +12,10 @@ const {
   updateBusinessSession,
   deleteBusinessSession,
 } = require("../controllers/businessSession");
-const { termIdValidation } = require("../validations/businessSession");
+const {
+  termIdValidation,
+  classIdValidation,
+} = require("../validations/businessSession");
 
 //parameters
 router.param("businessSessionId", getBusinessSessionIdById);
@@ -26,6 +29,7 @@ router.post(
   [
     check("name", "name should be at least 3 char").isLength({ min: 3 }),
     check("term").custom(termIdValidation),
+    check("Class").custom(classIdValidation),
     check(
       "pattern.*.day",
       "pattern day  should be an  in [mon, tue, wed, thu, fri, sat, sun]"
@@ -106,6 +110,6 @@ router.put(
   updateBusinessSession
 );
 //listing route
-router.get("/businessSession", getAllBusinessSession);
+router.get("/businessSession/:classId", getAllBusinessSession);
 
 module.exports = router;

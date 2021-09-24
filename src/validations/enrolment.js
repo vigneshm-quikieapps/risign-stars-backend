@@ -44,24 +44,19 @@ const createEnrolementValidationRules = () => {
   ];
 };
 
-
 const updateWaitlistEnrollment = () => {
-  return [
-    body("sessionId", "min length should be 2").isLength({ min: 2 }),
-  ]
-}
-
+  return [body("sessionId", "min length should be 2").isLength({ min: 2 })];
+};
 
 const classTransferValidation = () => {
-  return[
+  return [
     body("newSessionId", "min length should be 2").isLength({ min: 2 }),
     body("currentSessionId", "min length should be 2").isLength({ min: 2 }),
     body("memberId", "min length should be 2").isLength({ min: 2 }),
     // body("classId", "min length should be 2").isLength({ min: 2 }),
     createEnrolementValidationRules(),
-  ]
-}
-
+  ];
+};
 
 // const putEnrolementConsentValidationRules = () => {
 //   return [

@@ -37,11 +37,18 @@ module.exports.users = {
   ],
   emailVerified: Boolean /** default false */,
   phoneVerified: Boolean /** default false */,
-  dataPrivileges: {
-    type: ENUM_DATA_PRIVILEGES_TYPE,
-    businessId: String,
-    businessName: String,
-  },
+  dataPrivileges: [
+    {
+      type: ENUM_DATA_PRIVILEGES_TYPE,
+      businessId: String,
+      businessName: String,
+    },
+  ],
+  postcode: String,
+  addressLine1: String,
+  addressLine2: String,
+  city: String,
+  country: String,
   createdAt: Date,
   createdBy: String /** User id */,
   updatedAt: Date,
