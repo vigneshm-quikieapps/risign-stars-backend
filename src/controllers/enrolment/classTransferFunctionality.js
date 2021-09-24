@@ -4,6 +4,18 @@ const classTransferEnrolmentPayloadRequest = require("./classTransferEnrolmentPa
 const classTransferprogressPayloadRequest = require("./classTransferprogressPayloadRequest");
 const { createProgress } = require("../progress");
 
+/**
+ * TODO:
+ *
+ * 1. remove request.body for new enrolment while class transfer.
+ *
+ * 2. change functionality of classTransferfunctionality in line 20
+ *      so that current session Data is available for new session data while transfering
+ *
+ * @param {*} bodyData
+ * @param {*} session
+ */
+
 async function classTransferfunctionality(bodyData, session) {
   await Enrolment.findOneAndUpdate(
     {

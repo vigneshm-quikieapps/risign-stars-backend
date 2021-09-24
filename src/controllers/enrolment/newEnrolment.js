@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const enrolment = require("./enrolment");
 const waitlistEnrolment = require("./waitlistEnrolment");
+const getClubMembershipId = require("./getClubMembershipId");
 
 /**
  * enrol a member into a class/session
@@ -27,6 +28,11 @@ const newEnrolment = async (req, res) => {
      * else generate membership id and store it in the membership array
      */
 
+    req.clubMembershipId = await getClubMembershipId(
+      businessSessionData,
+      session
+    );
+
     /**
      * if total number of students applied is greater than total number of applicable
      * numberOfMembersApplied: number of member applied
@@ -40,14 +46,16 @@ const newEnrolment = async (req, res) => {
      * if seats is available in fullCapacity, enrol the member
      * else waitlist the member
      */
+    let message = "enrolled successful";
     if (fullcapacityfilled <= fullcapacity) {
       await enrolment(req, session);
     } else {
-      // creating enrolment till session capacit
+      // creating enrolment till session capacity
+      message = "enrolled successful in waitlist";
       await waitlistEnrolment(req.body, session);
     }
     await session.commitTransaction();
-    return res.status(201).send({ message: "enrolled Successful in waitlist" });
+    return res.status(201).send({ message });
   } catch (err) {
     console.log("error");
     await session.abortTransaction();

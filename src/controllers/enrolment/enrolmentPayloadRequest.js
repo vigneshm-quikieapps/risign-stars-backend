@@ -9,13 +9,14 @@
 const enrolmentPayloadRequest = (req) => {
   let data = req.body;
   let { classId, businessId, id } = req.sessionData;
+  let { clubMembershipId } = req;
 
   return {
     sessionId: id,
     classId,
     businessId,
     memberId: data.memberId,
-    clubMembershipId: data.clubMembershipId,
+    clubMembershipId,
     consent: data.consent,
     newsletter: data.newsletter,
     startDate: new Date(),

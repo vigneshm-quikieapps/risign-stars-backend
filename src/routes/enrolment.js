@@ -9,14 +9,20 @@ const {
 } = require("../controllers/enrolment");
 const {
   createEnrolementValidationRules,
-  putEnrolementConsentValidationRules,
-  putEnrolementAdditionalValidationRules,
+  withdrawEnrolmentValidationRules,
+  updateWaitlistEnrollment,
+  classTransferValidation,
 } = require("../validations/enrolment");
 
 const validate = require("../validations/validate");
 
 router.post("/", createEnrolementValidationRules(), validate, newEnrolment);
-router.post("/:enrolmentId/withdraw", validate, withdrawEnrolment);
+router.post(
+  "/:enrolmentId/withdraw",
+  withdrawEnrolmentValidationRules(),
+  validate,
+  withdrawEnrolment
+);
 router.post("/update-waitlist", validate, updateWaitlistEnrolment);
 router.post("/transfer", validate, transferEnrolment);
 
