@@ -23,13 +23,13 @@ const businessIdValidation = async (businessId) => {
   }
 };
 
-const categoryIdValidation = async (category) => {
+const categoryIdValidation = async (categoryId) => {
   try {
-    if (!category) {
+    if (!categoryId) {
       throw new Error();
     }
 
-    let categorys = await Category.findById(category);
+    let categorys = await Category.findById(categoryId);
     if (!categorys) {
       throw new Error();
     }
@@ -40,13 +40,13 @@ const categoryIdValidation = async (category) => {
   }
 };
 
-const evaluationIdValidation = async (evaluation) => {
+const evaluationIdValidation = async (evaluationId) => {
   try {
-    if (!evaluation) {
+    if (!evaluationId) {
       throw new Error();
     }
 
-    let evaluations = await Evaluation.findById(evaluation);
+    let evaluations = await Evaluation.findById(evaluationId);
     if (!evaluations) {
       throw new Error();
     }
@@ -57,13 +57,13 @@ const evaluationIdValidation = async (evaluation) => {
   }
 };
 
-const sessionIdValidation = async (session) => {
+const sessionIdValidation = async (sessionIds) => {
   try {
-    if (!session) {
+    if (!sessionIds) {
       throw new Error();
     }
 
-    let sessions = await BusinessSession.findById(session);
+    let sessions = await BusinessSession.findById(sessionIds);
     if (!sessions) {
       throw new Error();
     }
@@ -111,7 +111,7 @@ const updateClassValidationRules = () => {
     check("name", "name should be at least 3 char")
       .optional()
       .isLength({ min: 3 }),
-    check("business").optional().custom(businessIdValidation),
+    check("businessId").optional().custom(businessIdValidation),
     check("evaluationId").optional().custom(evaluationIdValidation),
     check("categoryId").optional().custom(categoryIdValidation),
     check("sessionIds").optional().custom(sessionIdValidation),
