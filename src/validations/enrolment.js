@@ -5,7 +5,9 @@ const checkValidSession =
   (dataField) =>
   async (sessionId, { req }) => {
     try {
+      console.log(sessionId);
       let businessSession = await BusinessSession.findById(sessionId);
+      console.log(businessSession);
       if (!businessSession) {
         throw new Error();
       }

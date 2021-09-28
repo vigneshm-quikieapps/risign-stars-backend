@@ -15,17 +15,18 @@ const updateWaitlistEnrolment = async (req, res) => {
     let capacityLeft =
       businessSessiondata.fullcapacity - businessSessiondata.fullcapacityfilled;
 
-    let updatedEnrollemnt = await Enrolment.updateMany({
-      enrolledStatus: "WAITLISTED",
-    })
-      .limit(capacityLeft)
-      .session(session);
+    let updatedEnrollemnt = await Enrolment.updateMany(
+      { enrolledStatus: "WAITLISTED" },
+      { enrolledStatus: "ENROLLED" }
+    ).limit(capacityLeft);
 
-    let createDocumentProgress = updatedEnrollemnt.map((li) => {
-      return li.name, li.sessionId, li.classId, li.memberId;
-    });
+    console.log(updatedEnrollemnt);
+    // console.log(updatedEnrollemnt)
+    // let createDocumentProgress = updatedEnrollemnt.map((li) => {
+    //   return li.name, li.sessionId, li.classId, li.memberId;
+    // });
 
-    await Progress.insertMany(createDocumentProgress).session(session);
+    // await Progress.insertMany(createDocumentProgress).session(session);
 
     await BusinessSession.findOneAndUpdate(
       { sessionId: req.body.sessionId },

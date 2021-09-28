@@ -64,12 +64,12 @@ const newEnrolment = async (req, res) => {
      * else waitlist the member
      */
     let message = "enrolled successful";
-    if (fullcapacityfilled <= fullcapacity) {
+    if (fullcapacityfilled < fullcapacity) {
       await enrolInASession(req, session);
     } else {
       // creating enrolment till session capacity
       message = "enrolled successful in waitlist";
-      await waitlistEnrolInASession(req.body, session);
+      await waitlistEnrolInASession(req, session);
     }
     await session.commitTransaction();
     return res.status(201).send({ message });
