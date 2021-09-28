@@ -13,7 +13,7 @@ const validate = require("../validations/validate");
 
 // create route
 router.post(
-  "/roles",
+  "/",
   isAuthorized(ROLES, CREATE),
   createRoleValidationRules(),
   validate,
@@ -21,14 +21,14 @@ router.post(
 );
 
 // read routes
-router.get("/roles/:roleId", isAuthorized(ROLES, READ), role.get);
+router.get("/:roleId", isAuthorized(ROLES, READ), role.get);
 
 //delete route
-router.delete("/roles/:roleId", isAuthorized(ROLES, DELETE), role.delete);
+router.delete("/:roleId", isAuthorized(ROLES, DELETE), role.delete);
 
 //update route
 router.put(
-  "/roles/:roleId",
+  "/:roleId",
   isAuthorized(ROLES, UPDATE),
   updateRoleValidationRules(),
   validate,
@@ -36,6 +36,6 @@ router.put(
 );
 
 //listing route
-router.get("/roles", role.getAll);
+router.get("/", role.getAll);
 
 module.exports = router;

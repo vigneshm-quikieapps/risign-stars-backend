@@ -61,7 +61,6 @@ const businessClassSchema = new mongoose.Schema(
         ref: "BusinessSession",
       },
     ],
-
     charges: [
       {
         name: String,
