@@ -1,0 +1,4 @@
+use('risingStarDev');
+
+db.enrolments.updateOne({_id: ObjectId("614c44ecaa9a4033ca4b27d2")}, {$set: {"clubMembershipId":"B1C211005"}})
+

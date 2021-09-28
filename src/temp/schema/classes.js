@@ -20,19 +20,19 @@ module.exports.classes = {
     {
       type: "SELECT",
       name: "age",
-      value:
+      values:
         [] /** should be an array of values from 1 to 16, It is going to be multi select dropdown in UI */,
     },
     {
       type: "SELECT",
       name: "gender",
-      value: [
+      values: [
         "MALE",
         "FEMALE",
       ] /** its an array and can contain any or both values. It is going to be used as multi select dropdown in UI */,
     },
   ],
-  session: [
+  sessionIds: [
     /** session ids */
   ],
   charges: [
