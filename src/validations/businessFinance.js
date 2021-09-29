@@ -26,29 +26,23 @@ const createBusinessFinanceValidationRules = () => {
       .custom(businessIdValidation),
     check("bankDetails", "bankDetails should be a object").isObject(),
     check(
-      "bankDetails.*.accHolderName",
+      "bankDetails.accHolderName",
       "accHolderName should be a String and atleast 3 char long"
     ).isLength({ min: 3 }),
     check(
-      "bankDetails.*.bankName",
+      "bankDetails.bankName",
       "bankName should be a String and atleast 3 char long"
     ).isLength({ min: 3 }),
     check(
-      "bankDetails.*.sortCode",
+      "bankDetails.sortCode",
       "sortCode should be a String and atleast 3 char long"
     ).isLength({ min: 3 }),
-    check("bankDetails.*.accNo", "accNo should be a Number")
+    check("bankDetails.accNo", "accNo should be a Number")
       .isInt()
       .isLength({ min: 1 }),
     check("paymentMethod", "paymentMethod should be a Object").isObject(),
-    check(
-      "paymentMethod.*.online",
-      "online should be a true/false"
-    ).isBoolean(),
-    check(
-      "paymentMethod.*.manual",
-      "manual should be a true/false"
-    ).isBoolean(),
+    check("paymentMethod.online", "online should be a true/false").isBoolean(),
+    check("paymentMethod.manual", "manual should be a true/false").isBoolean(),
     check("discountSchemes", "discountSchemes should be a Array").isArray(),
     check(
       "discountSchemes.*.name",
@@ -80,34 +74,34 @@ const updateBusinessFinanceValidationRules = () => {
       .optional()
       .isObject(),
     check(
-      "bankDetails.*.accHolderName",
+      "bankDetails.accHolderName",
       "accHolderName should be a String and atleast 3 char long"
     )
       .optional()
       .isLength({ min: 3 }),
     check(
-      "bankDetails.*.bankName",
+      "bankDetails.bankName",
       "bankName should be a String and atleast 3 char long"
     )
       .optional()
       .isLength({ min: 3 }),
     check(
-      "bankDetails.*.sortCode",
+      "bankDetails.sortCode",
       "sortCode should be a String and atleast 3 char long"
     )
       .optional()
       .isLength({ min: 3 }),
-    check("bankDetails.*.accNo", "accNo should be a Number")
+    check("bankDetails.accNo", "accNo should be a Number")
       .optional()
       .isInt()
       .isLength({ min: 1 }),
     check("paymentMethod", "paymentMethod should be a Object")
       .optional()
       .isObject(),
-    check("paymentMethod.*.online", "online should be a true/false")
+    check("paymentMethod.online", "online should be a true/false")
       .optional()
       .isBoolean(),
-    check("paymentMethod.*.manual", "manual should be a true/false")
+    check("paymentMethod.manual", "manual should be a true/false")
       .optional()
       .isBoolean(),
     check("discountSchemes", "discountSchemes should be a Array")
@@ -131,12 +125,27 @@ const updateBusinessFinanceValidationRules = () => {
     check("updatedBy", "updatedBy should be a valid userId").isLength({
       min: 12,
     }),
-    check("createdBy", "createdBy should be a valid userId")
-      .optional()
-      .isLength({ min: 12 }),
+  ];
+};
+const addDiscountValidationRules = () => {
+  return [
+    check("discountSchemes", "discountSchemes should be a Array").isArray(),
+    check(
+      "discountSchemes.*.name",
+      "name should be a String and atleast 3 char long"
+    ).isLength({ min: 3 }),
+    check(
+      "discountSchemes.*.type",
+      "type should be a String and atleast 3 char long ,SHOULD BE PERCENTAGE"
+    ).isIn(["PERCENTAGE"]),
+    check(
+      "discountSchemes.*.value",
+      "value should be a Number and an Int"
+    ).isInt(),
   ];
 };
 module.exports = {
   createBusinessFinanceValidationRules,
   updateBusinessFinanceValidationRules,
+  addDiscountValidationRules,
 };

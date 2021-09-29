@@ -24,6 +24,14 @@ const businessFinanceSchema = new mongoose.Schema(
         value: Number,
       },
     ],
+    updatedBy: {
+      type: String,
+      ref: "User",
+    },
+    createdBy: {
+      type: String,
+      ref: "User",
+    },
   },
   { timestamps: true }
 );

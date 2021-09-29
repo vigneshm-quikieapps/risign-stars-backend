@@ -22,7 +22,7 @@ module.exports.createBusinessFinance = (req, res) => {
   businessFinance.save((err, businessFinance) => {
     if (err) {
       return res.status(400).json({
-        error: "unable to save businessFinance to database",
+        error: err,
       });
     }
     res.json(businessFinance);
@@ -118,9 +118,9 @@ module.exports.getAllBusinessFinance = (req, res) => {
   });
 };
 
-module.exports.pushDiscountInDiscountScheme = (req, res, next) => {
+module.exports.pushDiscountInDiscountScheme = (req, res) => {
   let discounts = [];
-  req.body.discounts.forEach((discount) => {
+  req.body.discountSchemes.forEach((discount) => {
     discounts.push({
       name: discount.name,
       type: discount.type,
@@ -128,16 +128,18 @@ module.exports.pushDiscountInDiscountScheme = (req, res, next) => {
     });
   });
   //store thi in DB
+  console.log(discounts, req.businessFinance._id);
   BusinessFinance.findOneAndUpdate(
     { _id: req.businessFinance._id },
     { $push: { discountSchemes: discounts } },
     { new: true },
-    (err) => {
+    (err, discount) => {
       if (err) {
         return res.status(400).json({
           error: "Unable to save discount list ",
         });
       }
+      return res.json(discount);
     }
   );
 };

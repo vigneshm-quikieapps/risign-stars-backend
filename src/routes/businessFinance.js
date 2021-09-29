@@ -4,6 +4,7 @@ const router = express.Router();
 const {
   updateBusinessFinanceValidationRules,
   createBusinessFinanceValidationRules,
+  addDiscountValidationRules,
 } = require("../validations/businessFinance");
 const validate = require("../validations/validate");
 
@@ -14,7 +15,7 @@ const {
   createBusinessFinance,
   deleteBusinessFinance,
   updateBusinessFinance,
-  //pushDiscountInDiscountScheme,
+  pushDiscountInDiscountScheme,
 } = require("../controllers/businessFinance");
 
 //parameters
@@ -26,7 +27,7 @@ router.param("businessFinanceId", getBusinessFinanceIdById);
 //create route
 router.post(
   "/",
-  createBusinessFinanceValidationRules,
+  createBusinessFinanceValidationRules(),
   validate,
   createBusinessFinance
 );
@@ -40,22 +41,19 @@ router.delete("/:businessFinanceId", deleteBusinessFinance);
 //update route
 router.put(
   "/:businessFinanceId",
-  updateBusinessFinanceValidationRules,
+  updateBusinessFinanceValidationRules(),
   validate,
   updateBusinessFinance
 );
 
 //listing route
-router.get(
-  "/",
-  //validate,
-  getAllBusinessFinance
-);
+router.get("/", getAllBusinessFinance);
 
-// router.put(
-//   "/:businessFinanceId",
-//   //validate,
-//   pushDiscountInDiscountScheme
-// );
+router.put(
+  "/:businessFinanceId/addDiscounts",
+  addDiscountValidationRules(),
+  validate,
+  pushDiscountInDiscountScheme
+);
 
 module.exports = router;
