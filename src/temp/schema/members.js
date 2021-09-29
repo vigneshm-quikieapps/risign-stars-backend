@@ -19,6 +19,7 @@ module.exports.members = {
   ],
   name: String,
   dob: Date,
+  gender: String /**["MALE", "FEMALE"]**/,
   consent: {
     allergies: String,
     condition: String,

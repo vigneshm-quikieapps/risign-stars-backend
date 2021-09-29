@@ -13,7 +13,9 @@
     "red": "redis-commander",
     "lint": "eslint --cache --fix src/**/*.js",
     "format": "prettier --write src/**/*.js",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "db-dump": "./src/scripts/database/exportDatabase.sh",
+    "db-restore": "./src/scripts/database/restoreDatabase.sh"
   },
   "engines": {
     "node": ">=10.0.0"

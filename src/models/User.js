@@ -68,7 +68,7 @@ const UserSchema = new mongoose.Schema(
           type: String,
           enum: DATA_PRIVILEGES_TYPE,
         },
-        businessId: String,
+        businessId: String /** id of business */,
       },
     ],
   },
