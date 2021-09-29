@@ -5,9 +5,8 @@ const checkValidSession =
   (dataField) =>
   async (sessionId, { req }) => {
     try {
-      console.log(sessionId);
       let businessSession = await BusinessSession.findById(sessionId);
-      console.log(businessSession);
+
       if (!businessSession) {
         throw new Error();
       }
@@ -20,17 +19,36 @@ const checkValidSession =
 
 const isValidSession = async (sessionId, params) => {
   return checkValidSession("businessSessionData")(sessionId, params);
-  // try {
-  //   let businessSession = await BusinessSession.findById(sessionId);
-  //   if (!businessSession) {
-  //     throw new Error();
-  //   }
-  //   req.businessSessionData = businessSession;
-  //   return true;
-  // } catch (err) {
-  //   return Promise.reject(`should be a valid session`);
-  // }
 };
+
+/**
+ * fieldName is the name of field where the session data in request object
+ *
+ * FAQ
+ * Q1.How to find out the fieldname?
+ * Ans:
+ * check the previous custom validation stage in the pipeline.
+ * check the name of the field where the session data is stored.
+ *
+ * @param {*} fieldName
+ * @returns
+ */
+const isTrialSessionAllowed =
+  (fieldName) =>
+  async (_, { req }) => {
+    try {
+      let sessionData = req[fieldName];
+
+      let trialAllowed = sessionData && sessionData.trialAllowed;
+
+      if (!trialAllowed) {
+        throw new Error();
+      }
+      return true;
+    } catch (err) {
+      return Promise.reject(`Trial session not available`);
+    }
+  };
 
 const isValidNewSession = async (newSessionId, params) => {
   return checkValidSession("newSessionData")(newSessionId, params);
@@ -110,20 +128,24 @@ const withdrawEnrolmentValidationRules = () => {
   ];
 };
 
-const updateWaitlistEnrollment = () => {
+const updateWaitlistEnrolmentValidationRules = () => {
   return [body("sessionId", "min length should be 2").custom(isValidSession)];
 };
 
-const classTransferValidation = () => {
+const classTransferEnrolmentValidationRules = () => {
   return [
     body("newSessionId", "min length should be 2").custom(isValidNewSession),
     body("enrolmentId").custom(isValidEnrolment),
-    // body("currentSessionId", "min length should be 2").custom(
-    //   isValidCurrentSession
-    // ),
-    // body("memberId", "min length should be 2").custom(isValidMember),
-    // body("classId", "min length should be 2").isLength({ min: 2 }),
-    // createEnrolementValidationRules(),
+  ];
+};
+
+const trialEnrolmentValidationRules = () => {
+  return [
+    body("sessionId")
+      .custom(isValidSession)
+      .bail()
+      .custom(isTrialSessionAllowed("businessSessionData")),
+    body("memberId").custom(isValidMember),
   ];
 };
 
@@ -153,6 +175,7 @@ const classTransferValidation = () => {
 module.exports = {
   createEnrolementValidationRules,
   withdrawEnrolmentValidationRules,
-  updateWaitlistEnrollment,
-  classTransferValidation,
+  updateWaitlistEnrolmentValidationRules,
+  classTransferEnrolmentValidationRules,
+  trialEnrolmentValidationRules,
 };

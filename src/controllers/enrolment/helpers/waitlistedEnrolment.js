@@ -1,14 +1,13 @@
-const progressPayloadRequest = require("./progressPayloadRequest");
-const { BusinessSession, Enrolment, Progress } = require("../../../models");
+const { BusinessSession, Enrolment } = require("../../../models");
 const enrolmentPayloadRequest = require("./enrolmentPayloadRequest");
 
-const waitlistEnrolment = async (req, session) => {
+const waitlistedEnrolment = async (req, session) => {
   let { sessionId } = req.body;
 
   // creating enrolment till session capacity
   const createEnrolmentData = await enrolmentPayloadRequest(req);
 
-  let enrolment = await Enrolment.create(
+  await Enrolment.create(
     [
       {
         ...createEnrolmentData,
@@ -18,9 +17,9 @@ const waitlistEnrolment = async (req, session) => {
     { session }
   );
 
-  // creating progress Record
-  const createProgressData = await progressPayloadRequest(req, enrolment);
-  await Progress.create([createProgressData], { session });
+  // // creating progress Record
+  // const createProgressData = await progressPayloadRequest(req, enrolment);
+  // await Progress.create([createProgressData], { session });
 
   // increment waitlist enrolled in business session
   await BusinessSession.findByIdAndUpdate(
@@ -29,4 +28,4 @@ const waitlistEnrolment = async (req, session) => {
   ).session(session);
 };
 
-module.exports = waitlistEnrolment;
+module.exports = waitlistedEnrolment;
