@@ -14,7 +14,6 @@ const transferEnrolment = async (req, res) => {
       throw new Error("No vacancy in the session");
     }
     await classTransferfunctionality(req, session);
-    // throw new Error("jk");
     await session.commitTransaction();
     return res.status(201).send({ message: "Enroled successful" });
   } catch (err) {
