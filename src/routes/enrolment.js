@@ -25,7 +25,12 @@ router.post(
   validate,
   withdrawEnrolment
 );
-router.post("/update-waitlist", validate, updateWaitlistEnrolment);
+router.post(
+  "/update-waitlist",
+  updateWaitlistEnrollment(),
+  validate,
+  updateWaitlistEnrolment
+);
 router.post(
   "/transfer",
   classTransferValidation(),

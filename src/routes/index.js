@@ -1,5 +1,6 @@
 //importing from local files
 const businessRoute = require("./business");
+const businessFinanceRoute = require("./businessFinance");
 const evaluationRoute = require("./evaluation");
 const roleRoute = require("./role");
 const userRoute = require("./user");
@@ -16,13 +17,13 @@ const categoryRoute = require("./category");
 const registrationRoute = require("./registration");
 const testRoute = require("./testRoute");
 const enrolmentRoute = require("./enrolment");
-
 const routes = (app) => {
   // API routes
   app.use("/api/account", accountRoutes);
   app.use("/api/roles", roleRoute);
   app.use("/api/users", userRoute);
   app.use("/api/businesses", businessRoute);
+  app.use("/api/businessFinances", businessFinanceRoute);
   app.use("/api/evaluations", evaluationRoute);
   app.use("/api", roleRoute);
   app.use("/api", userRoute);
