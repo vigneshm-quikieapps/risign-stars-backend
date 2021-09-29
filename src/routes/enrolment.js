@@ -1,19 +1,19 @@
 const express = require("express");
 const router = express.Router();
-const { User, Progress, Enrolment } = require("../models");
-const mongoose = require("mongoose");
 
 const {
   newEnrolment,
   transferEnrolment,
   updateWaitlistEnrolment,
   withdrawEnrolment,
+  trailEnrolment,
 } = require("../controllers/enrolment");
 const {
   createEnrolementValidationRules,
   withdrawEnrolmentValidationRules,
-  updateWaitlistEnrollment,
-  classTransferValidation,
+  updateWaitlistEnrolmentValidationRules,
+  classTransferEnrolmentValidationRules,
+  trialEnrolmentValidationRules,
 } = require("../validations/enrolment");
 
 const validate = require("../validations/validate");
@@ -27,15 +27,21 @@ router.post(
 );
 router.post(
   "/update-waitlist",
-  updateWaitlistEnrollment(),
+  updateWaitlistEnrolmentValidationRules(),
   validate,
   updateWaitlistEnrolment
 );
 router.post(
   "/transfer",
-  classTransferValidation(),
+  classTransferEnrolmentValidationRules(),
   validate,
   transferEnrolment
+);
+router.post(
+  "/trial",
+  trialEnrolmentValidationRules(),
+  validate,
+  trailEnrolment
 );
 
 // router.get("/enrolement", enrolement.getAll);

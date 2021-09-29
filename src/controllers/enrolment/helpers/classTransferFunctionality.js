@@ -28,7 +28,7 @@ async function classTransferfunctionality(req, session) {
   newEnrolment = newEnrolment[0];
 
   /** marking the current enrolment as dropped and class transfer */
-  await Enrolment.findOneAndUpdate(
+  let enrolmentBeforeUpdate = Enrolment.findOneAndUpdate(
     {
       _id: mongoose.Types.ObjectId(enrolmentId),
     },
@@ -42,27 +42,38 @@ async function classTransferfunctionality(req, session) {
     }
   ).session(session);
 
+  let { enrolledStatus } = enrolmentBeforeUpdate;
+  let incrementSessionPayload = {};
+  if (enrolledStatus === "ENROLLED") {
+    incrementSessionPayload = { fullcapacityfilled: -1 };
+  } else if (enrolledStatus === "WAITLISTED") {
+    incrementSessionPayload = { waitcapacityfilled: -1 };
+  }
+
   /**
-   * moving the progress record to be used with the new enrolment
+   * Progress is not required.
    */
-  await Progress.findOneAndUpdate(
-    {
-      enrolmentId: mongoose.Types.ObjectId(enrolmentId),
-    },
-    {
-      $set: {
-        enrolmentId: newEnrolment.id,
-        sessionId: newSessionId,
-      },
-    },
-    { new: true }
-  ).session(session);
+  // /**
+  //  * moving the progress record to be used with the new enrolment
+  //  */
+  // await Progress.findOneAndUpdate(
+  //   {
+  //     enrolmentId: mongoose.Types.ObjectId(enrolmentId),
+  //   },
+  //   {
+  //     $set: {
+  //       enrolmentId: newEnrolment.id,
+  //       sessionId: newSessionId,
+  //     },
+  //   },
+  //   { new: true }
+  // ).session(session);
 
   // decrement in the current businsess session when member has been enrolled
   await BusinessSession.findOneAndUpdate(
     { _id: req.enrolmentData.sessionId },
     {
-      $inc: { fullcapacityfilled: -1 },
+      $inc: incrementSessionPayload,
     }
   ).session(session);
 

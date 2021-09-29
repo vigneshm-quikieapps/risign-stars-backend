@@ -17,8 +17,6 @@ const enrolmentPayloadRequest = (req) => {
     businessId,
     memberId: data.memberId,
     clubMembershipId,
-    consent: data.consent,
-    newsletter: data.newsletter,
     startDate: new Date(),
     registeredDate: new Date(),
   };

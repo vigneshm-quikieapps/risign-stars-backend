@@ -65,4 +65,14 @@ const enrolmentSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
+enrolmentSchema.statics.canEnrol = async function (filter) {
+  let enrolment = await this.findOne(filter);
+
+  if (enrolment) {
+    throw new Error(
+      "member can enrol in only one session for a particular class"
+    );
+  }
+};
+
 module.exports = mongoose.model("Enrolment", enrolmentSchema);

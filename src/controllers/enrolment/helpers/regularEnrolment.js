@@ -1,13 +1,12 @@
-const { Enrolment, BusinessSession, Progress } = require("../../../models");
+const { Enrolment, BusinessSession } = require("../../../models");
 const enrolmentPayloadRequest = require("./enrolmentPayloadRequest");
-const progressPayloadRequest = require("./progressPayloadRequest");
 
-const enrolInASession = async (req, session) => {
+const regularEnrolment = async (req, session) => {
   let { businessSessionData } = req;
   // creating enrolment till session capacity
 
   const createEnrolmentData = enrolmentPayloadRequest(req);
-  let enrolment = await Enrolment.create(
+  await Enrolment.create(
     [
       {
         ...createEnrolmentData,
@@ -18,8 +17,11 @@ const enrolInASession = async (req, session) => {
   );
 
   // creating progress Record
-  const createProgressData = await progressPayloadRequest(req, enrolment);
-  await Progress.create([createProgressData], { session });
+  /**
+   * create progress is not required as per client on 28th of sept 2021
+   */
+  // const createProgressData = await progressPayloadRequest(req, enrolment);
+  // await Progress.create([createProgressData], { session });
 
   // increment session enrolled in business session
   await BusinessSession.findByIdAndUpdate(
@@ -28,4 +30,4 @@ const enrolInASession = async (req, session) => {
   ).session(session);
 };
 
-module.exports = enrolInASession;
+module.exports = regularEnrolment;

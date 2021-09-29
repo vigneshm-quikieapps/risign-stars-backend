@@ -11,7 +11,7 @@ const transferEnrolment = async (req, res) => {
     let { fullcapacity, fullcapacityfilled } = newSessionData;
 
     if (fullcapacityfilled >= fullcapacity) {
-      throw new Error("No vacancy in the session");
+      throw new Error("No Seats available in the session");
     }
     await classTransferfunctionality(req, session);
     await session.commitTransaction();
