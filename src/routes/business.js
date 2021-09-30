@@ -18,6 +18,8 @@ const {
   deleteBusiness,
   updateBusiness,
   uploadFile,
+  businessImageUploadHelper,
+  uploadImage,
 } = require("../controllers/business");
 const { isAuthorized } = require("../middlewares/auth");
 const { getAllBusinessClass } = require("../controllers/businessClass");
@@ -66,6 +68,12 @@ router.get("/", getAllBusinessValidationRules(), validate, getAllBusinesses);
 router.get("/:businessId/classes", getAllBusinessClass);
 
 router.post("/fileupload", uploadFile);
+
+router.post(
+  "/:businessId/image-upload",
+  businessImageUploadHelper.single("image"),
+  uploadImage
+);
 
 // WORKING ON THE DUMMY DATA
 // router.post("/business/memberdata", storeMemberData);
