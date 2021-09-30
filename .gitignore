@@ -7,4 +7,6 @@ coverage
 .env
 config
 .eslintcache
-/uploads
+uploads
+
+
