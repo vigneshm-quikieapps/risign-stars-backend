@@ -15,7 +15,7 @@ const {
   createBusinessFinance,
   deleteBusinessFinance,
   updateBusinessFinance,
-  pushDiscountInDiscountScheme,
+  addNewDiscountScheme,
 } = require("../controllers/businessFinance");
 
 //parameters
@@ -53,7 +53,7 @@ router.put(
   "/:businessFinanceId/addDiscounts",
   addDiscountValidationRules(),
   validate,
-  pushDiscountInDiscountScheme
+  addNewDiscountScheme
 );
 
 module.exports = router;

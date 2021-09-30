@@ -118,7 +118,7 @@ module.exports.getAllBusinessFinance = (req, res) => {
   });
 };
 
-module.exports.pushDiscountInDiscountScheme = (req, res) => {
+module.exports.addNewDiscountScheme = (req, res) => {
   let discounts = [];
   req.body.discountSchemes.forEach((discount) => {
     discounts.push({

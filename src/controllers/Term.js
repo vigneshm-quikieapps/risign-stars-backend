@@ -1,7 +1,5 @@
 const Term = require("../models/Term");
 
-const { validationResult } = require("express-validator");
-
 //parameter extractor
 module.exports.getTermIdById = (req, res, next, id) => {
   Term.findById(id)
