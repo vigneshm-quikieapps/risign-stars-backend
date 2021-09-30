@@ -5,7 +5,7 @@ const {
   ENUM_DISCONTINUATION_REASON,
 } = require("../contants/constant");
 
-const enrolementSchema = new mongoose.Schema(
+const enrolmentSchema = new mongoose.Schema(
   {
     //  memberName:String,
     memberId: {
@@ -48,6 +48,10 @@ const enrolementSchema = new mongoose.Schema(
       type: String,
       enum: ENUM_DISCONTINUATION_REASON,
     },
+    transferedTo: {
+      type: ObjectId,
+      /** new enrolment id, if class transfer */
+    },
     droppedDate: Date,
     updatedBy: {
       type: ObjectId,
@@ -61,4 +65,14 @@ const enrolementSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-module.exports = mongoose.model("Enrolement", enrolementSchema);
+enrolmentSchema.statics.canEnrol = async function (filter) {
+  let enrolment = await this.findOne(filter);
+
+  if (enrolment) {
+    throw new Error(
+      "member can enrol in only one session for a particular class"
+    );
+  }
+};
+
+module.exports = mongoose.model("Enrolment", enrolmentSchema);

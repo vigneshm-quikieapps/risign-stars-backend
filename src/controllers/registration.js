@@ -1,6 +1,14 @@
 const registration = require("../models/registration");
 const DoesNotExistError = require("../exceptions/DoesNotExistError");
 
+/**
+ * DEPRECATED.
+ *
+ *
+ * @param {*} req
+ * @param {*} res
+ * @returns
+ */
 //UpdateMember
 module.exports.update = async (req, res) => {
   try {

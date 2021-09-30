@@ -49,6 +49,10 @@ const businessSessionSchema = new mongoose.Schema(
       type: ObjectId,
       ref: "User",
     },
+    trialAllowed: {
+      type: Boolean,
+      default: false,
+    },
     updatedBy: {
       type: ObjectId,
       ref: "User",

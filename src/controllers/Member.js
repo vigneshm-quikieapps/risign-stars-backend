@@ -4,6 +4,18 @@ const DoesNotExistError = require("../exceptions/DoesNotExistError");
 const path = require("path");
 const multer = require("multer");
 
+//parameter extractor
+module.exports.getmemberIdById = (req, res, next, id) => {
+  Member.findById(id).exec((err, member) => {
+    if (err) {
+      return res.status(400).json({
+        error: "Member not found",
+      });
+    }
+    req.member = member;
+    next();
+  });
+};
 //createMember
 module.exports.create = async (req, res) => {
   try {
@@ -52,6 +64,32 @@ module.exports.delete = async (req, res) => {
   }
 };
 
+module.exports.addNewEmergencyContact = (req, res) => {
+  let EmergencyContacts = [];
+  req.body.contacts.forEach((contact) => {
+    EmergencyContacts.push({
+      addressType: contact.addressType,
+      firstName: contact.firstName,
+      lastName: contact.lastName,
+      contact: contact.contact,
+      relationShip: contact.relationShip,
+    });
+  });
+  //store thi in DB
+  Member.findOneAndUpdate(
+    { _id: req.member._id },
+    { $push: { contacts: EmergencyContacts } },
+    { new: true },
+    (err, contact) => {
+      if (err) {
+        return res.status(400).json({
+          error: "Unable to save EmergencyContacts  ",
+        });
+      }
+      return res.json(contact);
+    }
+  );
+};
 //getMemberEmerengyContacts
 module.exports.getEmergencyContact = async (req, res) => {
   try {

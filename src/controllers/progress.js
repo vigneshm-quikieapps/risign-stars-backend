@@ -17,27 +17,27 @@ module.exports.getProgressIdById = (req, res, next, id) => {
 
 //pogress creation
 
-module.exports.createProgress = async (data, session) => {
-  // const errors = validationResult(req);
+module.exports.createProgress = async (req, res) => {
+  const errors = validationResult(req);
 
-  // if (!errors.isEmpty()) {
-  //     return res.status(422).json({
-  //         error: errors.array()[0].msg,
-  //     });
-  // }
-  const progress = new Progress(data);
-  await progress.save().session(session);
-  // progress.save((err, progress) => {
-  //     if (err) {
-  //         console.log(err);
-  //         console.log(req.body);
+  if (!errors.isEmpty()) {
+    return res.status(422).json({
+      error: errors.array()[0].msg,
+    });
+  }
+  const progress = new Progress(req);
+  // await progress.save().session(session);
+  progress.save((err, progress) => {
+    if (err) {
+      console.log(err);
+      console.log(req.body);
 
-  //         return res.status(400).json({
-  //             error: "unable to save progress to database",
-  //         });
-  //     }
-  //     res.json(progress);
-  // });
+      return res.status(400).json({
+        error: "unable to save progress to database",
+      });
+    }
+    res.json(progress);
+  });
 };
 
 //pogress listing all

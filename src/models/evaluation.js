@@ -13,7 +13,7 @@ const evaluationSchema = new mongoose.Schema(
       default: "active",
       enum: ["active", "inactive"],
     },
-    levelcount: {
+    levelCount: {
       type: Number,
       required: true,
     },

@@ -2,7 +2,6 @@ const Business = require("../models/business");
 // const Member = require("../models/member");
 const multer = require("multer");
 const CSVToJSON = require("csvtojson");
-const { validationResult } = require("express-validator");
 const { STARTS_WITH_FILTER, EQUALS_FILTER } = require("../contants/constant");
 const path = require("path");
 
