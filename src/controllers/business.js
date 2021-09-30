@@ -170,13 +170,15 @@ module.exports.businessImageUploadHelper = multer({ storage: storage });
 
 /**
  * upload Image functionality
+
+ * uploadImageLink function need changes before production
  */
 
 const UploadImageLink = (filename) => {
-  if (process.env.ENV_MODE === "DEVELOPMENT") {
-    return path.join(__dirname, `./src/uploads/businesses/${filename}`);
+  if (process.env.ENV_MODE === "PRODUCTION") {
+    return "s3.gg//";
   } else {
-    return "https://";
+    return path.join(__dirname, `./src/uploads/businesses/${filename}`);
   }
 };
 
