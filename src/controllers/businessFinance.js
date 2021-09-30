@@ -143,3 +143,27 @@ module.exports.addNewDiscountScheme = (req, res) => {
     }
   );
 };
+//
+// {
+//   "_id": ObjectId("59b7e839200a5c00ee2d2851"),
+//   "player": "New",
+//   "playesList": [
+//     {
+//       "_id": ObjectId("59b2a4f749fee40959e556d3"),
+//       "name": "abcd",
+//     },
+//     {
+//       "_id": ObjectId("59b2a4f749fee40959e556d4"),
+//       "name": "pqrs",
+//     }
+//   ]
+// }
+// play.findOneAndUpdate({
+//     "_id": "59b7e839200a5c00ee2d2851",
+//     "playesList._id": "59b2a4f749fee40959e556d3"
+// }, {
+//     "$set": {
+//         "playesList.$.name": "something"
+//     }
+// }, function(error, success) {}
+//)
