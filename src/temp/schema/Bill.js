@@ -27,7 +27,7 @@ module.exports.Bill = {
   discountId: String,
   paid: Number,
   dueDate: Date,
-  referenceId: String,
+  referenceId: String /** */,
   paidAt: Date,
   comments: String,
   createdAt: Date,
