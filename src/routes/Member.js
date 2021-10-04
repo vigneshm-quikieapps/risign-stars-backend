@@ -27,5 +27,10 @@ router.post(
 );
 router.delete("/member/:id", member.delete);
 router.put("/member/:memberId/:businessId", member.addMembership);
+router.post(
+  "/:memberId/image-upload",
+  member.memberImageUploadHelper.single("image"),
+  member.uploadImage
+);
 
 module.exports = router;
