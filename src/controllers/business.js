@@ -3,6 +3,7 @@ const Business = require("../models/business");
 const multer = require("multer");
 const CSVToJSON = require("csvtojson");
 const { STARTS_WITH_FILTER, EQUALS_FILTER } = require("../contants/constant");
+const path = require("path");
 
 //parameter extractor
 module.exports.getBusinessIdById = (req, res, next, id) => {
@@ -149,6 +150,57 @@ module.exports.uploadFile = (req, res) => {
     // const result = excelToJson({
     //   sourceFile: req.file.path,
     // });
+  });
+};
+
+/**
+ * upload Image helper
+ */
+var storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, "./src/uploads/businesses");
+  },
+  filename: function (req, file, cb) {
+    cb(null, file.originalname);
+  },
+});
+
+module.exports.businessImageUploadHelper = multer({ storage: storage });
+
+/**
+ * upload Image functionality
+
+ * uploadImageLink function need changes before production
+ */
+
+const UploadImageLink = (filename) => {
+  if (process.env.ENV_MODE === "PRODUCTION") {
+    return "s3.gg//";
+  } else {
+    return path.join(__dirname, `./src/uploads/businesses/${filename}`);
+  }
+};
+
+module.exports.uploadImage = async (req, res) => {
+  const link = UploadImageLink(req.file.originalname);
+
+  const business = await Business.updateOne(
+    { _id: req.params.businessId },
+    {
+      $set: {
+        imageUrl: link,
+      },
+    },
+    { new: true, useFindAndModify: false, upsert: true }
+  );
+
+  if (!business) {
+    throw new Error("upload image unsucessful");
+  }
+
+  res.json({
+    message: "sucessfully uploaded",
+    business,
   });
 };
 

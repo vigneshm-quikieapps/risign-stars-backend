@@ -1,6 +1,7 @@
 //const BusinessFinance = require("../models/businessFinance");
 const { check } = require("express-validator");
 const Business = require("../models/business");
+const User = require("../models/User");
 
 const businessIdValidation = async (businessId) => {
   try {
@@ -16,6 +17,22 @@ const businessIdValidation = async (businessId) => {
     return true;
   } catch (err) {
     return Promise.reject(`Please select a valid Business`);
+  }
+};
+const userIdValidation = async (userId) => {
+  try {
+    if (!userId) {
+      throw new Error();
+    }
+
+    let user = await User.findById(userId);
+    if (!user) {
+      throw new Error();
+    }
+
+    return true;
+  } catch (err) {
+    return Promise.reject(`Please select a valid User`);
   }
 };
 
@@ -58,10 +75,11 @@ const createBusinessFinanceValidationRules = () => {
     ).isInt(),
     check("updatedBy", "updatedBy should be a valid userId")
       .optional()
-      .isLength({ min: 12 }),
-    check("createdBy", "createdBy should be a valid userId").isLength({
-      min: 12,
-    }),
+      .isLength({ min: 12 })
+      .custom(userIdValidation),
+    check("createdBy", "createdBy should be a valid userId")
+      .isLength({ min: 12 })
+      .custom(userIdValidation),
   ];
 };
 const updateBusinessFinanceValidationRules = () => {
@@ -122,9 +140,9 @@ const updateBusinessFinanceValidationRules = () => {
     check("discountSchemes.*.value", "value should be a Number and an Int")
       .optional()
       .isInt(),
-    check("updatedBy", "updatedBy should be a valid userId").isLength({
-      min: 12,
-    }),
+    check("updatedBy", "updatedBy should be a valid userId")
+      .isLength({ min: 12 })
+      .custom(userIdValidation),
   ];
 };
 const addDiscountValidationRules = () => {
@@ -148,4 +166,5 @@ module.exports = {
   createBusinessFinanceValidationRules,
   updateBusinessFinanceValidationRules,
   addDiscountValidationRules,
+  userIdValidation,
 };

@@ -53,6 +53,7 @@ const businessSchema = new mongoose.Schema(
     instagram: String,
     linkedin: String,
     pinterest: String,
+    imageUrl: String,
     updatedBy: {
       type: ObjectId,
       ref: "User",

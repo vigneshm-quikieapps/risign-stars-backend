@@ -7,5 +7,5 @@ coverage
 .env
 config
 .eslintcache
-.env
+uploads
 dump

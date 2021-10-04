@@ -1,7 +1,21 @@
 const { STARTS_WITH_FILTER, EQUALS_FILTER } = require("../contants/constant");
 const Member = require("../models/Member");
 const DoesNotExistError = require("../exceptions/DoesNotExistError");
+const path = require("path");
+const multer = require("multer");
 
+//parameter extractor
+module.exports.getmemberIdById = (req, res, next, id) => {
+  Member.findById(id).exec((err, member) => {
+    if (err) {
+      return res.status(400).json({
+        error: "Member not found",
+      });
+    }
+    req.member = member;
+    next();
+  });
+};
 //createMember
 module.exports.create = async (req, res) => {
   try {
@@ -50,6 +64,32 @@ module.exports.delete = async (req, res) => {
   }
 };
 
+module.exports.addNewEmergencyContact = (req, res) => {
+  let EmergencyContacts = [];
+  req.body.contacts.forEach((contact) => {
+    EmergencyContacts.push({
+      addressType: contact.addressType,
+      firstName: contact.firstName,
+      lastName: contact.lastName,
+      contact: contact.contact,
+      relationShip: contact.relationShip,
+    });
+  });
+  //store thi in DB
+  Member.findOneAndUpdate(
+    { _id: req.member._id },
+    { $push: { contacts: EmergencyContacts } },
+    { new: true },
+    (err, contact) => {
+      if (err) {
+        return res.status(400).json({
+          error: "Unable to save EmergencyContacts  ",
+        });
+      }
+      return res.json(contact);
+    }
+  );
+};
 //getMemberEmerengyContacts
 module.exports.getEmergencyContact = async (req, res) => {
   try {
@@ -151,5 +191,56 @@ module.exports.getAllMember = (req, res) => {
       });
     }
     res.json(Member);
+  });
+};
+
+/**
+ * upload Image helper
+ */
+var storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, "./src/uploads/businesses");
+  },
+  filename: function (req, file, cb) {
+    cb(null, file.originalname);
+  },
+});
+
+module.exports.memberImageUploadHelper = multer({ storage: storage });
+
+/**
+ * upload Image functionality
+ */
+
+const UploadImageLink = (filename) => {
+  if (process.env.ENV_MODE === "DEVELOPMENT") {
+    return path.join(__dirname, `./src/uploads/members/${filename}`);
+  } else {
+    return "https://";
+  }
+};
+
+module.exports.uploadImage = async (req, res) => {
+  // console.log(req.file.originalname);
+  // console.log(req.body.hi);
+  const link = UploadImageLink(req.file.originalname);
+
+  const member = await Member.updateOne(
+    { _id: req.params.memberId },
+    {
+      $set: {
+        imageUrl: link,
+      },
+    },
+    { new: true, useFindAndModify: false, upsert: true }
+  );
+
+  if (!member) {
+    throw new Error("upload image unsucessful");
+  }
+
+  res.json({
+    message: "sucessfully uploaded",
+    member,
   });
 };
