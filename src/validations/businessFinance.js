@@ -145,6 +145,14 @@ const addDiscountToBusinessFinanceValidationRules = () => {
     ).custom(discountIdValidation),
   ];
 };
+const updateStatusOfDiscountValidationRules = () => {
+  return [
+    check("status", "status should be a ACTIVE/INACTIVE").isIn([
+      "ACTIVE",
+      "INACTIVE",
+    ]),
+  ];
+};
 
 //discount validations
 const createDiscountValidationRules = () => {
@@ -192,20 +200,15 @@ const addNewDiscountValidationRules = () => {
 };
 const updateDiscountValidationRules = () => {
   return [
-    check("discountSchemes", "discountSchemes should be a Array").isArray(),
+    check("name", "name should be a String and atleast 3 char long").isLength({
+      min: 3,
+    }),
     check(
-      "discountSchemes.*.name",
-      "name should be a String and atleast 3 char long"
-    ).isLength({ min: 3 }),
-    check(
-      "discountSchemes.*.type",
+      "type",
       "type should be a String and atleast 3 char long ,SHOULD BE PERCENTAGE"
     ).isIn(["PERCENTAGE"]),
-    check(
-      "discountSchemes.*.value",
-      "value should be a Number and an Int"
-    ).isInt(),
-    check("discountSchemes.*.status", "status should be ACTIVE/INACTIVE ")
+    check("value", "value should be a Number and an Int").isInt(),
+    check("status", "status should be ACTIVE/INACTIVE ")
       .optional()
       .isIn(["ACTIVE", "INACTIVE"]),
   ];
@@ -219,4 +222,5 @@ module.exports = {
   discountIdValidation,
   addNewDiscountValidationRules,
   updateDiscountValidationRules,
+  updateStatusOfDiscountValidationRules,
 };

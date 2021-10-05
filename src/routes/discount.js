@@ -4,6 +4,7 @@ const {
   createDiscountValidationRules,
   addNewDiscountValidationRules,
   updateDiscountValidationRules,
+  updateStatusOfDiscountValidationRules,
 } = require("../validations/businessFinance");
 const validate = require("../validations/validate");
 
@@ -16,6 +17,7 @@ const {
   addNewDiscountScheme,
   deleteDiscountScheme,
   updateDiscountsScheme,
+  updateStatusOfDiscountsScheme,
 } = require("../controllers/discounts");
 
 // discount routes are listed below
@@ -60,9 +62,15 @@ router.delete("/:discountId", deleteDiscountScheme);
 
 router.put(
   "/discountsSchemes/:discountId/:discountSchemesId",
-  // updateDiscountValidationRules(),
-  // validate,
+  updateDiscountValidationRules(),
+  validate,
   updateDiscountsScheme
+);
+router.put(
+  "/discountsSchemes/enable-disable/:discountId/:discountSchemesId",
+  updateStatusOfDiscountValidationRules(),
+  validate,
+  updateStatusOfDiscountsScheme
 );
 
 module.exports = router;

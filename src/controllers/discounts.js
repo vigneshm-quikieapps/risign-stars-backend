@@ -183,3 +183,27 @@ module.exports.updateDiscountsScheme = (req, res) => {
     }
   );
 };
+module.exports.updateStatusOfDiscountsScheme = (req, res) => {
+  Discounts.findOneAndUpdate(
+    {
+      _id: req.discount._id,
+      "discountSchemes._id": req.params.discountSchemesId,
+    },
+    {
+      $set: {
+        "discountSchemes.$.status": req.body.status,
+      },
+    },
+    { new: true, useFindAndModify: false },
+    (err, discount) => {
+      if (err) {
+        console.log(err);
+        return res.status(400).json({
+          err: "Discounts status updation failed ",
+        });
+      }
+
+      res.json(discount);
+    }
+  );
+};
