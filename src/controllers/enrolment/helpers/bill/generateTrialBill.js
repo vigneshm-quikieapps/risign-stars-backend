@@ -6,8 +6,8 @@ const generateTrialBill = async (req, session) => {
   let { businessSessionData } = req;
   let { businessId, classId } = businessSessionData;
 
+  /** get the trial charge */
   let businessClass = await BusinessClass.findById(classId);
-
   let trialCharge = businessClass.charges.find(
     (charge) => charge.payFrequency === PAY_FREQUENCY_TRIAL
   );
@@ -16,6 +16,7 @@ const generateTrialBill = async (req, session) => {
     throw new Error("Trial charge is not available");
   }
 
+  /** Bill payload */
   let subtotal = trialCharge.amounts;
   let discount = 0;
   let total = subtotal - discount;
