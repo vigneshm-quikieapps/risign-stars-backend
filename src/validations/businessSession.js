@@ -40,7 +40,14 @@ const classIdValidation = async (classId) => {
 const createSessionValidationRules = () => {
   return [
     check("name", "name should be at least 3 char").isLength({ min: 3 }),
-    check("termId").custom(termIdValidation),
+    check("term", "term should be an object").isObject(),
+    check("term.id").custom(termIdValidation),
+    check("term.startdate", "startdate should be a date ").optional().isDate({
+      format: "MM-DD-YYYY",
+    }),
+    check("term.enddate", "enddate should be a date ").optional().isDate({
+      format: "MM-DD-YYYY",
+    }),
     check("businessId").custom(businessIdValidation),
     check("classId").custom(classIdValidation),
     check(
@@ -78,7 +85,14 @@ const updateSessionValidationRules = () => {
     check("name", "name should be at least 3 char")
       .optional()
       .isLength({ min: 3 }),
-    check("termId").optional().custom(termIdValidation),
+    check("term", "term should be an object").optional().isObject(),
+    check("term.id").optional().custom(termIdValidation),
+    check("term.startdate", "startdate should be a date ").optional().isDate({
+      format: "MM-DD-YYYY",
+    }),
+    check("term.enddate", "enddate should be a date ").optional().isDate({
+      format: "MM-DD-YYYY",
+    }),
     check("businessId").optional().custom(businessIdValidation),
     check("classId").optional().custom(classIdValidation),
     check(

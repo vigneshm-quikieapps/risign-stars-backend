@@ -12,6 +12,11 @@ const discountsSchema = new mongoose.Schema(
         name: String,
         type: { type: String, enum: ["PERCENTAGE"], default: "PERCENTAGE" },
         value: Number,
+        status: {
+          type: String,
+          enum: ["ACTIVE", "INACTIVE"],
+          default: "ACTIVE",
+        },
       },
     ],
     // updatedBy: {

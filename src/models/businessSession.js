@@ -7,9 +7,17 @@ const businessSessionSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    termId: {
-      type: ObjectId,
-      ref: "Term",
+    term: {
+      id: {
+        type: ObjectId,
+        ref: "Term",
+      },
+      startdate: {
+        type: Date,
+      },
+      enddate: {
+        type: Date,
+      },
     },
     businessId: {
       type: ObjectId,

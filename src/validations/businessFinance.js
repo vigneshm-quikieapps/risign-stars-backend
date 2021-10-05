@@ -165,6 +165,9 @@ const createDiscountValidationRules = () => {
       "discountSchemes.*.value",
       "value should be a Number and an Int"
     ).isInt(),
+    check("discountSchemes.*.status", "status should be ACTIVE/INACTIVE ")
+      .optional()
+      .isIn(["ACTIVE", "INACTIVE"]),
   ];
 };
 const addNewDiscountValidationRules = () => {
@@ -182,6 +185,9 @@ const addNewDiscountValidationRules = () => {
       "discountSchemes.*.value",
       "value should be a Number and an Int"
     ).isInt(),
+    check("discountSchemes.*.status", "status should be ACTIVE/INACTIVE ")
+      .optional()
+      .isIn(["ACTIVE", "INACTIVE"]),
   ];
 };
 const updateDiscountValidationRules = () => {
@@ -199,6 +205,9 @@ const updateDiscountValidationRules = () => {
       "discountSchemes.*.value",
       "value should be a Number and an Int"
     ).isInt(),
+    check("discountSchemes.*.status", "status should be ACTIVE/INACTIVE ")
+      .optional()
+      .isIn(["ACTIVE", "INACTIVE"]),
   ];
 };
 module.exports = {
