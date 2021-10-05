@@ -17,13 +17,10 @@ const businessFinanceSchema = new mongoose.Schema(
       online: Boolean,
       manual: Boolean,
     },
-    discountSchemes: [
-      {
-        name: String,
-        type: { type: String, enum: ["PERCENTAGE"], default: "PERCENTAGE" },
-        value: Number,
-      },
-    ],
+    discountSchemesId: {
+      type: ObjectId,
+      ref: "Discounts",
+    },
     updatedBy: {
       type: ObjectId,
       ref: "User",

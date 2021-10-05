@@ -2,7 +2,24 @@
 const { check } = require("express-validator");
 const Business = require("../models/business");
 const User = require("../models/User");
+const Discounts = require("../models/discounts");
 
+const discountIdValidation = async (discountSchemesId) => {
+  try {
+    if (!discountSchemesId) {
+      throw new Error();
+    }
+
+    let discountSchemes = await Discounts.findById(discountSchemesId);
+    if (!discountSchemes) {
+      throw new Error();
+    }
+
+    return true;
+  } catch (err) {
+    return Promise.reject(`Please select a valid discountSchemesId`);
+  }
+};
 const businessIdValidation = async (businessId) => {
   try {
     if (!businessId) {
@@ -60,19 +77,9 @@ const createBusinessFinanceValidationRules = () => {
     check("paymentMethod", "paymentMethod should be a Object").isObject(),
     check("paymentMethod.online", "online should be a true/false").isBoolean(),
     check("paymentMethod.manual", "manual should be a true/false").isBoolean(),
-    check("discountSchemes", "discountSchemes should be a Array").isArray(),
-    check(
-      "discountSchemes.*.name",
-      "name should be a String and atleast 3 char long"
-    ).isLength({ min: 3 }),
-    check(
-      "discountSchemes.*.type",
-      "type should be a String and atleast 3 char long ,SHOULD BE PERCENTAGE"
-    ).isIn(["PERCENTAGE"]),
-    check(
-      "discountSchemes.*.value",
-      "value should be a Number and an Int"
-    ).isInt(),
+    check("discountSchemesId", "discountSchemesId should be a valid businessId")
+      .optional()
+      .custom(discountIdValidation),
     check("updatedBy", "updatedBy should be a valid userId")
       .optional()
       .isLength({ min: 12 })
@@ -122,30 +129,62 @@ const updateBusinessFinanceValidationRules = () => {
     check("paymentMethod.manual", "manual should be a true/false")
       .optional()
       .isBoolean(),
-    check("discountSchemes", "discountSchemes should be a Array")
+    check("discountSchemesId", "discountSchemesId should be a valid businessId")
       .optional()
-      .isArray(),
-    check(
-      "discountSchemes.*.name",
-      "name should be a String and atleast 3 char long"
-    )
-      .optional()
-      .isLength({ min: 3 }),
-    check(
-      "discountSchemes.*.type",
-      "type should be a String and atleast 3 char long ,SHOULD BE PERCENTAGE"
-    )
-      .optional()
-      .isIn(["PERCENTAGE"]),
-    check("discountSchemes.*.value", "value should be a Number and an Int")
-      .optional()
-      .isInt(),
+      .custom(discountIdValidation),
     check("updatedBy", "updatedBy should be a valid userId")
       .isLength({ min: 12 })
       .custom(userIdValidation),
   ];
 };
-const addDiscountValidationRules = () => {
+const addDiscountToBusinessFinanceValidationRules = () => {
+  return [
+    check(
+      "discountSchemesId",
+      "discountSchemesId should be a valid businessId"
+    ).custom(discountIdValidation),
+  ];
+};
+
+//discount validations
+const createDiscountValidationRules = () => {
+  return [
+    check("businessId", "businessId should be a valid businessId")
+      .isLength({ min: 3 })
+      .custom(businessIdValidation),
+    check("discountSchemes", "discountSchemes should be a Array").isArray(),
+    check(
+      "discountSchemes.*.name",
+      "name should be a String and atleast 3 char long"
+    ).isLength({ min: 3 }),
+    check(
+      "discountSchemes.*.type",
+      "type should be a String and atleast 3 char long ,SHOULD BE PERCENTAGE"
+    ).isIn(["PERCENTAGE"]),
+    check(
+      "discountSchemes.*.value",
+      "value should be a Number and an Int"
+    ).isInt(),
+  ];
+};
+const addNewDiscountValidationRules = () => {
+  return [
+    check("discountSchemes", "discountSchemes should be a Array").isArray(),
+    check(
+      "discountSchemes.*.name",
+      "name should be a String and atleast 3 char long"
+    ).isLength({ min: 3 }),
+    check(
+      "discountSchemes.*.type",
+      "type should be a String and atleast 3 char long ,SHOULD BE PERCENTAGE"
+    ).isIn(["PERCENTAGE"]),
+    check(
+      "discountSchemes.*.value",
+      "value should be a Number and an Int"
+    ).isInt(),
+  ];
+};
+const updateDiscountValidationRules = () => {
   return [
     check("discountSchemes", "discountSchemes should be a Array").isArray(),
     check(
@@ -165,6 +204,10 @@ const addDiscountValidationRules = () => {
 module.exports = {
   createBusinessFinanceValidationRules,
   updateBusinessFinanceValidationRules,
-  addDiscountValidationRules,
+  createDiscountValidationRules,
   userIdValidation,
+  addDiscountToBusinessFinanceValidationRules,
+  discountIdValidation,
+  addNewDiscountValidationRules,
+  updateDiscountValidationRules,
 };

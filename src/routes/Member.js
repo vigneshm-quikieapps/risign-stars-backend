@@ -4,6 +4,7 @@ const {
   createMemberValidationRules,
   updateMemberValidationRules,
   createEmergencyContactValidationRules,
+  updateEmergencyContactValidationRules,
 } = require("../validations/member");
 
 const member = require("../controllers/Member");
@@ -24,6 +25,12 @@ router.post(
   createEmergencyContactValidationRules(),
   validate,
   member.addNewEmergencyContact
+);
+router.put(
+  "/contact/:memberId/update/:contactsId",
+  updateEmergencyContactValidationRules(),
+  validate,
+  member.updateEmergencyContact
 );
 router.delete("/member/:id", member.delete);
 router.put("/member/:memberId/:businessId", member.addMembership);

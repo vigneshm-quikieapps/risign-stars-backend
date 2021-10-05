@@ -60,7 +60,7 @@ module.exports.delete = async (req, res) => {
     return res.status(422).send({ message: err.message });
   }
 };
-
+//add new Emergency contact
 module.exports.addNewEmergencyContact = (req, res) => {
   let EmergencyContacts = [];
   req.body.contacts.forEach((contact) => {
@@ -72,7 +72,7 @@ module.exports.addNewEmergencyContact = (req, res) => {
       relationShip: contact.relationShip,
     });
   });
-  //store thi in DB
+  //store this in DB
   Member.findOneAndUpdate(
     { _id: req.member._id },
     { $push: { contacts: EmergencyContacts } },
@@ -84,6 +84,34 @@ module.exports.addNewEmergencyContact = (req, res) => {
         });
       }
       return res.json(contact);
+    }
+  );
+};
+//update emergency contacts
+module.exports.updateEmergencyContact = (req, res) => {
+  Member.findOneAndUpdate(
+    {
+      _id: req.member._id,
+      "contacts._id": req.params.contactsId,
+    },
+    {
+      $set: {
+        "contacts.$.addressType": req.body.addressType,
+        "contacts.$.firstName": req.body.firstName,
+        "contacts.$.lastName": req.body.lastName,
+        "contacts.$.contact": req.body.contact,
+        "contacts.$.relationShip": req.body.relationShip,
+      },
+    },
+    { new: true, useFindAndModify: false },
+    (err, contact) => {
+      if (err) {
+        return res.status(400).json({
+          err: "contact updation failed ",
+        });
+      }
+
+      res.json(contact);
     }
   );
 };

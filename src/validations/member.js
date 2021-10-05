@@ -114,8 +114,41 @@ const createEmergencyContactValidationRules = () => {
     ),
   ];
 };
+const updateEmergencyContactValidationRules = () => {
+  return [
+    body("contacts", "contacts should be an array").optional().isArray(),
+    body("contacts.*.addressType", "Address type invalid type")
+      .optional()
+      .isIn(ADDRESS_TYPE),
+    body(
+      "contacts.*.firstName",
+      "min length should be 2 and max length should be 70"
+    )
+      .optional()
+      .isLength({ min: 2, max: 70 }),
+    body(
+      "contacts.*.lastName",
+      "firstName:min length should be 2 and max length should be 70"
+    )
+      .optional()
+      .isLength({ min: 2, max: 70 }),
+    body("contacts.*.contact", "min length should be 2")
+      .optional()
+      .isLength({ min: 2 }),
+    body("contacts.*.relationShip", "invalid relationship")
+      .optional()
+      .isIn(RELATIONSHIPS),
+    body("updatedBy", "updatedBy should be a valid userId")
+      .optional()
+      .custom(userIdValidation),
+    body("createdBy", "createdBy should be a valid userId")
+      .optional()
+      .custom(userIdValidation),
+  ];
+};
 module.exports = {
   createMemberValidationRules,
   updateMemberValidationRules,
   createEmergencyContactValidationRules,
+  updateEmergencyContactValidationRules,
 };
