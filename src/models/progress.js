@@ -5,21 +5,21 @@ const { SKILL_PROGRESS_STATUS } = require("../contants/constant");
 
 const progressSchema = new mongoose.Schema(
   {
-    enrolmentId: {
-      type: ObjectId,
-    },
+    // enrolmentId: {
+    //   type: ObjectId,
+    // },
     memberId: {
       type: String,
       required: true,
     },
-    sessionId: {
-      type: String,
-      required: true,
-    },
-    classId: {
-      type: String,
-      required: true,
-    },
+    // sessionId: {
+    //   type: String,
+    //   required: true,
+    // },
+    // classId: {
+    //   type: String,
+    //   required: true,
+    // },
     businessId: {
       type: String,
       required: true,

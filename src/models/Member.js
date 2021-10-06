@@ -26,6 +26,7 @@ const memberSchema = new mongoose.Schema(
         relationShip: RELATIONSHIPS,
       },
     ],
+    imageUrl: String,
     updatedBy: {
       type: ObjectId,
       ref: "User",
