@@ -1,7 +1,9 @@
-const getNextDayOfTheWeek = require("./getNextDayOfTheWeek");
+const endOfMonth = require("./endOfMonth");
 const getEnrolmentStartDate = require("./getEnrolmentStartDate");
+const getNextDayOfTheWeek = require("./getNextDayOfTheWeek");
 
 module.exports = {
-  getNextDayOfTheWeek,
+  endOfMonth,
   getEnrolmentStartDate,
+  getNextDayOfTheWeek,
 };

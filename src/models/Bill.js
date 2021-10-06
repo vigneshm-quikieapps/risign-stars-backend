@@ -44,6 +44,14 @@ const billSchema = new mongoose.Schema(
     comments: {
       type: String,
     },
+    month: {
+      type: Number,
+      required: true,
+    },
+    year: {
+      type: Number,
+      required: true,
+    },
     updatedBy: {
       type: ObjectId,
       ref: "User",

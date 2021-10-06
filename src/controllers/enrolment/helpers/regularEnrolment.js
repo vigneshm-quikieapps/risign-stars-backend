@@ -35,7 +35,12 @@ const regularEnrolment = async (req, session) => {
     { $inc: { fullcapacityfilled: 1 } }
   ).session(session);
 
+  /**
+   * generate bill
+   */
   generateEnrolmentBill({}, session);
+
+  /** TODO: send Email */
 };
 
 module.exports = regularEnrolment;
