@@ -1,5 +1,4 @@
 const User = require("../models/User");
-const { Otp } = require("../services");
 const { VerifyMobileSms } = require("../services/notification/Sms");
 const DoesNotExistError = require("../exceptions/DoesNotExistError");
 const expressJwt = require("express-jwt");

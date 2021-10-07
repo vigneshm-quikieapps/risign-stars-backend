@@ -1,6 +1,6 @@
 const enrolmentPayloadRequest = require("./enrolmentPayloadRequest");
 const { Enrolment } = require("../../../models");
-const generateTrialBill = require("./bill/generateTrialBill");
+const generateTrialBill = require("../../../helpers/bill/generateTrialBill");
 
 const trialEnrolmentHandler = async (req, session) => {
   const createEnrolmentData = enrolmentPayloadRequest(req);

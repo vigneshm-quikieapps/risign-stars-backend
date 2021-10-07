@@ -1,6 +1,12 @@
-const { PAY_FREQUENCY_TRIAL } = require("../../../../contants/business");
-const { BusinessClass, Bill } = require("../../../../models");
+const { PAY_FREQUENCY_TRIAL } = require("../../contants/business");
+const { BusinessClass, Bill } = require("../../models");
 
+/**
+ * generate bill for trial enrolment
+ *
+ * @param {*} req
+ * @param {*} session
+ */
 const generateTrialBill = async (req, session) => {
   let { memberId } = req.body;
   let { businessSessionData } = req;
@@ -17,7 +23,8 @@ const generateTrialBill = async (req, session) => {
   }
 
   /** Bill payload */
-  let subtotal = trialCharge.amounts;
+  let now = new Date();
+  let subtotal = trialCharge.amount;
   let discount = 0;
   let total = subtotal - discount;
 
@@ -27,14 +34,15 @@ const generateTrialBill = async (req, session) => {
     classId,
     items: [
       {
-        description: trialCharge.name,
+        name: trialCharge.name,
         amount: trialCharge.amount,
       },
     ],
     subtotal,
     discount,
     total,
-    dueDate: new Date(),
+    dueDate: now,
+    billDate: now,
   };
 
   await Bill.create([billPayload], session);

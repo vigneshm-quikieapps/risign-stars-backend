@@ -1,5 +1,6 @@
+const { generateEnrolmentBill } = require("../../../helpers/bill");
 const { Enrolment, BusinessSession } = require("../../../models");
-const { generateEnrolmentBill } = require("./bill/generateEnrolmentBill");
+
 const enrolmentPayloadRequest = require("./enrolmentPayloadRequest");
 
 /**

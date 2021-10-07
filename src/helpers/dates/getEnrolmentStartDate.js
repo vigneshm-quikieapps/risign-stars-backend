@@ -1,4 +1,4 @@
-const { getNextDayOfTheWeek } = require("./getNextDayOfTheWeek");
+const getNextDayOfTheWeek = require("./getNextDayOfTheWeek");
 
 /**
  * get the start date for an enrolment

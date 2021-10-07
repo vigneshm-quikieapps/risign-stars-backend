@@ -17,6 +17,7 @@ const billSchema = new mongoose.Schema(
     },
     items: [
       {
+        name: String,
         description: String,
         amount: Number,
       },
@@ -39,17 +40,13 @@ const billSchema = new mongoose.Schema(
     },
     paidAt: {
       type: Date,
-      required: true,
     },
     comments: {
       type: String,
     },
-    month: {
-      type: Number,
-      required: true,
-    },
-    year: {
-      type: Number,
+    billDate: {
+      /** bill date is used to store the month, year info of the bill */
+      type: Date,
       required: true,
     },
     updatedBy: {
