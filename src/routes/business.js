@@ -18,6 +18,8 @@ const {
   deleteBusiness,
   updateBusiness,
   uploadFile,
+  uploadXLXSFile,
+  convertXLXSFile,
 } = require("../controllers/business");
 const { isAuthorized } = require("../middlewares/auth");
 const { getAllBusinessClass } = require("../controllers/businessClass");
@@ -66,6 +68,8 @@ router.get("/", getAllBusinessValidationRules(), validate, getAllBusinesses);
 router.get("/:businessId/classes", getAllBusinessClass);
 
 router.post("/fileupload", uploadFile);
+router.post("/xlxsupload", uploadXLXSFile);
+router.get("/convertxlxs/json", convertXLXSFile);
 
 // WORKING ON THE DUMMY DATA
 // router.post("/business/memberdata", storeMemberData);
