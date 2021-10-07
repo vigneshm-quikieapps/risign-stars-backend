@@ -16,10 +16,13 @@ mongoose
     console.log("DB NOT CONNECTED!!");
   });
 
-//initialising port no
+//initialising host and port no
+const host = process.env.HOST || "0.0.0.0";
 const port = process.env.PORT || 3000;
 
 // server listening to the port
-app.listen(port, () =>
-  console.log(`server is successfully listenning at port: ${port}`)
+app.listen(port, host, () =>
+  console.log(
+    `server is successfully listenning at host: ${host}, port: ${port}`
+  )
 );

@@ -1,23 +1,21 @@
+const { getEnrolmentStartDate } = require("../../../helpers/dates");
+
 /**
- * TODO
- * startDate
- *
- *
  * @param {*} req
  * @returns
  */
 const enrolmentPayloadRequest = (req) => {
-  let data = req.body;
-  let { classId, businessId, id } = req.businessSessionData;
+  let { memberId } = req.body;
+  let { classId, businessId, id, term, pattern } = req.businessSessionData;
   let { clubMembershipId } = req;
 
   return {
     sessionId: id,
     classId,
     businessId,
-    memberId: data.memberId,
+    memberId,
     clubMembershipId,
-    startDate: new Date(),
+    startDate: getEnrolmentStartDate({ term, pattern }),
     registeredDate: new Date(),
   };
 };

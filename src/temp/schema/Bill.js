@@ -10,22 +10,24 @@
  * 1. Bill generation use cases is yet to be received from client
  * 2.
  */
-
-module.exports.payments = {
+module.exports.Bill = {
   id: String,
-  sessionId: String,
   classId: String,
   businessId: String,
-  members: {
-    id: String,
-    name: String,
-  },
-  subAmount: Number /** amount before discount */,
+  memberId: String,
+  items: [
+    {
+      description: String,
+      amount: Number,
+    },
+  ],
+  subTotal: Number /** amount before discount */,
   discount: Number,
-  amount: Number /** amount after discount */,
+  total: Number /** amount after discount */,
+  discountId: String,
   paid: Number,
   dueDate: Date,
-  referenceId: String,
+  referenceId: String /** */,
   paidAt: Date,
   comments: String,
   createdAt: Date,

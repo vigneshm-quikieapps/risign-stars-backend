@@ -22,11 +22,6 @@ module.exports.enrolments = {
   memberId: String,
   name: String /** Name of member */,
   clubMembershipId: String,
-  newsletter: {
-    email: Boolean,
-    telephone: Boolean,
-    sms: Boolean,
-  },
   startDate: Date,
   registeredDate: Date,
   enrolledStatus: ENUM_ENROLLED_STATUS,

@@ -1,4 +1,10 @@
 const mongoose = require("mongoose");
+const {
+  ENUM_PAY_FREQUENCY,
+  PAY_FREQUENCY_ANNUAL,
+  ENUM_STATUS,
+  BUSINESS_STATUS_ACTIVE,
+} = require("../contants/business");
 const { ObjectId } = mongoose.Schema;
 
 const businessClassSchema = new mongoose.Schema(
@@ -11,8 +17,8 @@ const businessClassSchema = new mongoose.Schema(
     status: {
       type: String,
       required: true,
-      enum: ["active", "inactive"],
-      default: "active",
+      enum: ENUM_STATUS,
+      default: BUSINESS_STATUS_ACTIVE,
     },
     registrationform: {
       type: String,
@@ -64,12 +70,12 @@ const businessClassSchema = new mongoose.Schema(
     charges: [
       {
         name: String,
-        amount: String,
+        amount: Number,
         mandatory: Boolean,
         payFrequency: {
           type: String,
-          enum: ["Monthly", "Annual"],
-          default: "Annual",
+          enum: ENUM_PAY_FREQUENCY,
+          default: PAY_FREQUENCY_ANNUAL,
         },
       },
     ],
