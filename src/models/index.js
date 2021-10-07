@@ -1,4 +1,5 @@
-const Business = require("./business.js");
+const Bill = require("./Bill");
+const Business = require("./business");
 const BusinessClass = require("./businessClass");
 const BusinessSession = require("./businessSession");
 const Category = require("./Category");
@@ -12,6 +13,7 @@ const Term = require("./Term");
 const User = require("./User");
 
 module.exports = {
+  Bill,
   Business,
   BusinessClass,
   BusinessSession,

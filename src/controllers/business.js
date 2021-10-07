@@ -4,6 +4,7 @@ const multer = require("multer");
 const XLSX = require("xlsx");
 const CSVToJSON = require("csvtojson");
 const { STARTS_WITH_FILTER, EQUALS_FILTER } = require("../contants/constant");
+const path = require("path");
 
 //parameter extractor
 module.exports.getBusinessIdById = (req, res, next, id) => {
@@ -256,6 +257,57 @@ module.exports.convertXLXSFile = (req, res) => {
 //   console.log(data);
 // });
 //************************************************************************ */
+/**
+ * upload Image helper
+ */
+var storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, "./src/uploads/businesses");
+  },
+  filename: function (req, file, cb) {
+    cb(null, file.originalname);
+  },
+});
+
+module.exports.businessImageUploadHelper = multer({ storage: storage });
+
+/**
+ * upload Image functionality
+
+ * uploadImageLink function need changes before production
+ */
+
+const UploadImageLink = (filename) => {
+  if (process.env.ENV_MODE === "PRODUCTION") {
+    return "s3.gg//";
+  } else {
+    return path.join(__dirname, `./src/uploads/businesses/${filename}`);
+  }
+};
+
+module.exports.uploadImage = async (req, res) => {
+  const link = UploadImageLink(req.file.originalname);
+
+  const business = await Business.updateOne(
+    { _id: req.params.businessId },
+    {
+      $set: {
+        imageUrl: link,
+      },
+    },
+    { new: true, useFindAndModify: false, upsert: true }
+  );
+
+  if (!business) {
+    throw new Error("upload image unsucessful");
+  }
+
+  res.json({
+    message: "sucessfully uploaded",
+    business,
+  });
+};
+
 // PAYMENT BY CLASS NOT WORKING BECAUSE LACK OF DATA, ONLY ON THE DUMMY DATA IT IS WORKING
 
 // module.exports.storeMemberData = (req, res) => {

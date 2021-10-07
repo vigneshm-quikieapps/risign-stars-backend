@@ -10,6 +10,7 @@ const {
   getAllProgress,
   getProgressIdById,
   getProgress,
+  markAProgress,
   updateProgress,
   createProgress,
   addAttendence,
@@ -25,22 +26,27 @@ router.param("progressId", getProgressIdById);
 
 // create routes
 router.post(
-  "/progress/create",
-  createProgressValidationRules(),
+  "/create",
+  // createProgressValidationRules(),
   createProgress
 );
-// read routes
-router.get("/progress/:progressId", getProgress);
 
-//update route
+// mark progress
 router.put(
-  "/progress/:progressId",
-  updateProgressValidationRules(),
-  updateProgress
+  "/update-status",
+  // createProgressValidationRules(),
+  markAProgress
 );
 
-router.put("/progress/attendance/:progressId", addAttendence);
-//listing route
-router.get("/progress", getAllProgress);
+//update route
+// router.put(
+//   "/progress/:progressId",
+//   updateProgressValidationRules(),
+//   updateProgress
+// );
+
+// router.put("/progress/attendance/:progressId", addAttendence);
+// //listing route
+// router.get("/progress", getAllProgress);
 
 module.exports = router;
