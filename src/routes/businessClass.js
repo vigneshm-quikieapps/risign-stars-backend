@@ -45,6 +45,6 @@ router.put(
 );
 
 //listing route
-router.get("/classes/:classId/sessions", getAllBusinessSession);
+router.get("/:classId/sessions", getAllBusinessSession);
 
 module.exports = router;
