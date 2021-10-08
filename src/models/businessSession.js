@@ -7,21 +7,24 @@ const businessSessionSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    term: {
-      id: {
-        type: ObjectId,
-        ref: "Term",
-      },
-      startdate: {
-        type: Date,
-      },
-      enddate: {
-        type: Date,
-      },
-    },
     businessId: {
       type: ObjectId,
       ref: "Business",
+    },
+    term: {
+      id: {
+        type: ObjectId,
+        required: true,
+        ref: "Term",
+      },
+      startDate: {
+        type: Date,
+        required: true,
+      },
+      endDate: {
+        type: String,
+        required: true,
+      },
     },
     pattern: [
       {

@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const { BusinessSession, Enrolment, Progress } = require("../../models");
+const { BusinessSession, Enrolment } = require("../../models");
 
 // update enrolment for waitlist
 const updateWaitlistEnrolment = async (req, res) => {
