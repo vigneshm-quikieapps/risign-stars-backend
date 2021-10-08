@@ -17,6 +17,10 @@ const memberSchema = new mongoose.Schema(
     firstName: String,
     lastName: String,
     dob: Date,
+    gender: {
+      type: String,
+      enum: ["MALE", "FEMALE", "OTHER"],
+    },
     contacts: [
       {
         addressType: ADDRESS_TYPE,
