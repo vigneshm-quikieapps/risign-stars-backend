@@ -26,7 +26,7 @@ module.exports.createEvaluation = (req, res) => {
         error: "name should be at least 3 char and unique",
       });
     }
-    res.json(evaluation);
+    res.status(201).json({ message: "created successfully" });
   });
 };
 

@@ -7,6 +7,7 @@ const Counter = require("./Counter");
 const Enrolment = require("./Enrolment");
 const EvaluationScheme = require("./evaluation");
 const Member = require("./Member");
+const MemberConsent = require("./MemberConsent");
 const Progress = require("./progress");
 const Role = require("./Role");
 const Term = require("./Term");
@@ -22,6 +23,7 @@ module.exports = {
   Enrolment,
   EvaluationScheme,
   Member,
+  MemberConsent,
   Progress,
   Role,
   Term,

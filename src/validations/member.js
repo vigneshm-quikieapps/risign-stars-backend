@@ -2,6 +2,9 @@ const { body } = require("express-validator");
 const { ADDRESS_TYPE, RELATIONSHIPS } = require("../contants/constant");
 const { businessIdValidation } = require("./businessClass");
 const { userIdValidation } = require("./businessFinance");
+const { isValidBusinessId } = require("./helpers/business");
+const { isValidClubMembershipId } = require("./helpers/members");
+const isValidMemberId = require("./helpers/members/isValidMemberId");
 
 const createMemberValidationRules = () => {
   return [
@@ -114,8 +117,33 @@ const createEmergencyContactValidationRules = () => {
     ),
   ];
 };
+
+const createMemberConsentValidationRules = () => {
+  return [
+    body("businessId", "should be a valid club membership Id").custom(
+      isValidBusinessId
+    ),
+    body("memberId", "should be a valid Member Id"),
+    body("clubMembershipId", "should be a valid club membership Id").custom(
+      isValidClubMembershipId
+    ),
+    body("consent").isObject(),
+    body("consent.allergies", "min length should be 2").isLength({
+      min: 2,
+    }),
+    body("consent.condition", "min length should be 2").isLength({
+      min: 2,
+    }),
+    body("consent.photographConsent", "value should be boolean").isBoolean(
+      true
+    ),
+    body("consent.signedByParent", "value should be boolean").isBoolean(true),
+  ];
+};
+
 module.exports = {
   createMemberValidationRules,
   updateMemberValidationRules,
   createEmergencyContactValidationRules,
+  createMemberConsentValidationRules,
 };

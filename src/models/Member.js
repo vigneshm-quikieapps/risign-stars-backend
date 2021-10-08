@@ -5,9 +5,8 @@ const { ADDRESS_TYPE, RELATIONSHIPS } = require("../contants/constant");
 
 const memberSchema = new mongoose.Schema(
   {
-    userId: String,
     id: String,
-
+    userId: String,
     membership: [
       {
         businessId: String,
