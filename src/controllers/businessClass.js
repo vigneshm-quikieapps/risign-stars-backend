@@ -1,6 +1,5 @@
 const BusinessClass = require("../models/businessClass");
 
-const { validationResult } = require("express-validator");
 const { STARTS_WITH_FILTER, EQUALS_FILTER } = require("../contants/constant");
 
 //parameter extractor

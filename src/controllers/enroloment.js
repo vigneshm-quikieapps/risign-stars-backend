@@ -1,7 +1,7 @@
-const Enrolment = require("../models/Enrolment");
-const BusinessSession = require("../models/businessSession");
-const Progress = require("../models/progress");
-const mongoose = require("mongoose");
+//const Enrolment = require("../models/Enrolment");
+//const BusinessSession = require("../models/businessSession");
+//const Progress = require("../models/progress");
+//const mongoose = require("mongoose");
 
 /////////////////////////////////////////// Below this line deprecated ////////////////////////////////////////////////
 
