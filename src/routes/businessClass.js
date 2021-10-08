@@ -15,6 +15,7 @@ const {
   createClassValidationRules,
   updateClassValidationRules,
 } = require("../validations/businessClass");
+const { getAllBusinessSession } = require("../controllers/businessSession");
 
 //parameters
 router.param("businessClassId", getBusinessClassIdById);
@@ -44,5 +45,6 @@ router.put(
 );
 
 //listing route
+router.get("/:classId/sessions", getAllBusinessSession);
 
 module.exports = router;

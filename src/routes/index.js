@@ -36,7 +36,7 @@ const routes = (app) => {
   app.use("/api/classes", classRoute);
   app.use("/api/terms", termRoute);
   app.use("/api/categories", categoryRoute);
-  app.use("/api/Sessions", sessionRoute);
+  app.use("/api/sessions", sessionRoute);
   app.use("/api", registrationRoute);
   app.use("/api/test", testRoute);
   app.use("/api/progress", progressRecordRoute);
