@@ -20,13 +20,6 @@ module.exports.members = {
   name: String,
   dob: Date,
   gender: String /**["MALE", "FEMALE"]**/,
-  consent: {
-    allergies: String,
-    condition: String,
-    photographConsent: Boolean,
-    signedByParent: Boolean,
-    signedAt: Date,
-  },
   contacts: [
     {
       type: ADDRESS_TYPE,

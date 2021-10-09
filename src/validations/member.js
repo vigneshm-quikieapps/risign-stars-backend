@@ -22,6 +22,11 @@ const createMemberValidationRules = () => {
       "min length should be 2 and max length should be 70"
     ).isLength({ min: 2, max: 70 }),
     body("dob", "must be a valid date").isDate(),
+    body("gender", "GENDER SHOULD BE IN [MALE, FEMALE, OTHER]").isIn([
+      "MALE",
+      "FEMALE",
+      "OTHER",
+    ]),
     body("contacts").isArray(),
     body("contacts.*.addressType", "invalid type").isIn(ADDRESS_TYPE),
     body(
@@ -62,6 +67,9 @@ const updateMemberValidationRules = () => {
       .optional()
       .isLength({ min: 2, max: 70 }),
     body("dob", "must be a valid date").optional().isDate(),
+    body("gender", "GENDER SHOULD BE IN [MALE, FEMALE, OTHER]")
+      .optional()
+      .isIn(["MALE", "FEMALE", "OTHER"]),
     body("contacts").optional().isArray(),
     body("contacts.*.addressType", "invalid type")
       .optional()

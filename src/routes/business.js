@@ -9,7 +9,6 @@ const {
 const validate = require("../validations/validate");
 const { BUSINESS_DEFINITION } = require("../contants/pages");
 const { CREATE, UPDATE, DELETE } = require("../contants/rest");
-
 const {
   getBusinessIdById,
   getBusiness,
@@ -18,15 +17,17 @@ const {
   deleteBusiness,
   updateBusiness,
   uploadFile,
+  uploadXLXSFile,
+  convertXLXSFile,
+  businessImageUploadHelper,
+  uploadImage,
 } = require("../controllers/business");
 const { isAuthorized } = require("../middlewares/auth");
 const { getAllBusinessClass } = require("../controllers/businessClass");
-
 /**
  * RBAC required for Create, Update, Delete
  * Read is public
  */
-
 //parameters
 router.param("businessId", getBusinessIdById);
 
@@ -66,9 +67,13 @@ router.get("/", getAllBusinessValidationRules(), validate, getAllBusinesses);
 router.get("/:businessId/classes", getAllBusinessClass);
 
 router.post("/fileupload", uploadFile);
+router.post("/xlxsupload", uploadXLXSFile);
+router.get("/convertxlxs/json", convertXLXSFile);
 
-// WORKING ON THE DUMMY DATA
-// router.post("/business/memberdata", storeMemberData);
-// router.get("/business/memberdata", getMemberData);
+router.post(
+  "/:businessId/image-upload",
+  businessImageUploadHelper.single("image"),
+  uploadImage
+);
 
 module.exports = router;

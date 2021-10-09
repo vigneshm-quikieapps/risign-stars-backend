@@ -1,6 +1,9 @@
 const { STARTS_WITH_FILTER, EQUALS_FILTER } = require("../contants/constant");
 const Member = require("../models/Member");
 const DoesNotExistError = require("../exceptions/DoesNotExistError");
+const path = require("path");
+const multer = require("multer");
+
 //parameter extractor
 module.exports.getmemberIdById = (req, res, next, id) => {
   Member.findById(id).exec((err, member) => {
@@ -216,5 +219,56 @@ module.exports.getAllMember = (req, res) => {
       });
     }
     res.json(Member);
+  });
+};
+
+/**
+ * upload Image helper
+ */
+var storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, "./src/uploads/businesses");
+  },
+  filename: function (req, file, cb) {
+    cb(null, file.originalname);
+  },
+});
+
+module.exports.memberImageUploadHelper = multer({ storage: storage });
+
+/**
+ * upload Image functionality
+ */
+
+const UploadImageLink = (filename) => {
+  if (process.env.ENV_MODE === "DEVELOPMENT") {
+    return path.join(__dirname, `./src/uploads/members/${filename}`);
+  } else {
+    return "https://";
+  }
+};
+
+module.exports.uploadImage = async (req, res) => {
+  // console.log(req.file.originalname);
+  // console.log(req.body.hi);
+  const link = UploadImageLink(req.file.originalname);
+
+  const member = await Member.updateOne(
+    { _id: req.params.memberId },
+    {
+      $set: {
+        imageUrl: link,
+      },
+    },
+    { new: true, useFindAndModify: false, upsert: true }
+  );
+
+  if (!member) {
+    throw new Error("upload image unsucessful");
+  }
+
+  res.json({
+    message: "sucessfully uploaded",
+    member,
   });
 };

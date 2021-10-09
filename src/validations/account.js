@@ -7,9 +7,18 @@ const { AccessToken } = require("../services/auth");
 const { isValidMobile } = require("./mobileNo");
 const { ResetPasswordOTP } = require("../services/otp");
 
-const isRegisteredEmail = async (email, { req }) => {
+/**
+ * filter should be and object containing either email/mobileNo
+ * e.g let filter = { email }
+ * e.g let filter = { mobileNo }
+ *
+ * @param {*} filter
+ * @param {*} param1
+ * @returns
+ */
+const isRegisteredUser = async (filter, { req }) => {
   try {
-    let user = await User.findOne({ email });
+    let user = await User.findOne(filter);
 
     if (!user) {
       throw new DoesNotExistError();
@@ -19,8 +28,16 @@ const isRegisteredEmail = async (email, { req }) => {
     return true;
   } catch (err) {
     console.error(err);
-    return Promise.reject("Email not found");
+    return Promise.reject("User not found");
   }
+};
+
+const isRegisteredEmail = async (email, params) => {
+  return isRegisteredUser({ email }, params);
+};
+
+const isRegisteredMobile = async (mobileNo, params) => {
+  return isRegisteredUser({ mobileNo }, params);
 };
 
 const isValidResetPasswordToken = async (token, { req }) => {
@@ -39,7 +56,7 @@ const isValidResetPasswordOTP = async (otp, { req }) => {
   try {
     let contact = req.body.mobileNo;
 
-    const valid = await ResetPasswordOTP.verify({ otp, contact });
+    const valid = await ResetPasswordOTP.verify(contact, otp);
 
     if (!valid) {
       throw new Error("invalid");
@@ -72,7 +89,12 @@ const resetPasswordValidationRules = () => {
  * @returns
  */
 const forgotPasswordMobileValidationRules = () => {
-  return [body("mobileNo", "Invalid mobile number").custom(isValidMobile)];
+  return [
+    body("mobileNo", "Invalid mobile number")
+      .custom(isValidMobile)
+      .bail()
+      .custom(isRegisteredMobile),
+  ];
 };
 
 /**
@@ -81,7 +103,10 @@ const forgotPasswordMobileValidationRules = () => {
  */
 const resetPasswordMobileValidationRules = () => {
   return [
-    body("mobileNo", "Invalid mobile number").custom(isValidMobile),
+    body("mobileNo", "Invalid mobile number")
+      .custom(isValidMobile)
+      .bail()
+      .custom(isRegisteredMobile),
     body("password", USER.PASSWORD.MESSAGE).isLength({
       min: USER.PASSWORD.LENGTH,
     }),

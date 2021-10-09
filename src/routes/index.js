@@ -18,6 +18,7 @@ const categoryRoute = require("./category");
 const registrationRoute = require("./registration");
 const testRoute = require("./testRoute");
 const enrolmentRoute = require("./enrolment");
+const progressRecordRoute = require("./progress");
 const routes = (app) => {
   // API routes
   app.use("/api/account", accountRoutes);
@@ -40,6 +41,7 @@ const routes = (app) => {
   app.use("/api/sessions", sessionRoute);
   app.use("/api", registrationRoute);
   app.use("/api/test", testRoute);
+  app.use("/api/progress", progressRecordRoute);
 
   // test route
   app.get("/", (req, res) => {

@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const { ObjectId } = mongoose.Schema;
+const { ENUM_BUSINESS_TYPE, ENUM_STATUS } = require("../contants/business");
 
 const businessSchema = new mongoose.Schema(
   {
@@ -7,6 +8,11 @@ const businessSchema = new mongoose.Schema(
       type: String,
       required: true,
       trim: true,
+    },
+    status: {
+      type: String,
+      enum: ENUM_STATUS,
+      required: true,
     },
     code: String,
     tradename: {
@@ -17,14 +23,13 @@ const businessSchema = new mongoose.Schema(
     type: {
       type: String,
       required: true,
-      enum: ["sole", "limited", "liability", "partnership"],
+      enum: ENUM_BUSINESS_TYPE,
     },
     about: {
       type: String,
       maxlength: 3200,
       trim: true,
     },
-
     postcode: {
       type: String,
       required: true,
@@ -53,6 +58,7 @@ const businessSchema = new mongoose.Schema(
     instagram: String,
     linkedin: String,
     pinterest: String,
+    imageUrl: String,
     updatedBy: {
       type: ObjectId,
       ref: "User",

@@ -7,6 +7,8 @@ const {
   forgotPasswordValidationRules,
   resetPasswordValidationRules,
   changePasswordValidationRules,
+  resetPasswordMobileValidationRules,
+  forgotPasswordMobileValidationRules,
 } = require("../validations/account");
 
 const validate = require("../validations/validate");
@@ -33,14 +35,14 @@ router.post(
  */
 router.post(
   "/password/forgot/using-mobile-no",
-  forgotPasswordValidationRules(),
+  forgotPasswordMobileValidationRules(),
   validate,
   account.forgotPasswordMobile
 );
 
 router.post(
   "/password/reset/using-mobile-no",
-  resetPasswordValidationRules(),
+  resetPasswordMobileValidationRules(),
   validate,
   account.resetPasswordMobile
 );

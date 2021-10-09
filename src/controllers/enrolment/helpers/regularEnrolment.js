@@ -1,6 +1,13 @@
+const { generateEnrolmentBill } = require("../../../helpers/bill");
 const { Enrolment, BusinessSession } = require("../../../models");
+
 const enrolmentPayloadRequest = require("./enrolmentPayloadRequest");
 
+/**
+ * It enrols member to a session with enrolment status "ENROLLED"
+ * @param {*} req
+ * @param {*} session
+ */
 const regularEnrolment = async (req, session) => {
   let { businessSessionData } = req;
   // creating enrolment till session capacity
@@ -28,6 +35,13 @@ const regularEnrolment = async (req, session) => {
     { _id: businessSessionData.id },
     { $inc: { fullcapacityfilled: 1 } }
   ).session(session);
+
+  /**
+   * generate bill
+   */
+  generateEnrolmentBill({}, session);
+
+  /** TODO: send Email */
 };
 
 module.exports = regularEnrolment;

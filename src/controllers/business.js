@@ -1,5 +1,5 @@
 const Business = require("../models/business");
-//const Bill = require("../models/Bill");
+const Bill = require("../models/Bill");
 // const Member = require("../models/member");
 const multer = require("multer");
 const XLSX = require("xlsx");
@@ -215,7 +215,7 @@ module.exports.convertXLXSFile = (req, res) => {
     console.log(data);
     //************** */
     data.forEach((bill) => {
-      Business.findOneAndUpdate(
+      Bill.findOneAndUpdate(
         { memberId: bill.Membershipnumber },
         { $set: {} },
         { new: true, useFindAndModify: false },
@@ -237,9 +237,6 @@ module.exports.convertXLXSFile = (req, res) => {
 };
 //RisingStar Documentation - Api test
 
-/**
- * upload Image helper
- */
 var storage = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, "./src/uploads/businesses");
