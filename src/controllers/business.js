@@ -1,8 +1,11 @@
 const Business = require("../models/business");
+//const Bill = require("../models/Bill");
 // const Member = require("../models/member");
 const multer = require("multer");
+const XLSX = require("xlsx");
 const CSVToJSON = require("csvtojson");
 const { STARTS_WITH_FILTER, EQUALS_FILTER } = require("../contants/constant");
+const path = require("path");
 
 //parameter extractor
 module.exports.getBusinessIdById = (req, res, next, id) => {
@@ -152,6 +155,139 @@ module.exports.uploadFile = (req, res) => {
   });
 };
 
+// Uploading the xlxs file
+module.exports.uploadXLXSFile = (req, res) => {
+  const filestorage = multer.diskStorage({
+    destination: (req, file, cb) => {
+      cb(null, "./src/xlxs");
+    },
+    filename: (req, file, cb) => {
+      cb(null, file.originalname);
+    },
+  });
+  const upload = multer({ storage: filestorage }).single("xlxs");
+  upload(req, res, function (err) {
+    if (err) {
+      console.log(err);
+    }
+    return res.send("file uploaded");
+  });
+};
+module.exports.convertXLXSFile = (req, res) => {
+  var workbook = XLSX.readFile(
+    "./src/xlxs/RisingStar Documentation - Api test.xlsx"
+  );
+  var sheet_name_list = workbook.SheetNames;
+  console.log(sheet_name_list); // getting as Sheet1
+
+  sheet_name_list.forEach(function (y) {
+    var worksheet = workbook.Sheets[y];
+    //getting the complete sheet
+    // console.log(worksheet);
+
+    var headers = {};
+    var data = [];
+    for (var z in worksheet) {
+      if (z[0] === "!") continue;
+      //parse out the column, row, and value
+      var col = z.substring(0, 1);
+      // console.log(col);
+
+      var row = parseInt(z.substring(1));
+      // console.log(row);
+
+      var value = worksheet[z].v;
+      // console.log(value);
+
+      //store header names
+      if (row == 1) {
+        headers[col] = value;
+        // storing the header names
+        continue;
+      }
+
+      if (!data[row]) data[row] = {};
+      data[row][headers[col]] = value;
+    }
+    //drop those first two rows which are empty
+    data.shift();
+    data.shift();
+    console.log(data);
+    //************** */
+    data.forEach((bill) => {
+      Business.findOneAndUpdate(
+        { memberId: bill.Membershipnumber },
+        { $set: {} },
+        { new: true, useFindAndModify: false },
+        (err, business) => {
+          if (err) {
+            return res.status(400).json({
+              err: "updation failed ",
+            });
+          }
+
+          res.json(business);
+        }
+      );
+    });
+
+    //************ */
+    return res.send("xlsx converted to json");
+  });
+};
+//RisingStar Documentation - Api test
+
+/**
+ * upload Image helper
+ */
+var storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, "./src/uploads/businesses");
+  },
+  filename: function (req, file, cb) {
+    cb(null, file.originalname);
+  },
+});
+
+module.exports.businessImageUploadHelper = multer({ storage: storage });
+
+/**
+ * upload Image functionality
+
+ * uploadImageLink function need changes before production
+ */
+
+const UploadImageLink = (filename) => {
+  if (process.env.ENV_MODE === "PRODUCTION") {
+    return "s3.gg//";
+  } else {
+    return path.join(__dirname, `./src/uploads/businesses/${filename}`);
+  }
+};
+
+module.exports.uploadImage = async (req, res) => {
+  const link = UploadImageLink(req.file.originalname);
+
+  const business = await Business.updateOne(
+    { _id: req.params.businessId },
+    {
+      $set: {
+        imageUrl: link,
+      },
+    },
+    { new: true, useFindAndModify: false, upsert: true }
+  );
+
+  if (!business) {
+    throw new Error("upload image unsucessful");
+  }
+
+  res.json({
+    message: "sucessfully uploaded",
+    business,
+  });
+};
+
 // PAYMENT BY CLASS NOT WORKING BECAUSE LACK OF DATA, ONLY ON THE DUMMY DATA IT IS WORKING
 
 // module.exports.storeMemberData = (req, res) => {
@@ -186,4 +322,4 @@ module.exports.uploadFile = (req, res) => {
 //     }
 //     return res.json(item);
 //   }); // Mon, 10:30 am to 11:30am
-// };
+//};
