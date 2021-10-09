@@ -214,21 +214,27 @@ module.exports.convertXLXSFile = (req, res) => {
     data.shift();
     console.log(data);
     //************** */
-    data.forEach((bill) => {
+    let error = [];
+    data.forEach((bill, index) => {
       Bill.findOneAndUpdate(
         { memberId: bill.Membershipnumber },
-        { $set: {} },
+        {
+          $set: {
+            total: bill.amount,
+          },
+        },
         { new: true, useFindAndModify: false },
-        (err, business) => {
+        (err) => {
+          // eslint-disable-next-line no-empty
           if (err) {
-            return res.status(400).json({
-              err: "updation failed ",
-            });
+            error.push(`error in line ${index}`);
           }
-
-          res.json(business);
         }
       );
+      if (error) {
+        return res.json(error);
+      }
+      return res.send("all bills added succesfully!!!");
     });
 
     //************ */
