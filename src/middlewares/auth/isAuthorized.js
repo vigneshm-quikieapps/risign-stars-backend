@@ -27,7 +27,7 @@ const isAuthorized = (page, action) => async (req, res, next) => {
 
     next();
   } catch (err) {
-    console.log(err);
+    console.log(err.message);
     return res
       .status(StatusCodes.UNAUTHORIZED)
       .send({ message: "Unauthorized" });
