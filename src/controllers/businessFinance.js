@@ -66,6 +66,26 @@ module.exports.updateBusinessFinance = (req, res) => {
     }
   );
 };
+module.exports.addDiscountToBusinessFinance = (req, res) => {
+  BusinessFinance.findByIdAndUpdate(
+    { _id: req.businessFinance._id },
+    {
+      $set: {
+        discountSchemesId: req.body.discountSchemesId,
+      },
+    },
+    { new: true, useFindAndModify: false },
+    (err, businessFinance) => {
+      if (err) {
+        return res.status(400).json({
+          err: "addDiscountToBusinessFinance updation failed ",
+        });
+      }
+
+      res.json(businessFinance);
+    }
+  );
+};
 
 //all businessFinance listing
 
@@ -117,53 +137,3 @@ module.exports.getAllBusinessFinance = (req, res) => {
     res.json(businessFinance);
   });
 };
-
-module.exports.addNewDiscountScheme = (req, res) => {
-  let discounts = [];
-  req.body.discountSchemes.forEach((discount) => {
-    discounts.push({
-      name: discount.name,
-      type: discount.type,
-      value: discount.value,
-    });
-  });
-  //store thi in DB
-  console.log(discounts, req.businessFinance._id);
-  BusinessFinance.findOneAndUpdate(
-    { _id: req.businessFinance._id },
-    { $push: { discountSchemes: discounts } },
-    { new: true },
-    (err, discount) => {
-      if (err) {
-        return res.status(400).json({
-          error: "Unable to save discount list ",
-        });
-      }
-      return res.json(discount);
-    }
-  );
-};
-//
-// {
-//   "_id": ObjectId("59b7e839200a5c00ee2d2851"),
-//   "player": "New",
-//   "playesList": [
-//     {
-//       "_id": ObjectId("59b2a4f749fee40959e556d3"),
-//       "name": "abcd",
-//     },
-//     {
-//       "_id": ObjectId("59b2a4f749fee40959e556d4"),
-//       "name": "pqrs",
-//     }
-//   ]
-// }
-// play.findOneAndUpdate({
-//     "_id": "59b7e839200a5c00ee2d2851",
-//     "playesList._id": "59b2a4f749fee40959e556d3"
-// }, {
-//     "$set": {
-//         "playesList.$.name": "something"
-//     }
-// }, function(error, success) {}
-//)

@@ -1,5 +1,4 @@
 const Category = require("../models/Category");
-const { validationResult } = require("express-validator");
 
 module.exports.getCategoryById = (req, res, next, id) => {
   Category.findById(id).exec((err, cat) => {

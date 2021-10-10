@@ -4,6 +4,7 @@ const {
   createMemberValidationRules,
   updateMemberValidationRules,
   createEmergencyContactValidationRules,
+  updateEmergencyContactValidationRules,
 } = require("../validations/member");
 const memberConsent = require("../controllers/memberConsent");
 const member = require("../controllers/Member");
@@ -25,8 +26,14 @@ router.post(
   validate,
   member.addNewEmergencyContact
 );
-router.delete("/:id", member.delete);
-router.put("/:memberId/:businessId", member.addMembership);
+router.put(
+  "/contact/:memberId/update/:contactsId",
+  updateEmergencyContactValidationRules(),
+  validate,
+  member.updateEmergencyContact
+);
+router.delete("/member/:id", member.delete);
+router.put("/member/:memberId/:businessId", member.addMembership);
 router.post(
   "/:memberId/image-upload",
   member.memberImageUploadHelper.single("image"),

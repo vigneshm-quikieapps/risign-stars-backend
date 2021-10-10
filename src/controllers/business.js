@@ -1,6 +1,8 @@
 const Business = require("../models/business");
+const Bill = require("../models/Bill");
 // const Member = require("../models/member");
 const multer = require("multer");
+const XLSX = require("xlsx");
 const CSVToJSON = require("csvtojson");
 const { STARTS_WITH_FILTER, EQUALS_FILTER } = require("../constants/constant");
 const path = require("path");
@@ -153,9 +155,94 @@ module.exports.uploadFile = (req, res) => {
   });
 };
 
-/**
- * upload Image helper
- */
+// Uploading the xlxs file
+module.exports.uploadXLXSFile = (req, res) => {
+  const filestorage = multer.diskStorage({
+    destination: (req, file, cb) => {
+      cb(null, "./src/xlxs");
+    },
+    filename: (req, file, cb) => {
+      cb(null, file.originalname);
+    },
+  });
+  const upload = multer({ storage: filestorage }).single("xlxs");
+  upload(req, res, function (err) {
+    if (err) {
+      console.log(err);
+    }
+    return res.send("file uploaded");
+  });
+};
+module.exports.convertXLXSFile = (req, res) => {
+  var workbook = XLSX.readFile(
+    "./src/xlxs/RisingStar Documentation - Api test.xlsx"
+  );
+  var sheet_name_list = workbook.SheetNames;
+  console.log(sheet_name_list); // getting as Sheet1
+
+  sheet_name_list.forEach(function (y) {
+    var worksheet = workbook.Sheets[y];
+    //getting the complete sheet
+    // console.log(worksheet);
+
+    var headers = {};
+    var data = [];
+    for (var z in worksheet) {
+      if (z[0] === "!") continue;
+      //parse out the column, row, and value
+      var col = z.substring(0, 1);
+      // console.log(col);
+
+      var row = parseInt(z.substring(1));
+      // console.log(row);
+
+      var value = worksheet[z].v;
+      // console.log(value);
+
+      //store header names
+      if (row == 1) {
+        headers[col] = value;
+        // storing the header names
+        continue;
+      }
+
+      if (!data[row]) data[row] = {};
+      data[row][headers[col]] = value;
+    }
+    //drop those first two rows which are empty
+    data.shift();
+    data.shift();
+    console.log(data);
+    //************** */
+    let error = [];
+    data.forEach((bill, index) => {
+      Bill.findOneAndUpdate(
+        { memberId: bill.Membershipnumber },
+        {
+          $set: {
+            total: bill.amount,
+          },
+        },
+        { new: true, useFindAndModify: false },
+        (err) => {
+          // eslint-disable-next-line no-empty
+          if (err) {
+            error.push(`error in line ${index}`);
+          }
+        }
+      );
+      if (error) {
+        return res.json(error);
+      }
+      return res.send("all bills added succesfully!!!");
+    });
+
+    //************ */
+    return res.send("xlsx converted to json");
+  });
+};
+//RisingStar Documentation - Api test
+
 var storage = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, "./src/uploads/businesses");
@@ -238,4 +325,4 @@ module.exports.uploadImage = async (req, res) => {
 //     }
 //     return res.json(item);
 //   }); // Mon, 10:30 am to 11:30am
-// };
+//};

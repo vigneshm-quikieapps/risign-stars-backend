@@ -25,8 +25,10 @@ const businessFinanceSchema = new mongoose.Schema(
       },
     ],
     clubMembershipFee: {
-      type: Number,
-      required: true,
+      amount: {
+        type: Number,
+        required: true,
+      },
     },
     updatedBy: {
       type: ObjectId,

@@ -6,7 +6,6 @@ const router = express.Router();
 const {
   getBusinessSessionIdById,
   getBusinessSession,
-  getAllBusinessSession,
   createBusinessSession,
   updateBusinessSession,
   deleteBusinessSession,
@@ -45,6 +44,5 @@ router.put(
   updateBusinessSession
 );
 //listing route
-router.get("/classes/:classId/sessions", getAllBusinessSession);
 
 module.exports = router;

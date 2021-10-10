@@ -1,8 +1,6 @@
 const BusinessSession = require("../models/businessSession");
 
-const { validationResult } = require("express-validator");
 const { STARTS_WITH_FILTER, EQUALS_FILTER } = require("../constants/constant");
-const { json } = require("express");
 
 //parameter extractor
 module.exports.getBusinessSessionIdById = (req, res, next, id) => {

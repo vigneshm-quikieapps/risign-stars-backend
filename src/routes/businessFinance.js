@@ -3,8 +3,8 @@ const express = require("express");
 const router = express.Router();
 const {
   updateBusinessFinanceValidationRules,
+  addDiscountToBusinessFinanceValidationRules,
   createBusinessFinanceValidationRules,
-  addDiscountValidationRules,
 } = require("../validations/businessFinance");
 const validate = require("../validations/validate");
 
@@ -15,7 +15,7 @@ const {
   createBusinessFinance,
   deleteBusinessFinance,
   updateBusinessFinance,
-  addNewDiscountScheme,
+  addDiscountToBusinessFinance,
 } = require("../controllers/businessFinance");
 
 //parameters
@@ -51,9 +51,9 @@ router.get("/", getAllBusinessFinance);
 
 router.put(
   "/:businessFinanceId/addDiscounts",
-  addDiscountValidationRules(),
+  addDiscountToBusinessFinanceValidationRules(),
   validate,
-  addNewDiscountScheme
+  addDiscountToBusinessFinance
 );
 
 module.exports = router;
