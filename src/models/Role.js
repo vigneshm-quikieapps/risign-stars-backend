@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 const { ObjectId } = mongoose.Schema;
-const { FUNCTIONAL_PRIVILEGES } = require("../contants/constant");
+const { FUNCTIONAL_PRIVILEGES } = require("../constants/constant");
 
 const roleSchema = new mongoose.Schema(
   {

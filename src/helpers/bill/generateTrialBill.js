@@ -1,4 +1,4 @@
-const { PAY_FREQUENCY_TRIAL } = require("../../contants/business");
+const { PAY_FREQUENCY_TRIAL } = require("../../constants/business");
 const { BusinessClass, Bill } = require("../../models");
 
 /**

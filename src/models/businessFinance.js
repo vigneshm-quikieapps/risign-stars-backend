@@ -17,9 +17,18 @@ const businessFinanceSchema = new mongoose.Schema(
       online: Boolean,
       manual: Boolean,
     },
-    discountSchemesId: {
-      type: ObjectId,
-      ref: "Discounts",
+    discountSchemes: [
+      {
+        name: String,
+        type: { type: String, enum: ["PERCENTAGE"], default: "PERCENTAGE" },
+        value: Number,
+      },
+    ],
+    clubMembershipFee: {
+      amount: {
+        type: Number,
+        required: true,
+      },
     },
     updatedBy: {
       type: ObjectId,
@@ -33,4 +42,3 @@ const businessFinanceSchema = new mongoose.Schema(
   { timestamps: true }
 );
 module.exports = mongoose.model("BusinessFinance", businessFinanceSchema);
-// end

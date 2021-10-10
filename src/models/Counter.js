@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 const {
   ENUM_COUNTER_TYPES,
   CLUB_MEMBERSHIP_ID,
-} = require("../contants/counter");
+} = require("../constants/counter");
 
 // Declare the Schema of the Mongo model
 var counterSchema = new mongoose.Schema(

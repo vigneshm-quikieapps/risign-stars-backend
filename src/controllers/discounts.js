@@ -1,5 +1,5 @@
 const Discounts = require("../models/discounts");
-const { STARTS_WITH_FILTER, EQUALS_FILTER } = require("../contants/constant");
+const { STARTS_WITH_FILTER, EQUALS_FILTER } = require("../constants/constant");
 
 //discount api's are listed below
 

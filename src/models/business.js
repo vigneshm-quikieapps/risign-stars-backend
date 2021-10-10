@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 const { ObjectId } = mongoose.Schema;
-const { ENUM_BUSINESS_TYPE, ENUM_STATUS } = require("../contants/business");
+const { ENUM_BUSINESS_TYPE, ENUM_STATUS } = require("../constants/business");
 
 const businessSchema = new mongoose.Schema(
   {

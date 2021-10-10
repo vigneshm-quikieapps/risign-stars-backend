@@ -1,5 +1,6 @@
 const BusinessSession = require("../models/businessSession");
-const { STARTS_WITH_FILTER, EQUALS_FILTER } = require("../contants/constant");
+
+const { STARTS_WITH_FILTER, EQUALS_FILTER } = require("../constants/constant");
 
 //parameter extractor
 module.exports.getBusinessSessionIdById = (req, res, next, id) => {

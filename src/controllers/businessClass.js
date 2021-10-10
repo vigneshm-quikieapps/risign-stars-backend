@@ -1,6 +1,5 @@
 const BusinessClass = require("../models/businessClass");
-
-const { STARTS_WITH_FILTER, EQUALS_FILTER } = require("../contants/constant");
+const { STARTS_WITH_FILTER, EQUALS_FILTER } = require("../constants/constant");
 
 //parameter extractor
 module.exports.getBusinessClassIdById = (req, res, next, id) => {

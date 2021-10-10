@@ -17,6 +17,9 @@
 		"db-dump": "./src/scripts/database/exportDatabase.sh",
 		"db-restore": "./src/scripts/database/restoreDatabase.sh",
 		"db-refresh": "./src/scripts/database/refreshDatabase.sh",
+		"db-dump:test": "./src/scripts/database/exportTestDatabase.sh",
+		"db-restore:test": "./src/scripts/database/restoreTestDatabase.sh",
+		"db-refresh:test": "./src/scripts/database/refreshTestDatabase.sh",
 		"db-dump:win": "cd ./src/scripts/database/ && restoreDatabaseWin.bat",
 		"db-restore:win": "cd ./src/scripts/database/ && restoreDatabaseWin.bat"
 	},

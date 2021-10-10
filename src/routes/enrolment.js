@@ -1,6 +1,5 @@
 const express = require("express");
 const router = express.Router();
-
 const {
   newEnrolment,
   transferEnrolment,
@@ -15,9 +14,9 @@ const {
   classTransferEnrolmentValidationRules,
   trialEnrolmentValidationRules,
 } = require("../validations/enrolment");
-
 const validate = require("../validations/validate");
 
+/** routes */
 router.post("/", createEnrolementValidationRules(), validate, newEnrolment);
 router.post(
   "/:enrolmentId/withdraw",

@@ -1,7 +1,7 @@
 /* eslint-disable prettier/prettier */
 const express = require("express");
-const { USER } = require("../contants/pages");
-const { CREATE, UPDATE, READ, DELETE } = require("../contants/rest");
+const { USER } = require("../constants/pages");
+const { CREATE, UPDATE, READ, DELETE } = require("../constants/rest");
 const router = express.Router();
 const user = require("../controllers/user");
 const { isAuthorized } = require("../middlewares/auth");

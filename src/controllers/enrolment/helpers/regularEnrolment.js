@@ -39,7 +39,7 @@ const regularEnrolment = async (req, session) => {
   /**
    * generate bill
    */
-  generateEnrolmentBill({}, session);
+  await generateEnrolmentBill(req, session);
 
   /** TODO: send Email */
 };

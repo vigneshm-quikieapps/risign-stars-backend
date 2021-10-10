@@ -11,6 +11,10 @@ const billSchema = new mongoose.Schema(
       type: ObjectId,
       required: true,
     },
+    clubMembershipId: {
+      type: ObjectId,
+      required: true,
+    },
     businessId: {
       type: ObjectId,
       required: true,

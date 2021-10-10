@@ -7,8 +7,9 @@ const {
   createBusinessValidationRules,
 } = require("../validations/business");
 const validate = require("../validations/validate");
-const { BUSINESS_DEFINITION } = require("../contants/pages");
-const { CREATE, UPDATE, DELETE } = require("../contants/rest");
+const { BUSINESS_DEFINITION } = require("../constants/pages");
+const { CREATE, UPDATE, DELETE } = require("../constants/rest");
+
 const {
   getBusinessIdById,
   getBusiness,

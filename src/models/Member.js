@@ -1,21 +1,19 @@
 const mongoose = require("mongoose");
 const { ObjectId } = mongoose.Schema;
 
-const { ADDRESS_TYPE, RELATIONSHIPS } = require("../contants/constant");
+const { ADDRESS_TYPE, RELATIONSHIPS } = require("../constants/constant");
 
 const memberSchema = new mongoose.Schema(
   {
-    userId: String,
     id: String,
-
+    userId: String,
     membership: [
       {
         businessId: String,
         clubMembershipId: String,
       },
     ],
-    firstName: String,
-    lastName: String,
+    fullName: String,
     dob: Date,
     gender: {
       type: String,
@@ -24,8 +22,7 @@ const memberSchema = new mongoose.Schema(
     contacts: [
       {
         addressType: ADDRESS_TYPE,
-        firstName: String,
-        lastName: String,
+        fullName: String,
         contact: String,
         relationShip: RELATIONSHIPS,
       },

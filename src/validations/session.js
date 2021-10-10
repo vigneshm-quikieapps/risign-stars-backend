@@ -1,5 +1,5 @@
 const { body } = require("express-validator");
-const { ENUM_BUSINESS_TYPE } = require("../contants/constant");
+const { ENUM_BUSINESS_TYPE } = require("../constants/constant");
 
 const createSessionValidationRules = () => {
   return [

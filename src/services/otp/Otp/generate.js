@@ -1,4 +1,4 @@
-const { length, expiresIn } = require("../../../contants/otp");
+const { length, expiresIn } = require("../../../constants/otp");
 const otpGenerator = require("otp-generator");
 const set = require("./set");
 const get = require("./get");

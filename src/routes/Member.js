@@ -6,22 +6,22 @@ const {
   createEmergencyContactValidationRules,
   updateEmergencyContactValidationRules,
 } = require("../validations/member");
-
+const memberConsent = require("../controllers/memberConsent");
 const member = require("../controllers/Member");
 const validate = require("../validations/validate");
+
 router.param("memberId", member.getmemberIdById);
 
-router.get("/member", createMemberValidationRules(), member.getAllMember);
-router.post("/member", member.create);
-router.put(
-  "/member/:id",
-  updateMemberValidationRules(),
-  validate,
-  member.update
-);
-router.get("/member/:id", member.getEmergencyContact);
+/**
+ * routes
+ */
+router.get("/", createMemberValidationRules(), member.getAllMember);
+router.post("/", member.create);
+router.get("/consent", memberConsent.get);
+router.put("/:id", updateMemberValidationRules(), validate, member.update);
+router.get("/:id", member.getEmergencyContact);
 router.post(
-  "/contact/:memberId",
+  "/:memberId",
   createEmergencyContactValidationRules(),
   validate,
   member.addNewEmergencyContact

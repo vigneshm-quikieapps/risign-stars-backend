@@ -3,11 +3,10 @@ const { ObjectId } = mongoose.Schema;
 const {
   ENUM_ENROLLED_STATUS,
   ENUM_DISCONTINUATION_REASON,
-} = require("../contants/constant");
+} = require("../constants/constant");
 
 const enrolmentSchema = new mongoose.Schema(
   {
-    //  memberName:String,
     memberId: {
       type: ObjectId,
     },
@@ -24,15 +23,7 @@ const enrolmentSchema = new mongoose.Schema(
       ref: "Business",
     },
     name: String,
-    // memberId: String,
     clubMembershipId: String,
-    consent: {
-      allergies: String,
-      condition: String,
-      photographConsent: Boolean,
-      signedByParent: Boolean,
-      signedAt: Date,
-    },
     newsletter: {
       email: Boolean,
       telephone: Boolean,

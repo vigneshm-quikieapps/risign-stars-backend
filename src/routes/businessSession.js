@@ -19,9 +19,9 @@ const validate = require("../validations/validate");
 //parameters
 router.param("businessSessionId", getBusinessSessionIdById);
 
-//all of actual routes
-// eslint-disable-next-line prettier/prettier
-//all of actual routes
+/**
+ * all of actual routes
+ */
 //create route
 router.post(
   "/",
