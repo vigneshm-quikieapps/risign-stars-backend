@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 const {
   DATA_PRIVILEGES_TYPE,
   ENUM_USER_TYPES,
-} = require("../contants/constant");
+} = require("../constants/constant");
 var bcrypt = require("bcryptjs");
 const generatePassword = require("../services/auth/generatePassword");
 

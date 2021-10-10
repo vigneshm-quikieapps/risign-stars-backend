@@ -1,5 +1,5 @@
 const { body } = require("express-validator");
-const { FUNCTIONAL_PRIVILEGES } = require("../contants/constant");
+const { FUNCTIONAL_PRIVILEGES } = require("../constants/constant");
 const Role = require("../models/Role");
 
 const isUniqueCode = async (code) => {

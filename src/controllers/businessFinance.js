@@ -1,6 +1,6 @@
 const BusinessFinance = require("../models/businessFinance");
 
-const { STARTS_WITH_FILTER, EQUALS_FILTER } = require("../contants/constant");
+const { STARTS_WITH_FILTER, EQUALS_FILTER } = require("../constants/constant");
 
 //parameter extractor
 module.exports.getBusinessFinanceIdById = (req, res, next, id) => {

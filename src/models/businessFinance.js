@@ -24,6 +24,10 @@ const businessFinanceSchema = new mongoose.Schema(
         value: Number,
       },
     ],
+    clubMembershipFee: {
+      type: Number,
+      required: true,
+    },
     updatedBy: {
       type: ObjectId,
       ref: "User",
@@ -36,4 +40,3 @@ const businessFinanceSchema = new mongoose.Schema(
   { timestamps: true }
 );
 module.exports = mongoose.model("BusinessFinance", businessFinanceSchema);
-// end

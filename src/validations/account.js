@@ -1,5 +1,5 @@
 const DoesNotExistError = require("../exceptions/DoesNotExistError");
-const { USER } = require("../contants/validation");
+const { USER } = require("../constants/validation");
 const ResetPasswordEmail = require("../services/notification/Email/ResetPasswordEmail");
 const { body } = require("express-validator");
 const User = require("../models/User");

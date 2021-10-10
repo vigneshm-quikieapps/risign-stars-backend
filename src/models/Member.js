@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const { ObjectId } = mongoose.Schema;
 
-const { ADDRESS_TYPE, RELATIONSHIPS } = require("../contants/constant");
+const { ADDRESS_TYPE, RELATIONSHIPS } = require("../constants/constant");
 
 const memberSchema = new mongoose.Schema(
   {
@@ -13,14 +13,12 @@ const memberSchema = new mongoose.Schema(
         clubMembershipId: String,
       },
     ],
-    firstName: String,
-    lastName: String,
+    fullName: String,
     dob: Date,
     contacts: [
       {
         addressType: ADDRESS_TYPE,
-        firstName: String,
-        lastName: String,
+        fullName: String,
         contact: String,
         relationShip: RELATIONSHIPS,
       },

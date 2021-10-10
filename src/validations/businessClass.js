@@ -4,7 +4,10 @@ const Business = require("../models/business");
 const BusinessSession = require("../models/businessSession");
 const Evaluation = require("../models/evaluation");
 const Category = require("../models/Category");
-const { TERM_STATUS } = require("../contants/constant");
+const {
+  ENUM_REGISTRATION_FORM,
+  ENUM_TERM_STATUS,
+} = require("../constants/class");
 
 const businessIdValidation = async (businessId) => {
   try {
@@ -80,12 +83,15 @@ const createClassValidationRules = () => {
     check("evaluationId").custom(evaluationIdValidation),
     check("categoryId").custom(categoryIdValidation),
     check("sessionIds").custom(sessionIdValidation),
-    check("status", "status should  only be [active, inactive]")
+    check("status", `status should  only be ${ENUM_TERM_STATUS}`)
       .optional()
-      .isIn(TERM_STATUS),
-    check("registrationform", "registrationform should only be standard")
+      .isIn(ENUM_TERM_STATUS),
+    check(
+      "registrationform",
+      `registrationform should only be ${ENUM_REGISTRATION_FORM}`
+    )
       .optional()
-      .isIn("standard"),
+      .isIn(ENUM_REGISTRATION_FORM),
     check("about", "about should be atleast 3 char")
       .optional()
       .isLength({ min: 3 }),
@@ -106,6 +112,7 @@ const createClassValidationRules = () => {
     }),
   ];
 };
+
 const updateClassValidationRules = () => {
   return [
     check("name", "name should be at least 3 char")
@@ -115,12 +122,15 @@ const updateClassValidationRules = () => {
     check("evaluationId").optional().custom(evaluationIdValidation),
     check("categoryId").optional().custom(categoryIdValidation),
     check("sessionIds").optional().custom(sessionIdValidation),
-    check("status", "status should  only be [active, inactive]")
+    check("status", `status should  only be ${ENUM_TERM_STATUS.join(" / ")}`)
       .optional()
-      .isIn(TERM_STATUS),
-    check("registrationform", "registrationform should only be standard")
+      .isIn(ENUM_TERM_STATUS),
+    check(
+      "registrationform",
+      `registrationform should only be ${ENUM_REGISTRATION_FORM.join(" / ")}`
+    )
       .optional()
-      .isIn("standard"),
+      .isIn(ENUM_REGISTRATION_FORM),
     check("about", "about should be atleast 3 char")
       .optional()
       .isLength({ min: 3 }),

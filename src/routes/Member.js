@@ -4,7 +4,6 @@ const {
   createMemberValidationRules,
   updateMemberValidationRules,
   createEmergencyContactValidationRules,
-  createMemberConsentValidationRules,
 } = require("../validations/member");
 const memberConsent = require("../controllers/memberConsent");
 const member = require("../controllers/Member");
@@ -17,12 +16,6 @@ router.param("memberId", member.getmemberIdById);
  */
 router.get("/", createMemberValidationRules(), member.getAllMember);
 router.post("/", member.create);
-router.post(
-  "/consent",
-  createMemberConsentValidationRules(),
-  validate,
-  memberConsent.create
-);
 router.get("/consent", memberConsent.get);
 router.put("/:id", updateMemberValidationRules(), validate, member.update);
 router.get("/:id", member.getEmergencyContact);

@@ -16,14 +16,26 @@ const getNoOfSessions = require("../sessions/getNoOfSessions");
  * @param {*} charge
  * @returns
  */
-const partialCharge = (startDate, charge) => {
-  let startMonth = startDate.getMonth();
-  let currentMonth = new Date().getMonth();
-  if (startMonth !== currentMonth) {
-    throw new Error("Start date should be in the current month");
+const partialCharge = ({ startDate, endDate, charge }) => {
+  if (!startDate && !endDate) {
+    throw new Error("At least either startDate / endDate should be in payload");
   }
 
-  let endDate = moment(startDate).endOf("month").toISOString();
+  if (!startDate) {
+    startDate = moment(startDate).startOf("month").toISOString();
+  }
+  if (!endDate) {
+    endDate = moment(startDate).endOf("month").toISOString();
+  }
+
+  let startMonth = startDate.getMonth();
+  // let currentMonth = new Date().getMonth();
+  let endMonth = new Date().getMonth();
+
+  if (startMonth !== endMonth) {
+    throw new Error("Start date and end date should be in the same month");
+  }
+
   let noOfSessions = getNoOfSessions(startDate, endDate);
   return (charge / 4) * noOfSessions;
 };

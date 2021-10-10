@@ -1,5 +1,5 @@
 const InvalidOTPError = require("../../../exceptions/InvalidOTPError");
-const { length } = require("../../../contants/otp");
+const { length } = require("../../../constants/otp");
 const get = require("./get");
 
 /**

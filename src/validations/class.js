@@ -2,7 +2,7 @@ const { body } = require("express-validator");
 const {
   ENUM_PAY_FREQUENCY,
   ENUM_CLASSES_STATUS,
-} = require("../contants/constant");
+} = require("../constants/constant");
 
 const createClassValidationRules = () => {
   return [

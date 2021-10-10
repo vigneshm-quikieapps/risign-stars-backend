@@ -2,7 +2,7 @@ const Business = require("../models/business");
 // const Member = require("../models/member");
 const multer = require("multer");
 const CSVToJSON = require("csvtojson");
-const { STARTS_WITH_FILTER, EQUALS_FILTER } = require("../contants/constant");
+const { STARTS_WITH_FILTER, EQUALS_FILTER } = require("../constants/constant");
 const path = require("path");
 
 //parameter extractor

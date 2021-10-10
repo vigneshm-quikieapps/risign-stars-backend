@@ -3,7 +3,7 @@ const { ObjectId } = mongoose.Schema;
 const {
   ENUM_ENROLLED_STATUS,
   ENUM_DISCONTINUATION_REASON,
-} = require("../contants/constant");
+} = require("../constants/constant");
 
 const enrolmentSchema = new mongoose.Schema(
   {

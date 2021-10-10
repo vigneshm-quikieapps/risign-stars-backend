@@ -3,7 +3,7 @@ const User = require("../models/User");
 
 // const generatePassword = require("../helpers/auth/generatePassword");
 // const generateHash = require("../helpers/auth/generateHash");
-const { STARTS_WITH_FILTER, EQUALS_FILTER } = require("../contants/constant");
+const { STARTS_WITH_FILTER, EQUALS_FILTER } = require("../constants/constant");
 
 module.exports.getUserById = (req, res, next, id) => {
   User.findById(id).exec((error, user) => {

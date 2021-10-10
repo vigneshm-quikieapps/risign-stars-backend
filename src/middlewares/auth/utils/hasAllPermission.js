@@ -1,4 +1,4 @@
-const { DATA_PRIVILEGES_ALL } = require("../../../contants/constant");
+const { DATA_PRIVILEGES_ALL } = require("../../../constants/constant");
 
 const hasAllPermission = (tokenPayload) => {
   let { dataPrivileges } = tokenPayload;

@@ -1,8 +1,8 @@
 const { body } = require("express-validator");
 const isEmailAvailable = require("../helpers/user/isEmailAvailable");
-const { DATA_PRIVILEGES_TYPE } = require("../contants/constant");
+const { DATA_PRIVILEGES_TYPE } = require("../constants/constant");
 const Business = require("../models/business");
-const { USER, ADDRESS } = require("../contants/validation");
+const { USER, ADDRESS } = require("../constants/validation");
 const { VerifyContactOTP } = require("../services/otp");
 const { isMobileNoAvailable, isValidMobile } = require("./mobileNo");
 

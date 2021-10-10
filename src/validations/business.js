@@ -1,5 +1,5 @@
 const { query } = require("express-validator");
-const { FILTER_TYPES } = require("../contants/constant");
+const { FILTER_TYPES } = require("../constants/constant");
 const { check } = require("express-validator");
 
 const businessFilter = (filters) => {

@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 const {
   EVALUATION_STATUS,
   EVALUATION_STATUS_ACTIVE,
-} = require("../contants/constant");
+} = require("../constants/constant");
 const { ObjectId } = mongoose.Schema;
 
 const evaluationSchema = new mongoose.Schema(

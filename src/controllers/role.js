@@ -1,4 +1,4 @@
-const { EQUALS_FILTER, STARTS_WITH_FILTER } = require("../contants/constant");
+const { EQUALS_FILTER, STARTS_WITH_FILTER } = require("../constants/constant");
 const DoesNotExistError = require("../exceptions/DoesNotExistError");
 const Role = require("../models/Role");
 
