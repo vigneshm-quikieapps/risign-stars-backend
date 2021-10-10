@@ -16,14 +16,19 @@ const isAuthorized = (page, action) => async (req, res, next) => {
      * if data privileges type is "ALL": the user has full access to any api
      * else check if the user has permission for that particular api
      */
+
     if (!hasAllPermission(tokenPayload)) {
       let roleIds = getRoleIds(tokenPayload);
       let roles = await getRoleIds(roleIds);
       if (!hasPermission(roles, { page, action })) {
-        console.log("no permission");
         throw new UnauthorizedError();
       }
     }
+
+    /**
+     * if the code execution reaches here.
+     * that means, the user is authorized
+     */
 
     next();
   } catch (err) {

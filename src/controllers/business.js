@@ -26,6 +26,7 @@ module.exports.createBusiness = (req, res) => {
   const business = new Business(req.body);
   business.save((err, business) => {
     if (err) {
+      console.error(err.message);
       return res.status(400).json({
         error: "unable to save evaluation to database",
       });
@@ -55,7 +56,18 @@ module.exports.deleteBusiness = (req, res) => {
   });
 };
 
+/**
+ * updating business code is not allowed
+ *
+ * as business code determines the club membership id
+ *
+ * @param {*} req
+ * @param {*} res
+ */
 module.exports.updateBusiness = (req, res) => {
+  let data = { ...req.body };
+  delete data.code; /** updating business is not allowed  */
+
   Business.findByIdAndUpdate(
     { _id: req.business._id },
     { $set: req.body },
