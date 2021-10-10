@@ -23,8 +23,12 @@ router.post(
 // read route
 router.get("/:userId", isAuthorized(USER, READ), user.get);
 
-// delete route
-router.delete("/:userId", isAuthorized(USER, DELETE), user.delete);
+/**
+ * delete route
+ * don't allow delete user functionality
+ * if required, implement soft delete / deactivate / block functionality
+ */
+// router.delete("/:userId", isAuthorized(USER, DELETE), user.delete);
 
 // update route
 router.put(
