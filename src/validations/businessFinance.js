@@ -80,13 +80,13 @@ const createBusinessFinanceValidationRules = () => {
     check("discountSchemesId", "discountSchemesId should be a valid businessId")
       .optional()
       .custom(discountIdValidation),
-    check("updatedBy", "updatedBy should be a valid userId")
-      .optional()
-      .isLength({ min: 12 })
-      .custom(userIdValidation),
-    check("createdBy", "createdBy should be a valid userId")
-      .isLength({ min: 12 })
-      .custom(userIdValidation),
+    // check("updatedBy", "updatedBy should be a valid userId")
+    //   .optional()
+    //   .isLength({ min: 12 })
+    //   .custom(userIdValidation),
+    // check("createdBy", "createdBy should be a valid userId")
+    //   .isLength({ min: 12 })
+    //   .custom(userIdValidation),
   ];
 };
 const updateBusinessFinanceValidationRules = () => {
@@ -132,9 +132,9 @@ const updateBusinessFinanceValidationRules = () => {
     check("discountSchemesId", "discountSchemesId should be a valid businessId")
       .optional()
       .custom(discountIdValidation),
-    check("updatedBy", "updatedBy should be a valid userId")
-      .isLength({ min: 12 })
-      .custom(userIdValidation),
+    // check("updatedBy", "updatedBy should be a valid userId")
+    //   .isLength({ min: 12 })
+    //   .custom(userIdValidation),
   ];
 };
 const addDiscountToBusinessFinanceValidationRules = () => {

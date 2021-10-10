@@ -1,6 +1,8 @@
 const { query } = require("express-validator");
 const { FILTER_TYPES } = require("../constants/constant");
 const { check } = require("express-validator");
+const { ENUM_STATUS, ENUM_BUSINESS_TYPE } = require("../constants/business");
+const { BUSINESS } = require("./constants");
 
 const businessFilter = (filters) => {
   if (!Array.isArray(filters)) {
@@ -35,10 +37,11 @@ const createBusinessValidationRules = () => {
       // .optional()
       // .isLength({ min: 3 })
       .isString(),
+    check("status", BUSINESS.STATUS.MESSAGE).isIn(ENUM_STATUS),
     check("tradename", "tradename should be at least 3 char").isLength({
       min: 3,
     }),
-    check("type", "type should be at least 3 char").isLength({ min: 3 }),
+    check("type", BUSINESS.TYPE.MESSAGE).isIn(ENUM_BUSINESS_TYPE),
     check("about", "about should be atleast 3 char")
       .optional()
       .isLength({ min: 3 }),
@@ -48,32 +51,33 @@ const createBusinessValidationRules = () => {
     check("line1", "line1 should be at least 3 char").isLength({ min: 3 }),
     check("city", "city should be at least 3 char").isLength({ min: 3 }),
     check("country", "country should be at least 3 char").isLength({ min: 3 }),
-    check("updatedBy", "updatedBy should be a valid userId")
-      .optional()
-      .isLength({ min: 12 }),
-    check("createdBy", "createdBy should be a valid userId").isLength({
-      min: 12,
-    }),
-    check("facebok", "facebok should be a valid url").isURL(),
-    check("instagram", "instagram should be a valid url").isURL(),
-    check("linkedin", "linkedin should be a valid url").isURL(),
-    check("pinterest", "pinterest should be a valid url").isURL(),
+    check("facebok", "facebok should be a valid url").optional().isURL(),
+    check("instagram", "instagram should be a valid url").optional().isURL(),
+    check("linkedin", "linkedin should be a valid url").optional().isURL(),
+    check("pinterest", "pinterest should be a valid url").optional().isURL(),
   ];
 };
+
+/**
+ * updating business code is not allowed
+ *
+ * as business code determines the club membership id
+ *
+ * @returns
+ */
 const updateBusinessValidationRules = () => {
   return [
     check("name", "name should be at least 3 char")
       .optional()
       .isLength({ min: 3 }),
-    check("code", "code should be atleast 3 char")
-      .optional()
-      .isLength({ min: 3 }),
+    // check("code", "code should be atleast 3 char")
+    //   .optional()
+    //   .isLength({ min: 3 }),
+    check("status", BUSINESS.STATUS.MESSAGE).isIn(ENUM_STATUS),
     check("tradename", "tradename should be at least 3 char")
       .optional()
       .isLength({ min: 3 }),
-    check("type", "type should be at least 3 char")
-      .optional()
-      .isLength({ min: 3 }),
+    check("type", BUSINESS.TYPE.MESSAGE).optional().isIn(ENUM_BUSINESS_TYPE),
     check("about", "about should be atleast 3 char")
       .optional()
       .isLength({ min: 3 }),
@@ -89,12 +93,6 @@ const updateBusinessValidationRules = () => {
     check("country", "country should be at least 3 char")
       .optional()
       .isLength({ min: 3 }),
-    check("updatedBy", "updatedBy should be a valid userId").isLength({
-      min: 12,
-    }),
-    check("createdBy", "createdBy should be a valid userId")
-      .optional()
-      .isLength({ min: 12 }),
     check("facebok", "facebok should be a valid url").optional().isURL(),
     check("instagram", "instagram should be a valid url").optional().isURL(),
     check("linkedin", "linkedin should be a valid url").optional().isURL(),

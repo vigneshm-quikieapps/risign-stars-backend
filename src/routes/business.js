@@ -39,7 +39,7 @@ router.param("businessId", getBusinessIdById);
 router.post(
   "/",
   isAuthorized(BUSINESS_DEFINITION, CREATE),
-  createBusinessValidationRules,
+  createBusinessValidationRules(),
   validate,
   createBusiness
 );

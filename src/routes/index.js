@@ -26,7 +26,7 @@ const routes = (app) => {
   app.use("/api/roles", roleRoute);
   app.use("/api/users", userRoute);
   app.use("/api/businesses", businessRoute);
-  app.use("/api/businessFinances", businessFinanceRoute);
+  app.use("/api/businesses/finances", businessFinanceRoute);
   app.use("/api/discounts", discountRoute);
   app.use("/api/evaluations", evaluationRoute);
   app.use("/api", roleRoute);
