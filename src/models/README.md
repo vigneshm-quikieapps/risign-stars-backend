@@ -1,7 +1,7 @@
 # Models Readme
 
 - for a particular model
-- keep all constants in the following directory: src/constants/class
+- keep all constants in the following directory: src/constants
 
 ### Example.
 
