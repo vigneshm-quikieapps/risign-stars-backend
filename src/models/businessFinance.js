@@ -1,4 +1,10 @@
 const mongoose = require("mongoose");
+const {
+  ENUM_PAY_FREQUENCY,
+  PAY_FREQUENCY_ANNUAL,
+  ENUM_CHARGES,
+  CHARGES_CLUB_MEMBERSHIP_ID,
+} = require("../constants/businessFinance");
 const { ObjectId } = mongoose.Schema;
 
 const businessFinanceSchema = new mongoose.Schema(
@@ -24,12 +30,24 @@ const businessFinanceSchema = new mongoose.Schema(
         value: Number,
       },
     ],
-    clubMembershipFee: {
-      amount: {
-        type: Number,
-        required: true,
+    charges: [
+      {
+        name: {
+          type: String,
+          enum: ENUM_CHARGES,
+          default: CHARGES_CLUB_MEMBERSHIP_ID,
+        },
+        amount: {
+          type: Number,
+          required: true,
+        },
+        payFrequency: {
+          type: String,
+          enum: ENUM_PAY_FREQUENCY,
+          default: PAY_FREQUENCY_ANNUAL,
+        },
       },
-    },
+    ],
     updatedBy: {
       type: ObjectId,
       ref: "User",

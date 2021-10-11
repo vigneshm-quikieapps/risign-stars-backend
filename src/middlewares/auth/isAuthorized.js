@@ -4,7 +4,26 @@ const { verify } = require("jsonwebtoken");
 const { hasPermission, hasAllPermission } = require("./utils");
 const getRoleIds = require("./utils/getRoleIds");
 
+/**
+ * Note:
+ * 1. to bypass the is authorized check.
+ * open .env file.
+ * set IS_AUTHORIZED_CHECK=DISABLE
+ *
+ *
+ * @param {*} page
+ * @param {*} action
+ * @returns
+ */
 const isAuthorized = (page, action) => async (req, res, next) => {
+  if (process.env.IS_AUTHORIZED_CHECK === "DISABLE") {
+    next();
+  } else {
+    checkIsAuthorized(req, res, next, page, action);
+  }
+};
+
+const checkIsAuthorized = async (req, res, next, page, action) => {
   try {
     /** check if authenticated */
     let token =
