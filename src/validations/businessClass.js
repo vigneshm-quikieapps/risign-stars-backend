@@ -104,12 +104,12 @@ const createClassValidationRules = () => {
     check("charges", "charges should be an Array and should not be empty")
       .isArray()
       .notEmpty(),
-    check("updatedBy", "updatedBy should be a valid userId").isLength({
-      min: 3,
-    }),
-    check("createdBy", "createdBy should be a valid userId").isLength({
-      min: 3,
-    }),
+    // check("updatedBy", "updatedBy should be a valid userId").isLength({
+    //   min: 3,
+    // }),
+    // check("createdBy", "createdBy should be a valid userId").isLength({
+    //   min: 3,
+    // }),
   ];
 };
 
@@ -145,9 +145,9 @@ const updateClassValidationRules = () => {
       .optional()
       .isArray()
       .notEmpty(),
-    check("updatedBy", "updatedBy should be a valid userId").isLength({
-      min: 3,
-    }),
+    // check("updatedBy", "updatedBy should be a valid userId").isLength({
+    //   min: 3,
+    // }),
   ];
 };
 module.exports = {
