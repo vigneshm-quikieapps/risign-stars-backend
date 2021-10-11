@@ -5,6 +5,7 @@ const {
   CLASS_STATUS_ACTIVE,
   ENUM_REGISTRATION_FORM,
   REGISTRATION_FORM_STANDARD,
+  ENROLMENT_CONTROL_AGE,
 } = require("../constants/class");
 const { ObjectId } = mongoose.Schema;
 
@@ -59,7 +60,7 @@ const businessClassSchema = new mongoose.Schema(
         },
         name: {
           type: String,
-          enum: ["age", "gender"],
+          enum: ENROLMENT_CONTROL_AGE,
         },
         values: [],
         /** should be an array of values from 1 to 16, It is going to be multi select dropdown in UI */
