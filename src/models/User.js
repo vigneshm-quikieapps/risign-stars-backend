@@ -105,6 +105,15 @@ UserSchema.statics.isEmailAvailable = async (email) => {
   }
 };
 
+UserSchema.virtual("id").get(function () {
+  return this._id.toHexString();
+});
+
+// Ensure virtual fields are serialised.
+UserSchema.set("toJSON", {
+  virtuals: true,
+});
+
 UserSchema.plugin(mongoosePaginate);
 
 module.exports = mongoose.model("User", UserSchema);

@@ -1,9 +1,9 @@
 const getMonthlyCharges = require("./getMonthlyCharges");
 const { Bill } = require("../../models");
-const { getMonthRange } = require("../dates");
 const generateClubMembershipBillPayload = require("./generateClubMembershipBillPayload");
 const generatePartialMonthBillPayload = require("./generatePartialMonthBillPayload");
 const generateMonthBillPayload = require("./generateMonthBillPayload");
+const { getEnrolableMonthRange } = require("../dates");
 
 /**
  *
@@ -14,28 +14,30 @@ const generateMonthBillPayload = require("./generateMonthBillPayload");
  * @param {*} session
  */
 const generateEnrolmentBill = async (
-  { businessFinanceData, classData, sessionData, memberId },
+  { businessFinanceData, classData, sessionData, memberData, clubMembershipId },
   session
 ) => {
   let now = new Date();
 
-  let { term, classId } = sessionData;
+  let { term, classId, pattern } = sessionData;
   let { startDate, endDate } = term;
   let { charges: businessFinanceCharges, businessId } = businessFinanceData;
-  let { charges } = classData;
+  let classCharges = classData.charges;
+  let memberId = memberData._id;
 
   /**
-   * get the total no. of months from starting date to end date
+   * get the total no. of months from starting date to end date, the member can attend in the session
    */
-  let monthRange = getMonthRange(startDate, endDate);
+  let monthRange = getEnrolableMonthRange(startDate, endDate, now);
 
   if (monthRange < 1) {
     throw new Error("Month range should be greater than or equal to 1");
   }
 
   /** get monthly charges */
-  let monthlyCharges = getMonthlyCharges(charges);
+  let monthlyCharges = getMonthlyCharges(classCharges);
   let monthlyPayload = {
+    clubMembershipId,
     billDate: now,
     charges: monthlyCharges,
     memberId,
@@ -54,6 +56,7 @@ const generateEnrolmentBill = async (
   let clubMembershipPayload = {
     ...monthlyPayload,
     charges: businessFinanceCharges,
+    dueDate: now,
   };
   let clubMembershipBillPayload = generateClubMembershipBillPayload(
     clubMembershipPayload
@@ -66,11 +69,14 @@ const generateEnrolmentBill = async (
    */
   let firstMonthPayload = {
     ...monthlyPayload,
-    dueDate: monthRange[0],
+    dueDate: now,
     startDate: now,
   };
-  let firstMonthbillPayload =
-    generatePartialMonthBillPayload(firstMonthPayload);
+
+  let firstMonthbillPayload = generatePartialMonthBillPayload({
+    ...firstMonthPayload,
+    pattern,
+  });
   billPayloads.push(firstMonthbillPayload);
 
   /**
@@ -94,6 +100,7 @@ const generateEnrolmentBill = async (
       ...monthlyPayload,
       dueDate: monthRange[monthRange.length - 1],
       endDate,
+      pattern,
     };
     let lastMonthbillPayload =
       generatePartialMonthBillPayload(lastMonthPayload);

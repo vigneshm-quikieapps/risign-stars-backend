@@ -19,6 +19,7 @@ const registrationRoute = require("./registration");
 const testRoute = require("./testRoute");
 const enrolmentRoute = require("./enrolment");
 const progressRecordRoute = require("./progress");
+const billRoute = require("./bill");
 
 const routes = (app) => {
   // API routes
@@ -29,6 +30,7 @@ const routes = (app) => {
   app.use("/api/businesses/finances", businessFinanceRoute);
   app.use("/api/discounts", discountRoute);
   app.use("/api/evaluations", evaluationRoute);
+  app.use("/api/bills", billRoute);
   app.use("/api", roleRoute);
   app.use("/api", userRoute);
   app.use("/api", attendanceRoute);

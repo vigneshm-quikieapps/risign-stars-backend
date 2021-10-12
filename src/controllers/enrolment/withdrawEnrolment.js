@@ -30,7 +30,7 @@ const withdrawEnrolment = async (req, res) => {
     await session.commitTransaction();
     return res.status(201).send({ message: "cancellation successfull" });
   } catch (err) {
-    console.log("error");
+    console.error("error");
     await session.abortTransaction();
     return res.status(422).send({ message: err.message });
   } finally {
