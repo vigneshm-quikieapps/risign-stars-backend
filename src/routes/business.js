@@ -17,9 +17,9 @@ const {
   createBusiness,
   deleteBusiness,
   updateBusiness,
-  uploadFile,
+  //uploadFile,
   uploadXLXSFile,
-  convertXLXSFile,
+  // convertXLXSFile,
   businessImageUploadHelper,
   uploadImage,
 } = require("../controllers/business");
@@ -67,9 +67,11 @@ router.put(
 router.get("/", getAllBusinessValidationRules(), validate, getAllBusinesses);
 router.get("/:businessId/classes", getAllBusinessClass);
 
-router.post("/fileupload", uploadFile);
-router.post("/xlxsupload", uploadXLXSFile);
-router.get("/convertxlxs/json", convertXLXSFile);
+//router.post("/fileupload", uploadFile);
+router.post("/xlxsupload", uploadXLXSFile, (req, res) => {
+  return res.send("done");
+});
+//router.get("/convertxlxs/json", convertXLXSFile);
 
 router.post(
   "/:businessId/image-upload",

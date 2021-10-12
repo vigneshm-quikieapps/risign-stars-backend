@@ -177,82 +177,77 @@ module.exports.uploadXLXSFile = (req, res) => {
       cb(null, file.originalname);
     },
   });
-  const upload = multer({ storage: filestorage }).single("xlxs");
+  const upload = multer({
+    storage: filestorage,
+    fileFilter: (req, file, cb) => {
+      if (path.extname(file.originalname) !== ".xlsx") {
+        return res.send("file type not valid!!");
+      }
+
+      cb(null, true);
+    },
+  }).single("payment");
   upload(req, res, function (err) {
     if (err) {
-      console.log(err);
+      return res.send("file type not valid!!");
     }
-    return res.send("file uploaded");
-  });
-};
-module.exports.convertXLXSFile = (req, res) => {
-  var workbook = XLSX.readFile(
-    "./src/xlxs/RisingStar Documentation - Api test.xlsx"
-  );
-  var sheet_name_list = workbook.SheetNames;
-  console.log(sheet_name_list); // getting as Sheet1
+    //**************************** */
+    var workbook = XLSX.readFile(`./src/xlxs/${req.file.originalname}`);
+    var sheet_name_list = workbook.SheetNames;
+    console.log(sheet_name_list); // getting as Sheet1
 
-  sheet_name_list.forEach(function (y) {
-    var worksheet = workbook.Sheets[y];
-    //getting the complete sheet
-    // console.log(worksheet);
+    sheet_name_list.forEach(function (y) {
+      var worksheet = workbook.Sheets[y];
+      //getting the complete sheet
+      // console.log(worksheet);
 
-    var headers = {};
-    var data = [];
-    for (var z in worksheet) {
-      if (z[0] === "!") continue;
-      //parse out the column, row, and value
-      var col = z.substring(0, 1);
-      // console.log(col);
+      var headers = {};
+      var data = [];
+      for (var z in worksheet) {
+        if (z[0] === "!") continue;
+        //parse out the column, row, and value
+        var col = z.substring(0, 1);
+        // console.log(col);
 
-      var row = parseInt(z.substring(1));
-      // console.log(row);
+        var row = parseInt(z.substring(1));
+        // console.log(row);
 
-      var value = worksheet[z].v;
-      // console.log(value);
+        var value = worksheet[z].v;
+        // console.log(value);
 
-      //store header names
-      if (row == 1) {
-        headers[col] = value;
-        // storing the header names
-        continue;
-      }
-
-      if (!data[row]) data[row] = {};
-      data[row][headers[col]] = value;
-    }
-    //drop those first two rows which are empty
-    data.shift();
-    data.shift();
-    console.log(data);
-    //************** */
-    let error = [];
-    data.forEach((bill, index) => {
-      Bill.findOneAndUpdate(
-        { memberId: bill.Membershipnumber },
-        {
-          $set: {
-            total: bill.amount,
-          },
-        },
-        { new: true, useFindAndModify: false },
-        (err) => {
-          // eslint-disable-next-line no-empty
-          if (err) {
-            error.push(`error in line ${index}`);
-          }
+        //store header names
+        if (row == 1) {
+          headers[col] = value;
+          // storing the header names
+          continue;
         }
-      );
-      if (error) {
-        return res.json(error);
+
+        if (!data[row]) data[row] = {};
+        data[row][headers[col]] = value;
       }
-      return res.send("all bills added succesfully!!!");
+      //drop those first two rows which are empty
+      data.shift();
+      data.shift();
+      console.log(data);
+    });
+    //*************************** */
+    //************** */
+    // eslint-disable-next-line no-undef
+    data.forEach((bill, index) => {
+      Bill.findOne({ memberId: bill.Membershipnumber }, (err) => {
+        if (err) {
+          return res.send(`err at line ${index}`).json(err);
+        }
+      });
     });
 
     //************ */
     return res.send("xlsx converted to json");
   });
 };
+// module.exports.convertXLXSFile = (req, res) => {
+//   //
+// };
 //RisingStar Documentation - Api test
 
 var storage = multer.diskStorage({
