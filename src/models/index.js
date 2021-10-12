@@ -2,6 +2,7 @@ const Bill = require("./Bill");
 const Business = require("./business");
 const BusinessClass = require("./businessClass");
 const BusinessSession = require("./businessSession");
+const BusinessFinance = require("./businessFinance");
 const Category = require("./Category");
 const Counter = require("./Counter");
 const Enrolment = require("./Enrolment");
@@ -18,6 +19,7 @@ module.exports = {
   Business,
   BusinessClass,
   BusinessSession,
+  BusinessFinance,
   Category,
   Counter,
   Enrolment,

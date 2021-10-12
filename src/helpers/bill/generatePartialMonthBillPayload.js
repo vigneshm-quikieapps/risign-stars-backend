@@ -15,7 +15,8 @@ const generatePartialMonthBillPayload = (data) => {
 
   let monthlyPartialCharges = monthlyCharges.map((charge) => {
     let partialCharge = calcPartialCharge({ startDate, endDate, charge });
-    return (charge.amount = partialCharge);
+    charge.amount = partialCharge;
+    return charge;
   });
 
   return generateMonthBillPayload({

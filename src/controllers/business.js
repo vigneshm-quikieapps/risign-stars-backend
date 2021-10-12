@@ -66,7 +66,7 @@ module.exports.deleteBusiness = (req, res) => {
  */
 module.exports.updateBusiness = (req, res) => {
   let data = { ...req.body };
-  delete data.code; /** updating business is not allowed  */
+  delete data.code; /** updating business code is not allowed  */
 
   Business.findByIdAndUpdate(
     { _id: req.business._id },

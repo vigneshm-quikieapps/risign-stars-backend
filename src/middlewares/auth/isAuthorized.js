@@ -6,7 +6,9 @@ const getRoleIds = require("./utils/getRoleIds");
 
 /**
  * Note:
- * 1. to bypass the is authorized check.
+ * 1. checks if the user is is authorized to perform a task
+ *
+ * 2. to bypass the is authorized check.
  * open .env file.
  * set IS_AUTHORIZED_CHECK=DISABLE
  *
