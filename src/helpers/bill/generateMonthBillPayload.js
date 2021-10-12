@@ -4,11 +4,10 @@
  * @returns
  */
 const generateMonthBillPayload = (data) => {
-  let { billDate, dueDate, monthlyCharges, memberId, businessId, classId } =
-    data;
+  let { billDate, dueDate, charges, memberId, businessId, classId } = data;
 
   /** mapping monthly charges */
-  let items = monthlyCharges.map(({ name, amount }) => {
+  let items = charges.map(({ name, amount }) => {
     return {
       name,
       amount,
@@ -19,7 +18,7 @@ const generateMonthBillPayload = (data) => {
   let discount = 0;
   let total = subtotal - discount;
 
-  let billPayload = {
+  return {
     memberId,
     businessId,
     classId,
@@ -30,7 +29,6 @@ const generateMonthBillPayload = (data) => {
     dueDate,
     billDate,
   };
-  return billPayload;
 };
 
 module.exports = generateMonthBillPayload;

@@ -1,8 +1,7 @@
 //const BusinessFinance = require("../models/businessFinance");
 const { check } = require("express-validator");
-const Business = require("../models/business");
-const User = require("../models/User");
-const Discounts = require("../models/discounts");
+const { Business, User, Discounts, BusinessFinance } = require("../models");
+const { Types } = require("mongoose");
 
 const discountIdValidation = async (discountSchemesId) => {
   try {
@@ -26,16 +25,26 @@ const businessIdValidation = async (businessId) => {
       throw new Error();
     }
 
+    /** business id should be valid */
     let business = await Business.findById(businessId);
     if (!business) {
-      throw new Error();
+      throw new Error("should be a valid business");
+    }
+
+    /** finance record should not exists for this particular business */
+    let businessFinanceCount = await BusinessFinance.count({
+      businessId: Types.ObjectId(businessId),
+    });
+    if (businessFinanceCount) {
+      throw new Error("Finance record for this business already exists");
     }
 
     return true;
   } catch (err) {
-    return Promise.reject(`Please select a valid Business`);
+    return Promise.reject(err.message);
   }
 };
+
 const userIdValidation = async (userId) => {
   try {
     if (!userId) {
@@ -50,6 +59,22 @@ const userIdValidation = async (userId) => {
     return true;
   } catch (err) {
     return Promise.reject(`Please select a valid User`);
+  }
+};
+
+const isValidCharges = (charges) => {
+  try {
+    if (charges.length > 1) {
+      throw new Error("charges should contain only one charge object");
+    }
+
+    if (!("amount" in charges[0])) {
+      throw new Error("object with key amount is required");
+    }
+
+    return true;
+  } catch (err) {
+    return Promise.reject(err.message);
   }
 };
 
@@ -74,6 +99,7 @@ const createBusinessFinanceValidationRules = () => {
     check("bankDetails.accNo", "accNo should be a Number")
       .isInt()
       .isLength({ min: 1 }),
+    check("charges", "is required").bail().custom(isValidCharges),
     check("paymentMethod", "paymentMethod should be a Object").isObject(),
     check("paymentMethod.online", "online should be a true/false").isBoolean(),
     check("paymentMethod.manual", "manual should be a true/false").isBoolean(),
