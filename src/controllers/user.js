@@ -2,6 +2,7 @@ const DoesNotExistError = require("../exceptions/DoesNotExistError");
 const User = require("../models/User");
 const { STARTS_WITH_FILTER, EQUALS_FILTER } = require("../constants/constant");
 const { getQuery, getOptions } = require("../helpers/query");
+const { Types } = require("mongoose");
 
 module.exports.getUserById = (req, res, next, id) => {
   User.findById(id).exec((error, user) => {
@@ -76,7 +77,10 @@ module.exports.getAllCoach = (req, res) => {
    * query object
    */
   let businessId = req.params.businessId;
-  let cond = { userTypes: "COACH", "dataPrivileges.businessId": businessId };
+  let cond = {
+    userTypes: "COACH",
+    "dataPrivileges.businessId": Types.ObjectId(businessId),
+  };
 
   let query = User.find(cond).sort({ _id: sortBy }).skip(skip).limit(limit);
 

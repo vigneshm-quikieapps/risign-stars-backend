@@ -1,15 +1,24 @@
+const { Types } = require("mongoose");
 const { generateEnrolmentBill } = require("../../../helpers/bill");
-const { Enrolment, BusinessSession } = require("../../../models");
+const {
+  Enrolment,
+  BusinessSession,
+  BusinessClass,
+  BusinessFinance,
+} = require("../../../models");
 
 const enrolmentPayloadRequest = require("./enrolmentPayloadRequest");
 
 /**
  * It enrols member to a session with enrolment status "ENROLLED"
+ * creates a consent
+ * creates a additional info if the member/parents wants to receive notification.
+ *
  * @param {*} req
  * @param {*} session
  */
 const regularEnrolment = async (req, session) => {
-  let { businessSessionData } = req;
+  let { businessSessionData, memberId } = req;
   // creating enrolment till session capacity
 
   const createEnrolmentData = enrolmentPayloadRequest(req);
@@ -39,7 +48,14 @@ const regularEnrolment = async (req, session) => {
   /**
    * generate bill
    */
-  await generateEnrolmentBill(req, session);
+  let businessFinanceData = await BusinessFinance.findOne({
+    businessId: Types.ObjectId(sessionData.businessId),
+  });
+  let classData = await BusinessClass.findById(sessionData.classId);
+  let sessionData = businessSessionData;
+  let data = { businessFinanceData, classData, sessionData, memberId };
+
+  // await generateEnrolmentBill(data, session);
 
   /** TODO: send Email */
 };

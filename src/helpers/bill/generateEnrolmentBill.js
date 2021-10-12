@@ -21,7 +21,7 @@ const generateEnrolmentBill = async (
 
   let { term, classId } = sessionData;
   let { startDate, endDate } = term;
-  let { clubMembershipFee, businessId } = businessFinanceData;
+  let { charges: businessFinanceCharges, businessId } = businessFinanceData;
   let { charges } = classData;
 
   /**
@@ -37,7 +37,7 @@ const generateEnrolmentBill = async (
   let monthlyCharges = getMonthlyCharges(charges);
   let monthlyPayload = {
     billDate: now,
-    monthlyCharges,
+    charges: monthlyCharges,
     memberId,
     businessId,
     classId,
@@ -51,7 +51,10 @@ const generateEnrolmentBill = async (
   /**
    * generate upfront charges for club membership fee
    */
-  let clubMembershipPayload = { ...monthlyPayload, clubMembershipFee };
+  let clubMembershipPayload = {
+    ...monthlyPayload,
+    charges: businessFinanceCharges,
+  };
   let clubMembershipBillPayload = generateClubMembershipBillPayload(
     clubMembershipPayload
   );

@@ -48,6 +48,4 @@ router.get("/", isAuthorized(USER, READ), user.getAll);
   /businesess/:businessId/coaches
 
 */
-router.get("/coaches/:businessId", isAuthorized(USER, READ), user.getAllCoach);
-
 module.exports = router;
