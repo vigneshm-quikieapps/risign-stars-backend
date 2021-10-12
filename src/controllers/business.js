@@ -180,6 +180,7 @@ module.exports.uploadXLXSFile = (req, res) => {
   const upload = multer({
     storage: filestorage,
     fileFilter: (req, file, cb) => {
+      //console.log(file);
       if (path.extname(file.originalname) !== ".xlsx") {
         return res.send("file type not valid!!");
       }
@@ -189,12 +190,18 @@ module.exports.uploadXLXSFile = (req, res) => {
   }).single("payment");
   upload(req, res, function (err) {
     if (err) {
-      return res.send("file type not valid!!");
+      return res.json(err);
     }
     //**************************** */
-    var workbook = XLSX.readFile(`./src/xlxs/${req.file.originalname}`);
+    //console.log(req.body.classid);
+    //console.log(req.file);
+    var workbook = XLSX.readFile(`./src/xlxs/${req.file.originalname}`, {
+      type: "binary",
+      cellDates: true,
+    });
     var sheet_name_list = workbook.SheetNames;
-    console.log(sheet_name_list); // getting as Sheet1
+    //console.log(sheet_name_list); // getting as Sheet1
+    let data = [];
 
     sheet_name_list.forEach(function (y) {
       var worksheet = workbook.Sheets[y];
@@ -202,7 +209,6 @@ module.exports.uploadXLXSFile = (req, res) => {
       // console.log(worksheet);
 
       var headers = {};
-      var data = [];
       for (var z in worksheet) {
         if (z[0] === "!") continue;
         //parse out the column, row, and value
@@ -228,23 +234,90 @@ module.exports.uploadXLXSFile = (req, res) => {
       //drop those first two rows which are empty
       data.shift();
       data.shift();
-      console.log(data);
+      //console.log(data);
     });
     //*************************** */
     //************** */
-    // eslint-disable-next-line no-undef
-    data.forEach((bill, index) => {
-      Bill.findOne({ memberId: bill.Membershipnumber }, (err) => {
-        if (err) {
-          return res.send(`err at line ${index}`).json(err);
-        }
+
+    //console.log("one");
+    const promise1 = new Promise((resolve, reject) => {
+      let Errors = [];
+      //Errors.push("u are here");
+      //console.log(Errors);
+      let noDataFound = [];
+      const classId = req.body.classid;
+      data.forEach((bill, index) => {
+        //console.log("two");
+        Bill.findOne(
+          {
+            clubMembershipId: bill.Membershipnumber,
+            classId: classId,
+            billDate: req.body.BillDate,
+          },
+          (err, data) => {
+            if (err) {
+              Errors.push({
+                line: index + 1,
+                "err msg": "please enter valid fields to process payment",
+                bill: bill,
+              });
+              //console.log(Errors);
+            }
+            if (!data) {
+              //return res.status(400);
+              noDataFound.push({
+                line: index + 1,
+                "err msg":
+                  "no Bill Found for this Data please enter a valid data",
+                bill: bill,
+              });
+              //console.log(noDataFound);
+            }
+          }
+        );
+        resolve([Errors, noDataFound]);
       });
     });
+    promise1.then((value) => {
+      //******************** */
+      if (value[0].length !== 0 && value[1].length !== 0) {
+        //console.log(value[0], value[1]);
 
-    //************ */
-    return res.send("xlsx converted to json");
+        return res
+          .status(205)
+          .json({ errors: value[0], "data not found": value[1] });
+      }
+      if (value[1].length !== 0) {
+        //console.log(Errors);
+        //console.log(value[1]);
+        return res
+          .status(205)
+          .json({ errors: value[0], "data not found": value[1] });
+      }
+      if (value[0].length !== 0) {
+        //console.log(value[0]);
+
+        return res
+          .status(205)
+          .json({ errors: value[0], "data not found": value[1] });
+        //.json(value[0]);
+      }
+      return res.send("xlsx converted to json");
+
+      //************ */
+      //console.log(Errors);
+      //console.log(noDataFound);
+
+      //********************** */
+      //console.log(value[0]);
+      //yconsole.log(value[1]);
+      // expected output: "Success!"
+    });
+    //console.log(data);
   });
 };
+
+//********************************************************************************************************************************************************* */
 // module.exports.convertXLXSFile = (req, res) => {
 //   //
 // };

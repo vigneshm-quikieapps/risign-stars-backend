@@ -3,6 +3,8 @@ const { ObjectId } = mongoose.Schema;
 
 const billSchema = new mongoose.Schema(
   {
+    nameA: { type: String },
+    nameB: { type: String },
     memberId: {
       type: ObjectId,
       required: true,
