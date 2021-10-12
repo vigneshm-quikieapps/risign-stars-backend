@@ -25,6 +25,7 @@ const {
 } = require("../controllers/business");
 const { isAuthorized } = require("../middlewares/auth");
 const { getAllBusinessClass } = require("../controllers/businessClass");
+const user = require("../controllers/user");
 /**
  * RBAC required for Create, Update, Delete
  * Read is public
@@ -76,5 +77,7 @@ router.post(
   businessImageUploadHelper.single("image"),
   uploadImage
 );
+
+router.get("/:businessId/coaches", user.getAllCoach);
 
 module.exports = router;
