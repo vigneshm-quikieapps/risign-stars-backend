@@ -240,7 +240,7 @@ module.exports.uploadXLXSFile = (req, res) => {
     //************** */
 
     //console.log("one");
-    const promise1 = new Promise((resolve, reject) => {
+    const promise1 = new Promise((resolve) => {
       let Errors = [];
       //Errors.push("u are here");
       //console.log(Errors);
