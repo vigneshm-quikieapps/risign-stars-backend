@@ -19,10 +19,22 @@ const businessFinanceSchema = new mongoose.Schema(
       sortCode: String,
       accNo: Number,
     },
-    paymentMethod: {
+    paymentChannels: {
       online: Boolean,
       manual: Boolean,
     },
+    paymentMethods: [
+      {
+        type: String,
+        enum: [
+          "CASH",
+          "REC BANK",
+          "TOTZ BANK",
+          "REC CREDIT CARD",
+          "TOTZ CREDITCARD",
+        ],
+      },
+    ],
     discountSchemes: [
       {
         name: String,

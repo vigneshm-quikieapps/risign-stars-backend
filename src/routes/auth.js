@@ -8,6 +8,10 @@ const {
   getOTPMobileNo,
 } = require("../controllers/auth");
 const {
+  getAllClassesForALoggedInBusinessAdmin,
+} = require("../controllers/businessClass");
+const { isAuthorized } = require("../middlewares/auth");
+const {
   getOTPEmailValidationRules,
   getOTPMobileNoValidationRules,
   refreshTokenValidationRules,
@@ -17,6 +21,7 @@ const {
   signInValidationRules,
 } = require("../validations/user");
 const validate = require("../validations/validate");
+const { verify } = require("jsonwebtoken");
 
 router.post("/sign-up", signUpValidationRules(), validate, signup);
 router.post("/sign-in", signInValidationRules(), validate, signin);
@@ -37,6 +42,26 @@ router.post(
   getOTPMobileNoValidationRules(),
   validate,
   getOTPMobileNo
+);
+
+const isAuthHandler = (req, res) => {
+  /** check if authenticated */
+  try {
+    let token =
+      req.headers.authorization && req.headers.authorization.split(" ")[1];
+    let tokenPayload = verify(token, process.env.ACCESS_TOKEN_SECRET);
+    req.authUserData = tokenPayload;
+
+    return true;
+  } catch (err) {
+    return res.send({ message: err.message });
+  }
+};
+
+router.get(
+  "/auth/user/classes",
+  isAuthorized(null, null, { isAuthHandler }),
+  getAllClassesForALoggedInBusinessAdmin
 );
 
 // Testing Route

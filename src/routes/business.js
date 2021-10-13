@@ -6,6 +6,8 @@ const {
   updateBusinessValidationRules,
   createBusinessValidationRules,
 } = require("../validations/business");
+const { getFinanceOfABusiness } = require("../controllers/businessFinance");
+
 const validate = require("../validations/validate");
 const { BUSINESS_DEFINITION } = require("../constants/pages");
 const { CREATE, UPDATE, DELETE } = require("../constants/rest");
@@ -17,14 +19,15 @@ const {
   createBusiness,
   deleteBusiness,
   updateBusiness,
-  uploadFile,
+  //uploadFile,
   uploadXLXSFile,
-  convertXLXSFile,
+  // convertXLXSFile,
   businessImageUploadHelper,
   uploadImage,
 } = require("../controllers/business");
 const { isAuthorized } = require("../middlewares/auth");
 const { getAllBusinessClass } = require("../controllers/businessClass");
+const user = require("../controllers/user");
 /**
  * RBAC required for Create, Update, Delete
  * Read is public
@@ -65,16 +68,35 @@ router.put(
 
 //listing route
 router.get("/", getAllBusinessValidationRules(), validate, getAllBusinesses);
+
+/**
+ * classes
+ */
 router.get("/:businessId/classes", getAllBusinessClass);
 
-router.post("/fileupload", uploadFile);
-router.post("/xlxsupload", uploadXLXSFile);
-router.get("/convertxlxs/json", convertXLXSFile);
+/**
+ * file upload
+ */
+//router.post("/fileupload", uploadFile);
+router.post("/xlxsupload", uploadXLXSFile, (req, res) => {
+  return res.send("done");
+});
+//router.get("/convertxlxs/json", convertXLXSFile);
+
+/**
+ * finance
+ */
+router.get("/:businessId/finance", getFinanceOfABusiness);
 
 router.post(
   "/:businessId/image-upload",
   businessImageUploadHelper.single("image"),
   uploadImage
 );
+
+/**
+ * coach
+ */
+router.get("/:businessId/coaches", user.getAllCoach);
 
 module.exports = router;

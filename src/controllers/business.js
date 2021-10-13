@@ -1,10 +1,9 @@
-const Business = require("../models/business");
-const Bill = require("../models/Bill");
-// const Member = require("../models/member");
+const { Business, Bill } = require("../models");
 const multer = require("multer");
 const XLSX = require("xlsx");
 const CSVToJSON = require("csvtojson");
 const { STARTS_WITH_FILTER, EQUALS_FILTER } = require("../constants/constant");
+const { getQuery, getOptions } = require("../helpers/query");
 const path = require("path");
 
 //parameter extractor
@@ -84,52 +83,18 @@ module.exports.updateBusiness = (req, res) => {
   );
 };
 
-//all Business listing
-
-module.exports.getAllBusinesses = (req, res) => {
-  //limit setter to export or send limited business to client or front end
-
-  let limit = req.query.limit ? parseInt(req.query.limit) : 10;
-  let page = req.query.page;
-
-  let skip = page ? parseInt(page) - 1 * limit : 0;
-  let sortBy = req.query.sortBy ? req.query.sortBy : "asc";
-
-  /**
-   * query object
-   */
-  let query = Business.find().sort({ _id: sortBy }).skip(skip).limit(limit);
-
-  /**
-   * filter
-   */
-  let { filters = [] } = req.query;
-  for (let { field, type, value } of filters) {
-    switch (type) {
-      case STARTS_WITH_FILTER:
-        query.where(`${field}`, {
-          $regex: new RegExp(`^${value}`, "i"),
-        });
-        break;
-      case EQUALS_FILTER:
-        query.where(`${field}`, value);
-        break;
-      default:
-        break;
-    }
+/**
+ * all Business listing
+ */
+module.exports.getAllBusinesses = async (req, res) => {
+  try {
+    let query = getQuery(req);
+    let options = getOptions(req);
+    let response = await Business.paginate(query, options);
+    return res.send(response);
+  } catch (err) {
+    return res.status(422).send({ message: err.message });
   }
-
-  /**
-   * execute the query
-   */
-  query.exec((err, businesses) => {
-    if (err) {
-      return res.status(400).json({
-        error: "NO product FOUND",
-      });
-    }
-    res.json(businesses);
-  });
 };
 
 // Uploading the CSV file
@@ -177,82 +142,150 @@ module.exports.uploadXLXSFile = (req, res) => {
       cb(null, file.originalname);
     },
   });
-  const upload = multer({ storage: filestorage }).single("xlxs");
+  const upload = multer({
+    storage: filestorage,
+    fileFilter: (req, file, cb) => {
+      //console.log(file);
+      if (path.extname(file.originalname) !== ".xlsx") {
+        return res.send("file type not valid!!");
+      }
+
+      cb(null, true);
+    },
+  }).single("payment");
   upload(req, res, function (err) {
     if (err) {
-      console.log(err);
+      return res.json(err);
     }
-    return res.send("file uploaded");
-  });
-};
-module.exports.convertXLXSFile = (req, res) => {
-  var workbook = XLSX.readFile(
-    "./src/xlxs/RisingStar Documentation - Api test.xlsx"
-  );
-  var sheet_name_list = workbook.SheetNames;
-  console.log(sheet_name_list); // getting as Sheet1
-
-  sheet_name_list.forEach(function (y) {
-    var worksheet = workbook.Sheets[y];
-    //getting the complete sheet
-    // console.log(worksheet);
-
-    var headers = {};
-    var data = [];
-    for (var z in worksheet) {
-      if (z[0] === "!") continue;
-      //parse out the column, row, and value
-      var col = z.substring(0, 1);
-      // console.log(col);
-
-      var row = parseInt(z.substring(1));
-      // console.log(row);
-
-      var value = worksheet[z].v;
-      // console.log(value);
-
-      //store header names
-      if (row == 1) {
-        headers[col] = value;
-        // storing the header names
-        continue;
-      }
-
-      if (!data[row]) data[row] = {};
-      data[row][headers[col]] = value;
-    }
-    //drop those first two rows which are empty
-    data.shift();
-    data.shift();
-    console.log(data);
-    //************** */
-    let error = [];
-    data.forEach((bill, index) => {
-      Bill.findOneAndUpdate(
-        { memberId: bill.Membershipnumber },
-        {
-          $set: {
-            total: bill.amount,
-          },
-        },
-        { new: true, useFindAndModify: false },
-        (err) => {
-          // eslint-disable-next-line no-empty
-          if (err) {
-            error.push(`error in line ${index}`);
-          }
-        }
-      );
-      if (error) {
-        return res.json(error);
-      }
-      return res.send("all bills added succesfully!!!");
+    //**************************** */
+    //console.log(req.body.classid);
+    //console.log(req.file);
+    var workbook = XLSX.readFile(`./src/xlxs/${req.file.originalname}`, {
+      type: "binary",
+      cellDates: true,
     });
+    var sheet_name_list = workbook.SheetNames;
+    //console.log(sheet_name_list); // getting as Sheet1
+    let data = [];
 
-    //************ */
-    return res.send("xlsx converted to json");
+    sheet_name_list.forEach(function (y) {
+      var worksheet = workbook.Sheets[y];
+      //getting the complete sheet
+      // console.log(worksheet);
+
+      var headers = {};
+      for (var z in worksheet) {
+        if (z[0] === "!") continue;
+        //parse out the column, row, and value
+        var col = z.substring(0, 1);
+        // console.log(col);
+
+        var row = parseInt(z.substring(1));
+        // console.log(row);
+
+        var value = worksheet[z].v;
+        // console.log(value);
+
+        //store header names
+        if (row == 1) {
+          headers[col] = value;
+          // storing the header names
+          continue;
+        }
+
+        if (!data[row]) data[row] = {};
+        data[row][headers[col]] = value;
+      }
+      //drop those first two rows which are empty
+      data.shift();
+      data.shift();
+      //console.log(data);
+    });
+    //*************************** */
+    //************** */
+
+    //console.log("one");
+    const promise1 = new Promise((resolve) => {
+      let Errors = [];
+      //Errors.push("u are here");
+      //console.log(Errors);
+      let noDataFound = [];
+      const classId = req.body.classid;
+      data.forEach((bill, index) => {
+        //console.log("two");
+        Bill.findOne(
+          {
+            clubMembershipId: bill.Membershipnumber,
+            classId: classId,
+            billDate: req.body.BillDate,
+          },
+          (err, data) => {
+            if (err) {
+              Errors.push({
+                line: index + 1,
+                "err msg": "please enter valid fields to process payment",
+                bill: bill,
+              });
+              //console.log(Errors);
+            }
+            if (!data) {
+              //return res.status(400);
+              noDataFound.push({
+                line: index + 1,
+                "err msg":
+                  "no Bill Found for this Data please enter a valid data",
+                bill: bill,
+              });
+              //console.log(noDataFound);
+            }
+          }
+        );
+        resolve([Errors, noDataFound]);
+      });
+    });
+    promise1.then((value) => {
+      //******************** */
+      if (value[0].length !== 0 && value[1].length !== 0) {
+        //console.log(value[0], value[1]);
+
+        return res
+          .status(205)
+          .json({ errors: value[0], "data not found": value[1] });
+      }
+      if (value[1].length !== 0) {
+        //console.log(Errors);
+        //console.log(value[1]);
+        return res
+          .status(205)
+          .json({ errors: value[0], "data not found": value[1] });
+      }
+      if (value[0].length !== 0) {
+        //console.log(value[0]);
+
+        return res
+          .status(205)
+          .json({ errors: value[0], "data not found": value[1] });
+        //.json(value[0]);
+      }
+      return res.send("xlsx converted to json");
+
+      //************ */
+      //console.log(Errors);
+      //console.log(noDataFound);
+
+      //********************** */
+      //console.log(value[0]);
+      //yconsole.log(value[1]);
+      // expected output: "Success!"
+    });
+    //console.log(data);
   });
 };
+
+//********************************************************************************************************************************************************* */
+// module.exports.convertXLXSFile = (req, res) => {
+//   //
+// };
 //RisingStar Documentation - Api test
 
 var storage = multer.diskStorage({

@@ -4,6 +4,8 @@ const mongoosePaginate = require("mongoose-paginate-v2");
 
 const billSchema = new mongoose.Schema(
   {
+    nameA: { type: String },
+    nameB: { type: String },
     memberId: {
       type: ObjectId,
       required: true,

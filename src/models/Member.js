@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 const { ObjectId } = mongoose.Schema;
 
 const { ADDRESS_TYPE, RELATIONSHIPS } = require("../constants/constant");
+const mongoosePaginate = require("mongoose-paginate-v2");
 
 const memberSchema = new mongoose.Schema(
   {
@@ -49,5 +50,7 @@ const memberSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
+
+memberSchema.plugin(mongoosePaginate);
 
 module.exports = mongoose.model("Member", memberSchema);
