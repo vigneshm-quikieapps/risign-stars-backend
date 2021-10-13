@@ -24,11 +24,6 @@ const enrolmentSchema = new mongoose.Schema(
     },
     name: String,
     clubMembershipId: String,
-    newsletter: {
-      email: Boolean,
-      telephone: Boolean,
-      sms: Boolean,
-    },
     startDate: Date,
     registeredDate: Date,
     enrolledStatus: {
