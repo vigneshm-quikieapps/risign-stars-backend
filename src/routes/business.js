@@ -6,6 +6,8 @@ const {
   updateBusinessValidationRules,
   createBusinessValidationRules,
 } = require("../validations/business");
+const { getFinanceOfABusiness } = require("../controllers/businessFinance");
+
 const validate = require("../validations/validate");
 const { BUSINESS_DEFINITION } = require("../constants/pages");
 const { CREATE, UPDATE, DELETE } = require("../constants/rest");
@@ -66,13 +68,25 @@ router.put(
 
 //listing route
 router.get("/", getAllBusinessValidationRules(), validate, getAllBusinesses);
+
+/**
+ * classes
+ */
 router.get("/:businessId/classes", getAllBusinessClass);
 
+/**
+ * file upload
+ */
 //router.post("/fileupload", uploadFile);
 router.post("/xlxsupload", uploadXLXSFile, (req, res) => {
   return res.send("done");
 });
 //router.get("/convertxlxs/json", convertXLXSFile);
+
+/**
+ * finance
+ */
+router.get("/:businessId/finance", getFinanceOfABusiness);
 
 router.post(
   "/:businessId/image-upload",
@@ -80,6 +94,9 @@ router.post(
   uploadImage
 );
 
+/**
+ * coach
+ */
 router.get("/:businessId/coaches", user.getAllCoach);
 
 module.exports = router;
