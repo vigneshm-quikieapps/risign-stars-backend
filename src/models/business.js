@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const { ObjectId } = mongoose.Schema;
 const { ENUM_BUSINESS_TYPE, ENUM_STATUS } = require("../constants/business");
+const mongoosePaginate = require("mongoose-paginate-v2");
 
 const businessSchema = new mongoose.Schema(
   {
@@ -70,5 +71,8 @@ const businessSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
+
+businessSchema.plugin(mongoosePaginate);
+
 module.exports = mongoose.model("Business", businessSchema);
 // end

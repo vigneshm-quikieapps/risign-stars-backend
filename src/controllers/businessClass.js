@@ -1,5 +1,5 @@
-const BusinessClass = require("../models/businessClass");
-const { STARTS_WITH_FILTER, EQUALS_FILTER } = require("../constants/constant");
+const { BusinessClass, Member } = require("../models");
+const { getQuery, getOptions } = require("../helpers/query");
 
 //parameter extractor
 module.exports.getBusinessClassIdById = (req, res, next, id) => {
@@ -32,59 +32,22 @@ module.exports.createBusinessClass = (req, res) => {
 };
 
 //Business Class listing all / search for Class
-module.exports.getAllBusinessClass = (req, res) => {
-  //limit setter to export or send limited business to client or front end
+module.exports.getAllBusinessClass = async (req, res) => {
+  try {
+    let { businessId } = req.params;
 
-  let limit = req.query.limit ? parseInt(req.query.limit) : 10;
-  let page = req.query.page;
+    let query = getQuery(req);
+    query = { ...query, businessId };
+    let options = getOptions(req);
 
-  let skip = page ? parseInt(page) - 1 * limit : 0;
-  let sortBy = req.query.sortBy ? req.query.sortBy : "asc";
-
-  /**
-   * query object
-   */
-  let cond = { businessId: req.params.businessId };
-
-  let query = BusinessClass.find(cond)
-    .sort({ _id: sortBy })
-    .skip(skip)
-    .limit(limit);
-
-  /**
-   * filter
-   */
-  let { filters = [] } = req.query;
-  for (let { field, type, value } of filters) {
-    switch (type) {
-      case STARTS_WITH_FILTER:
-        query.where(`${field}`, {
-          $regex: new RegExp(`^${value}`, "i"),
-        });
-        break;
-      case EQUALS_FILTER:
-        query.where(`${field}`, value);
-        break;
-      default:
-        break;
-    }
+    let response = await BusinessClass.paginate(query, options);
+    return res.send(response);
+  } catch (err) {
+    return res.status(422).send({ message: err.message });
   }
-
-  /**
-   * execute the query
-   */
-  query.exec((err, Class) => {
-    if (err) {
-      return res.status(400).json({
-        error: "NO Class FOUND",
-      });
-    }
-    res.json(Class);
-  });
 };
 
 //Business Class listing
-
 module.exports.getBusinessClass = (req, res) => {
   return res.json(req.Class);
 };
@@ -134,4 +97,19 @@ module.exports.deleteBusinessClass = (req, res) => {
     }
     res.json(Class);
   });
+};
+
+module.exports.getAllMembersInAClass = async (req, res) => {
+  try {
+    let { classId } = req.params;
+
+    let query = getQuery(req);
+    query = { ...query, classId };
+    let options = getOptions(req);
+
+    let response = await Member.paginate(query, options);
+    return res.send(response);
+  } catch (err) {
+    return res.status(422).send({ message: err.message });
+  }
 };
