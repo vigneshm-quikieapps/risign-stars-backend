@@ -171,7 +171,7 @@ module.exports.uploadFile = (req, res) => {
 module.exports.uploadXLXSFile = (req, res) => {
   const filestorage = multer.diskStorage({
     destination: (req, file, cb) => {
-      cb(null, "./src/xlxs");
+      cb(null, "./temp/xlsx");
     },
     filename: (req, file, cb) => {
       cb(null, file.originalname);
@@ -195,7 +195,7 @@ module.exports.uploadXLXSFile = (req, res) => {
     //**************************** */
     //console.log(req.body.classid);
     //console.log(req.file);
-    var workbook = XLSX.readFile(`./src/xlxs/${req.file.originalname}`, {
+    var workbook = XLSX.readFile(`./temp/xlsx/${req.file.originalname}`, {
       type: "binary",
       cellDates: true,
     });
@@ -278,75 +278,65 @@ module.exports.uploadXLXSFile = (req, res) => {
         resolve([Errors, noDataFound]);
       });
     });
-    promise1.then((value) => {
-      //******************** */
-      if (value[0].length !== 0 && value[1].length !== 0) {
-        //console.log(value[0], value[1]);
+    promise1
+      .then((value) => {
+        //******************** */
+        if (value[0].length !== 0 && value[1].length !== 0) {
+          //console.log(value[0], value[1]);
 
-        return res
-          .status(205)
-          .json({ errors: value[0], "data not found": value[1] });
-      }
-      if (value[1].length !== 0) {
-        //console.log(Errors);
-        //console.log(value[1]);
-        return res
-          .status(205)
-          .json({ errors: value[0], "data not found": value[1] });
-      }
-      if (value[0].length !== 0) {
-        //console.log(value[0]);
+          return res
+            .status(205)
+            .json({ errors: value[0], "data not found": value[1] });
+        }
+        if (value[1].length !== 0) {
+          //console.log(Errors);
+          //console.log(value[1]);
+          return res
+            .status(205)
+            .json({ errors: value[0], "data not found": value[1] });
+        }
+        if (value[0].length !== 0) {
+          //console.log(value[0]);
 
-        return res
-          .status(205)
-          .json({ errors: value[0], "data not found": value[1] });
-        //.json(value[0]);
-      }
-      //*******************************************bill update */
-      data.map((bill, index) => {
-        Bill.findOneAndUpdate(
-          {
-            clubMembershipId: bill.Membershipnumber,
-            classId: req.body.classid,
-            billDate: req.body.BillDate,
-          },
-          {
-            $set: {
-              paidAt: Date.now(),
+          return res
+            .status(205)
+            .json({ errors: value[0], "data not found": value[1] });
+          //.json(value[0]);
+        }
+      })
+      .then(() => {
+        //*******************************************bill update */
+        data.map((bill, index) => {
+          Bill.findOneAndUpdate(
+            {
+              clubMembershipId: bill.Membershipnumber,
+              classId: req.body.classid,
+              billDate: req.body.BillDate,
             },
-          },
-          { new: true, useFindAndModify: false },
-          (err) => {
-            if (err) {
-              console.log(err);
-              return res.status(400).json({
-                err: `Bill  updation failed !!! at line no ${index + 1}`,
-              });
+            {
+              $set: {
+                paidAt: Date.now(),
+              },
+            },
+            { new: true, useFindAndModify: false },
+            (err) => {
+              if (err) {
+                console.log(err);
+                res.status(400).json({
+                  err: `Bill  updation failed !!! at line no ${index + 1}`,
+                });
+              }
             }
-          }
-        );
+          );
+        });
+        //****************************bill update */
+        return res.send("xlsx converted to json and updation of Bills Success");
       });
-      //****************************bill update */
-      return res.send("xlsx converted to json and updation of Bills Success");
-
-      //************ */
-      //console.log(Errors);
-      //console.log(noDataFound);
-
-      //********************** */
-      //console.log(value[0]);
-      //yconsole.log(value[1]);
-      // expected output: "Success!"
-    });
     //console.log(data);
   });
 };
 
 //********************************************************************************************************************************************************* */
-// module.exports.convertXLXSFile = (req, res) => {
-//   //
-// };
-//RisingStar Documentation - Api test
 
 var storage = multer.diskStorage({
   destination: function (req, file, cb) {
