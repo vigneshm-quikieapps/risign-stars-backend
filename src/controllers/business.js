@@ -6,7 +6,10 @@ const XLSX = require("xlsx");
 const CSVToJSON = require("csvtojson");
 const { STARTS_WITH_FILTER, EQUALS_FILTER } = require("../constants/constant");
 const path = require("path");
+const fs = require("fs");
+const { promisify } = require("util");
 
+const unlinkAsync = promisify(fs.unlink);
 //parameter extractor
 module.exports.getBusinessIdById = (req, res, next, id) => {
   Business.findById(id).exec((err, business) => {
@@ -330,6 +333,9 @@ module.exports.uploadXLXSFile = (req, res) => {
           );
         });
         //****************************bill update */
+      })
+      .then(() => {
+        unlinkAsync(`./temp/xlsx/${req.file.originalname}`);
         return res.send("xlsx converted to json and updation of Bills Success");
       });
     //console.log(data);
