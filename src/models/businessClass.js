@@ -8,6 +8,7 @@ const {
   ENROLMENT_CONTROL_AGE,
 } = require("../constants/class");
 const { ObjectId } = mongoose.Schema;
+const mongoosePaginate = require("mongoose-paginate-v2");
 
 /**
  * check README.md in the current directory
@@ -92,4 +93,7 @@ const businessClassSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
+
+businessClassSchema.plugin(mongoosePaginate);
+
 module.exports = mongoose.model("BusinessClass", businessClassSchema);

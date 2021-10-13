@@ -10,6 +10,7 @@ const {
   createBusinessClass,
   deleteBusinessClass,
   isBusinessClassRestricted,
+  getAllMembersInAClass,
 } = require("../controllers/businessClass");
 const {
   createClassValidationRules,
@@ -20,8 +21,6 @@ const { getAllBusinessSession } = require("../controllers/businessSession");
 //parameters
 router.param("businessClassId", getBusinessClassIdById);
 
-//all of actual routes
-// eslint-disable-next-line prettier/prettier
 //all of actual routes
 //create route
 router.post("/", createClassValidationRules(), validate, createBusinessClass);
@@ -43,6 +42,8 @@ router.put(
   validate,
   updateBusinessClass
 );
+
+router.get("/:classId/members", getAllMembersInAClass);
 
 //listing route
 router.get("/:classId/sessions", getAllBusinessSession);
