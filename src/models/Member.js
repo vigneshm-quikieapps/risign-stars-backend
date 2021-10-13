@@ -51,6 +51,15 @@ const memberSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
+// Ensure virtual fields are serialised.
+memberSchema.set("toJSON", {
+  virtuals: true,
+  versionKey: false,
+  transform: function (doc, ret) {
+    delete ret.id;
+  },
+});
+
 memberSchema.plugin(mongoosePaginate);
 
 module.exports = mongoose.model("Member", memberSchema);

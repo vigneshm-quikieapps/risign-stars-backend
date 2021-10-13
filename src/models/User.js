@@ -108,13 +108,13 @@ UserSchema.statics.isEmailAvailable = async (email) => {
   }
 };
 
-UserSchema.virtual("id").get(function () {
-  return this._id.toHexString();
-});
-
 // Ensure virtual fields are serialised.
 UserSchema.set("toJSON", {
   virtuals: true,
+  versionKey: false,
+  transform: function (doc, ret) {
+    delete ret.id;
+  },
 });
 
 UserSchema.plugin(mongoosePaginate);

@@ -1,14 +1,18 @@
 const mongoose = require("mongoose");
 const { ObjectId } = mongoose.Schema;
 const mongoosePaginate = require("mongoose-paginate-v2");
+const { ENUM_STATUS, STATUS_ACTIVE } = require("../constants/bill");
 
 const billSchema = new mongoose.Schema(
   {
-    nameA: { type: String },
-    nameB: { type: String },
     memberId: {
       type: ObjectId,
       required: true,
+    },
+    status: {
+      type: String,
+      enum: ENUM_STATUS,
+      default: STATUS_ACTIVE,
     },
     classId: {
       type: ObjectId,
@@ -76,10 +80,6 @@ const billSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
-
-billSchema.virtual("id").get(function () {
-  return this._id.toHexString();
-});
 
 // Ensure virtual fields are serialised.
 billSchema.set("toJSON", {

@@ -31,12 +31,12 @@ const routes = (app) => {
   app.use("/api/discounts", discountRoute);
   app.use("/api/evaluations", evaluationRoute);
   app.use("/api/bills", billRoute);
+  app.use("/api/members", memberRoute);
   app.use("/api", roleRoute);
   app.use("/api", userRoute);
   app.use("/api", attendanceRoute);
   app.use("/api", notification);
   app.use("/api", authRoutes);
-  app.use("/api/members", memberRoute);
   app.use("/api/enrolments", enrolmentRoute);
   app.use("/api/classes", classRoute);
   app.use("/api/terms", termRoute);
