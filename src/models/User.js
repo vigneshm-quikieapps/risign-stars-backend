@@ -108,6 +108,15 @@ UserSchema.statics.isEmailAvailable = async (email) => {
   }
 };
 
+// Ensure virtual fields are serialised.
+UserSchema.set("toJSON", {
+  virtuals: true,
+  versionKey: false,
+  transform: function (doc, ret) {
+    delete ret.id;
+  },
+});
+
 UserSchema.plugin(mongoosePaginate);
 
 module.exports = mongoose.model("User", UserSchema);

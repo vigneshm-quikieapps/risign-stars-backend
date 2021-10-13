@@ -23,8 +23,14 @@ const enrolmentSchema = new mongoose.Schema(
       ref: "Business",
     },
     name: String,
-    clubMembershipId: String,
-    startDate: Date,
+    clubMembershipId: {
+      type: String,
+      required: true,
+    },
+    startDate: {
+      type: Date,
+      required: true,
+    },
     registeredDate: Date,
     enrolledStatus: {
       type: String,

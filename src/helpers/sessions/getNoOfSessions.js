@@ -19,12 +19,10 @@ const dayToIndex = (day) => {
   return days[day];
 };
 
-const getNoOfSessions = (startDate, endDate) => {
+const getNoOfSessions = ({ pattern, startDate, endDate }) => {
   if (endDate <= startDate) {
     return 0;
   }
-
-  let pattern = "";
 
   /** array of days in their respective index value */
   let daysIndexArr = pattern.map(({ day }) => dayToIndex(day));

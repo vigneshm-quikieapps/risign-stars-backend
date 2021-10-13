@@ -20,7 +20,6 @@ const updateWaitlistEnrolment = async (req, res) => {
       { enrolledStatus: "ENROLLED" }
     ).limit(capacityLeft);
 
-    console.log(updatedEnrollemnt);
     // console.log(updatedEnrollemnt)
     // let createDocumentProgress = updatedEnrollemnt.map((li) => {
     //   return li.name, li.sessionId, li.classId, li.memberId;
