@@ -245,7 +245,7 @@ module.exports.uploadXLXSFile = (req, res) => {
       //Errors.push("u are here");
       //console.log(Errors);
       let noDataFound = [];
-      const classId = req.body.classid;
+      let classId = req.body.classid;
       data.forEach((bill, index) => {
         //console.log("two");
         Bill.findOne(
@@ -302,7 +302,32 @@ module.exports.uploadXLXSFile = (req, res) => {
           .json({ errors: value[0], "data not found": value[1] });
         //.json(value[0]);
       }
-      return res.send("xlsx converted to json");
+      //*******************************************bill update */
+      data.map((bill, index) => {
+        Bill.findOneAndUpdate(
+          {
+            clubMembershipId: bill.Membershipnumber,
+            classId: req.body.classid,
+            billDate: req.body.BillDate,
+          },
+          {
+            $set: {
+              paidAt: Date.now(),
+            },
+          },
+          { new: true, useFindAndModify: false },
+          (err) => {
+            if (err) {
+              console.log(err);
+              return res.status(400).json({
+                err: `Bill  updation failed !!! at line no ${index + 1}`,
+              });
+            }
+          }
+        );
+      });
+      //****************************bill update */
+      return res.send("xlsx converted to json and updation of Bills Success");
 
       //************ */
       //console.log(Errors);
