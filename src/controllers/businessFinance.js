@@ -1,6 +1,6 @@
-const BusinessFinance = require("../models/businessFinance");
-
+const { BusinessFinance } = require("../models");
 const { STARTS_WITH_FILTER, EQUALS_FILTER } = require("../constants/constant");
+const { Types } = require("mongoose");
 
 //parameter extractor
 module.exports.getBusinessFinanceIdById = (req, res, next, id) => {
@@ -29,9 +29,26 @@ module.exports.createBusinessFinance = (req, res) => {
   });
 };
 
-//get businessFinance
 module.exports.getBusinessFinance = (req, res) => {
   return res.json(req.businessFinance);
+};
+
+//get finance of a business
+module.exports.getFinanceOfABusiness = async (req, res) => {
+  try {
+    let { businessId } = req.params;
+    let businessFinance = await BusinessFinance.find({
+      businessId: Types.ObjectId(businessId),
+    });
+
+    if (!businessFinance) {
+      throw new Error("Does not exists");
+    }
+
+    return res.send({ businessFinance });
+  } catch (err) {
+    return res.status(422).send({ message: err.message });
+  }
 };
 
 // delete businessFinance
