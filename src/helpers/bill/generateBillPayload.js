@@ -3,12 +3,13 @@ const calculateSubtotal = require("./calculateSubtotal");
 const generateBillPayload = (data) => {
   let {
     billDate,
-    dueDate,
-    items,
-    memberId,
     businessId,
     classId,
     clubMembershipId,
+    dueDate,
+    generatedAt,
+    items,
+    memberId,
   } = data;
 
   let subtotal = calculateSubtotal(items);
@@ -16,16 +17,17 @@ const generateBillPayload = (data) => {
   let total = subtotal - discount;
 
   return {
-    memberId,
+    billDate,
     businessId,
     classId,
-    items,
-    subtotal,
-    discount,
-    total,
-    dueDate,
-    billDate,
     clubMembershipId,
+    discount,
+    dueDate,
+    generatedAt,
+    items,
+    memberId,
+    subtotal,
+    total,
   };
 };
 

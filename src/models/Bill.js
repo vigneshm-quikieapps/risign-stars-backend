@@ -65,7 +65,15 @@ const billSchema = new mongoose.Schema(
       type: String,
     },
     billDate: {
-      /** bill date is used to store the month, year info of the bill */
+      /**
+       * bill date is used to store the month, year info of the bill
+       * (indicates which particular month this bill belongs to)
+       */
+      type: Date,
+      required: true,
+    },
+    generatedAt: {
+      /** generated date is used to store the month, year info of the bill (when its generated) */
       type: Date,
       required: true,
     },
