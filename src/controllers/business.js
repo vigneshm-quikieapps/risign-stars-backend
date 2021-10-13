@@ -335,7 +335,7 @@ module.exports.uploadXLXSFile = (req, res) => {
         }
       })
       .then(async () => {
-        //await unlinkAsync(`./temp/xlsx/${req.file.originalname}`);
+        await unlinkAsync(`./temp/xlsx/${req.file.originalname}`);
         console.log("im here deleted spread sheet");
         return;
       });
