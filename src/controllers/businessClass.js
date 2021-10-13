@@ -47,6 +47,36 @@ module.exports.getAllBusinessClass = async (req, res) => {
   }
 };
 
+/**
+ * get all classes for the logged in business admin
+ * @param {*} req
+ * @param {*} res
+ * @returns
+ */
+module.exports.getAllClassesForALoggedInBusinessAdmin = async (req, res) => {
+  try {
+    let { authUserData } = req;
+
+    /**
+     * get the business ids
+     */
+    let { dataPrivileges } = authUserData;
+    let businessIds = dataPrivileges.map((dataPriv) => dataPriv.businessId);
+
+    /**
+     * filter classes by business ids
+     */
+    let query = getQuery(req);
+    query = { ...query, businessId: { $in: businessIds } };
+    let options = getOptions(req);
+
+    let response = await BusinessClass.paginate(query, options);
+    return res.send(response);
+  } catch (err) {
+    return res.status(422).send({ message: err.message });
+  }
+};
+
 //Business Class listing
 module.exports.getBusinessClass = (req, res) => {
   return res.json(req.Class);
