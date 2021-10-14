@@ -296,7 +296,7 @@ module.exports.uploadXLXSFile = (req, res) => {
     });
     //returning errors faced during validations check
     promise1
-      .then((value) => {
+      .then(async (value) => {
         //******************** */
         //console.log(value);
 
@@ -349,32 +349,61 @@ module.exports.uploadXLXSFile = (req, res) => {
           //.json(value[0]);
         } else {
           //if no errors present updating the whole bills from preadsheet data
-          data.map((bill, index) => {
-            Bill.findOneAndUpdate(
-              {
-                clubMembershipId: bill.Membershipnumber,
-                classId: req.body.classid,
-                billDate: req.body.BillDate,
-              },
-              {
-                $set: {
-                  paidAt: Date.now(),
+          // data.map((bill, index) => {
+          //   Bill.findOneAndUpdate(
+          //     {
+          //       clubMembershipId: bill.Membershipnumber,
+          //       classId: req.body.classid,
+          //       billDate: req.body.BillDate,
+          //     },
+          //     {
+          //       $set: {
+          //         paidAt: Date.now(),
+          //       },
+          //     },
+          //     { new: true, useFindAndModify: false },
+          //     (err) => {
+          //       if (err) {
+          //         console.log(err);
+          //         return res.status(400).json({
+          //           err: `Bill  updation failed !!! at line no ${index + 1}`,
+          //         });
+          //       }
+          //     }
+          //   );
+          // });
+          // return res.status(400).json({
+          //   success: `Bill  updation done `,
+          // });
+
+          //**************************  if no errors present updating the whole bills from preadsheet data  */
+          await Bill.bulkWrite(
+            data.map((bill) => ({
+              updateOne: {
+                filter: {
+                  clubMembershipId: bill.Membershipnumber,
+                  classId: req.body.classid,
+                  billDate: req.body.BillDate,
                 },
+                update: {
+                  $set: {
+                    paidAt: Date.now(),
+                  },
+                },
+                new: true,
+                useFindAndModify: false,
               },
-              { new: true, useFindAndModify: false },
-              (err) => {
-                if (err) {
-                  console.log(err);
-                  return res.status(400).json({
-                    err: `Bill  updation failed !!! at line no ${index + 1}`,
-                  });
-                }
-              }
-            );
-          });
-          return res.status(400).json({
-            success: `Bill  updation done `,
-          });
+            })) //,
+            // {},
+            // (err) => {
+            //   if (err) {
+            //     console.log(err);
+            //     return res.status(400).json({
+            //       err: `Bill  updation failed !!! at line no `,
+            //     });
+            //   }
+            // }
+          );
         }
       })
       //finally delete the uploaded spreadsheets from server
