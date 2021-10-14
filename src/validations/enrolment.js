@@ -128,6 +128,24 @@ const withdrawEnrolmentValidationRules = () => {
   ];
 };
 
+const suspendEnrolmentValidationRules = () => {
+  return [
+    param("enrolmentId", "min length should be 2").custom(isValidEnrolment),
+  ];
+};
+
+/**
+ * the current status should be SUSPEND
+ * then continue
+ * else validation error with message `current status should be SUSPEND`
+ * @returns
+ */
+const returnFromSuspensionEnrolmentValidationRules = () => {
+  return [
+    param("enrolmentId", "min length should be 2").custom(isValidEnrolment),
+  ];
+};
+
 const updateWaitlistEnrolmentValidationRules = () => {
   return [body("sessionId", "min length should be 2").custom(isValidSession)];
 };
@@ -173,9 +191,11 @@ const trialEnrolmentValidationRules = () => {
 //   ];
 // };
 module.exports = {
-  createEnrolementValidationRules,
-  withdrawEnrolmentValidationRules,
-  updateWaitlistEnrolmentValidationRules,
   classTransferEnrolmentValidationRules,
+  createEnrolementValidationRules,
+  suspendEnrolmentValidationRules,
   trialEnrolmentValidationRules,
+  updateWaitlistEnrolmentValidationRules,
+  withdrawEnrolmentValidationRules,
+  returnFromSuspensionEnrolmentValidationRules,
 };

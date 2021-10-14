@@ -2,9 +2,17 @@ const mongoose = require("mongoose");
 const Enrolment = require("../../models/Enrolment");
 const BusinessSession = require("../../models/businessSession");
 const { cancelAllFutureBills } = require("../../helpers/bill");
+const { STATUS_RETURN_FROM_SUSPENSION } = require("../../constants/enrolment");
+const activateAllFutureBills = require("../../helpers/bill/activateAllFutureBills");
 
-// cancel Membership
-const withdrawEnrolment = async (req, res) => {
+/**
+ * return from suspension
+ *
+ * @param {*} req
+ * @param {*} res
+ * @returns
+ */
+const returnFromSuspensionEnrolment = async (req, res) => {
   const session = await mongoose.startSession();
 
   session.startTransaction();
@@ -15,30 +23,26 @@ const withdrawEnrolment = async (req, res) => {
       { _id: mongoose.Types.ObjectId(enrolmentId) },
       {
         $set: {
-          enrolledStatus: "DROPPED",
-          discontinuationReason: "DROPPED",
+          enrolledStatus: STATUS_RETURN_FROM_SUSPENSION,
         },
       },
       { new: true }
     ).session(session);
 
-    let sessionData = await BusinessSession.findOneAndUpdate(
-      { sessionId: req.body.sessionId },
-      {
-        $inc: { fullcapacityfilled: -1 },
-      },
-      { new: true }
-    ).session(session);
+    let { sessionId } = enrolment;
+    let sessionData = await BusinessSession.findById(sessionId);
 
     /**
      * cancel all future bills
      */
     let { memberId } = enrolment;
     let data = { memberId, sessionData };
-    await cancelAllFutureBills(data, session);
+    await activateAllFutureBills(data, session);
 
     await session.commitTransaction();
-    return res.status(201).send({ message: "cancellation successfull" });
+    return res
+      .status(201)
+      .send({ message: "return from suspension successful" });
   } catch (err) {
     console.error(err);
     await session.abortTransaction();
@@ -48,4 +52,4 @@ const withdrawEnrolment = async (req, res) => {
   }
 };
 
-module.exports = withdrawEnrolment;
+module.exports = returnFromSuspensionEnrolment;

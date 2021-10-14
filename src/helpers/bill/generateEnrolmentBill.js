@@ -6,8 +6,9 @@ const generateMonthBillPayload = require("./generateMonthBillPayload");
 const { getEnrolableMonthRange } = require("../dates");
 
 /**
+ * Only Monthly charge is handled,
+ * if annual charge should be added in payPrefrequency, the logic of generating the bill should be updated.
  *
- * charge the annual club membership charge
  * generate the monthly charge in advance for the whole remaining term period
  *
  * @param {*} param0
@@ -38,7 +39,7 @@ const generateEnrolmentBill = async (
   let monthlyCharges = getMonthlyCharges(classCharges);
   let monthlyPayload = {
     clubMembershipId,
-    billDate: now,
+    generatedAt: now,
     charges: monthlyCharges,
     memberId,
     businessId,
@@ -57,6 +58,7 @@ const generateEnrolmentBill = async (
     ...monthlyPayload,
     charges: businessFinanceCharges,
     dueDate: now,
+    billDate: now,
   };
   let clubMembershipBillPayload = generateClubMembershipBillPayload(
     clubMembershipPayload
@@ -70,6 +72,7 @@ const generateEnrolmentBill = async (
   let firstMonthPayload = {
     ...monthlyPayload,
     dueDate: now,
+    billDate: now,
     startDate: now,
   };
 
@@ -87,6 +90,7 @@ const generateEnrolmentBill = async (
       let data = {
         ...monthlyPayload,
         dueDate: monthRange[i],
+        billDate: monthRange[i],
       };
       const billPayload = generateMonthBillPayload(data);
       billPayloads.push(billPayload);
@@ -99,6 +103,7 @@ const generateEnrolmentBill = async (
     let lastMonthPayload = {
       ...monthlyPayload,
       dueDate: monthRange[monthRange.length - 1],
+      billDate: monthRange[monthRange.length - 1],
       endDate,
       pattern,
     };
