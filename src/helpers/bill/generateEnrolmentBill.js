@@ -6,8 +6,9 @@ const generateMonthBillPayload = require("./generateMonthBillPayload");
 const { getEnrolableMonthRange } = require("../dates");
 
 /**
+ * Only Monthly charge is handled,
+ * if annual charge should be added in payPrefrequency, the logic of generating the bill should be updated.
  *
- * charge the annual club membership charge
  * generate the monthly charge in advance for the whole remaining term period
  *
  * @param {*} param0

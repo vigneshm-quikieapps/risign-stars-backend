@@ -6,6 +6,7 @@ const {
   updateWaitlistEnrolment,
   withdrawEnrolment,
   trailEnrolment,
+  returnFromSuspensionEnrolment,
 } = require("../controllers/enrolment");
 const {
   createEnrolementValidationRules,
@@ -13,6 +14,8 @@ const {
   updateWaitlistEnrolmentValidationRules,
   classTransferEnrolmentValidationRules,
   trialEnrolmentValidationRules,
+  suspendEnrolmentValidationRules,
+  returnFromSuspensionEnrolmentValidationRules,
 } = require("../validations/enrolment");
 const validate = require("../validations/validate");
 
@@ -24,6 +27,21 @@ router.post(
   validate,
   withdrawEnrolment
 );
+
+router.post(
+  ":/enrolmentId/return-from-suspension",
+  returnFromSuspensionEnrolmentValidationRules(),
+  validate,
+  returnFromSuspensionEnrolment
+);
+
+router.post(
+  "/:enrolmentId/suspend",
+  suspendEnrolmentValidationRules(),
+  validate,
+  withdrawEnrolment
+);
+
 router.post(
   "/update-waitlist",
   updateWaitlistEnrolmentValidationRules(),
