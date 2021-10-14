@@ -78,9 +78,7 @@ router.get("/:businessId/classes", getAllBusinessClass);
  * file upload
  */
 //router.post("/fileupload", uploadFile);
-router.post("/xlxsupload", uploadXLXSFile, (req, res) => {
-  return res.send("done");
-});
+router.post("/xlxsupload", uploadXLXSFile);
 //router.get("/convertxlxs/json", convertXLXSFile);
 
 /**

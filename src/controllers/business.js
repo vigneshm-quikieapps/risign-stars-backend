@@ -5,7 +5,10 @@ const CSVToJSON = require("csvtojson");
 const { STARTS_WITH_FILTER, EQUALS_FILTER } = require("../constants/constant");
 const { getQuery, getOptions } = require("../helpers/query");
 const path = require("path");
+const fs = require("fs");
+const { promisify } = require("util");
 
+const unlinkAsync = promisify(fs.unlink);
 //parameter extractor
 module.exports.getBusinessIdById = (req, res, next, id) => {
   Business.findById(id).exec((err, business) => {
@@ -136,7 +139,7 @@ module.exports.uploadFile = (req, res) => {
 module.exports.uploadXLXSFile = (req, res) => {
   const filestorage = multer.diskStorage({
     destination: (req, file, cb) => {
-      cb(null, "./src/xlxs");
+      cb(null, "./temp/xlsx");
     },
     filename: (req, file, cb) => {
       cb(null, file.originalname);
@@ -160,7 +163,7 @@ module.exports.uploadXLXSFile = (req, res) => {
     //**************************** */
     //console.log(req.body.classid);
     //console.log(req.file);
-    var workbook = XLSX.readFile(`./src/xlxs/${req.file.originalname}`, {
+    var workbook = XLSX.readFile(`./temp/xlsx/${req.file.originalname}`, {
       type: "binary",
       cellDates: true,
     });
@@ -207,10 +210,11 @@ module.exports.uploadXLXSFile = (req, res) => {
     //console.log("one");
     const promise1 = new Promise((resolve) => {
       let Errors = [];
+      let amountError = [];
       //Errors.push("u are here");
       //console.log(Errors);
       let noDataFound = [];
-      const classId = req.body.classid;
+      let classId = req.body.classid;
       data.forEach((bill, index) => {
         //console.log("two");
         Bill.findOne(
@@ -238,55 +242,91 @@ module.exports.uploadXLXSFile = (req, res) => {
               });
               //console.log(noDataFound);
             }
+            if (data) {
+              //return res.status(400);
+              if (data.total < bill.Amount)
+                amountError.push({
+                  line: index + 1,
+                  "err msg": `amount ${bill.Amount} should be greater than or equal to bill Amount: ${data.total}`,
+                  bill: bill,
+                });
+              //console.log(noDataFound);
+            }
           }
         );
-        resolve([Errors, noDataFound]);
+        resolve([Errors, noDataFound, amountError]);
       });
     });
-    promise1.then((value) => {
-      //******************** */
-      if (value[0].length !== 0 && value[1].length !== 0) {
-        //console.log(value[0], value[1]);
+    promise1
+      .then((value) => {
+        //******************** */
+        //console.log(value);
 
-        return res
-          .status(205)
-          .json({ errors: value[0], "data not found": value[1] });
-      }
-      if (value[1].length !== 0) {
-        //console.log(Errors);
-        //console.log(value[1]);
-        return res
-          .status(205)
-          .json({ errors: value[0], "data not found": value[1] });
-      }
-      if (value[0].length !== 0) {
-        //console.log(value[0]);
+        if (
+          value[0].length !== 0 &&
+          value[1].length !== 0 &&
+          value[2].length !== 0
+        ) {
+          //console.log(value[0], value[1]);
 
-        return res
-          .status(205)
-          .json({ errors: value[0], "data not found": value[1] });
-        //.json(value[0]);
-      }
-      return res.send("xlsx converted to json");
+          return res.status(205).json({
+            errors: value[0],
+            "data not found": value[1],
+            amountError: value[2],
+          });
+        } else if (value[0].length !== 0) {
+          //console.log(Errors);
+          //console.log(value[1]);
+          return res.status(205).json({ errors: value[0] });
+        } else if (value[1].length !== 0) {
+          //console.log(value[0]);
 
-      //************ */
-      //console.log(Errors);
-      //console.log(noDataFound);
+          return res.status(205).json({ "data not found": value[1] });
+          //.json(value[0]);
+        } else if (value[2].length !== 0) {
+          //console.log(value[0]);
 
-      //********************** */
-      //console.log(value[0]);
-      //yconsole.log(value[1]);
-      // expected output: "Success!"
-    });
+          return res.status(205).json({ amountError: value[2] });
+          //.json(value[0]);
+        } else {
+          data.map((bill, index) => {
+            Bill.findOneAndUpdate(
+              {
+                clubMembershipId: bill.Membershipnumber,
+                classId: req.body.classid,
+                billDate: req.body.BillDate,
+              },
+              {
+                $set: {
+                  paidAt: Date.now(),
+                },
+              },
+              { new: true, useFindAndModify: false },
+              (err) => {
+                if (err) {
+                  console.log(err);
+                  return res.status(400).json({
+                    err: `Bill  updation failed !!! at line no ${index + 1}`,
+                  });
+                }
+              }
+            );
+          });
+          return res.status(400).json({
+            success: `Bill  updation done `,
+          });
+        }
+      })
+      .then(async () => {
+        await unlinkAsync(`./temp/xlsx/${req.file.originalname}`);
+        console.log("im here deleted spread sheet");
+        return;
+      });
     //console.log(data);
   });
 };
 
 //********************************************************************************************************************************************************* */
-// module.exports.convertXLXSFile = (req, res) => {
-//   //
-// };
-//RisingStar Documentation - Api test
 
 var storage = multer.diskStorage({
   destination: function (req, file, cb) {
