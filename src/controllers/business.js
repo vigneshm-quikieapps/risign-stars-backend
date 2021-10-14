@@ -245,6 +245,7 @@ module.exports.uploadXLXSFile = (req, res) => {
     //console.log("one");
     const promise1 = new Promise((resolve) => {
       let Errors = [];
+      let amountError = [];
       //Errors.push("u are here");
       //console.log(Errors);
       let noDataFound = [];
@@ -276,9 +277,19 @@ module.exports.uploadXLXSFile = (req, res) => {
               });
               //console.log(noDataFound);
             }
+            if (data) {
+              //return res.status(400);
+              if (data.total < bill.Amount)
+                amountError.push({
+                  line: index + 1,
+                  "err msg": `amount ${bill.Amount} should be greater than or equal to bill Amount: ${data.total}`,
+                  bill: bill,
+                });
+              //console.log(noDataFound);
+            }
           }
         );
-        resolve([Errors, noDataFound]);
+        resolve([Errors, noDataFound, amountError]);
       });
     });
     promise1
@@ -286,24 +297,31 @@ module.exports.uploadXLXSFile = (req, res) => {
         //******************** */
         //console.log(value);
 
-        if (value[0].length !== 0 && value[1].length !== 0) {
+        if (
+          value[0].length !== 0 &&
+          value[1].length !== 0 &&
+          value[2].length !== 0
+        ) {
           //console.log(value[0], value[1]);
 
-          return res
-            .status(205)
-            .json({ errors: value[0], "data not found": value[1] });
-        } else if (value[1].length !== 0) {
+          return res.status(205).json({
+            errors: value[0],
+            "data not found": value[1],
+            amountError: value[2],
+          });
+        } else if (value[0].length !== 0) {
           //console.log(Errors);
           //console.log(value[1]);
-          return res
-            .status(205)
-            .json({ errors: value[0], "data not found": value[1] });
-        } else if (value[0].length !== 0) {
+          return res.status(205).json({ errors: value[0] });
+        } else if (value[1].length !== 0) {
           //console.log(value[0]);
 
-          return res
-            .status(205)
-            .json({ errors: value[0], "data not found": value[1] });
+          return res.status(205).json({ "data not found": value[1] });
+          //.json(value[0]);
+        } else if (value[2].length !== 0) {
+          //console.log(value[0]);
+
+          return res.status(205).json({ amountError: value[2] });
           //.json(value[0]);
         } else {
           data.map((bill, index) => {
