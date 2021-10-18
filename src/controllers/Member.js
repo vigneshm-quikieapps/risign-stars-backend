@@ -3,6 +3,7 @@ const Member = require("../models/Member");
 const DoesNotExistError = require("../exceptions/DoesNotExistError");
 const path = require("path");
 const multer = require("multer");
+const { getQuery, getOptions } = require("../helpers/query");
 
 //parameter extractor
 module.exports.getmemberIdById = (req, res, next, id) => {
@@ -176,50 +177,26 @@ module.exports.addMembership = async (req, res) => {
 //business.membership.find(item => item.businessId === currentBusinessId)
 
 //search for Member
-module.exports.getAllMember = (req, res) => {
-  //limit setter to export or send limited business to client or front end
+module.exports.getAllMember = async (req, res) => {
+  try {
+    let query = getQuery(req);
+    let options = getOptions(req);
 
-  let limit = req.query.limit ? parseInt(req.query.limit) : 10;
-  let page = req.query.page;
-
-  let skip = page ? parseInt(page) - 1 * limit : 0;
-  let sortBy = req.query.sortBy ? req.query.sortBy : "asc";
-
-  /**
-   * query object
-   */
-  let query = Member.find().sort({ _id: sortBy }).skip(skip).limit(limit);
-
-  /**
-   * filter
-   */
-  let { filters = [] } = req.query;
-  for (let { field, type, value } of filters) {
-    switch (type) {
-      case STARTS_WITH_FILTER:
-        query.where(`${field}`, {
-          $regex: new RegExp(`^${value}`, "i"),
-        });
-        break;
-      case EQUALS_FILTER:
-        query.where(`${field}`, value);
-        break;
-      default:
-        break;
-    }
+    let response = await Member.paginate(query, options);
+    return res.send(response);
+  } catch (err) {
+    return res.status(422).send({ message: err.message });
   }
+};
 
-  /**
-   * execute the query
-   */
-  query.exec((err, Member) => {
-    if (err) {
-      return res.status(400).json({
-        error: "NO Member FOUND",
-      });
-    }
-    res.json(Member);
-  });
+module.exports.get = async (req, res) => {
+  try {
+    let { memberId } = req.params;
+    let member = await Member.findById(memberId);
+    return res.send({ member });
+  } catch (err) {
+    return res.send(422).send({ message: err.message });
+  }
 };
 
 /**

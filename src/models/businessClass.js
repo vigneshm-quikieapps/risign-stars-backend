@@ -94,6 +94,15 @@ const businessClassSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
+// Ensure virtual fields are serialised.
+businessClassSchema.set("toJSON", {
+  virtuals: true,
+  versionKey: false,
+  transform: function (doc, ret) {
+    delete ret.id;
+  },
+});
+
 businessClassSchema.plugin(mongoosePaginate);
 
 module.exports = mongoose.model("BusinessClass", businessClassSchema);

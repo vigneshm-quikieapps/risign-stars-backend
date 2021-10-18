@@ -5,6 +5,7 @@ const {
   BusinessSession,
   BusinessClass,
   BusinessFinance,
+  MemberConsent,
 } = require("../../../models");
 
 const enrolmentPayloadRequest = require("./enrolmentPayloadRequest");
@@ -18,10 +19,14 @@ const enrolmentPayloadRequest = require("./enrolmentPayloadRequest");
  * @param {*} session
  */
 const regularEnrolment = async (req, session) => {
-  let { businessSessionData, memberId } = req;
+  let { businessSessionData, memberData } = req;
+  let { businessId, memberId, consent, newsletter } = req.body;
+  let sessionData = businessSessionData;
   // creating enrolment till session capacity
 
   const createEnrolmentData = enrolmentPayloadRequest(req);
+  let { clubMembershipId } = createEnrolmentData;
+
   await Enrolment.create(
     [
       {
@@ -39,9 +44,30 @@ const regularEnrolment = async (req, session) => {
   // const createProgressData = await progressPayloadRequest(req, enrolment);
   // await Progress.create([createProgressData], { session });
 
+  /**
+   * create or update member consent, newsletter
+   */
+  let consentFilter = { clubMembershipId };
+  let consentUpdate = {
+    businessId,
+    memberId,
+    clubMembershipId,
+    consent,
+    newsletter,
+  };
+  let consentOption = {
+    new: true,
+    upsert: true,
+  };
+  await MemberConsent.findOneAndUpdate(
+    consentFilter,
+    consentUpdate,
+    consentOption
+  ).session(session);
+
   // increment session enrolled in business session
   await BusinessSession.findByIdAndUpdate(
-    { _id: businessSessionData.id },
+    { _id: sessionData.id },
     { $inc: { fullcapacityfilled: 1 } }
   ).session(session);
 
@@ -52,10 +78,15 @@ const regularEnrolment = async (req, session) => {
     businessId: Types.ObjectId(sessionData.businessId),
   });
   let classData = await BusinessClass.findById(sessionData.classId);
-  let sessionData = businessSessionData;
-  let data = { businessFinanceData, classData, sessionData, memberId };
 
-  // await generateEnrolmentBill(data, session);
+  let enrolmentBillData = {
+    businessFinanceData,
+    classData,
+    sessionData,
+    memberData,
+    clubMembershipId,
+  };
+  await generateEnrolmentBill(enrolmentBillData, session);
 
   /** TODO: send Email */
 };

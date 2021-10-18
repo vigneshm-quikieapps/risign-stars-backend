@@ -6,13 +6,17 @@ const {
   updateWaitlistEnrolment,
   withdrawEnrolment,
   trailEnrolment,
+  returnFromSuspensionEnrolment,
 } = require("../controllers/enrolment");
+const suspendEnrolment = require("../controllers/enrolment/suspendEnrolment");
 const {
   createEnrolementValidationRules,
   withdrawEnrolmentValidationRules,
   updateWaitlistEnrolmentValidationRules,
   classTransferEnrolmentValidationRules,
   trialEnrolmentValidationRules,
+  suspendEnrolmentValidationRules,
+  returnFromSuspensionEnrolmentValidationRules,
 } = require("../validations/enrolment");
 const validate = require("../validations/validate");
 
@@ -24,6 +28,21 @@ router.post(
   validate,
   withdrawEnrolment
 );
+
+router.post(
+  "/:enrolmentId/return-from-suspension",
+  returnFromSuspensionEnrolmentValidationRules(),
+  validate,
+  returnFromSuspensionEnrolment
+);
+
+router.post(
+  "/:enrolmentId/suspend",
+  suspendEnrolmentValidationRules(),
+  validate,
+  suspendEnrolment
+);
+
 router.post(
   "/update-waitlist",
   updateWaitlistEnrolmentValidationRules(),
@@ -42,11 +61,5 @@ router.post(
   validate,
   trailEnrolment
 );
-
-// router.get("/enrolement", enrolement.getAll);
-// router.put("/enrolement/consent/:id",putEnrolementConsentValidationRules(),validate, enrolement.updateConsent);
-// router.get("/enrolement/consent/:id", enrolement.getConsent);
-// router.put("/enrolement/AdditionalSection/:id",putEnrolementAdditionalValidationRules(),validate, enrolement.updateAdditionalSection);
-// router.get("/enrolement/AdditionalSection/:id", enrolement.getAdditionalSection);
 
 module.exports = router;

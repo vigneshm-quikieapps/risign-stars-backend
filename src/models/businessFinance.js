@@ -6,6 +6,7 @@ const {
   CHARGES_CLUB_MEMBERSHIP_ID,
 } = require("../constants/businessFinance");
 const { ObjectId } = mongoose.Schema;
+const mongoosePaginate = require("mongoose-paginate-v2");
 
 const businessFinanceSchema = new mongoose.Schema(
   {
@@ -71,4 +72,16 @@ const businessFinanceSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
+
+// Ensure virtual fields are serialised.
+businessFinanceSchema.set("toJSON", {
+  virtuals: true,
+  versionKey: false,
+  transform: function (doc, ret) {
+    delete ret.id;
+  },
+});
+
+businessFinanceSchema.plugin(mongoosePaginate);
+
 module.exports = mongoose.model("BusinessFinance", businessFinanceSchema);

@@ -24,6 +24,11 @@ const memberConsentSchema = new mongoose.Schema(
       signedByParent: Boolean,
       signedAt: Date,
     },
+    newsletter: {
+      email: Boolean,
+      telephone: Boolean,
+      sms: Boolean,
+    },
     updatedBy: {
       type: ObjectId,
       ref: "User",
