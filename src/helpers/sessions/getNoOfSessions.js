@@ -16,7 +16,8 @@ const dayToIndex = (day) => {
     sat: 6,
   };
 
-  return days[day];
+  let dayLowerCase = day.toLowerCase();
+  return days[dayLowerCase];
 };
 
 const getNoOfSessions = ({ pattern, startDate, endDate }) => {
@@ -27,9 +28,14 @@ const getNoOfSessions = ({ pattern, startDate, endDate }) => {
   /** array of days in their respective index value */
   let daysIndexArr = pattern.map(({ day }) => dayToIndex(day));
 
+  /**
+   *
+   */
   let loopDate = new Date(startDate.getTime());
 
-  /** count the no of sessions */
+  /**
+   * count the no of sessions
+   */
   let noOfSessions = 0;
   while (loopDate <= endDate) {
     if (daysIndexArr.includes(loopDate.getDay())) {

@@ -54,8 +54,21 @@ const partialCharge = ({ pattern, startDate, endDate, charge }) => {
   if (startMonth !== endMonth) {
     throw new Error("Start date and end date should be in the same month");
   }
+
   let noOfSessions = getNoOfSessions({ pattern, startDate, endDate });
-  return (charge / 4) * noOfSessions;
+
+  console.log({ charge, noOfSessions });
+
+  /**
+   * we are considering maximum of 4 classes in a month,
+   * there might month where there are 5 classes in a month
+   * but if a student attends 4 classes, he should pay for the whole month
+   */
+  if (noOfSessions > 4) {
+    noOfSessions = 4;
+  }
+
+  return (charge.amount * noOfSessions) / 4;
 };
 
 module.exports = partialCharge;
