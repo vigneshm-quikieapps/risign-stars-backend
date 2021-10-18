@@ -9,6 +9,7 @@ const memberSchema = new mongoose.Schema(
     id: String,
     userId: {
       type: ObjectId,
+      ref: "User",
       required: true,
     },
     membership: [
