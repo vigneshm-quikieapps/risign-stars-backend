@@ -37,12 +37,21 @@ const enrolmentSchema = new mongoose.Schema(
       enum: ENUM_ENROLLED_STATUS,
     },
     discontinuationReason: {
+      /** mark the reason for discontinuation, if the enrolment status is 'DROPPED' */
       type: String,
       enum: ENUM_DISCONTINUATION_REASON,
     },
     transferedTo: {
-      type: ObjectId,
       /** new enrolment id, if class transfer */
+      type: ObjectId,
+    },
+    suspendedAt: {
+      /** date on which the member went to suspended mode */
+      type: Date,
+    },
+    returnFromSuspensionAt: {
+      /** date on which the member return from suspension */
+      type: Date,
     },
     droppedDate: Date,
     updatedBy: {

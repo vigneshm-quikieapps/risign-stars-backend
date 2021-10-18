@@ -12,11 +12,14 @@ const suspendEnrolment = async (req, res) => {
 
   try {
     let { enrolmentId } = req.params;
+    let now = new Date();
+
     let enrolment = await Enrolment.findOneAndUpdate(
       { _id: mongoose.Types.ObjectId(enrolmentId) },
       {
         $set: {
           enrolledStatus: STATUS_SUSPEND,
+          suspendedAt: now,
         },
       },
       { new: true }

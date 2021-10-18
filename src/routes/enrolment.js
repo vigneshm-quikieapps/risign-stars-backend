@@ -8,6 +8,7 @@ const {
   trailEnrolment,
   returnFromSuspensionEnrolment,
 } = require("../controllers/enrolment");
+const suspendEnrolment = require("../controllers/enrolment/suspendEnrolment");
 const {
   createEnrolementValidationRules,
   withdrawEnrolmentValidationRules,
@@ -29,7 +30,7 @@ router.post(
 );
 
 router.post(
-  ":/enrolmentId/return-from-suspension",
+  "/:enrolmentId/return-from-suspension",
   returnFromSuspensionEnrolmentValidationRules(),
   validate,
   returnFromSuspensionEnrolment
@@ -39,7 +40,7 @@ router.post(
   "/:enrolmentId/suspend",
   suspendEnrolmentValidationRules(),
   validate,
-  withdrawEnrolment
+  suspendEnrolment
 );
 
 router.post(
@@ -60,11 +61,5 @@ router.post(
   validate,
   trailEnrolment
 );
-
-// router.get("/enrolement", enrolement.getAll);
-// router.put("/enrolement/consent/:id",putEnrolementConsentValidationRules(),validate, enrolement.updateConsent);
-// router.get("/enrolement/consent/:id", enrolement.getConsent);
-// router.put("/enrolement/AdditionalSection/:id",putEnrolementAdditionalValidationRules(),validate, enrolement.updateAdditionalSection);
-// router.get("/enrolement/AdditionalSection/:id", enrolement.getAdditionalSection);
 
 module.exports = router;

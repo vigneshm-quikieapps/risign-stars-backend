@@ -1,9 +1,7 @@
 const mongoose = require("mongoose");
-const Enrolment = require("../../models/Enrolment");
-const BusinessSession = require("../../models/businessSession");
-const { cancelAllFutureBills } = require("../../helpers/bill");
+const { BusinessSession, Enrolment, BusinessClass } = require("../../models");
 const { STATUS_RETURN_FROM_SUSPENSION } = require("../../constants/enrolment");
-const activateAllFutureBills = require("../../helpers/bill/activateAllFutureBills");
+const { activateAllFutureBills } = require("../../helpers/bill");
 
 /**
  * return from suspension
@@ -16,27 +14,30 @@ const returnFromSuspensionEnrolment = async (req, res) => {
   const session = await mongoose.startSession();
 
   session.startTransaction();
+  let now = new Date();
 
   try {
     let { enrolmentId } = req.params;
-    let enrolment = await Enrolment.findOneAndUpdate(
+    let enrolmentData = await Enrolment.findOneAndUpdate(
       { _id: mongoose.Types.ObjectId(enrolmentId) },
       {
         $set: {
           enrolledStatus: STATUS_RETURN_FROM_SUSPENSION,
+          returnFromSuspensionAt: now,
         },
       },
       { new: true }
     ).session(session);
 
-    let { sessionId } = enrolment;
+    let { sessionId } = enrolmentData;
     let sessionData = await BusinessSession.findById(sessionId);
 
     /**
      * cancel all future bills
      */
-    let { memberId } = enrolment;
-    let data = { memberId, sessionData };
+    let { memberId, classId } = enrolmentData;
+    let classData = await BusinessClass.findById(classId);
+    let data = { memberId, sessionData, classData, enrolmentData, now };
     await activateAllFutureBills(data, session);
 
     await session.commitTransaction();
