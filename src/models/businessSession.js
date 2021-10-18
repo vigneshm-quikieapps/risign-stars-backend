@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const { ObjectId } = mongoose.Schema;
+const mongoosePaginate = require("mongoose-paginate-v2");
 
 const businessSessionSchema = new mongoose.Schema(
   {
@@ -22,7 +23,7 @@ const businessSessionSchema = new mongoose.Schema(
         required: true,
       },
       endDate: {
-        type: String,
+        type: Date,
         required: true,
       },
     },
@@ -75,4 +76,22 @@ const businessSessionSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
+
+businessSessionSchema.virtual("coach", {
+  ref: "User",
+  localField: "coachId",
+  foreignField: "_id",
+});
+
+// Ensure virtual fields are serialised.
+businessSessionSchema.set("toJSON", {
+  virtuals: true,
+  versionKey: false,
+  transform: function (doc, ret) {
+    delete ret.id;
+  },
+});
+
+businessSessionSchema.plugin(mongoosePaginate);
+
 module.exports = mongoose.model("BusinessSession", businessSessionSchema);

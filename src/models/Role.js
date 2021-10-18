@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const { ObjectId } = mongoose.Schema;
 const { FUNCTIONAL_PRIVILEGES } = require("../constants/constant");
+const mongoosePaginate = require("mongoose-paginate-v2");
 
 const roleSchema = new mongoose.Schema(
   {
@@ -57,5 +58,7 @@ const roleSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
+
+roleSchema.plugin(mongoosePaginate);
 
 module.exports = mongoose.model("Role", roleSchema);
