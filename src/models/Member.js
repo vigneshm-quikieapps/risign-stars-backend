@@ -7,18 +7,28 @@ const mongoosePaginate = require("mongoose-paginate-v2");
 const memberSchema = new mongoose.Schema(
   {
     id: String,
-    userId: String,
+    userId: {
+      type: ObjectId,
+      required: true,
+    },
     membership: [
       {
         businessId: String,
         clubMembershipId: String,
       },
     ],
-    fullName: String,
-    dob: Date,
+    fullName: {
+      type: String,
+      required: true,
+    },
+    dob: {
+      type: Date,
+      required: true,
+    },
     gender: {
       type: String,
       enum: ["MALE", "FEMALE", "OTHER"],
+      required: true,
     },
     contacts: [
       {
@@ -40,6 +50,15 @@ const memberSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
+
+// Ensure virtual fields are serialised.
+memberSchema.set("toJSON", {
+  virtuals: true,
+  versionKey: false,
+  transform: function (doc, ret) {
+    delete ret.id;
+  },
+});
 
 memberSchema.plugin(mongoosePaginate);
 

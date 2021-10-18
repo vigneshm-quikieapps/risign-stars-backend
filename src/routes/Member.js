@@ -16,10 +16,11 @@ router.param("memberId", member.getmemberIdById);
  * routes
  */
 router.get("/", member.getAllMember);
-router.post("/", createMemberValidationRules(), member.create);
+router.get("/:memberId", member.get);
+router.post("/", createMemberValidationRules(), validate, member.create);
 router.get("/consent", memberConsent.get);
 router.put("/:id", updateMemberValidationRules(), validate, member.update);
-router.get("/:id", member.getEmergencyContact);
+router.get("/:id/emergency-contact", member.getEmergencyContact);
 router.post(
   "/:memberId",
   createEmergencyContactValidationRules(),

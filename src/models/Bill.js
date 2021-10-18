@@ -1,5 +1,7 @@
 const mongoose = require("mongoose");
 const { ObjectId } = mongoose.Schema;
+const mongoosePaginate = require("mongoose-paginate-v2");
+const { ENUM_STATUS, STATUS_ACTIVE } = require("../constants/bill");
 
 const billSchema = new mongoose.Schema(
   {
@@ -7,12 +9,17 @@ const billSchema = new mongoose.Schema(
       type: ObjectId,
       required: true,
     },
+    status: {
+      type: String,
+      enum: ENUM_STATUS,
+      default: STATUS_ACTIVE,
+    },
     classId: {
       type: ObjectId,
       required: true,
     },
     clubMembershipId: {
-      type: ObjectId,
+      type: String,
       required: true,
     },
     businessId: {
@@ -21,9 +28,18 @@ const billSchema = new mongoose.Schema(
     },
     items: [
       {
-        name: String,
+        chargeId: ObjectId,
+        name: {
+          type: String,
+          required: true,
+        },
         description: String,
-        amount: Number,
+        amount: {
+          type: String,
+          required: true,
+        },
+        startDate: Date,
+        endDate: Date,
       },
     ],
     subtotal: {
@@ -49,7 +65,15 @@ const billSchema = new mongoose.Schema(
       type: String,
     },
     billDate: {
-      /** bill date is used to store the month, year info of the bill */
+      /**
+       * bill date is used to store the month, year info of the bill
+       * (indicates which particular month this bill belongs to)
+       */
+      type: Date,
+      required: true,
+    },
+    generatedAt: {
+      /** generated date is used to store the month, year info of the bill (when its generated) */
       type: Date,
       required: true,
     },
@@ -64,4 +88,12 @@ const billSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
+
+// Ensure virtual fields are serialised.
+billSchema.set("toJSON", {
+  virtuals: true,
+});
+
+billSchema.plugin(mongoosePaginate);
+
 module.exports = mongoose.model("Bill", billSchema);

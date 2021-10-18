@@ -2,33 +2,31 @@ const mongoose = require("mongoose");
 const Enrolment = require("../../models/Enrolment");
 const BusinessSession = require("../../models/businessSession");
 const { cancelAllFutureBills } = require("../../helpers/bill");
+const { STATUS_SUSPEND } = require("../../constants/enrolment");
 
 // cancel Membership
-const withdrawEnrolment = async (req, res) => {
+const suspendEnrolment = async (req, res) => {
   const session = await mongoose.startSession();
 
   session.startTransaction();
 
   try {
     let { enrolmentId } = req.params;
+    let now = new Date();
+
     let enrolment = await Enrolment.findOneAndUpdate(
       { _id: mongoose.Types.ObjectId(enrolmentId) },
       {
         $set: {
-          enrolledStatus: "DROPPED",
-          discontinuationReason: "DROPPED",
+          enrolledStatus: STATUS_SUSPEND,
+          suspendedAt: now,
         },
       },
       { new: true }
     ).session(session);
 
-    let sessionData = await BusinessSession.findOneAndUpdate(
-      { sessionId: req.body.sessionId },
-      {
-        $inc: { fullcapacityfilled: -1 },
-      },
-      { new: true }
-    ).session(session);
+    let { sessionId } = enrolment;
+    let sessionData = await BusinessSession.findById(sessionId);
 
     /**
      * cancel all future bills
@@ -38,7 +36,7 @@ const withdrawEnrolment = async (req, res) => {
     await cancelAllFutureBills(data, session);
 
     await session.commitTransaction();
-    return res.status(201).send({ message: "cancellation successfull" });
+    return res.status(201).send({ message: "suspension successful" });
   } catch (err) {
     console.error(err);
     await session.abortTransaction();
@@ -48,4 +46,4 @@ const withdrawEnrolment = async (req, res) => {
   }
 };
 
-module.exports = withdrawEnrolment;
+module.exports = suspendEnrolment;

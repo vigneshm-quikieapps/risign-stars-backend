@@ -24,7 +24,10 @@ const verifyRefreshToken = (refreshToken, { req }) => {
 
 const refreshTokenValidationRules = () => {
   return [
-    body("refreshToken", "Invalid token").exists().custom(verifyRefreshToken),
+    body("refreshToken", "Invalid token")
+      .exists()
+      .bail()
+      .custom(verifyRefreshToken),
   ];
 };
 

@@ -14,8 +14,8 @@ const moment = require("moment");
  *  "2014-02-01",
  * ]
  *
- * @param {*} startDate
- * @param {*} endDate
+ * @param {Date} startDate
+ * @param {Date} endDate
  * @returns
  */
 const getMonthRange = (startDateParam, endDateParam) => {
@@ -25,7 +25,7 @@ const getMonthRange = (startDateParam, endDateParam) => {
   var result = [];
 
   if (endDate.isBefore(startDate)) {
-    throw "End date must be greated than start date.";
+    throw new Error("End date must be greater than start date");
   }
 
   while (startDate.isBefore(endDate)) {

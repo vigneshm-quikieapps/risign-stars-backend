@@ -2,26 +2,34 @@ const calcPartialCharge = require("./calcPartialCharge");
 const generateMonthBillPayload = require("./generateMonthBillPayload");
 
 /**
- * generate the first month bill
+ * generate the partial bill, if the member has not attended the full class
  *
- * if member has already been enrolled in the class
+ * charges contains only the charges with payFrequency === "MONTHLY"
  *
  *
  * @param {*} param0
  * @returns
  */
 const generatePartialMonthBillPayload = (data) => {
-  let { monthlyCharges, startDate, endDate } = data;
+  let { pattern, charges, startDate, endDate } = data;
 
-  let monthlyPartialCharges = monthlyCharges.map((charge) => {
-    let partialCharge = calcPartialCharge({ startDate, endDate, charge });
+  console.log({ startDate, endDate });
+
+  let monthlyPartialCharges = charges.map((charge) => {
+    let partialCharge = calcPartialCharge({
+      pattern,
+      startDate,
+      endDate,
+      charge,
+    });
+    console.log({ partialCharge });
     charge.amount = partialCharge;
     return charge;
   });
 
   return generateMonthBillPayload({
     ...data,
-    monthlyCharges: monthlyPartialCharges,
+    charges: monthlyPartialCharges,
   });
 };
 module.exports = generatePartialMonthBillPayload;

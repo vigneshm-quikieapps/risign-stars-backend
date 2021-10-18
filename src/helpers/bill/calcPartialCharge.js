@@ -16,28 +16,59 @@ const getNoOfSessions = require("../sessions/getNoOfSessions");
  * @param {*} charge
  * @returns
  */
-const partialCharge = ({ startDate, endDate, charge }) => {
+const partialCharge = ({ pattern, startDate, endDate, charge }) => {
   if (!startDate && !endDate) {
     throw new Error("At least either startDate / endDate should be in payload");
   }
 
-  if (!startDate) {
-    startDate = moment(startDate).startOf("month").toISOString();
+  /**
+   * either startDate or endDate should be provided
+   */
+  if (startDate && endDate) {
+    throw new Error("Either startDate / endDate should be in payload");
   }
+
+  /**
+   * startDate is not provided, that means endDate should be provided.
+   * use the start of the month date of the endDate as startDate
+   */
+  if (!startDate) {
+    startDate = moment(endDate).startOf("month").toDate();
+  }
+
+  /**
+   * end date is not provided, that means startDate should be provided.
+   * use the end of the month of startDate as endDate
+   */
   if (!endDate) {
-    endDate = moment(startDate).endOf("month").toISOString();
+    endDate = moment(startDate).endOf("month").toDate();
   }
 
   let startMonth = startDate.getMonth();
-  // let currentMonth = new Date().getMonth();
-  let endMonth = new Date().getMonth();
+  let endMonth = endDate.getMonth();
 
+  /**
+   * since we are only handle partial charge calculation for a single month
+   * start month and endmonth should be equal
+   */
   if (startMonth !== endMonth) {
     throw new Error("Start date and end date should be in the same month");
   }
 
-  let noOfSessions = getNoOfSessions(startDate, endDate);
-  return (charge / 4) * noOfSessions;
+  let noOfSessions = getNoOfSessions({ pattern, startDate, endDate });
+
+  console.log({ charge, noOfSessions });
+
+  /**
+   * we are considering maximum of 4 classes in a month,
+   * there might month where there are 5 classes in a month
+   * but if a student attends 4 classes, he should pay for the whole month
+   */
+  if (noOfSessions > 4) {
+    noOfSessions = 4;
+  }
+
+  return (charge.amount * noOfSessions) / 4;
 };
 
 module.exports = partialCharge;

@@ -1,4 +1,6 @@
+const activateAllFutureBills = require("./activateAllFutureBills");
 const calcPartialCharge = require("./calcPartialCharge");
+const cancelAllFutureBills = require("./cancelAllFutureBills");
 const generateClubMembershipBillPayload = require("./generateClubMembershipBillPayload");
 const generateEnrolmentBill = require("./generateEnrolmentBill");
 const generateMonthBillPayload = require("./generateMonthBillPayload");
@@ -7,7 +9,9 @@ const getBillDate = require("./getBillDate");
 const getMonthlyCharges = require("./getMonthlyCharges");
 
 module.exports = {
+  activateAllFutureBills,
   calcPartialCharge,
+  cancelAllFutureBills,
   generateClubMembershipBillPayload,
   generateEnrolmentBill,
   generateMonthBillPayload,

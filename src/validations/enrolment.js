@@ -1,4 +1,9 @@
 const { body, param } = require("express-validator");
+const {
+  STATUS_SUSPEND,
+  STATUS_ENROLLED,
+  STATUS_RETURN_FROM_SUSPENSION,
+} = require("../constants/enrolment");
 const { BusinessSession, Member, Enrolment } = require("../models");
 
 const checkValidSession =
@@ -67,17 +72,52 @@ const isValidMember = async (memberId, { req }) => {
   }
 };
 
+const isEnroledEnrolment = async (enrolmentId, { req }) => {
+  try {
+    let { enrolledStatus } = req.enrolmentData;
+
+    /**
+     * if the enrolledStatus is either ENROLLED / RETURN FROM SUSPENSION
+     * it basically means the enrolledStatus is ENROLLED
+     */
+    let ENROLLED_STATUS_GROUP = [
+      STATUS_ENROLLED,
+      STATUS_RETURN_FROM_SUSPENSION,
+    ];
+
+    if (!ENROLLED_STATUS_GROUP.includes(enrolledStatus)) {
+      throw new Error(
+        `enrolment should be in ${ENROLLED_STATUS_GROUP.join(" / ")} status`
+      );
+    }
+  } catch (err) {
+    return Promise.reject(err.message);
+  }
+};
+
+const isSuspendedEnrolment = async (enrolmentId, { req }) => {
+  try {
+    let { enrolledStatus } = req.enrolmentData;
+
+    if (enrolledStatus !== STATUS_SUSPEND) {
+      throw new Error(`enrolment should be in ${STATUS_SUSPEND} status`);
+    }
+  } catch (err) {
+    return Promise.reject(err.message);
+  }
+};
+
 const isValidEnrolment = async (enrolmentId, { req }) => {
   try {
     let enrolment = await Enrolment.findById(enrolmentId);
     if (!enrolment) {
-      throw new Error();
+      throw new Error("should be a valid enrolment");
     }
 
     req.enrolmentData = enrolment;
     return true;
   } catch (err) {
-    return Promise.reject(`should be a valid enrolment`);
+    return Promise.reject(err.message);
   }
 };
 
@@ -128,6 +168,30 @@ const withdrawEnrolmentValidationRules = () => {
   ];
 };
 
+const suspendEnrolmentValidationRules = () => {
+  return [
+    param("enrolmentId", "min length should be 2")
+      .custom(isValidEnrolment)
+      .bail()
+      .custom(isEnroledEnrolment),
+  ];
+};
+
+/**
+ * the current status should be SUSPEND
+ * then continue
+ * else validation error with message `current status should be SUSPEND`
+ * @returns
+ */
+const returnFromSuspensionEnrolmentValidationRules = () => {
+  return [
+    param("enrolmentId", "min length should be 2")
+      .custom(isValidEnrolment)
+      .bail()
+      .custom(isSuspendedEnrolment),
+  ];
+};
+
 const updateWaitlistEnrolmentValidationRules = () => {
   return [body("sessionId", "min length should be 2").custom(isValidSession)];
 };
@@ -173,9 +237,11 @@ const trialEnrolmentValidationRules = () => {
 //   ];
 // };
 module.exports = {
-  createEnrolementValidationRules,
-  withdrawEnrolmentValidationRules,
-  updateWaitlistEnrolmentValidationRules,
   classTransferEnrolmentValidationRules,
+  createEnrolementValidationRules,
+  suspendEnrolmentValidationRules,
   trialEnrolmentValidationRules,
+  updateWaitlistEnrolmentValidationRules,
+  withdrawEnrolmentValidationRules,
+  returnFromSuspensionEnrolmentValidationRules,
 };

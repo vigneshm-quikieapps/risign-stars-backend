@@ -3,7 +3,7 @@ const { ObjectId } = mongoose.Schema;
 const {
   ENUM_ENROLLED_STATUS,
   ENUM_DISCONTINUATION_REASON,
-} = require("../constants/constant");
+} = require("../constants/enrolment");
 
 const enrolmentSchema = new mongoose.Schema(
   {
@@ -23,20 +23,35 @@ const enrolmentSchema = new mongoose.Schema(
       ref: "Business",
     },
     name: String,
-    clubMembershipId: String,
-    startDate: Date,
+    clubMembershipId: {
+      type: String,
+      required: true,
+    },
+    startDate: {
+      type: Date,
+      required: true,
+    },
     registeredDate: Date,
     enrolledStatus: {
       type: String,
       enum: ENUM_ENROLLED_STATUS,
     },
     discontinuationReason: {
+      /** mark the reason for discontinuation, if the enrolment status is 'DROPPED' */
       type: String,
       enum: ENUM_DISCONTINUATION_REASON,
     },
     transferedTo: {
-      type: ObjectId,
       /** new enrolment id, if class transfer */
+      type: ObjectId,
+    },
+    suspendedAt: {
+      /** date on which the member went to suspended mode */
+      type: Date,
+    },
+    returnFromSuspensionAt: {
+      /** date on which the member return from suspension */
+      type: Date,
     },
     droppedDate: Date,
     updatedBy: {
