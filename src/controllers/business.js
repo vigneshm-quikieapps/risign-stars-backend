@@ -145,6 +145,7 @@ module.exports.uploadXLXSFile = (req, res) => {
       cb(null, file.originalname);
     },
   });
+  // Uploading the CSV file
   const upload = multer({
     storage: filestorage,
     fileFilter: (req, file, cb) => {
@@ -161,8 +162,7 @@ module.exports.uploadXLXSFile = (req, res) => {
       return res.json(err);
     }
     //**************************** */
-    //console.log(req.body.classid);
-    //console.log(req.file);
+    //read xlsx file from folder
     var workbook = XLSX.readFile(`./temp/xlsx/${req.file.originalname}`, {
       type: "binary",
       cellDates: true,
@@ -170,7 +170,7 @@ module.exports.uploadXLXSFile = (req, res) => {
     var sheet_name_list = workbook.SheetNames;
     //console.log(sheet_name_list); // getting as Sheet1
     let data = [];
-
+    //converting xlxs to json
     sheet_name_list.forEach(function (y) {
       var worksheet = workbook.Sheets[y];
       //getting the complete sheet
@@ -208,11 +208,10 @@ module.exports.uploadXLXSFile = (req, res) => {
     //************** */
 
     //console.log("one");
+    //validating the spreadsheet data for errors in them
     const promise1 = new Promise((resolve) => {
       let Errors = [];
       let amountError = [];
-      //Errors.push("u are here");
-      //console.log(Errors);
       let noDataFound = [];
       let classId = req.body.classid;
       data.forEach((bill, index) => {
@@ -224,6 +223,7 @@ module.exports.uploadXLXSFile = (req, res) => {
             billDate: req.body.BillDate,
           },
           (err, data) => {
+            //accumilate all errors inside Errors array
             if (err) {
               Errors.push({
                 line: index + 1,
@@ -232,6 +232,7 @@ module.exports.uploadXLXSFile = (req, res) => {
               });
               //console.log(Errors);
             }
+            //accumilate all no data found errors inside noDataFound array
             if (!data) {
               //return res.status(400);
               noDataFound.push({
@@ -242,6 +243,7 @@ module.exports.uploadXLXSFile = (req, res) => {
               });
               //console.log(noDataFound);
             }
+            // if the amount is underpaid so accumulating all that erreors in amountError array
             if (data) {
               //return res.status(400);
               if (data.total < bill.Amount)
@@ -257,8 +259,9 @@ module.exports.uploadXLXSFile = (req, res) => {
         resolve([Errors, noDataFound, amountError]);
       });
     });
+    //returning errors faced during validations check
     promise1
-      .then((value) => {
+      .then(async (value) => {
         //******************** */
         //console.log(value);
 
@@ -273,6 +276,27 @@ module.exports.uploadXLXSFile = (req, res) => {
             errors: value[0],
             "data not found": value[1],
             amountError: value[2],
+          });
+        } else if (value[1].length !== 0 && value[2].length !== 0) {
+          //console.log(value[0], value[1]);
+
+          return res.status(205).json({
+            "data not found": value[1],
+            amountError: value[2],
+          });
+        } else if (value[0].length !== 0 && value[2].length !== 0) {
+          //console.log(value[0], value[1]);
+
+          return res.status(205).json({
+            errors: value[0],
+            amountError: value[2],
+          });
+        } else if (value[0].length !== 0 && value[1].length !== 0) {
+          //console.log(value[0], value[1]);
+
+          return res.status(205).json({
+            errors: value[0],
+            "data not found": value[1],
           });
         } else if (value[0].length !== 0) {
           //console.log(Errors);
@@ -289,34 +313,65 @@ module.exports.uploadXLXSFile = (req, res) => {
           return res.status(205).json({ amountError: value[2] });
           //.json(value[0]);
         } else {
-          data.map((bill, index) => {
-            Bill.findOneAndUpdate(
-              {
-                clubMembershipId: bill.Membershipnumber,
-                classId: req.body.classid,
-                billDate: req.body.BillDate,
-              },
-              {
-                $set: {
-                  paidAt: Date.now(),
+          //if no errors present updating the whole bills from preadsheet data
+          // data.map((bill, index) => {
+          //   Bill.findOneAndUpdate(
+          //     {
+          //       clubMembershipId: bill.Membershipnumber,
+          //       classId: req.body.classid,
+          //       billDate: req.body.BillDate,
+          //     },
+          //     {
+          //       $set: {
+          //         paidAt: Date.now(),
+          //       },
+          //     },
+          //     { new: true, useFindAndModify: false },
+          //     (err) => {
+          //       if (err) {
+          //         console.log(err);
+          //         return res.status(400).json({
+          //           err: `Bill  updation failed !!! at line no ${index + 1}`,
+          //         });
+          //       }
+          //     }
+          //   );
+          // });
+          // return res.status(400).json({
+          //   success: `Bill  updation done `,
+          // });
+
+          //**************************  if no errors present updating the whole bills from preadsheet data  */
+          await Bill.bulkWrite(
+            data.map((bill) => ({
+              updateOne: {
+                filter: {
+                  clubMembershipId: bill.Membershipnumber,
+                  classId: req.body.classid,
+                  billDate: req.body.BillDate,
                 },
+                update: {
+                  $set: {
+                    paidAt: Date.now(),
+                  },
+                },
+                new: true,
+                useFindAndModify: false,
               },
-              { new: true, useFindAndModify: false },
-              (err) => {
-                if (err) {
-                  console.log(err);
-                  return res.status(400).json({
-                    err: `Bill  updation failed !!! at line no ${index + 1}`,
-                  });
-                }
-              }
-            );
-          });
-          return res.status(400).json({
-            success: `Bill  updation done `,
-          });
+            })) //,
+            // {},
+            // (err) => {
+            //   if (err) {
+            //     console.log(err);
+            //     return res.status(400).json({
+            //       err: `Bill  updation failed !!! at line no `,
+            //     });
+            //   }
+            // }
+          );
         }
       })
+      //finally delete the uploaded spreadsheets from server
       .then(async () => {
         await unlinkAsync(`./temp/xlsx/${req.file.originalname}`);
         console.log("im here deleted spread sheet");
