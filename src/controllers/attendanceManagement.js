@@ -243,7 +243,10 @@ module.exports.GetAttendanceOfAStudentByDate = async (req, res) => {
       date: new Date(req.body.date),
       classId: req.body.classId,
       sessionId: req.body.sessionId,
-    }).select({ members: { $elemMatch: { id: req.body.id } } });
+    })
+      .select({ members: { $elemMatch: { id: req.body.id } } })
+      .populate("members.id")
+      .populate("members.memberConcentId");
 
     if (!attendance) {
       return res
