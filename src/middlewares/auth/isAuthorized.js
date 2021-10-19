@@ -21,6 +21,16 @@ const getRoleIds = require("./utils/getRoleIds");
 const isAuthorized =
   (page, action, options = {}) =>
   async (req, res, next) => {
+    let token = null;
+    try {
+      token =
+        req.headers.authorization && req.headers.authorization.split(" ")[1];
+      let tokenPayload = verify(token, process.env.ACCESS_TOKEN_SECRET);
+      req.authUserData = tokenPayload;
+    } catch (err) {
+      //
+    }
+
     let { isAuthHandler } = options;
     if (process.env.IS_AUTHORIZED_CHECK === "DISABLE") {
       next();
