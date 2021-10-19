@@ -13,8 +13,6 @@ const generateMonthBillPayload = require("./generateMonthBillPayload");
 const generatePartialMonthBillPayload = (data) => {
   let { pattern, charges, startDate, endDate } = data;
 
-  console.log({ startDate, endDate });
-
   let monthlyPartialCharges = charges.map((charge) => {
     let partialCharge = calcPartialCharge({
       pattern,
@@ -22,9 +20,15 @@ const generatePartialMonthBillPayload = (data) => {
       endDate,
       charge,
     });
-    console.log({ partialCharge });
-    charge.amount = partialCharge;
-    return charge;
+
+    /**
+     * tried to copy the charge object using the object spread operator.
+     * but it resulted in some unexpected results
+     * so, used the stringify then parse for copying the charge object
+     */
+    let monthlyPartialCharge = JSON.parse(JSON.stringify(charge));
+    monthlyPartialCharge.amount = partialCharge;
+    return monthlyPartialCharge;
   });
 
   return generateMonthBillPayload({
@@ -32,4 +36,5 @@ const generatePartialMonthBillPayload = (data) => {
     charges: monthlyPartialCharges,
   });
 };
+
 module.exports = generatePartialMonthBillPayload;

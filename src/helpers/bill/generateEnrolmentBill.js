@@ -75,7 +75,6 @@ const generateEnrolmentBill = async (
     billDate: now,
     startDate: now,
   };
-
   let firstMonthbillPayload = generatePartialMonthBillPayload({
     ...firstMonthPayload,
     pattern,

@@ -40,4 +40,7 @@ const memberConsentSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
+
+memberConsentSchema.index({ clubMembershipId: 1 });
+
 module.exports = mongoose.model("MemberConsent", memberConsentSchema);
