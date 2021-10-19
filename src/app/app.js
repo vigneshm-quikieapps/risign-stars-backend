@@ -5,7 +5,7 @@ const cookieParser = require("cookie-parser");
 require("dotenv").config();
 
 var corsOptions = {
-  origin: "http://localhost:3000",
+  origin: "https://sudarshanshkrishna.github.io",
   credentials: true,
 };
 
