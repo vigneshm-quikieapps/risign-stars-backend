@@ -3,6 +3,7 @@ const UnauthorizedError = require("../../exceptions/UnauthorizedError");
 const { verify } = require("jsonwebtoken");
 const { hasPermission, hasAllPermission } = require("./utils");
 const getRoleIds = require("./utils/getRoleIds");
+const getRoles = require("./utils/getRoles");
 
 /**
  * Note:
@@ -51,7 +52,7 @@ const checkIsAuthorized = async (req, res, next, page, action) => {
     let tokenPayload = verify(token, process.env.ACCESS_TOKEN_SECRET);
     req.userData = tokenPayload;
 
-    if (page === null || action || null) {
+    if (page === null || action === null) {
       throw new Error("page or action not defined");
     }
 
@@ -59,10 +60,10 @@ const checkIsAuthorized = async (req, res, next, page, action) => {
      * if data privileges type is "ALL": the user has full access to any api
      * else check if the user has permission for that particular api
      */
-
     if (!hasAllPermission(tokenPayload)) {
       let roleIds = getRoleIds(tokenPayload);
-      let roles = await getRoleIds(roleIds);
+      let roles = await getRoles(roleIds);
+
       if (!hasPermission(roles, { page, action })) {
         throw new UnauthorizedError();
       }

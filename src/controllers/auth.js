@@ -82,7 +82,7 @@ module.exports.refreshToken = async (req, res) => {
     try {
       payload = RefreshToken.verify(token);
     } catch (err) {
-      console.log(err);
+      console.error(err);
       return res.send({
         ok: false,
         accessToken: "",

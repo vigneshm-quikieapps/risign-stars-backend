@@ -9,8 +9,8 @@ const {
 const { getFinanceOfABusiness } = require("../controllers/businessFinance");
 
 const validate = require("../validations/validate");
-const { BUSINESS_DEFINITION } = require("../constants/pages");
-const { CREATE, UPDATE, DELETE } = require("../constants/rest");
+const { BUSINESS_DEFINITION, CLASS_DEFINITION } = require("../constants/pages");
+const { CREATE, UPDATE, READ, DELETE } = require("../constants/rest");
 
 const {
   getBusinessIdById,
@@ -72,7 +72,11 @@ router.get("/", getAllBusinessValidationRules(), validate, getAllBusinesses);
 /**
  * classes
  */
-router.get("/:businessId/classes", getAllBusinessClass);
+router.get(
+  "/:businessId/classes",
+  isAuthorized(CLASS_DEFINITION, "read"),
+  getAllBusinessClass
+);
 
 /**
  * file upload
