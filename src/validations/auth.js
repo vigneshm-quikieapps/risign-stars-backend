@@ -22,17 +22,17 @@ const verifyRefreshToken = (refreshToken, { req }) => {
   }
 };
 
-const refreshTokenValidationRules = () => {
-  return [
-    body("refreshToken", "Invalid token")
-      .exists()
-      .bail()
-      .custom(verifyRefreshToken),
-  ];
-};
+// const refreshTokenValidationRules = () => {
+//   return [
+//     body("refreshToken", "Invalid token")
+//       .exists()
+//       .bail()
+//       .custom(verifyRefreshToken),
+//   ];
+// };
 
 module.exports = {
   getOTPEmailValidationRules,
   getOTPMobileNoValidationRules,
-  refreshTokenValidationRules,
+  // refreshTokenValidationRules,
 };

@@ -18,6 +18,14 @@ module.exports.signup = async (req, res) => {
   }
 };
 
+module.exports.logout = async (req, res) => {
+  try {
+    RefreshToken.send(req, "");
+  } catch (err) {
+    return res.status(422).send({ message: err.message });
+  }
+};
+
 // Signed Method
 module.exports.signin = async (req, res) => {
   try {
@@ -61,11 +69,45 @@ module.exports.isAuthenticated = (req, res, next) => {
 // Refresh Token
 module.exports.refreshToken = async (req, res) => {
   try {
-    const user = await User.findById(req.userData._id);
+    const token = req.cookies && req.cookies.jid;
+    if (!token) {
+      return res.send({
+        ok: false,
+        accessToken: "",
+        message: "refresh token not found",
+      });
+    }
+
+    let payload = null;
+    try {
+      payload = RefreshToken.verify(token);
+    } catch (err) {
+      console.log(err);
+      return res.send({
+        ok: false,
+        accessToken: "",
+        message: "invalid refresh token",
+      });
+    }
+
+    let userId = payload._id;
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.send({
+        ok: false,
+        accessToken: "",
+        message: "user does not exist",
+      });
+    }
+
     const data = generateTokens({ user });
+    let { refreshToken } = data;
+
+    RefreshToken.send(res, refreshToken);
     return res.send(data);
   } catch (err) {
-    return res.status(400).send({ message: err.message });
+    return res.status(422).send({ message: err.message });
   }
 };
 

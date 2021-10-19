@@ -213,6 +213,10 @@ const trialEnrolmentValidationRules = () => {
   ];
 };
 
+const billsInAnEnrolmentValidationRules = () => {
+  return [param("enrolmentId").custom(isValidEnrolment)];
+};
+
 // const putEnrolementConsentValidationRules = () => {
 //   return [
 //     body("consent").isObject(),
@@ -237,6 +241,7 @@ const trialEnrolmentValidationRules = () => {
 //   ];
 // };
 module.exports = {
+  billsInAnEnrolmentValidationRules,
   classTransferEnrolmentValidationRules,
   createEnrolementValidationRules,
   suspendEnrolmentValidationRules,
