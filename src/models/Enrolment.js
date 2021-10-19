@@ -4,6 +4,7 @@ const {
   ENUM_ENROLLED_STATUS,
   ENUM_DISCONTINUATION_REASON,
 } = require("../constants/enrolment");
+const mongoosePaginate = require("mongoose-paginate-v2");
 
 const enrolmentSchema = new mongoose.Schema(
   {
@@ -75,5 +76,30 @@ enrolmentSchema.statics.canEnrol = async function (filter) {
     );
   }
 };
+
+enrolmentSchema.virtual("memberConsent", {
+  ref: "MemberConsent",
+  localField: "clubMembershipId",
+  foreignField: "clubMembershipId",
+  justOne: true,
+});
+
+enrolmentSchema.virtual("member", {
+  ref: "Member",
+  localField: "memberId",
+  foreignField: "_id",
+  justOne: true,
+});
+
+// Ensure virtual fields are serialised.
+enrolmentSchema.set("toJSON", {
+  virtuals: true,
+  versionKey: false,
+  transform: function (doc, ret) {
+    delete ret.id;
+  },
+});
+
+enrolmentSchema.plugin(mongoosePaginate);
 
 module.exports = mongoose.model("Enrolment", enrolmentSchema);

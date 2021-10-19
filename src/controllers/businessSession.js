@@ -2,6 +2,7 @@ const BusinessSession = require("../models/businessSession");
 
 const { STARTS_WITH_FILTER, EQUALS_FILTER } = require("../constants/constant");
 const { getQuery, getOptions } = require("../helpers/query");
+const Enrolment = require("../models/Enrolment");
 
 //parameter extractor
 module.exports.getBusinessSessionIdById = (req, res, next, id) => {
@@ -87,4 +88,20 @@ module.exports.deleteBusinessSession = (req, res) => {
     }
     res.json(Session);
   });
+};
+
+module.exports.getMembersInASession = async (req, res) => {
+  try {
+    let query = getQuery(req);
+    let options = getOptions(req);
+    options.populate = [
+      { path: "memberConsent", select: ["consent"] },
+      { path: "member", select: ["name"] },
+    ];
+
+    let response = await Enrolment.paginate(query, options);
+    return res.send(response);
+  } catch (err) {
+    return res.status(422).send({ message: err.message });
+  }
 };
