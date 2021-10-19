@@ -2,6 +2,7 @@
 // Schema for attendance.
 
 const mongoose = require("mongoose");
+const { ObjectId } = mongoose.Schema;
 
 const attendanceOfAClassByDateSchema = new mongoose.Schema(
   {
@@ -28,9 +29,14 @@ const attendanceOfAClassByDateSchema = new mongoose.Schema(
     members: [
       {
         id: {
-          type: String,
+          type: ObjectId,
+          ref: "Member",
           required: true,
-          trim: true,
+        },
+        memberConcentId: {
+          type: ObjectId,
+          ref: "MemberConsent",
+          required: true,
         },
         name: {
           type: String,

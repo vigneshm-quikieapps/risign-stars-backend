@@ -163,7 +163,9 @@ module.exports.GetAllAttendanceByDate = async (req, res) => {
       date: new Date(req.body.date),
       classId: req.body.classId,
       sessionId: req.body.sessionId,
-    });
+    })
+      .populate("members.id")
+      .populate("members.memberConcentId");
 
     if (!attendance) {
       return res
@@ -352,3 +354,62 @@ module.exports.test = async (req, res) => {
     res.status(400).json({ success: false, message: err.message });
   }
 };
+////////////////
+//  { $unwind: "$members" },
+//       {
+//         $lookup: {
+//           from: "Member",
+//           localField: "members.id",
+//           foreignField: "_id",
+//           as: "members.member",
+//         },
+//       },
+//       { $unwind: "$members.member" },
+//       {
+//         $group: {
+//           _id: "$_id",
+//           root: { $mergeObjects: "$$ROOT" },
+//           info: { $push: "$members" },
+//         },
+//       },
+//       {
+//         $replaceRoot: {
+//           newRoot: {
+//             $mergeObjects: ["$root", "$$ROOT"],
+//           },
+//         },
+//       },
+//       {
+//         $project: {
+//           root: 0,
+//         },
+//       },
+//       { $unwind: "$members" },
+//       {
+//         $lookup: {
+//           from: "MemberConsent",
+//           localField: "members.memberConcentId",
+//           foreignField: "_id",
+//           as: "members.memberConsents",
+//         },
+//       },
+//       { $unwind: "$members.memberConcentId" },
+//       {
+//         $group: {
+//           _id: "$_id",
+//           root: { $mergeObjects: "$$ROOT" },
+//           info: { $push: "$members" },
+//         },
+//       },
+//       {
+//         $replaceRoot: {
+//           newRoot: {
+//             $mergeObjects: ["$root", "$$ROOT"],
+//           },
+//         },
+//       },
+//       {
+//         $project: {
+//           root: 0,
+//         },
+//       },

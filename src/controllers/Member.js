@@ -181,6 +181,10 @@ module.exports.getAllMember = async (req, res) => {
   try {
     let query = getQuery(req);
     let options = getOptions(req);
+    options.populate = {
+      path: "parent",
+      select: ["name", "email", "mobileNo"],
+    };
 
     let response = await Member.paginate(query, options);
     return res.send(response);
@@ -192,7 +196,7 @@ module.exports.getAllMember = async (req, res) => {
 module.exports.get = async (req, res) => {
   try {
     let { memberId } = req.params;
-    let member = await Member.findById(memberId);
+    let member = await Member.findById(memberId).populate("userId");
     return res.send({ member });
   } catch (err) {
     return res.send(422).send({ message: err.message });

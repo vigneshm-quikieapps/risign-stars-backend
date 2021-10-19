@@ -9,6 +9,7 @@ const memberSchema = new mongoose.Schema(
     id: String,
     userId: {
       type: ObjectId,
+      ref: "User",
       required: true,
     },
     membership: [
@@ -50,7 +51,11 @@ const memberSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
-
+memberSchema.virtual("parent", {
+  ref: "User",
+  localField: "userId",
+  foreignField: "_id",
+});
 // Ensure virtual fields are serialised.
 memberSchema.set("toJSON", {
   virtuals: true,
