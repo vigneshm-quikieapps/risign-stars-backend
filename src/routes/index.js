@@ -39,7 +39,7 @@ const routes = (app) => {
   app.use("/api", authRoutes);
   app.use("/api/enrolments", enrolmentRoute);
   app.use("/api/classes", classRoute);
-  app.use("/api/terms", termRoute);
+  app.use("/api/terms/", termRoute);
   app.use("/api/categories", categoryRoute);
   app.use("/api/sessions", sessionRoute);
   app.use("/api", registrationRoute);
