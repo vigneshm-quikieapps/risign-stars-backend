@@ -29,14 +29,20 @@ const isAuthorized =
       let tokenPayload = verify(token, process.env.ACCESS_TOKEN_SECRET);
       req.authUserData = tokenPayload;
     } catch (err) {
-      //
+      return res.send({ message: err.message });
     }
 
     let { isAuthHandler } = options;
-    if (process.env.IS_AUTHORIZED_CHECK === "DISABLE") {
-      next();
+
+    if (isAuthHandler) {
+      try {
+        isAuthHandler(req, res);
+        next();
+      } catch (err) {
+        return res.send({ message: err.message });
+      }
     } else {
-      if (isAuthHandler && isAuthHandler(req, res)) {
+      if (process.env.IS_AUTHORIZED_CHECK === "DISABLE") {
         next();
       } else {
         checkIsAuthorized(req, res, next, page, action);

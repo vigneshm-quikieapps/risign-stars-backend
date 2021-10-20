@@ -40,17 +40,10 @@ router.post(
 );
 
 const isAuthHandler = (req, res) => {
-  /** check if authenticated */
-  try {
-    let token =
-      req.headers.authorization && req.headers.authorization.split(" ")[1];
-    let tokenPayload = verify(token, process.env.ACCESS_TOKEN_SECRET);
-    req.authUserData = tokenPayload;
-
-    return true;
-  } catch (err) {
-    return res.send({ message: err.message });
-  }
+  /**
+   * TODO: add the logic.
+   */
+  return true;
 };
 
 router.get(

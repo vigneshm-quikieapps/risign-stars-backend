@@ -11,12 +11,12 @@ var whitelist = [
 ];
 
 var corsOptions = {
-  credentials: true,
+  // credentials: true,
 };
 
 app.use(express.json());
 app.use(cookieParser());
-app.use(cors(corsOptions));
+app.use(cors());
 
 /**
  * registering routes
