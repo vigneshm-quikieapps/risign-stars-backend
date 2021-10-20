@@ -7,7 +7,7 @@ const Role = require("../../../models/Role");
  * @returns
  */
 const getRoles = async (roleIds = []) => {
-  return await Role.find({ _id: { $in: roleIds } });
+  return Role.find({ _id: { $in: roleIds } });
 };
 
 module.exports = getRoles;

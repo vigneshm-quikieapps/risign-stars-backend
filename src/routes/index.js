@@ -32,19 +32,19 @@ const routes = (app) => {
   app.use("/api/evaluations", evaluationRoute);
   app.use("/api/bills", billRoute);
   app.use("/api/members", memberRoute);
+  app.use("/api/terms", termRoute);
+  app.use("/api/enrolments", enrolmentRoute);
+  app.use("/api/classes", classRoute);
+  app.use("/api/categories", categoryRoute);
+  app.use("/api/sessions", sessionRoute);
+  app.use("/api/progress", progressRecordRoute);
   app.use("/api", roleRoute);
   app.use("/api", userRoute);
   app.use("/api", attendanceRoute);
   app.use("/api", notification);
   app.use("/api", authRoutes);
-  app.use("/api/enrolments", enrolmentRoute);
-  app.use("/api/classes", classRoute);
-  app.use("/api/terms", termRoute);
-  app.use("/api/categories", categoryRoute);
-  app.use("/api/sessions", sessionRoute);
   app.use("/api", registrationRoute);
   app.use("/api/test", testRoute);
-  app.use("/api/progress", progressRecordRoute);
 
   // test route
   app.get("/", (req, res) => {
