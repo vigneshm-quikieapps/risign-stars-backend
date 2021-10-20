@@ -32,6 +32,7 @@ module.exports.signin = async (req, res) => {
     const { mobileNo, password } = req.body;
 
     let user = await User.findOne({ mobileNo });
+
     if (!user || !user.isValidPassword(password)) {
       throw new DoesNotExistError();
     }
@@ -39,7 +40,10 @@ module.exports.signin = async (req, res) => {
     let data = generateTokens({ user });
     RefreshToken.send(res, data.refreshToken);
 
-    return res.send(data);
+    let userData = JSON.parse(JSON.stringify(user));
+    delete userData.password;
+
+    return res.send({ ...data, user: userData });
   } catch (err) {
     return res.status(422).send({ message: err.message });
   }
