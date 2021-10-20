@@ -4,8 +4,13 @@ const cors = require("cors");
 const cookieParser = require("cookie-parser");
 require("dotenv").config();
 
+var whitelist = [
+  "http://localhost:3000",
+  "https://localhost:3000",
+  "https://sudarshanshkrishna.github.io",
+];
+
 var corsOptions = {
-  origin: "https://sudarshanshkrishna.github.io",
   credentials: true,
 };
 

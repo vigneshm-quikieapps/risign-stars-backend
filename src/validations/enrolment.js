@@ -5,6 +5,8 @@ const {
   STATUS_RETURN_FROM_SUSPENSION,
 } = require("../constants/enrolment");
 const { BusinessSession, Member, Enrolment } = require("../models");
+const { isValidBusinessId } = require("./helpers/business");
+const isValidMemberId = require("./helpers/members/isValidMemberId");
 
 const checkValidSession =
   (dataField) =>
@@ -217,6 +219,13 @@ const billsInAnEnrolmentValidationRules = () => {
   return [param("enrolmentId").custom(isValidEnrolment)];
 };
 
+const getAllEnrolmentOfAMemberInABusinessValidationRules = () => {
+  return [
+    body("businessId", "is required").custom(isValidBusinessId),
+    body("memberId", "is required").custom(isValidMemberId),
+  ];
+};
+
 // const putEnrolementConsentValidationRules = () => {
 //   return [
 //     body("consent").isObject(),
@@ -244,9 +253,10 @@ module.exports = {
   billsInAnEnrolmentValidationRules,
   classTransferEnrolmentValidationRules,
   createEnrolementValidationRules,
+  getAllEnrolmentOfAMemberInABusinessValidationRules,
+  returnFromSuspensionEnrolmentValidationRules,
   suspendEnrolmentValidationRules,
   trialEnrolmentValidationRules,
   updateWaitlistEnrolmentValidationRules,
   withdrawEnrolmentValidationRules,
-  returnFromSuspensionEnrolmentValidationRules,
 };

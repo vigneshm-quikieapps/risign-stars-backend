@@ -84,6 +84,20 @@ enrolmentSchema.virtual("memberConsent", {
   justOne: true,
 });
 
+enrolmentSchema.virtual("class", {
+  ref: "BusinessClass",
+  localField: "classId",
+  foreignField: "_id",
+  justOne: true,
+});
+
+enrolmentSchema.virtual("session", {
+  ref: "BusinessSession",
+  localField: "sessionId",
+  foreignField: "_id",
+  justOne: true,
+});
+
 enrolmentSchema.virtual("member", {
   ref: "Member",
   localField: "memberId",
