@@ -3,15 +3,17 @@ const { getQuery, getOptions } = require("../helpers/query");
 
 //parameter extractor
 module.exports.getBusinessClassIdById = (req, res, next, id) => {
-  BusinessClass.findById(id).exec((err, Class) => {
-    if (err) {
-      return res.status(400).json({
-        err: "cannot find business Class by id enter a valid ID",
-      });
-    }
-    req.Class = Class;
-    next();
-  });
+  BusinessClass.findById(id)
+    .populate("sessionIds")
+    .exec((err, Class) => {
+      if (err) {
+        return res.status(400).json({
+          err: "cannot find business Class by id enter a valid ID",
+        });
+      }
+      req.Class = Class;
+      next();
+    });
 };
 
 //Business Class creation
