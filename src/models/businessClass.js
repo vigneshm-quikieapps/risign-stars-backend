@@ -97,6 +97,7 @@ businessClassSchema.virtual("business", {
   ref: "Business",
   localField: "businessId",
   foreignField: "_id",
+  justOne: true,
 });
 businessClassSchema.virtual("sessions", {
   ref: "BusinessSession",
