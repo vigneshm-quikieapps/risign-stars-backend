@@ -25,12 +25,7 @@ const { verify } = require("jsonwebtoken");
 
 router.post("/sign-up", signUpValidationRules(), validate, signup);
 router.post("/sign-in", signInValidationRules(), validate, signin);
-router.post(
-  "/refresh-token",
-  refreshTokenValidationRules(),
-  validate,
-  refreshToken
-);
+router.post("/refresh-token", refreshToken);
 router.post(
   "/get-otp/email",
   getOTPEmailValidationRules(),

@@ -9,6 +9,7 @@ const {
   createBusinessSession,
   updateBusinessSession,
   deleteBusinessSession,
+  getMembersInASession,
 } = require("../controllers/businessSession");
 const {
   updateSessionValidationRules,
@@ -29,6 +30,8 @@ router.post(
   validate,
   createBusinessSession
 );
+
+router.get("/:businessSessionId/members", getMembersInASession);
 
 // read routes
 router.get("/:businessSessionId", getBusinessSession);

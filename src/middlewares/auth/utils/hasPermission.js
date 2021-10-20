@@ -4,6 +4,7 @@ const hasPermission = (roles, { page, action }) => {
   let roleIndex = roles.findIndex(({ functionalPrivileges }) =>
     hasFunctionalPrivileges(functionalPrivileges, { page, action })
   );
+
   return roleIndex > -1;
 };
 

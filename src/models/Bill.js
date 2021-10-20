@@ -35,7 +35,7 @@ const billSchema = new mongoose.Schema(
         },
         description: String,
         amount: {
-          type: String,
+          type: Number,
           required: true,
         },
         startDate: Date,

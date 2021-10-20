@@ -11,19 +11,26 @@ const activateAllFutureBills = async (data, session) => {
   let { startDate } = term;
   let { suspendedAt, clubMembershipId, businessId } = enrolmentData;
 
-  let returnNow = new Date();
-  let nextMonth = new Date("2021-11-11");
-  now = nextMonth;
-
   /**
    * create partial charges if required
    */
-  console.log({ now, suspendedAt: new Date(suspendedAt) });
   let suspendedAtMonth = moment(suspendedAt).format("YYYY-MM-01");
   let nowMonth = moment(now).format("YYYY-MM-01");
   let monthDiff = moment(nowMonth).diff(suspendedAtMonth, "month");
 
-  console.log({ monthDiff });
+  /**
+   * e.g the member is marked as suspend in the month of october
+   *
+   * case 1.
+   * if the member is marked as return from suspension on october
+   * mark all future bills as "ACTIVE"
+   *
+   * case 2.
+   * if the member is marked as return from suspension on the month greater than october (say november)
+   * mark the future bills (i.e december and later) as "ACTIVE"
+   * create a new bill (partial charge, if applicable) for the month of november (OR the current month OR the month in which the member is marked return from suspension)
+   *
+   */
   if (monthDiff >= 1) {
     let monthlyCharges = getMonthlyCharges(charges);
 

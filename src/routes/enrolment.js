@@ -7,6 +7,7 @@ const {
   withdrawEnrolment,
   trailEnrolment,
   returnFromSuspensionEnrolment,
+  getAllEnrolmentOfAMemberInABusiness,
 } = require("../controllers/enrolment");
 const suspendEnrolment = require("../controllers/enrolment/suspendEnrolment");
 const {
@@ -17,11 +18,20 @@ const {
   trialEnrolmentValidationRules,
   suspendEnrolmentValidationRules,
   returnFromSuspensionEnrolmentValidationRules,
+  getAllEnrolmentOfAMemberInABusinessValidationRules,
 } = require("../validations/enrolment");
 const validate = require("../validations/validate");
 
 /** routes */
 router.post("/", createEnrolementValidationRules(), validate, newEnrolment);
+
+router.post(
+  "/of-a-member-in-a-business",
+  getAllEnrolmentOfAMemberInABusinessValidationRules(),
+  validate,
+  getAllEnrolmentOfAMemberInABusiness
+);
+
 router.post(
   "/:enrolmentId/withdraw",
   withdrawEnrolmentValidationRules(),
