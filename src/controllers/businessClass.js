@@ -4,7 +4,8 @@ const { getQuery, getOptions } = require("../helpers/query");
 //parameter extractor
 module.exports.getBusinessClassIdById = (req, res, next, id) => {
   BusinessClass.findById(id)
-    .populate("sessionIds")
+    .populate("business")
+    .populate("sessions")
     .exec((err, Class) => {
       if (err) {
         return res.status(400).json({
