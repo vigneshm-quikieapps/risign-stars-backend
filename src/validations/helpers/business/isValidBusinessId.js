@@ -19,7 +19,7 @@ const isValidBusinessId = async (businessId) => {
 
     return true;
   } catch (err) {
-    return Promise.reject("should be a valid businessId");
+    return Promise.reject("invalid business Id");
   }
 };
 

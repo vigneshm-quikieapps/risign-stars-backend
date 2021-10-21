@@ -10,7 +10,7 @@ const isValidClassId = async (classId) => {
 
     return true;
   } catch (err) {
-    return Promise.reject(err.message);
+    return Promise.reject("invalid class id");
   }
 };
 

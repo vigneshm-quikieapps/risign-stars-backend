@@ -24,7 +24,10 @@ const {
   // convertXLXSFile,
   businessImageUploadHelper,
   uploadImage,
+  getAllBusinessesOfLoginUser,
 } = require("../controllers/business");
+const { getAllTermsInABusiness } = require("../controllers/term");
+
 const { isAuthorized } = require("../middlewares/auth");
 const { getAllBusinessClass } = require("../controllers/businessClass");
 const user = require("../controllers/user");
@@ -47,8 +50,12 @@ router.post(
   createBusiness
 );
 
+router.get("/of-logged-in-user", isAuthorized(), getAllBusinessesOfLoginUser);
+
 // read routes
 router.get("/:businessId", getBusiness);
+
+router.get("/:businessId/terms", getAllTermsInABusiness);
 
 //delete route
 router.delete(

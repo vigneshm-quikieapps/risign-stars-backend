@@ -24,22 +24,12 @@ const createCategoryValidationRules = () => {
   return [
     check("name", "name should be at least 3 char")
       .isLength({ min: 3 })
+      .bail()
       .custom(checkIsUnique),
-    check("updatedBy", "updatedBy should be a valid userId")
-      .optional()
-      .isLength({ min: 12 }),
-    check("createdBy", "createdBy should be a valid userId").isLength({
-      min: 12,
-    }),
   ];
 };
 const updateCategoryValidationRules = () => {
-  return [
-    check("name", "name should be at least 3 char").isLength({ min: 3 }),
-    check("updatedBy", "updatedBy should be a valid userId").isLength({
-      min: 12,
-    }),
-  ];
+  return [check("name", "name should be at least 3 char").isLength({ min: 3 })];
 };
 module.exports = {
   createCategoryValidationRules,

@@ -9,6 +9,7 @@ const {
 const memberConsent = require("../controllers/memberConsent");
 const member = require("../controllers/Member");
 const validate = require("../validations/validate");
+const { isAuthorized } = require("../middlewares/auth");
 
 router.param("memberId", member.getmemberIdById);
 
@@ -16,6 +17,11 @@ router.param("memberId", member.getmemberIdById);
  * routes
  */
 router.get("/", member.getAllMember);
+router.get(
+  "/of-a-logged-in-user",
+  isAuthorized(null, null),
+  member.getAllMemberOfALoggedInUser
+);
 router.get("/:memberId", member.get);
 router.post("/", createMemberValidationRules(), validate, member.create);
 router.get("/consent", memberConsent.get);

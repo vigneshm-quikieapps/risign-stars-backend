@@ -13,7 +13,7 @@ const businessSessionSchema = new mongoose.Schema(
       ref: "Business",
     },
     term: {
-      id: {
+      _id: {
         type: ObjectId,
         required: true,
         ref: "Term",
@@ -80,6 +80,18 @@ const businessSessionSchema = new mongoose.Schema(
 businessSessionSchema.virtual("coach", {
   ref: "User",
   localField: "coachId",
+  foreignField: "_id",
+});
+
+businessSessionSchema.virtual("class", {
+  ref: "BusinessClass",
+  localField: "classId",
+  foreignField: "_id",
+});
+
+businessSessionSchema.virtual("business", {
+  ref: "Business",
+  localField: "businessId",
   foreignField: "_id",
 });
 

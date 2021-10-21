@@ -1,4 +1,6 @@
-const Term = require("../models/Term");
+const { Types } = require("mongoose");
+const { getQuery, getOptions } = require("../helpers/query");
+const { Term } = require("../models");
 
 //parameter extractor
 module.exports.getTermIdById = (req, res, next, id) => {
@@ -45,6 +47,7 @@ module.exports.getAllTerm = (req, res) => {
     .limit(limit)
     .exec((err, term) => {
       if (err) {
+        console.log(err);
         return res.status(400).json({
           err: "cannot find Terms",
         });
@@ -90,4 +93,26 @@ module.exports.deleteTerm = (req, res) => {
     }
     res.json(term);
   });
+};
+
+/**
+ * get all terms in a business
+ *
+ * @param {*} req
+ * @param {*} res
+ * @returns
+ */
+module.exports.getAllTermsInABusiness = async (req, res) => {
+  try {
+    let { businessId } = req.params;
+
+    let query = getQuery(req);
+    query = { ...query, businessId };
+    let options = getOptions(req);
+
+    let response = await Term.paginate(query, options);
+    return res.send(response);
+  } catch (err) {
+    return res.status(422).send({ message: err.message });
+  }
 };

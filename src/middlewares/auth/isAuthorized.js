@@ -14,7 +14,16 @@ const getRoles = require("./utils/getRoles");
  * set IS_AUTHORIZED_CHECK=DISABLE
  *
  * 3. isAuthHandler: custom handler function to authorized a user checker
- * Note: isAuthHandler must be wrap inside a try catch block
+ * Note: isAuthHandler should throw error is failed / not authorized
+ *
+ *
+ *
+ * isAuthorized(null, null) : if the user is authenticated, let it pass
+ * isAuthorized(page, action) : if ther user has permission, let it pass
+ * isAuthorized(null, null, { isAuthHandler }): if the user passes the auth handler, let it pass
+ * isAuthorized(page, action, { isAuthHandler }): if the user either has permission or the auth handler passes, let it pass
+ *
+ *
  * @param {*} page
  * @param {*} action
  * @returns
@@ -32,61 +41,79 @@ const isAuthorized =
       return res.send({ message: err.message });
     }
 
-    let { isAuthHandler } = options;
+    // if (isAuthHandler) {
+    //   try {
+    //     isAuthHandler(req, res);
+    //     next();
+    //   } catch (err) {
+    //     return res.send({ message: err.message });
+    //   }
+    // } else {
+    //   if (process.env.IS_AUTHORIZED_CHECK === "DISABLE") {
+    //     next();
+    //   } else {
+    //     checkIsAuthorized(req, res, next, page, action);
+    //   }
+    // }
 
-    if (isAuthHandler) {
-      try {
-        isAuthHandler(req, res);
+    switch (true) {
+      case page == null && action == null:
         next();
-      } catch (err) {
-        return res.send({ message: err.message });
-      }
-    } else {
-      if (process.env.IS_AUTHORIZED_CHECK === "DISABLE") {
+        break;
+
+      case process.env.IS_AUTHORIZED_CHECK === "DISABLE":
         next();
-      } else {
-        checkIsAuthorized(req, res, next, page, action);
-      }
+        break;
+
+      default:
+        try {
+          await checkIsAuthorized(req, res, next, { page, action, options });
+          next();
+        } catch (err) {
+          try {
+            let { isAuthHandler } = options;
+
+            if (!isAuthHandler) {
+              throw err;
+            }
+
+            isAuthHandler(req, res);
+            next();
+          } catch (err2) {
+            console.error(err2.message);
+            return res
+              .status(StatusCodes.UNAUTHORIZED)
+              .send({ message: "Unauthorized" });
+          }
+        }
+        break;
     }
   };
 
-const checkIsAuthorized = async (req, res, next, page, action) => {
-  try {
-    /** check if authenticated */
-    let token =
-      req.headers.authorization && req.headers.authorization.split(" ")[1];
-    let tokenPayload = verify(token, process.env.ACCESS_TOKEN_SECRET);
-    req.userData = tokenPayload;
-
-    if (page === null || action === null) {
-      throw new Error("page or action not defined");
-    }
-
-    /**
-     * if data privileges type is "ALL": the user has full access to any api
-     * else check if the user has permission for that particular api
-     */
-    if (!hasAllPermission(tokenPayload)) {
-      let roleIds = getRoleIds(tokenPayload);
-      let roles = await getRoles(roleIds);
-
-      if (!hasPermission(roles, { page, action })) {
-        throw new UnauthorizedError();
-      }
-    }
-
-    /**
-     * if the code execution reaches here.
-     * that means, the user is authorized
-     */
-
-    next();
-  } catch (err) {
-    console.error(err.message);
-    return res
-      .status(StatusCodes.UNAUTHORIZED)
-      .send({ message: "Unauthorized" });
+const checkIsAuthorized = async (req, res, next, { page, action, options }) => {
+  if (page === null || action === null) {
+    throw new Error("page or action not defined");
   }
+
+  let tokenPayload = req.authUserData;
+
+  /**
+   * if data privileges type is "ALL": the user has full access to any api
+   * else check if the user has permission for that particular api
+   */
+  if (!hasAllPermission(tokenPayload)) {
+    let roleIds = getRoleIds(tokenPayload);
+    let roles = await getRoles(roleIds);
+
+    if (!hasPermission(roles, { page, action })) {
+      throw new UnauthorizedError();
+    }
+  }
+
+  /**
+   * if the code execution reaches here.
+   * that means, the user is authorized
+   */
 };
 
 module.exports = isAuthorized;

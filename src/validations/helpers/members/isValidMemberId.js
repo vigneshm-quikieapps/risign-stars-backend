@@ -10,7 +10,7 @@ const isValidMemberId = async (memberId) => {
 
     return true;
   } catch (err) {
-    return Promise.reject(err.message);
+    return Promise.reject("invalid member id");
   }
 };
 

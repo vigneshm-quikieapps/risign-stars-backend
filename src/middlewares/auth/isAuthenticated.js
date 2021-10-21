@@ -6,7 +6,7 @@ const IsAuthenticated = (req, res, next) => {
     let token =
       req.headers.Authorization && req.headers.Authorization.split(" ")[1];
     let decoded = verify(token, process.env.ACCESS_TOKEN);
-    req.userData = decoded;
+    req.authUserData = decoded;
     next();
   } catch (err) {
     return res
