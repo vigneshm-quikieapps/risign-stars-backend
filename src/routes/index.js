@@ -13,7 +13,7 @@ const accountRoutes = require("./account");
 const memberRoute = require("./Member");
 const classRoute = require("./businessClass");
 const sessionRoute = require("./businessSession");
-// const termRoute = require("./term");
+const termRoute = require("./term");
 const categoryRoute = require("./category");
 const registrationRoute = require("./registration");
 const testRoute = require("./testRoute");
@@ -32,7 +32,7 @@ const routes = (app) => {
   app.use("/api/evaluations", evaluationRoute);
   app.use("/api/bills", billRoute);
   app.use("/api/members", memberRoute);
-  // app.use("/api/terms", termRoute);
+  app.use("/api/terms", termRoute);
   app.use("/api/enrolments", enrolmentRoute);
   app.use("/api/classes", classRoute);
   app.use("/api/categories", categoryRoute);
