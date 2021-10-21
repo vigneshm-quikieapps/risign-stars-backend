@@ -1,3 +1,4 @@
+const { getQuery, getOptions } = require("../helpers/query");
 const Category = require("../models/Category");
 
 module.exports.getCategoryById = (req, res, next, id) => {
@@ -62,4 +63,19 @@ module.exports.removeCategory = (req, res) => {
     }
     res.json(cat);
   });
+};
+
+module.exports.getAllCategoriesInABusiness = async (req, res) => {
+  try {
+    let { businessId } = req.params;
+
+    let query = getQuery(req);
+    query = { ...query, businessId };
+    let options = getOptions(req);
+
+    let response = await Category.paginate(query, options);
+    return res.send(response);
+  } catch (err) {
+    return res.status(422).send({ message: err.message });
+  }
 };

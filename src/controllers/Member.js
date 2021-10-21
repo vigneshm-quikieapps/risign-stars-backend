@@ -4,6 +4,8 @@ const DoesNotExistError = require("../exceptions/DoesNotExistError");
 const path = require("path");
 const multer = require("multer");
 const { getQuery, getOptions } = require("../helpers/query");
+const { Types } = require("mongoose");
+const { Enrolment } = require("../models");
 
 //parameter extractor
 module.exports.getmemberIdById = (req, res, next, id) => {
@@ -252,4 +254,45 @@ module.exports.uploadImage = async (req, res) => {
     message: "sucessfully uploaded",
     member,
   });
+};
+
+/**
+ * get all members of a logged in user
+ *
+ * @param {*} req
+ * @param {*} res
+ * @returns
+ */
+module.exports.getAllMemberOfALoggedInUser = async (req, res) => {
+  try {
+    let { authUserData } = req;
+    let { dataPrivileges } = authUserData;
+    let businessIds = dataPrivileges.map(({ businessId }) =>
+      Types.ObjectId(businessId)
+    );
+
+    /**
+     * get the member ids
+     * the members should be enrolled in the business
+     * where the logged in user has permission
+     */
+    let membersEnrolled = await Enrolment.aggregate([
+      {
+        $match: { businessId: { $in: businessIds } },
+      },
+      { $project: { memberId: 1 } },
+      { $group: { _id: "$memberId" } },
+    ]);
+
+    let memberIds = membersEnrolled.map(({ _id }) => _id);
+
+    let query = getQuery(req);
+    query = { ...query, _id: { $in: memberIds } };
+    let options = getOptions(req);
+
+    let response = await Member.paginate(query, options);
+    return res.send(response);
+  } catch (err) {
+    return res.status(422).send({ message: err.message });
+  }
 };

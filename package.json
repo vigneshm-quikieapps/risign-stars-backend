@@ -6,6 +6,7 @@
 	"scripts": {
 		"start": "node server.js",
 		"dev": "nodemon server.js",
+		"dev:https": "nodemon server.js",
 		"test": "jest",
 		"check-env": "node -e 'console.log(process.env)' | grep npm",
 		"redis-gui": "redis-commander --redis-host $(grep REDIS_HOST .env | cut -d '=' -f2) --redis-port $(grep REDIS_PORT .env | cut -d '=' -f2) --redis-password $(grep REDIS_PASSWORD .env | cut -d '=' -f2)",

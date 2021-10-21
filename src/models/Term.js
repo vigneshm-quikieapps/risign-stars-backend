@@ -1,9 +1,10 @@
 var mongoose = require("mongoose");
 const { ObjectId } = mongoose.Schema;
+const mongoosePaginate = require("mongoose-paginate-v2");
 
 const termSchema = new mongoose.Schema(
   {
-    business: {
+    businessId: {
       type: ObjectId,
       ref: "Business",
       required: true,
@@ -38,5 +39,22 @@ const termSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
+
+termSchema.virtual("business", {
+  ref: "Business",
+  localField: "businessId",
+  foreignField: "_id",
+});
+
+// Ensure virtual fields are serialised.
+termSchema.set("toJSON", {
+  virtuals: true,
+  versionKey: false,
+  transform: function (doc, ret) {
+    delete ret.id;
+  },
+});
+
+termSchema.plugin(mongoosePaginate);
 
 module.exports = mongoose.model("Term", termSchema);

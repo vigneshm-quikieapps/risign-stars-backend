@@ -17,7 +17,7 @@ module.exports.getAll = async (req, res) => {
 
 module.exports.create = async (req, res) => {
   try {
-    await Role.create({ ...req.body, createdBy: req.userData._id });
+    await Role.create({ ...req.body, createdBy: req.authUserData._id });
     return res.status(201).send({ message: "added successfully" });
   } catch (err) {
     console.error(err);
@@ -45,7 +45,7 @@ module.exports.update = async (req, res) => {
     let options = { new: true };
     let role = await Role.findByIdAndUpdate(
       roleId,
-      { ...req.body, updatedBy: req.userData._id },
+      { ...req.body, updatedBy: req.authUserData._id },
       options
     );
     if (!role) {

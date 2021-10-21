@@ -24,9 +24,15 @@ const {
   // convertXLXSFile,
   businessImageUploadHelper,
   uploadImage,
+  getAllBusinessesOfLoginUser,
 } = require("../controllers/business");
+
+const { getAllTermsInABusiness } = require("../controllers/term");
+
 const { isAuthorized } = require("../middlewares/auth");
 const { getAllBusinessClass } = require("../controllers/businessClass");
+const { getAllCategoriesInABusiness } = require("../controllers/category");
+
 const user = require("../controllers/user");
 /**
  * RBAC required for Create, Update, Delete
@@ -47,7 +53,10 @@ router.post(
   createBusiness
 );
 
-// read routes
+router.get("/of-logged-in-user", isAuthorized(), getAllBusinessesOfLoginUser);
+
+router.get("/:businessId/terms", getAllTermsInABusiness);
+router.get("/:businessId/categories", getAllCategoriesInABusiness);
 router.get("/:businessId", getBusiness);
 
 //delete route

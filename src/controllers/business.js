@@ -7,6 +7,7 @@ const { getQuery, getOptions } = require("../helpers/query");
 const path = require("path");
 const fs = require("fs");
 const { promisify } = require("util");
+const { Types } = require("mongoose");
 
 const unlinkAsync = promisify(fs.unlink);
 //parameter extractor
@@ -23,7 +24,6 @@ module.exports.getBusinessIdById = (req, res, next, id) => {
 };
 
 //create business
-
 module.exports.createBusiness = (req, res) => {
   const business = new Business(req.body);
   business.save((err, business) => {
@@ -96,6 +96,35 @@ module.exports.getAllBusinesses = async (req, res) => {
     let response = await Business.paginate(query, options);
     return res.send(response);
   } catch (err) {
+    return res.status(422).send({ message: err.message });
+  }
+};
+
+/**
+ * get all businesses of authenticated user
+ */
+module.exports.getAllBusinessesOfLoginUser = async (req, res) => {
+  try {
+    let { authUserData } = req;
+
+    if (!authUserData) {
+      throw new Error("User does not exist");
+    }
+
+    let { dataPrivileges } = authUserData;
+    let businessIds = dataPrivileges.map(({ businessId }) =>
+      Types.ObjectId(businessId)
+    );
+
+    let query = getQuery(req);
+    let options = getOptions(req);
+    query = { ...query, _id: { $in: businessIds } };
+
+    let response = await Business.find(query, options);
+
+    return res.send(response);
+  } catch (err) {
+    console.log("wow");
     return res.status(422).send({ message: err.message });
   }
 };

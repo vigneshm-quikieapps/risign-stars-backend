@@ -18,7 +18,6 @@ module.exports.getBusinessSessionIdById = (req, res, next, id) => {
 };
 
 //Business Session creation
-
 module.exports.createBusinessSession = (req, res) => {
   const Session = new BusinessSession(req.body);
   Session.save((err, Session) => {
@@ -100,6 +99,21 @@ module.exports.getMembersInASession = async (req, res) => {
     ];
 
     let response = await Enrolment.paginate(query, options);
+    return res.send(response);
+  } catch (err) {
+    return res.status(422).send({ message: err.message });
+  }
+};
+
+module.exports.getAllSessionsInATerm = async (req, res) => {
+  try {
+    let { termId } = req.params;
+
+    let query = getQuery(req);
+    query = { query, "term._id": termId };
+    let options = getOptions(req);
+
+    let response = await BusinessSession.paginate(query, options);
     return res.send(response);
   } catch (err) {
     return res.status(422).send({ message: err.message });

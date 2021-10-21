@@ -18,7 +18,7 @@ const validate = require("../validations/validate");
 router.param("categoryId", getCategoryById);
 //router.param("userId",getUserById);
 
-//router.get("/category/:categoryId/",);
+// router.get("/category/:categoryId/",);
 router.post("/", createCategoryValidationRules(), validate, createCategory);
 
 router.get("/", getAllCategory);
