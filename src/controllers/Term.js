@@ -1,4 +1,3 @@
-const { Types } = require("mongoose");
 const { getQuery, getOptions } = require("../helpers/query");
 const { Term } = require("../models");
 
