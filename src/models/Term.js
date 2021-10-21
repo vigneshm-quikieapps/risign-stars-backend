@@ -40,6 +40,12 @@ const termSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
+termSchema.virtual("business", {
+  ref: "Business",
+  localField: "businessId",
+  foreignField: "_id",
+});
+
 // Ensure virtual fields are serialised.
 termSchema.set("toJSON", {
   virtuals: true,
