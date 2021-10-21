@@ -5,7 +5,10 @@ const {
 
 const getQuery = (req) => {
   let query = {};
+
   let { filters = [] } = req.query;
+  filters = filters.map((filter) => JSON.parse(filter));
+
   for (let { field, type, value } of filters) {
     switch (type) {
       case STARTS_WITH_FILTER:
