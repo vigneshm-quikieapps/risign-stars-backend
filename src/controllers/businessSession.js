@@ -18,7 +18,6 @@ module.exports.getBusinessSessionIdById = (req, res, next, id) => {
 };
 
 //Business Session creation
-
 module.exports.createBusinessSession = (req, res) => {
   const Session = new BusinessSession(req.body);
   Session.save((err, Session) => {
