@@ -27,7 +27,7 @@ const {
   getAllBusinessesOfLoginUser,
 } = require("../controllers/business");
 
-// const { getAllTermsInABusiness } = require("../controllers/term");
+const { getAllTermsInABusiness } = require("../controllers/term");
 
 const { isAuthorized } = require("../middlewares/auth");
 const { getAllBusinessClass } = require("../controllers/businessClass");
@@ -55,7 +55,7 @@ router.post(
 
 router.get("/of-logged-in-user", isAuthorized(), getAllBusinessesOfLoginUser);
 
-// router.get("/:businessId/terms", getAllTermsInABusiness);
+router.get("/:businessId/terms", getAllTermsInABusiness);
 router.get("/:businessId/categories", getAllCategoriesInABusiness);
 router.get("/:businessId", getBusiness);
 
