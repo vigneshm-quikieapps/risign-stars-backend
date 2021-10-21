@@ -72,6 +72,13 @@ const businessSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
+businessSchema.virtual("finance", {
+  ref: "BusinessFinance",
+  localField: "_id",
+  foreignField: "businessId",
+  justOne: true,
+});
+
 // Ensure virtual fields are serialised.
 businessSchema.set("toJSON", {
   virtuals: true,

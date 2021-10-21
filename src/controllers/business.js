@@ -8,20 +8,21 @@ const path = require("path");
 const fs = require("fs");
 const { promisify } = require("util");
 const { Types } = require("mongoose");
+const DoesNotExistError = require("../exceptions/DoesNotExistError");
 
 const unlinkAsync = promisify(fs.unlink);
 //parameter extractor
-module.exports.getBusinessIdById = (req, res, next, id) => {
-  Business.findById(id).exec((err, business) => {
-    if (err) {
-      return res.status(400).json({
-        error: "Product not found",
-      });
-    }
-    req.business = business;
-    next();
-  });
-};
+// module.exports.getBusinessIdById = (req, res, next, id) => {
+//   Business.findById(id).exec((err, business) => {
+//     if (err) {
+//       return res.status(400).json({
+//         error: "Product not found",
+//       });
+//     }
+//     req.business = business;
+//     next();
+//   });
+// };
 
 //create business
 module.exports.createBusiness = (req, res) => {
@@ -38,24 +39,34 @@ module.exports.createBusiness = (req, res) => {
 };
 
 //get Business
-module.exports.getBusiness = (req, res) => {
-  return res.json(req.business);
+module.exports.getBusiness = async (req, res) => {
+  try {
+    let { businessId } = req.params;
+    let business = await Business.findById(businessId).populate("finance");
+
+    if (!business) {
+      throw new Error("Not found");
+    }
+
+    return res.send({ business });
+  } catch (err) {
+    return res.status(422).send({ message: err.message });
+  }
 };
 
 // delete controllers
-module.exports.deleteBusiness = (req, res) => {
-  let business = req.business;
-  business.remove((err, deletedBusiness) => {
-    if (err) {
-      return res.status(400).json({
-        error: "Failed to delete the product",
-      });
+module.exports.deleteBusiness = async (req, res) => {
+  try {
+    let { businessId } = req.params;
+    let { deletedCount } = await Business.deleteOne({ _id: businessId });
+    if (!deletedCount) {
+      throw new DoesNotExistError();
     }
-    res.json({
-      message: "Deletion was a success",
-      deletedBusiness,
-    });
-  });
+    return res.send({ message: "deleted successfully" });
+  } catch (err) {
+    console.error(err);
+    return res.status(422).send({ message: err.message });
+  }
 };
 
 /**
@@ -66,24 +77,27 @@ module.exports.deleteBusiness = (req, res) => {
  * @param {*} req
  * @param {*} res
  */
-module.exports.updateBusiness = (req, res) => {
-  let data = { ...req.body };
-  delete data.code; /** updating business code is not allowed  */
+module.exports.updateBusiness = async (req, res) => {
+  try {
+    let data = { ...req.body };
+    delete data.code; /** updating business code is not allowed  */
 
-  Business.findByIdAndUpdate(
-    { _id: req.business._id },
-    { $set: req.body },
-    { new: true, useFindAndModify: false },
-    (err, business) => {
-      if (err) {
-        return res.status(400).json({
-          err: "updation failed ",
-        });
-      }
+    let { businessId } = req.params;
+    let options = { new: true, useFindAndModify: false };
 
-      res.json(business);
+    let business = await Business.findByIdAndUpdate(
+      businessId,
+      { $set: data },
+      options
+    );
+    if (!business) {
+      throw new DoesNotExistError();
     }
-  );
+    return res.send({ message: "updated successfully" });
+  } catch (err) {
+    console.error(err);
+    return res.status(422).send({ message: err.message });
+  }
 };
 
 /**

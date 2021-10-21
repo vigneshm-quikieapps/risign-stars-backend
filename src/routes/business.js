@@ -39,7 +39,7 @@ const user = require("../controllers/user");
  * Read is public
  */
 //parameters
-router.param("businessId", getBusinessIdById);
+// router.param("businessId", getBusinessIdById);
 
 //all of actual routes
 // eslint-disable-next-line prettier/prettier
