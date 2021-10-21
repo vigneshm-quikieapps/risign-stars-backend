@@ -44,9 +44,11 @@ const updateTermValidationRules = () => {
     check("classsequence", "classsequence should be a Numbre/Integer  ")
       .optional()
       .isInt(),
-    check("updatedBy", "updatedBy should be a valid userId").isLength({
-      min: 12,
-    }),
+    check("updatedBy", "updatedBy should be a valid userId")
+      .optional()
+      .isLength({
+        min: 12,
+      }),
   ];
 };
 module.exports = {
