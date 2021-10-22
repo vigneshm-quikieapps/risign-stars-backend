@@ -1,8 +1,7 @@
 const BusinessSession = require("../models/businessSession");
-
-const { STARTS_WITH_FILTER, EQUALS_FILTER } = require("../constants/constant");
-const { getQuery, getOptions } = require("../helpers/query");
+const { getPaginationOptions } = require("../helpers/query");
 const Enrolment = require("../models/Enrolment");
+const { Types } = require("mongoose");
 
 //parameter extractor
 module.exports.getBusinessSessionIdById = (req, res, next, id) => {
@@ -38,8 +37,7 @@ module.exports.getAllBusinessSession = async (req, res) => {
   try {
     let { classId } = req.params;
 
-    let query = getQuery(req);
-    let options = getOptions(req);
+    let { query, options } = getPaginationOptions(req);
     options.populate = { path: "coach", select: ["name", "city"] };
     query = { ...query, classId };
 
@@ -91,8 +89,7 @@ module.exports.deleteBusinessSession = (req, res) => {
 
 module.exports.getMembersInASession = async (req, res) => {
   try {
-    let query = getQuery(req);
-    let options = getOptions(req);
+    let { query, options } = getPaginationOptions(req);
     options.populate = [
       { path: "memberConsent", select: ["consent"] },
       { path: "member", select: ["name"] },
@@ -105,14 +102,41 @@ module.exports.getMembersInASession = async (req, res) => {
   }
 };
 
+/**
+ * get all sessions in a term
+ *
+ * @param {*} req
+ * @param {*} res
+ * @returns
+ */
 module.exports.getAllSessionsInATerm = async (req, res) => {
   try {
     let { termId } = req.params;
 
-    let query = getQuery(req);
+    let { query, options } = getPaginationOptions(req);
     query = { query, "term._id": termId };
-    let options = getOptions(req);
     options.populate = { path: "coach", select: ["name", "city"] };
+
+    let response = await BusinessSession.paginate(query, options);
+    return res.send(response);
+  } catch (err) {
+    return res.status(422).send({ message: err.message });
+  }
+};
+
+/**
+ * get all sessions in a class (of a particular term)
+ *
+ * @param {*} req
+ * @param {*} res
+ * @returns
+ */
+module.exports.getSessionsInAClassOfAParticularTerm = async (req, res) => {
+  try {
+    let { termId, classId } = req.body;
+
+    let { query, options } = getPaginationOptions(req);
+    query = { ...query, "term._id": termId, classId };
 
     let response = await BusinessSession.paginate(query, options);
     return res.send(response);

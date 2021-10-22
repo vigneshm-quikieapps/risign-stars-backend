@@ -1,5 +1,6 @@
 const { body } = require("express-validator");
 const { ADDRESS_TYPE, RELATIONSHIPS } = require("../constants/member");
+const { ENUM_GENDER } = require("../constants/user");
 const { businessIdValidation } = require("./businessClass");
 const { userIdValidation } = require("./businessFinance");
 
@@ -11,11 +12,9 @@ const createMemberValidationRules = () => {
       "min length should be 2 and max length should be 70"
     ).isLength({ min: 2, max: 70 }),
     body("dob", "must be a valid date").isDate(),
-    body("gender", "GENDER SHOULD BE IN [MALE, FEMALE, OTHER]").isIn([
-      "MALE",
-      "FEMALE",
-      "OTHER",
-    ]),
+    body("gender", `should be either ${ENUM_GENDER.join(" / ")}`).isIn(
+      ENUM_GENDER
+    ),
     body("contacts", "should be an array")
       .isArray()
       .bail()
@@ -34,12 +33,6 @@ const createMemberValidationRules = () => {
       "contacts.*.relationship",
       `should be either ${RELATIONSHIPS.join(" / ")}`
     ).isIn(RELATIONSHIPS),
-    // body("updatedBy", "updatedBy should be a valid userId")
-    //   .optional()
-    //   .custom(userIdValidation),
-    // body("createdBy", "createdBy should be a valid userId").custom(
-    //   userIdValidation
-    // ),
   ];
 };
 

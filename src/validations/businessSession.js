@@ -1,8 +1,9 @@
 const BusinessClass = require("../models/businessClass");
 const Term = require("../models/Term");
-const { check, param } = require("express-validator");
+const { check, param, body } = require("express-validator");
 const { businessIdValidation } = require("./businessClass");
 const { isValidTermId } = require("./helpers/term");
+const { isValidClassId } = require("./helpers/classes");
 
 const termIdValidation = async (term) => {
   try {
@@ -129,12 +130,20 @@ const updateSessionValidationRules = () => {
   ];
 };
 
+const getSessionsInAClassOfAParticularTermValidationRules = () => {
+  return [
+    body("termId", "is required").bail().custom(isValidTermId),
+    body("classId", "is required").bail().custom(isValidClassId),
+  ];
+};
+
 const getAllSessionsInATermValidationRules = () => {
   return [param("termId", "is required").custom(isValidTermId)];
 };
 module.exports = {
   createSessionValidationRules,
   getAllSessionsInATermValidationRules,
+  getSessionsInAClassOfAParticularTermValidationRules,
   updateSessionValidationRules,
   classIdValidation,
   termIdValidation,

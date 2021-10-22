@@ -1,19 +1,18 @@
 const { Term } = require("../../../models");
 
-const isValidTermId = async (termId) => {
+const isValidTermId = async (termId, { req }) => {
   try {
-    console.log("h1");
-    console.log({ termId });
     let term = await Term.findById(termId);
 
     if (!term) {
       throw new Error("Invalid Term Id");
     }
 
-    console.log("okay");
+    req.termData = term;
+
     return true;
   } catch (err) {
-    return Promise.reject("Invalid Term Id");
+    return Promise.reject("should be a valid term id");
   }
 };
 

@@ -3,6 +3,7 @@ const { ObjectId } = mongoose.Schema;
 
 const { ADDRESS_TYPE, RELATIONSHIPS } = require("../constants/member");
 const mongoosePaginate = require("mongoose-paginate-v2");
+const { ENUM_GENDER } = require("../constants/user");
 
 const memberSchema = new mongoose.Schema(
   {
@@ -28,7 +29,7 @@ const memberSchema = new mongoose.Schema(
     },
     gender: {
       type: String,
-      enum: ["MALE", "FEMALE"],
+      enum: ENUM_GENDER,
       required: true,
     },
     contacts: [

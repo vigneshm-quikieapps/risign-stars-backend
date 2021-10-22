@@ -10,10 +10,12 @@ const {
   updateBusinessSession,
   deleteBusinessSession,
   getMembersInASession,
+  getSessionsInAClassOfAParticularTerm,
 } = require("../controllers/businessSession");
 const {
   updateSessionValidationRules,
   createSessionValidationRules,
+  getSessionsInAClassOfAParticularTermValidationRules,
 } = require("../validations/businessSession");
 const validate = require("../validations/validate");
 
@@ -32,7 +34,12 @@ router.post(
 );
 
 router.get("/:businessSessionId/members", getMembersInASession);
-
+router.post(
+  "/in-a-class/of-a-particular-term",
+  getSessionsInAClassOfAParticularTermValidationRules(),
+  validate,
+  getSessionsInAClassOfAParticularTerm
+);
 // read routes
 router.get("/:businessSessionId", getBusinessSession);
 
