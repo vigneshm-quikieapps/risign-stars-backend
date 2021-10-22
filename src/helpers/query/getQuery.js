@@ -1,6 +1,8 @@
 const {
   STARTS_WITH_FILTER,
   EQUALS_FILTER,
+  BY_ID_FILTER,
+  NOT_EQUALS_FILTER,
 } = require("../../constants/constant");
 
 const getQuery = (req) => {
@@ -17,6 +19,13 @@ const getQuery = (req) => {
       case EQUALS_FILTER:
         query[field] = value;
         break;
+      case NOT_EQUALS_FILTER:
+        query[field] = { $ne: value };
+        break;
+      case BY_ID_FILTER:
+        query[field] = value;
+        break;
+
       default:
         break;
     }

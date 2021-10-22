@@ -1,9 +1,12 @@
-const { STARTS_WITH_FILTER, EQUALS_FILTER } = require("../constants/constant");
 const Member = require("../models/Member");
 const DoesNotExistError = require("../exceptions/DoesNotExistError");
 const path = require("path");
 const multer = require("multer");
-const { getQuery, getOptions } = require("../helpers/query");
+const {
+  getQuery,
+  getOptions,
+  getPaginationOptions,
+} = require("../helpers/query");
 const { Types } = require("mongoose");
 const { Enrolment } = require("../models");
 
@@ -181,8 +184,7 @@ module.exports.addMembership = async (req, res) => {
 //search for Member
 module.exports.getAllMember = async (req, res) => {
   try {
-    let query = getQuery(req);
-    let options = getOptions(req);
+    let { query, options } = getPaginationOptions(req);
     options.populate = {
       path: "parent",
       select: ["name", "email", "mobileNo"],
@@ -286,10 +288,30 @@ module.exports.getAllMemberOfALoggedInUser = async (req, res) => {
 
     let memberIds = membersEnrolled.map(({ _id }) => _id);
 
-    let query = getQuery(req);
+    let { query, options } = getPaginationOptions(req);
     query = { ...query, _id: { $in: memberIds } };
-    let options = getOptions(req);
 
+    let response = await Member.paginate(query, options);
+    return res.send(response);
+  } catch (err) {
+    return res.status(422).send({ message: err.message });
+  }
+};
+
+/**
+ * get all members of a logged in user (parent)
+ *
+ * @param {*} req
+ * @param {*} res
+ * @returns
+ */
+module.exports.getAllMemberOfALoggedInParent = async (req, res) => {
+  try {
+    let { authUserData } = req;
+    let userId = authUserData._id;
+
+    let { query, options } = getPaginationOptions(req);
+    query = { ...query, userId };
     let response = await Member.paginate(query, options);
     return res.send(response);
   } catch (err) {

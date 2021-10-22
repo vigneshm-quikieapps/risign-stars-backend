@@ -22,6 +22,13 @@ router.get(
   isAuthorized(null, null),
   member.getAllMemberOfALoggedInUser
 );
+
+router.get(
+  "/of-a-logged-in-parent",
+  isAuthorized(null, null),
+  member.getAllMemberOfALoggedInParent
+);
+
 router.get("/:memberId", member.get);
 router.post("/", createMemberValidationRules(), validate, member.create);
 router.get("/consent", memberConsent.get);

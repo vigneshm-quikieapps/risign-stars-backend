@@ -70,7 +70,24 @@ module.exports.getAllClassesForALoggedInBusinessAdmin = async (req, res) => {
      * filter classes by business ids
      */
     let query = getQuery(req);
-    query = { ...query, businessId: { $in: businessIds } };
+    query = { ...query };
+
+    if (query.businessId) {
+      /**
+       * if business id is sent in query params,
+       * if the business id doesn't belong to the auth user,
+       * throw an error
+       */
+      if (!businessIds.includes(query.businessId)) {
+        throw new Error("does not have permisssion");
+      }
+    } else {
+      /**
+       * query all the classes of the businesses the user has permission
+       */
+      query = { ...query, businessId: { $in: businessIds } };
+    }
+
     let options = getOptions(req);
 
     let response = await BusinessClass.paginate(query, options);
