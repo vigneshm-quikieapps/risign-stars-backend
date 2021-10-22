@@ -3,7 +3,7 @@ const { check } = require("express-validator");
 
 const createTermValidationRules = () => {
   return [
-    check("business").custom(businessIdValidation),
+    check("businessId").custom(businessIdValidation),
     check("code", "code should be a Numbre/Integer  ").isInt(),
     check("label", "label should be atleast 3 chatecters").isLength({
       min: 3,
@@ -21,9 +21,11 @@ const createTermValidationRules = () => {
     check("updatedBy", "updatedBy should be a valid userId")
       .optional()
       .isLength({ min: 12 }),
-    check("createdBy", "createdBy should be a valid userId").isLength({
-      min: 12,
-    }),
+    check("createdBy", "createdBy should be a valid userId")
+      .optional()
+      .isLength({
+        min: 12,
+      }),
   ];
 };
 const updateTermValidationRules = () => {
