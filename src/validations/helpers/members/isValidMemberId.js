@@ -1,6 +1,6 @@
 const { Member } = require("../../../models");
 
-const isValidMemberId = async (memberId) => {
+const isValidMemberId = async (memberId, { req }) => {
   try {
     let member = await Member.findById(memberId);
 
@@ -8,9 +8,11 @@ const isValidMemberId = async (memberId) => {
       throw new Error("Does not exists");
     }
 
+    req.memberData = member;
+
     return true;
   } catch (err) {
-    return Promise.reject("invalid member id");
+    return Promise.reject("should be a valid member Id");
   }
 };
 

@@ -18,11 +18,6 @@ const validate = require("../validations/validate");
 
 //parameters
 router.param("evaluationId", getEvaluationIdById);
-
-// router.param("userId", getuserIdById);
-
-//all of actual routes
-//all of actual routes
 //create route
 router.post("/", createEvaluationValidationRules(), validate, createEvaluation);
 

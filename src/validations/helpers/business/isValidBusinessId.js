@@ -5,7 +5,7 @@ const { Business } = require("../../../models");
  * @param {*} mobileNo
  * @returns
  */
-const isValidBusinessId = async (businessId) => {
+const isValidBusinessId = async (businessId, { req }) => {
   try {
     if (!businessId) {
       throw new Error("");
@@ -17,9 +17,11 @@ const isValidBusinessId = async (businessId) => {
       throw new Error("");
     }
 
+    req.businessData = business;
+
     return true;
   } catch (err) {
-    return Promise.reject("invalid business Id");
+    return Promise.reject("should be a valid business Id");
   }
 };
 

@@ -30,7 +30,11 @@ const routes = (app) => {
   app.use("/api/businesses", businessRoute);
   app.use("/api/businesses/finances", businessFinanceRoute);
   app.use("/api/discounts", discountRoute);
-  app.use("/api/evaluations", evaluationRoute);
+  app.use(
+    "/api/evaluations",
+    evaluationRoute
+  ); /** routes for evaluation scheme */
+
   app.use("/api/bills", billRoute);
   app.use("/api/members", memberRoute);
   app.use("/api/terms", termRoute);
@@ -38,7 +42,11 @@ const routes = (app) => {
   app.use("/api/classes", classRoute);
   app.use("/api/categories", categoryRoute);
   app.use("/api/sessions", sessionRoute);
-  app.use("/api/progress", progressRecordRoute);
+  app.use(
+    "/api/progress",
+    progressRecordRoute
+  ); /** routes for evaluations/ progress */
+
   app.use("/api/member-consents", memberConsentRoute);
   app.use("/api", roleRoute);
   app.use("/api", userRoute);

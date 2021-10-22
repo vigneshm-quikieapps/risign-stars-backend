@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 
 const {
-  createProgressValidationRules,
+  createOrGetProgressValidationRules,
   updateProgressValidationRules,
 } = require("../validations/progress");
 
@@ -12,23 +12,20 @@ const {
   getProgress,
   markAProgress,
   updateProgress,
-  createProgress,
+  createOrGetProgress,
   addAttendence,
 } = require("../controllers/progress");
+const validate = require("../validations/validate");
 
 //parameters
-router.param("progressId", getProgressIdById);
-
-// router.param("userId", getuserIdById);
-
-//all of actual routes
-//all of actual routes
+// router.param("progressId", getProgressIdById);
 
 // create routes
 router.post(
-  "/create",
-  // createProgressValidationRules(),
-  createProgress
+  "/",
+  createOrGetProgressValidationRules(),
+  validate,
+  createOrGetProgress
 );
 
 // mark progress

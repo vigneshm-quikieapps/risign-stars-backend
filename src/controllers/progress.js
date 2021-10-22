@@ -34,44 +34,53 @@ const genLevelsData = (evaluation) => {
 };
 
 const progressPayloadRequest = async (req) => {
-  // console.log(req);
-  let { memberId, businessId, evaluationId } = req;
-  // let { memberId, businessId } = progressData;
-  // let businessClass = await BusinessClass.findById(businessId);
-  let evaluation = await EvaluationScheme.findById(evaluationId);
-  let { levelCount } = evaluation;
-  let levels = genLevelsData(evaluation);
+  let { memberId, clubMembershipId, businessId, evaluationSchemeId } = req.body;
+
+  let { evaluationSchemeData } = req;
+  let { levelCount } = evaluationSchemeData;
+  let levels = genLevelsData(evaluationSchemeData);
   return {
     memberId,
+    clubMembershipId,
+    evaluationSchemeId,
     businessId,
     levelCount,
     levels,
   };
 };
 
-//progress creation
+/**
+ * if progress record is available
+ * just return it
+ * if not available
+ * create a new progress record and then return the record
+ *
+ * @param {*} req
+ * @param {*} res
+ * @returns
+ */
+module.exports.createOrGetProgress = async (req, res) => {
+  try {
+    let { clubMembershipId, evaluationSchemeId } = req.body;
 
-module.exports.createProgress = async (req, res) => {
-  const errors = validationResult(req);
-
-  if (!errors.isEmpty()) {
-    return res.status(422).json({
-      error: errors.array()[0].msg,
+    /** check if progress record already exists */
+    let progress = await Progress.find({
+      clubMembershipId,
+      evaluationSchemeId,
     });
-  }
-  let progressPayload = await progressPayloadRequest(req.body);
-  const progress = new Progress(progressPayload);
-  progress.save((err, progress) => {
-    if (err) {
-      console.log(err);
-      console.log(req.body);
 
-      return res.status(400).json({
-        error: "unable to save progress to database",
-      });
+    /**
+     * if progress record is not available, create it
+     */
+    if (!progress) {
+      let progressPayload = await progressPayloadRequest(req);
+      progress = await Progress.create(progressPayload);
     }
-    res.json(progress);
-  });
+
+    return res.send({ progress });
+  } catch (err) {
+    return res.status(422).send({ message: err.message });
+  }
 };
 
 //get a progress record of a member
