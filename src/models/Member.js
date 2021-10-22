@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const { ObjectId } = mongoose.Schema;
 
-const { ADDRESS_TYPE, RELATIONSHIPS } = require("../constants/constant");
+const { ADDRESS_TYPE, RELATIONSHIPS } = require("../constants/member");
 const mongoosePaginate = require("mongoose-paginate-v2");
 
 const memberSchema = new mongoose.Schema(
@@ -33,10 +33,16 @@ const memberSchema = new mongoose.Schema(
     },
     contacts: [
       {
-        addressType: ADDRESS_TYPE,
+        addressType: {
+          type: String,
+          enum: ADDRESS_TYPE,
+        },
         fullName: String,
         contact: String,
-        relationShip: RELATIONSHIPS,
+        relationship: {
+          type: String,
+          enum: RELATIONSHIPS,
+        },
       },
     ],
     imageUrl: String,
