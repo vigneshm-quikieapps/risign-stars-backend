@@ -9,6 +9,7 @@ const attendanceRoute = require("./attendance");
 const notification = require("./notification");
 const authRoutes = require("./auth");
 const accountRoutes = require("./account");
+const memberConsentRoute = require("./memberConsent");
 
 const memberRoute = require("./Member");
 const classRoute = require("./businessClass");
@@ -38,6 +39,7 @@ const routes = (app) => {
   app.use("/api/categories", categoryRoute);
   app.use("/api/sessions", sessionRoute);
   app.use("/api/progress", progressRecordRoute);
+  app.use("/api/member-consents", memberConsentRoute);
   app.use("/api", roleRoute);
   app.use("/api", userRoute);
   app.use("/api", attendanceRoute);

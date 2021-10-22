@@ -112,6 +112,7 @@ module.exports.getAllSessionsInATerm = async (req, res) => {
     let query = getQuery(req);
     query = { query, "term._id": termId };
     let options = getOptions(req);
+    options.populate = { path: "coach", select: ["name", "city"] };
 
     let response = await BusinessSession.paginate(query, options);
     return res.send(response);
