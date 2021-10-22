@@ -10,6 +10,7 @@ const {
 const {
   getAllClassesForALoggedInBusinessAdmin,
 } = require("../controllers/businessClass");
+const { getMe } = require("../controllers/user");
 const { isAuthorized } = require("../middlewares/auth");
 const {
   getOTPEmailValidationRules,
@@ -21,7 +22,6 @@ const {
   signInValidationRules,
 } = require("../validations/user");
 const validate = require("../validations/validate");
-const { verify } = require("jsonwebtoken");
 
 router.post("/sign-up", signUpValidationRules(), validate, signup);
 router.post("/sign-in", signInValidationRules(), validate, signin);
@@ -52,9 +52,6 @@ router.get(
   getAllClassesForALoggedInBusinessAdmin
 );
 
-// Testing Route
-router.get("/testroute", (req, res) => {
-  res.send("hello");
-});
+router.get("/auth/user/me", isAuthorized(null, null), getMe);
 
 module.exports = router;

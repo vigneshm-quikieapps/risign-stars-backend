@@ -175,3 +175,22 @@ module.exports.delete = async (req, res) => {
     return res.status(422).send({ message: err.message });
   }
 };
+
+module.exports.getMe = async (req, res) => {
+  try {
+    let { authUserData } = req;
+
+    if (!authUserData) {
+      throw new DoesNotExistError();
+    }
+
+    let user = await User.findById(authUserData._id);
+    let userData = JSON.parse(JSON.stringify(user));
+    delete userData.password;
+
+    return res.send({ user: userData });
+  } catch (err) {
+    console.error(err);
+    return res.status(422).send({ message: err.message });
+  }
+};

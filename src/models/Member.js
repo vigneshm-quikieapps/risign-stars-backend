@@ -28,7 +28,7 @@ const memberSchema = new mongoose.Schema(
     },
     gender: {
       type: String,
-      enum: ["MALE", "FEMALE", "OTHER"],
+      enum: ["MALE", "FEMALE"],
       required: true,
     },
     contacts: [

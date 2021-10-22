@@ -6,13 +6,6 @@ const { userIdValidation } = require("./businessFinance");
 const createMemberValidationRules = () => {
   return [
     body("userId", "min length should be 2").custom(userIdValidation),
-    body("membership").isArray(),
-    body("membership.*.businessId", "min length should be 2").custom(
-      businessIdValidation
-    ),
-    body("membership.*.clubMembershipId", "min length should be 2").isLength({
-      min: 2,
-    }),
     body(
       "fullName",
       "min length should be 2 and max length should be 70"
@@ -35,12 +28,12 @@ const createMemberValidationRules = () => {
     ).isLength({ min: 2, max: 70 }),
     body("contacts.*.contact", "min length should be 2").isLength({ min: 2 }),
     body("contacts.*.relationShip", "invalid relationship").isIn(RELATIONSHIPS),
-    body("updatedBy", "updatedBy should be a valid userId")
-      .optional()
-      .custom(userIdValidation),
-    body("createdBy", "createdBy should be a valid userId").custom(
-      userIdValidation
-    ),
+    // body("updatedBy", "updatedBy should be a valid userId")
+    //   .optional()
+    //   .custom(userIdValidation),
+    // body("createdBy", "createdBy should be a valid userId").custom(
+    //   userIdValidation
+    // ),
   ];
 };
 
