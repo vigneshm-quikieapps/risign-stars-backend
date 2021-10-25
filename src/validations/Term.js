@@ -1,18 +1,21 @@
 const { businessIdValidation } = require("./businessClass");
 const { check } = require("express-validator");
+const { isValidBusinessId } = require("./helpers/business");
 
 const createTermValidationRules = () => {
   return [
-    check("businessId").custom(businessIdValidation),
+    check("businessId").custom(isValidBusinessId),
     // check("code", "code should be a Numbre/Integer  ").isInt(),
     check("label", "label should be atleast 3 chatecters").isLength({
       min: 3,
     }),
-    check("startdate", "starttime   should be a date").isDate({
-      format: "MM-DD-YYYY",
+    check("startDate", "should be in the following format: YYYY-MM-DD").isDate({
+      format: "YYYY-MM-DD",
+      strictMode: true,
     }),
-    check("startdate", "endtime   should be a date").isDate({
-      format: "MM-DD-YYYY",
+    check("startDate", "should be in the following format: YYYY-MM-DD").isDate({
+      format: "YYYY-MM-DD",
+      strictMode: true,
     }),
     // check(
     //   "classsequence",

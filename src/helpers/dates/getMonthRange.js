@@ -19,8 +19,8 @@ const moment = require("moment");
  * @returns
  */
 const getMonthRange = (startDateParam, endDateParam) => {
-  let startDate = moment(new Date(startDateParam.toISOString()));
-  let endDate = moment(new Date(endDateParam.toISOString()));
+  let startDate = moment(new Date(startDateParam));
+  let endDate = moment(new Date(endDateParam));
 
   var result = [];
 

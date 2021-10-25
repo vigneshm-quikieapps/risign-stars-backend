@@ -9,33 +9,22 @@ const termSchema = new mongoose.Schema(
       ref: "Business",
       required: true,
     },
-    code: {
-      type: Number,
-      required: true,
-    },
     label: {
       type: String,
       trim: true,
       required: true,
     },
-    startdate: {
+    startDate: {
       type: Date,
       required: true,
     },
-    enddate: {
+    endDate: {
       type: Date,
       required: true,
     },
-    classsequence: {
-      type: Number,
-      required: true,
-    },
-    updatedBy: {
-      type: String,
-    },
-    createdBy: {
-      type: String,
-    },
+    // classsequence: {
+    //   type: Number,
+    // },
   },
   { timestamps: true }
 );
