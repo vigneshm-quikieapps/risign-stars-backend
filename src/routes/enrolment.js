@@ -14,7 +14,7 @@ const {
   createEnrolementValidationRules,
   withdrawEnrolmentValidationRules,
   updateWaitlistEnrolmentValidationRules,
-  classTransferEnrolmentValidationRules,
+  sessionTransferEnrolmentValidationRules,
   trialEnrolmentValidationRules,
   suspendEnrolmentValidationRules,
   returnFromSuspensionEnrolmentValidationRules,
@@ -59,9 +59,13 @@ router.post(
   validate,
   updateWaitlistEnrolment
 );
+
+/**
+ * session transfer
+ */
 router.post(
   "/transfer",
-  classTransferEnrolmentValidationRules(),
+  sessionTransferEnrolmentValidationRules(),
   validate,
   transferEnrolment
 );

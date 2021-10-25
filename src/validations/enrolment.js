@@ -198,7 +198,7 @@ const updateWaitlistEnrolmentValidationRules = () => {
   return [body("sessionId", "min length should be 2").custom(isValidSession)];
 };
 
-const classTransferEnrolmentValidationRules = () => {
+const sessionTransferEnrolmentValidationRules = () => {
   return [
     body("newSessionId", "min length should be 2").custom(isValidNewSession),
     body("enrolmentId").custom(isValidEnrolment),
@@ -251,7 +251,7 @@ const getAllEnrolmentOfAMemberInABusinessValidationRules = () => {
 // };
 module.exports = {
   billsInAnEnrolmentValidationRules,
-  classTransferEnrolmentValidationRules,
+  sessionTransferEnrolmentValidationRules,
   createEnrolementValidationRules,
   getAllEnrolmentOfAMemberInABusinessValidationRules,
   returnFromSuspensionEnrolmentValidationRules,

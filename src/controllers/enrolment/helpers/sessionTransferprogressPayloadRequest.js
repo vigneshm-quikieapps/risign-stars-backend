@@ -16,7 +16,7 @@ const genLevelsData = (evaluation) => {
  * In case of class transfer
  * this is not required, as the same progress record will be used in the new session
  */
-const classTransferprogressPayloadRequest = async (req) => {
+const sessionTransferprogressPayloadRequest = async (req) => {
   let { enrolmentData } = req;
   let { memberId, classId, businessId } = enrolmentData;
   let businessClass = await BusinessClass.findById(enrolmentData.classId);
@@ -33,4 +33,4 @@ const classTransferprogressPayloadRequest = async (req) => {
   };
 };
 
-module.exports = classTransferprogressPayloadRequest;
+module.exports = sessionTransferprogressPayloadRequest;

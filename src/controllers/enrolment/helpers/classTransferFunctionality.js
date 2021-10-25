@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 const { BusinessSession, Enrolment } = require("../../../models");
-const classTransferEnrolmentPayloadRequest = require("./classTransferEnrolmentPayloadRequest");
+const sessionTransferEnrolmentPayloadRequest = require("./sessionTransferEnrolmentPayloadRequest");
 
 /**
  * @param {*} bodyData
@@ -10,7 +10,7 @@ const classTransferEnrolmentPayloadRequest = require("./classTransferEnrolmentPa
 async function classTransferfunctionality(req, session) {
   let { enrolmentId } = req.body;
 
-  const createEnrolmentData = classTransferEnrolmentPayloadRequest(req);
+  const createEnrolmentData = sessionTransferEnrolmentPayloadRequest(req);
 
   /**
    * Enroling a member to a new session

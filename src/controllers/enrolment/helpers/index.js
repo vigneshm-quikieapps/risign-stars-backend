@@ -1,6 +1,6 @@
-const classTransferEnrolmentPayloadRequest = require("./classTransferEnrolmentPayloadRequest");
-const classTransferfunctionality = require("./classTransferFunctionality");
-const classTransferprogressPayloadRequest = require("./classTransferprogressPayloadRequest");
+const sessionTransferEnrolmentPayloadRequest = require("./sessionTransferEnrolmentPayloadRequest");
+const sessionTransferfunctionality = require("./sessionTransferFunctionality");
+const sessionTransferprogressPayloadRequest = require("./sessionTransferprogressPayloadRequest");
 const regularEnrolment = require("./regularEnrolment");
 const enrolmentPayloadRequest = require("./enrolmentPayloadRequest");
 const progressPayloadRequest = require("./progressPayloadRequest");
@@ -11,9 +11,9 @@ const trialEnrolmentHandler = require("./trialEnrolmentHandler");
 const nonTrialEnrolmentHandler = require("./nonTrialEnrolmentHandler");
 
 module.exports = {
-  classTransferEnrolmentPayloadRequest,
-  classTransferfunctionality,
-  classTransferprogressPayloadRequest,
+  sessionTransferEnrolmentPayloadRequest,
+  sessionTransferfunctionality,
+  sessionTransferprogressPayloadRequest,
   regularEnrolment,
   getClubMembershipId,
   enrolmentPayloadRequest,

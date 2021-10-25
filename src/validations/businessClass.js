@@ -48,7 +48,6 @@ const { ENUM_DAYS } = require("../constants/session");
 // };
 
 const createClassValidationRules = () => {
-  console.log({ ENUM_STATUS });
   return [
     check("name", "name should be at least 3 char").isLength({ min: 3 }),
     check("businessId").custom(isValidBusinessId),

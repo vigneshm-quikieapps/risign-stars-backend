@@ -1,4 +1,4 @@
-const classTransferEnrolmentPayloadRequest = (req) => {
+const sessionTransferEnrolmentPayloadRequest = (req) => {
   let { newSessionData, enrolmentData } = req;
   let { id, classId, businessId } = newSessionData;
   let { clubMembershipId, consent, newsletter, memberId } = enrolmentData;
@@ -16,4 +16,4 @@ const classTransferEnrolmentPayloadRequest = (req) => {
   };
 };
 
-module.exports = classTransferEnrolmentPayloadRequest;
+module.exports = sessionTransferEnrolmentPayloadRequest;

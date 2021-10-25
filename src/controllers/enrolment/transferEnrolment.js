@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
-const { classTransferfunctionality } = require("./helpers");
+const { sessionTransferfunctionality } = require("./helpers");
 
-// class transfer
+// session transfer
 const transferEnrolment = async (req, res) => {
   const session = await mongoose.startSession();
   session.startTransaction();
@@ -13,9 +13,9 @@ const transferEnrolment = async (req, res) => {
     if (fullcapacityfilled >= fullcapacity) {
       throw new Error("No Seats available in the session");
     }
-    await classTransferfunctionality(req, session);
+    await sessionTransferfunctionality(req, session);
     await session.commitTransaction();
-    return res.status(201).send({ message: "Enroled successful" });
+    return res.status(201).send({ message: "Transfer successful" });
   } catch (err) {
     console.error(err);
     await session.abortTransaction();
