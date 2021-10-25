@@ -3,9 +3,7 @@ const { Member } = require("../../../models");
 
 const isValidClubMembershipId = async (clubMembershipId, { req }) => {
   try {
-    let { memberId, businessId, evaluationSchemeId } = req.body;
-
-    console.log({ clubMembershipId, memberId, businessId, evaluationSchemeId });
+    let { memberId } = req.body;
 
     let member = await Member.findOne({
       _id: Types.ObjectId(memberId),

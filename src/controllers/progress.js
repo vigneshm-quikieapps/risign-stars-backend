@@ -64,7 +64,7 @@ module.exports.createOrGetProgress = async (req, res) => {
     let { clubMembershipId, evaluationSchemeId } = req.body;
 
     /** check if progress record already exists */
-    let progress = await Progress.find({
+    let progress = await Progress.findOne({
       clubMembershipId,
       evaluationSchemeId,
     });
@@ -193,13 +193,6 @@ const markingAttainedDate = async (req, date) => {
  */
 
 module.exports.markAProgress = async (req, res) => {
-  const errors = validationResult(req);
-
-  if (!errors.isEmpty()) {
-    return res.status(422).json({
-      error: errors.array()[0].msg,
-    });
-  }
   try {
     let message = "";
     if (req.body.status === "IN_PROGRESS") {
@@ -216,13 +209,15 @@ module.exports.markAProgress = async (req, res) => {
       throw new Error("No progress record");
     }
 
-    res.status(200).json({
-      success: true,
+    if (message.matchedCount <= 0) {
+      throw new Error("skill not found");
+    }
+
+    return res.status(200).json({
       message: "Skill updation successfull",
-      progress: message,
     });
   } catch (err) {
-    res.status(400).json({ success: false, message: err.message });
+    res.status(422).json({ message: err.message });
   }
 };
 

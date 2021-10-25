@@ -3,7 +3,7 @@ const router = express.Router();
 
 const {
   createOrGetProgressValidationRules,
-  updateProgressValidationRules,
+  markProgressValidationRules,
 } = require("../validations/progress");
 
 const {
@@ -31,7 +31,8 @@ router.post(
 // mark progress
 router.put(
   "/update-status",
-  // createProgressValidationRules(),
+  markProgressValidationRules(),
+  validate,
   markAProgress
 );
 

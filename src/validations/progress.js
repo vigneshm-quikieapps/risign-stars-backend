@@ -1,11 +1,15 @@
 const { check, body } = require("express-validator");
-const { EVALUATION_STATUS } = require("../constants/constant");
+const {
+  EVALUATION_STATUS,
+  SKILL_PROGRESS_STATUS,
+} = require("../constants/constant");
 const {
   isValidClubMembershipId,
   isValidMemberId,
   isValidBusinessId,
   isValidEvaluationSchemeId,
 } = require("./helpers");
+const { isValidProgressId } = require("./helpers/progress");
 
 const checkSkills = ({ skills }) => {
   /** skills should be an array */
@@ -65,7 +69,19 @@ const updateProgressValidationRules = () => {
   ];
 };
 
+const markProgressValidationRules = () => {
+  return [
+    body(
+      "status",
+      `should be either ${SKILL_PROGRESS_STATUS.join(" / ")}`
+    ).isIn(SKILL_PROGRESS_STATUS),
+    body("progressId").custom(isValidProgressId),
+    body("skillId", "should be a valid id").isMongoId(),
+  ];
+};
+
 module.exports = {
   createOrGetProgressValidationRules,
   updateProgressValidationRules,
+  markProgressValidationRules,
 };
