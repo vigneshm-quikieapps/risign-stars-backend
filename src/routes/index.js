@@ -47,16 +47,11 @@ const routes = (app) => {
   ); /** routes for evaluations/ progress */
 
   app.use("/api/member-consents", memberConsentRoute);
-  app.use("/api", roleRoute);
-  app.use("/api", userRoute);
-  app.use("/api", attendanceRoute);
-  app.use("/api", notification);
+  app.use("/api/roles", roleRoute);
+  app.use("/api/users", userRoute);
+  app.use("/api/attendance", attendanceRoute);
+  app.use("/api/notifications", notification);
   app.use("/api", authRoutes);
-  app.use("/api/enrolments", enrolmentRoute);
-  app.use("/api/classes", classRoute);
-  app.use("/api/terms", termRoute);
-  app.use("/api/categories", categoryRoute);
-  app.use("/api/sessions", sessionRoute);
   app.use("/api/test", testRoute);
 
   // test route

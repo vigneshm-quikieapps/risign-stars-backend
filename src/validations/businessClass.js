@@ -7,7 +7,6 @@ const {
 } = require("../constants/class");
 const { isValidCategoryId } = require("./helpers/category");
 const { isValidEvaluationSchemeId } = require("./helpers/evaluationScheme");
-const { isValidSessionId } = require("./helpers/session");
 const { isValidBusinessId } = require("./helpers/business");
 const { isValidTermId } = require("./helpers/term");
 const { isValidCoachId } = require("./helpers/coach");
@@ -102,21 +101,16 @@ const createClassValidationRules = () => {
       format: "YYYY-MM-DD",
       strictMode: true,
     }),
-    check("sessions.*.pattern", "should be a array")
-      .isArray()
-      .bail()
-      .isLength({ min: 1 })
-      .withMessage("should have atleast one object"),
     check(
-      "sessions.*.pattern.*.day",
-      `pattern day  should be an  in ${ENUM_DAYS.join(" / ")}`
+      "sessions.*.pattern.day",
+      `should be an  in ${ENUM_DAYS.join(" / ")}`
     ).isIn(ENUM_DAYS),
     check(
-      "sessions.*.pattern.*.startTime",
+      "sessions.*.pattern.startTime",
       "should be a valid iso format"
     ).isISO8601(),
     check(
-      "sessions.*.pattern.*.endTime",
+      "sessions.*.pattern.endTime",
       "should be a valid iso format"
     ).isISO8601(),
     check(

@@ -1,32 +1,27 @@
 const { check, param, body } = require("express-validator");
-const { businessIdValidation } = require("./businessClass");
 const { isValidTermId } = require("./helpers/term");
 const { isValidClassId } = require("./helpers/class");
 const { isValidCoachId } = require("./helpers/coach");
+const { ENUM_DAYS } = require("../constants/session");
 
 const createSessionCommonValidationRules = () => {
   return [
-    check("name", "name should be at least 3 char").isLength({ min: 3 }),
-    check("term", "term should be an object").isObject(),
+    check("name", "should be at least 3 char").isLength({ min: 3 }),
+    check("term", "should be an object").isObject(),
     check("term._id").custom(isValidTermId),
-    check("term.startdate", "startdate should be a date ").optional().isDate({
-      format: "MM-DD-YYYY",
+    check("term.startDate", "should be a date ").isDate({
+      format: "YYYY-MM-DD",
+      strictMode: true,
     }),
-    check("term.enddate", "enddate should be a date ").optional().isDate({
-      format: "MM-DD-YYYY",
+    check("term.endDate", "should be a date ").isDate({
+      format: "YYYY-MM-DD",
+      strictMode: true,
     }),
-    check(
-      "pattern.*.day",
-      "pattern day  should be an  in [mon, tue, wed, thu, fri, sat, sun]"
-    ).isIn("mon", "tue", "wed", "thu", "fri", "sat", "sun"),
-    check(
-      "pattern.*.starttime",
-      "starttime   should be a date in format: 'MM-DD-YYYY'"
-    ).isDate({ format: "MM-DD-YYYY" }),
-    check(
-      "pattern.*.endtime",
-      "endtime   should be a date in format: 'MM-DD-YYYY'"
-    ).isDate({ format: "MM-DD-YYYY" }),
+    check("pattern.day", `should be either: ${ENUM_DAYS.join(" / ")}`).isIn(
+      ENUM_DAYS
+    ),
+    check("pattern.startTime", "should be a valid iso format").isISO8601(),
+    check("pattern.endTime", "should be a valid iso format").isISO8601(),
     check("fullcapacity", "fullcapacity should be a Number/Integer  ")
       .optional()
       .isInt(),
@@ -52,7 +47,6 @@ const createSessionValidationRules = () => {
     // check("term.enddate", "enddate should be a date ").optional().isDate({
     //   format: "MM-DD-YYYY",
     // }),
-    check("businessId").custom(businessIdValidation),
     check("classId").custom(isValidClassId),
     // check(
     //   "pattern.*.day",
@@ -84,34 +78,15 @@ const updateSessionValidationRules = () => {
     check("name", "name should be at least 3 char")
       .optional()
       .isLength({ min: 3 }),
-    check("term", "term should be an object").optional().isObject(),
-    check("term._id").optional().custom(isValidTermId),
-    check("term.startdate", "startdate should be a date ").optional().isDate({
-      format: "MM-DD-YYYY",
-    }),
-    check("term.enddate", "enddate should be a date ").optional().isDate({
-      format: "MM-DD-YYYY",
-    }),
-    check("businessId").optional().custom(businessIdValidation),
-    check("classId").optional().custom(isValidClassId),
-    check(
-      "pattern.*.day",
-      "pattern day  should be an  in [mon, tue, wed, thu, fri, sat, sun]"
-    )
+    check("pattern.day", `should be either: ${ENUM_DAYS.join(" / ")}`)
       .optional()
-      .isIn("mon", "tue", "wed", "thu", "fri", "sat", "sun"),
-    check(
-      "pattern.*.starttime",
-      "starttime   should be a date in format: 'MM-DD-YYYY'"
-    )
+      .isIn(ENUM_DAYS),
+    check("pattern.startTime", "should be a valid iso format")
       .optional()
-      .isDate({ format: "MM-DD-YYYY" }),
-    check(
-      "pattern.*.endtime",
-      "endtime   should be a date in format: 'MM-DD-YYYY'"
-    )
+      .isISO8601(),
+    check("pattern.endTime", "should be a valid iso format")
       .optional()
-      .isDate({ format: "MM-DD-YYYY" }),
+      .isISO8601(),
     check("fullcapacity", "fullcapacity should be a Numbre/Integer  ")
       .optional()
       .isInt(),
@@ -120,7 +95,7 @@ const updateSessionValidationRules = () => {
       .isInt(),
     check("coachId", "coach should be a Coach Id and it should not be Empty!!")
       .optional()
-      .isLength({ min: 10 }),
+      .custom(isValidCoachId),
   ];
 };
 

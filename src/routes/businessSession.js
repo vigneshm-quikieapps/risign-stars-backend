@@ -1,10 +1,7 @@
 const express = require("express");
 const router = express.Router();
 
-//const deleteBusinessActivityValidationRules= require("../validations/businessActivityClass")
-
 const {
-  getBusinessSessionIdById,
   getBusinessSession,
   createBusinessSession,
   updateBusinessSession,
@@ -18,9 +15,6 @@ const {
   getSessionsInAClassOfAParticularTermValidationRules,
 } = require("../validations/businessSession");
 const validate = require("../validations/validate");
-
-//parameters
-router.param("businessSessionId", getBusinessSessionIdById);
 
 /**
  * all of actual routes

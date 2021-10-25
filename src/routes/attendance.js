@@ -21,32 +21,20 @@ const {
 } = require("../validations/attendanceManagment");
 
 //add attendance of a student in a class
-router.put(
-  "/attendance/addattendance",
-  addAttendance(),
-  addAttendanceOfAStudentInAClass
-);
+router.put("/addattendance", addAttendance(), addAttendanceOfAStudentInAClass);
 
 // get all the attendance of a class by date
-router.get("/attendance/classbydate", classbydate(), GetAllAttendanceByDate);
+router.get("/classbydate", classbydate(), GetAllAttendanceByDate);
 
 // get all the attendance of a class by month
-router.get(
-  "/attendance/classbymonth",
-  classbymonth(),
-  GetAllAttendanceOfAClassByMonth
-);
+router.get("/classbymonth", classbymonth(), GetAllAttendanceOfAClassByMonth);
 
 // get attendance of a student in a class by date
-router.get(
-  "/attendance/studentbydate",
-  studentsbyclass(),
-  GetAttendanceOfAStudentByDate
-);
+router.get("/studentbydate", studentsbyclass(), GetAttendanceOfAStudentByDate);
 
 // get attendance of a student in a class by month
 router.get(
-  "/attendance/studentbymonth",
+  "/studentbymonth",
   studentsbymonth(),
   GetAttendanceOfAStudentByMonth
 );

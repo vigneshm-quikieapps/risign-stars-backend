@@ -13,16 +13,19 @@ const businessSessionSchema = new mongoose.Schema(
     businessId: {
       type: ObjectId,
       ref: "Business",
+      immutable: true,
     },
     classId: {
       type: ObjectId,
       ref: "BusinessClass",
+      immutable: true,
     },
     term: {
       _id: {
         type: ObjectId,
         required: true,
         ref: "Term",
+        immutable: true,
       },
       startDate: {
         type: Date,
@@ -30,6 +33,7 @@ const businessSessionSchema = new mongoose.Schema(
         get: function (date) {
           return moment(date).format("YYYY-MM-DD");
         },
+        immutable: true,
       },
       endDate: {
         type: Date,
@@ -37,6 +41,7 @@ const businessSessionSchema = new mongoose.Schema(
         get: function (date) {
           return moment(date).format("YYYY-MM-DD");
         },
+        immutable: true,
       },
     },
     pattern: [

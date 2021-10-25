@@ -7,7 +7,7 @@ const {
 } = require("../controllers/send");
 
 // Sending the Notification to the User
-router.get("/notification", sendNotification);
-router.post("/notification", saveNotificationData);
+router.get("/", sendNotification);
+router.post("/", saveNotificationData);
 
 module.exports = router;

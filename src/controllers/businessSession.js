@@ -1,35 +1,19 @@
 const BusinessSession = require("../models/businessSession");
 const { getPaginationOptions } = require("../helpers/query");
 const Enrolment = require("../models/Enrolment");
-const { Types } = require("mongoose");
-
-//parameter extractor
-module.exports.getBusinessSessionIdById = (req, res, next, id) => {
-  BusinessSession.findById(id).exec((err, Session) => {
-    if (err) {
-      return res.status(400).json({
-        err: "cannot find business Session by id",
-      });
-    }
-    req.businessSession = Session;
-    next();
-  });
-};
 
 //Business Session creation
-module.exports.createBusinessSession = (req, res) => {
-  const Session = new BusinessSession(req.body);
-  Session.save((err, Session) => {
-    if (err) {
-      console.log(err);
-      console.log(req.body);
+module.exports.createBusinessSession = async (req, res) => {
+  try {
+    let sessionPayload = { ...req.body };
+    sessionPayload.businessId = req.classData.businessId;
 
-      return res.status(400).json({
-        error: "unable to save Business Session to database",
-      });
-    }
-    res.json(Session);
-  });
+    await BusinessSession.create(sessionPayload);
+
+    return res.status(201).send({ message: "create successful" });
+  } catch (err) {
+    return res.status(422).send({ message: err.message });
+  }
 };
 
 //Business Session listing all /search for Class
@@ -50,41 +34,61 @@ module.exports.getAllBusinessSession = async (req, res) => {
 
 //Business Session listing
 
-module.exports.getBusinessSession = (req, res) => {
-  return res.json(req.businessSession);
+module.exports.getBusinessSession = async (req, res) => {
+  try {
+    let { businessSessionId } = req.params;
+    let businessSession = await BusinessSession.findById(businessSessionId);
+    return res.send({ businessSession });
+  } catch (err) {
+    return res.send({ message: err.message });
+  }
 };
 
-//Business Session Update
+/**
+ * update business session
+ *
+ * @param {*} req
+ * @param {*} res
+ * @returns
+ */
 
-module.exports.updateBusinessSession = (req, res) => {
-  BusinessSession.findByIdAndUpdate(
-    { _id: req.businessSession._id },
-    { $set: req.body },
-    { new: true, useFindAndModify: false },
-    (err, Session) => {
-      if (err) {
-        return res.status(400).json({
-          err: "sorry Business activityClass Not Updated ",
-        });
-      }
+module.exports.updateBusinessSession = async (req, res) => {
+  try {
+    let { businessSessionId } = req.params;
 
-      res.json(Session);
-    }
-  );
+    await BusinessSession.findByIdAndUpdate(
+      { _id: businessSessionId },
+      { $set: req.body },
+      { new: true, useFindAndModify: false }
+    );
+
+    return res.send({ message: "update successful" });
+  } catch (err) {
+    return res.status(422).send({ message: err.message });
+  }
 };
 
-//Business Session delete
+/**
+ * delete a session
+ * @param {*} req
+ * @param {*} res
+ * @returns
+ */
+module.exports.deleteBusinessSession = async (req, res) => {
+  try {
+    let sessionId = req.params.businessSessionId;
+    let enrolmentCount = await Enrolment.count({ sessionId });
 
-module.exports.deleteBusinessSession = (req, res) => {
-  const Session = req.businessSession;
-  Session.remove((err, Session) => {
-    if (err) {
-      return res.status(400).json({
-        err: "unable to delete Business activityClass",
-      });
+    if (enrolmentCount) {
+      throw new Error("delete not allowed, session has atleast one enrolment");
     }
-    res.json(Session);
-  });
+
+    await BusinessSession.deleteOne({ _id: sessionId });
+
+    return res.send({ message: "delete successful" });
+  } catch (err) {
+    return res.status(422).send({ message: err.message });
+  }
 };
 
 module.exports.getMembersInASession = async (req, res) => {
