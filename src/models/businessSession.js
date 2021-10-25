@@ -2,7 +2,6 @@ const mongoose = require("mongoose");
 const { ObjectId } = mongoose.Schema;
 const mongoosePaginate = require("mongoose-paginate-v2");
 const { ENUM_DAYS } = require("../constants/session");
-const moment = require("moment");
 
 const businessSessionSchema = new mongoose.Schema(
   {
@@ -30,17 +29,11 @@ const businessSessionSchema = new mongoose.Schema(
       startDate: {
         type: Date,
         required: true,
-        get: function (date) {
-          return moment(date).format("YYYY-MM-DD");
-        },
         immutable: true,
       },
       endDate: {
         type: Date,
         required: true,
-        get: function (date) {
-          return moment(date).format("YYYY-MM-DD");
-        },
         immutable: true,
       },
     },
