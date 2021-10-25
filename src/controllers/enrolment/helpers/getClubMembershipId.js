@@ -7,17 +7,23 @@ const getClubMembershipId = async (req, session) => {
   let { memberId } = req.body;
 
   let member = await Member.findOne({
-    id: req.body.memberId,
+    _id: req.body.memberId,
     membership: {
       $elemMatch: { businessId },
     },
   }).session(session);
 
   if (member) {
-    let membership = member.membership.find(
-      (membership) => membership.businessId === businessId
-    );
-    return membership.clubMembershipId;
+    let membership = member.membership.find((item) => {
+      return item.businessId.toString() === businessId.toString();
+    });
+
+    if (membership) {
+      /**
+       * if clubmembership exists, return it
+       */
+      return membership.clubMembershipId;
+    }
   }
 
   let businessData = await Business.findById(businessId);

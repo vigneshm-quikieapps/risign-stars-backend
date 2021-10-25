@@ -23,6 +23,7 @@ const createTermValidationRules = () => {
     // ).isInt(),
   ];
 };
+
 const updateTermValidationRules = () => {
   return [
     check("business").optional().custom(businessIdValidation),
@@ -43,6 +44,7 @@ const updateTermValidationRules = () => {
     //   .isInt(),
   ];
 };
+
 module.exports = {
   createTermValidationRules,
   updateTermValidationRules,
