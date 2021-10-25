@@ -11,9 +11,9 @@ const generateMonthBillPayload = (data) => {
   let { charges } = data;
 
   /** mapping monthly charges */
-  let items = charges.map(({ id, name, amount }) => {
+  let items = charges.map(({ _id, name, amount }) => {
     return {
-      chargeId: id,
+      chargeId: _id,
       name,
       amount,
     };
