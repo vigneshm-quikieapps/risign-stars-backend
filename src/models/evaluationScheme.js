@@ -38,4 +38,4 @@ const evaluationSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-module.exports = mongoose.model("Evaluation", evaluationSchema);
+module.exports = mongoose.model("EvaluationSchema", evaluationSchema);

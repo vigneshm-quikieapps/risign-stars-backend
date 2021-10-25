@@ -1,4 +1,3 @@
-//const BusinessFinance = require("../models/businessFinance");
 const { check } = require("express-validator");
 const { Business, User, Discounts, BusinessFinance } = require("../models");
 const { Types } = require("mongoose");

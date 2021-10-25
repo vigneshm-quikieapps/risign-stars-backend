@@ -4,7 +4,7 @@ const ResetPasswordEmail = require("../services/notification/Email/ResetPassword
 const { body } = require("express-validator");
 const User = require("../models/User");
 const { AccessToken } = require("../services/auth");
-const { isValidMobile } = require("./mobileNo");
+const { isValidMobile } = require("./helpers/mobileNo");
 const { ResetPasswordOTP } = require("../services/otp");
 
 /**

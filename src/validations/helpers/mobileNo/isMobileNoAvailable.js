@@ -1,4 +1,4 @@
-const User = require("../../models/User");
+const User = require("../../../models/User");
 
 /**
  * Check if the mobileNo is already taken/registered or available

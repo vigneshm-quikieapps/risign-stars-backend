@@ -1,8 +1,9 @@
-const Evaluation = require("../models/evaluation");
+const { EvaluationScheme } = require("../models");
+const { getPaginationOptions } = require("../helpers/query");
 
 //parameter extractor
 module.exports.getEvaluationIdById = (req, res, next, id) => {
-  Evaluation.findById(id).exec((err, evaluation) => {
+  EvaluationScheme.findById(id).exec((err, evaluation) => {
     if (err) {
       return res.status(400).json({
         err: "cannot find evaluation by id",
@@ -13,10 +14,13 @@ module.exports.getEvaluationIdById = (req, res, next, id) => {
   });
 };
 
-//Evaluation creation
-
+/**
+ * create evaluation scheme
+ * @param {*} req
+ * @param {*} res
+ */
 module.exports.createEvaluation = (req, res) => {
-  const evaluation = new Evaluation(req.body);
+  const evaluation = new EvaluationScheme(req.body);
   evaluation.save((err, evaluation) => {
     if (err) {
       console.log(err);
@@ -30,38 +34,36 @@ module.exports.createEvaluation = (req, res) => {
   });
 };
 
-//Evaluation listing all
-
-module.exports.getAllEvaluations = (req, res) => {
-  let limit = req.query.limit ? parseInt(req.query.limit) : 10;
-  let page = req.query.page;
-  let skip = page ? parseInt(page) - 1 * limit : 0;
-  let sortBy = req.query.sortBy ? req.query.sortBy : "_id";
-
-  Evaluation.find()
-    .sort([[sortBy, "asc"]])
-    .skip(skip)
-    .limit(limit)
-    .exec((err, evaluation) => {
-      if (err) {
-        return res.status(400).json({
-          err: "cannot find category by id",
-        });
-      }
-      res.json(evaluation);
-    });
+/**
+ * Evaluation scheme listing all
+ */
+module.exports.getAllEvaluations = async (req, res) => {
+  try {
+    let { query, options } = getPaginationOptions(req);
+    let response = await EvaluationScheme.paginate(query, options);
+    return res.send(response);
+  } catch (err) {
+    return res.status(422).send({ messaeg: err.message });
+  }
 };
 
-//Evaluation listing
-
+/**
+ * get evaluation
+ * @param {*} req
+ * @param {*} res
+ * @returns
+ */
 module.exports.getEvaluation = (req, res) => {
   return res.json(req.evaluation);
 };
 
-//Evaluation Update
-
+/**
+ * update evaluation scheme
+ * @param {} req
+ * @param {*} res
+ */
 module.exports.updateEvaluation = (req, res) => {
-  Evaluation.findByIdAndUpdate(
+  EvaluationScheme.findByIdAndUpdate(
     { _id: req.evaluation._id },
     { $set: req.body },
     { new: true, useFindAndModify: false },
@@ -77,8 +79,11 @@ module.exports.updateEvaluation = (req, res) => {
   );
 };
 
-//Evaluation delete
-
+/**
+ * delete evaluation scheme
+ * @param {*} req
+ * @param {*} res
+ */
 module.exports.deleteEvaluation = (req, res) => {
   const evaluation = req.evaluation;
   evaluation.remove((err, evaluation) => {

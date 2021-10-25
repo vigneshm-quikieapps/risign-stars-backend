@@ -1,4 +1,4 @@
-const { lookup } = require("../../services/mobile");
+const { lookup } = require("../../../services/mobile");
 
 const isValidMobile = async (mobileNo) => {
   /** mobile no is required */

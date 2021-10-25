@@ -5,7 +5,6 @@ const {
   CLASS_STATUS_ACTIVE,
   ENUM_REGISTRATION_FORM,
   REGISTRATION_FORM_STANDARD,
-  ENROLMENT_CONTROL_AGE,
   ENUM_ENROLMENT_CONTROLS,
 } = require("../constants/class");
 const { ObjectId } = mongoose.Schema;
@@ -38,9 +37,9 @@ const businessClassSchema = new mongoose.Schema(
       ref: "Business",
       required: true,
     },
-    evaluationId: {
+    evaluationSchemeId: {
       type: ObjectId,
-      ref: "Evaluation",
+      ref: "EvaluationScheme",
       required: true,
     },
     categoryId: {
@@ -68,12 +67,6 @@ const businessClassSchema = new mongoose.Schema(
         /** should be an array of values from 1 to 16, It is going to be multi select dropdown in UI */
       },
     ],
-    sessionIds: [
-      {
-        type: ObjectId,
-        ref: "BusinessSession",
-      },
-    ],
     charges: [
       {
         name: String,
@@ -94,17 +87,20 @@ const businessClassSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
+
 businessClassSchema.virtual("business", {
   ref: "Business",
   localField: "businessId",
   foreignField: "_id",
   justOne: true,
 });
+
 businessClassSchema.virtual("sessions", {
   ref: "BusinessSession",
-  localField: "sessionIds",
-  foreignField: "_id",
+  localField: "_id",
+  foreignField: "businessId",
 });
+
 // Ensure virtual fields are serialised.
 businessClassSchema.set("toJSON", {
   virtuals: true,

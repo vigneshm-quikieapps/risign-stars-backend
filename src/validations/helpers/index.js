@@ -1,13 +1,21 @@
 const business = require("./business");
-const classes = require("./classes");
-const members = require("./members");
-const term = require("./term");
+const category = require("./category");
+const classes = require("./class");
+const coach = require("./coach");
 const evaluationScheme = require("./evaluationScheme");
+const members = require("./member");
+const mobileNo = require("./mobileNo");
+const session = require("./session");
+const term = require("./term");
 
 module.exports = {
   ...business,
+  ...category,
   ...classes,
-  ...members,
-  ...term,
+  ...coach,
   ...evaluationScheme,
+  ...members,
+  ...mobileNo,
+  ...session,
+  ...term,
 };

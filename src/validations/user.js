@@ -4,7 +4,7 @@ const { DATA_PRIVILEGES_TYPE } = require("../constants/constant");
 const Business = require("../models/business");
 const { USER, ADDRESS } = require("../constants/validation");
 const { VerifyContactOTP } = require("../services/otp");
-const { isMobileNoAvailable, isValidMobile } = require("./mobileNo");
+const { isMobileNoAvailable, isValidMobile } = require("./helpers/mobileNo");
 
 const businessIdValidation = async (businessId, { req }) => {
   try {

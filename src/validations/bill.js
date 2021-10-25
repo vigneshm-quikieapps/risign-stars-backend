@@ -1,6 +1,6 @@
 const { body } = require("express-validator");
-const { isValidClassId } = require("./helpers/classes");
-const { isValidMemberId } = require("./helpers/members");
+const { isValidClassId } = require("./helpers/class");
+const { isValidMemberId } = require("./helpers/member");
 
 const billOfAMemberInAClassValidationRules = () => {
   return [

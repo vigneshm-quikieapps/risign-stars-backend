@@ -1,5 +1,6 @@
-const { BusinessClass, Member } = require("../models");
-const { getQuery, getOptions } = require("../helpers/query");
+const { BusinessClass, Member, BusinessSession } = require("../models");
+const { getPaginationOptions } = require("../helpers/query");
+const mongoose = require("mongoose");
 
 //parameter extractor
 module.exports.getBusinessClassIdById = (req, res, next, id) => {
@@ -17,21 +18,43 @@ module.exports.getBusinessClassIdById = (req, res, next, id) => {
     });
 };
 
-//Business Class creation
+/**
+ * create class
+ *
+ * @param {*} req
+ * @param {*} res
+ * @returns
+ */
+module.exports.createBusinessClass = async (req, res) => {
+  const session = await mongoose.startSession();
+  session.startTransaction();
 
-module.exports.createBusinessClass = (req, res) => {
-  const Class = new BusinessClass(req.body);
-  Class.save((err, Class) => {
-    if (err) {
-      console.log(err);
-      console.log(req.body);
+  try {
+    let { sessions, businessId } = req.body;
+    const businessClasses = await BusinessClass.create([req.body], { session });
+    let businessClass = businessClasses[0];
 
-      return res.status(400).json({
-        error: "unable to save Business Class to database",
-      });
-    }
-    res.json(Class);
-  });
+    let classId = businessClass._id;
+
+    let sessionsPayload = sessions.map((sessionData) => {
+      return {
+        ...sessionData,
+        businessId,
+        classId,
+      };
+    });
+
+    await BusinessSession.create(sessionsPayload, { session });
+
+    await session.commitTransaction();
+    return res.send({ message: "created successful" });
+  } catch (err) {
+    await session.abortTransaction();
+    console.error(err);
+    return res.status(422).send({ message: err.message });
+  } finally {
+    session.endSession();
+  }
 };
 
 //Business Class listing all / search for Class
@@ -39,9 +62,8 @@ module.exports.getAllBusinessClass = async (req, res) => {
   try {
     let { businessId } = req.params;
 
-    let query = getQuery(req);
+    let { query, options } = getPaginationOptions(req);
     query = { ...query, businessId };
-    let options = getOptions(req);
 
     let response = await BusinessClass.paginate(query, options);
     return res.send(response);
@@ -69,7 +91,7 @@ module.exports.getAllClassesForALoggedInBusinessAdmin = async (req, res) => {
     /**
      * filter classes by business ids
      */
-    let query = getQuery(req);
+    let { query, options } = getPaginationOptions(req);
     query = { ...query };
 
     if (query.businessId) {
@@ -87,8 +109,6 @@ module.exports.getAllClassesForALoggedInBusinessAdmin = async (req, res) => {
        */
       query = { ...query, businessId: { $in: businessIds } };
     }
-
-    let options = getOptions(req);
 
     let response = await BusinessClass.paginate(query, options);
     return res.send(response);
@@ -153,9 +173,8 @@ module.exports.getAllMembersInAClass = async (req, res) => {
   try {
     let { classId } = req.params;
 
-    let query = getQuery(req);
+    let { query, options } = getPaginationOptions(req);
     query = { ...query, classId };
-    let options = getOptions(req);
 
     let response = await Member.paginate(query, options);
     return res.send(response);

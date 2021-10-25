@@ -1,6 +1,8 @@
 const mongoose = require("mongoose");
 const { ObjectId } = mongoose.Schema;
 const mongoosePaginate = require("mongoose-paginate-v2");
+const { ENUM_DAYS } = require("../constants/session");
+const moment = require("moment");
 
 const businessSessionSchema = new mongoose.Schema(
   {
@@ -12,6 +14,10 @@ const businessSessionSchema = new mongoose.Schema(
       type: ObjectId,
       ref: "Business",
     },
+    classId: {
+      type: ObjectId,
+      ref: "BusinessClass",
+    },
     term: {
       _id: {
         type: ObjectId,
@@ -21,20 +27,30 @@ const businessSessionSchema = new mongoose.Schema(
       startDate: {
         type: Date,
         required: true,
+        get: function (date) {
+          return moment(date).format("YYYY-MM-DD");
+        },
       },
       endDate: {
         type: Date,
         required: true,
+        get: function (date) {
+          return moment(date).format("YYYY-MM-DD");
+        },
       },
     },
     pattern: [
       {
         day: {
           type: String,
-          enum: ["mon", "tue", "wed", "thu", "fri", "sat", "sun"],
+          enum: ENUM_DAYS,
         },
-        starttime: Date,
-        endtime: Date,
+        startTime: {
+          type: Date,
+        },
+        endTime: {
+          type: Date,
+        },
       },
     ],
     fullcapacity: {
@@ -52,10 +68,6 @@ const businessSessionSchema = new mongoose.Schema(
     waitcapacityfilled: {
       type: Number,
       default: 0,
-    },
-    classId: {
-      type: ObjectId,
-      ref: "BusinessClass",
     },
     coachId: {
       type: ObjectId,
@@ -102,7 +114,25 @@ businessSessionSchema.set("toJSON", {
   transform: function (doc, ret) {
     delete ret.id;
   },
+  getters: true,
+  setters: true,
 });
+
+// function getPatternTime(date) {
+//   date = new Date(date);
+//   let hours = date.getHours();
+//   let mins = date.getMinutes();
+//   console.log({ hours, mins, hi: "hi" });
+//   return `${hours}:${mins}`;
+// }
+
+// function setPatternTime(timeString) {
+//   let [hour, mins] = timeString.split(":");
+//   let date = new Date("2022-01-01");
+//   date.setHours(hour);
+//   date.setMinutes(mins);
+//   return date;
+// }
 
 businessSessionSchema.plugin(mongoosePaginate);
 

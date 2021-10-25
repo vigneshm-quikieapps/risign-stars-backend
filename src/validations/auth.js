@@ -1,6 +1,6 @@
 const { body } = require("express-validator");
 const { RefreshToken } = require("../services/auth");
-const { isValidMobile } = require("./mobileNo");
+const { isValidMobile } = require("./helpers/mobileNo");
 
 const getOTPEmailValidationRules = () => {
   return [body("email", "should be a valid Email").isEmail()];

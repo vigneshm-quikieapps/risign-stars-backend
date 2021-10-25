@@ -1,8 +1,12 @@
 const { EvaluationScheme } = require("../../../models");
 
-const isValidEvaluationSchemeId = async (memberId, { req }) => {
+const isValidEvaluationSchemeId = async (evaluationSchemeId, { req }) => {
   try {
-    let evaluationScheme = await EvaluationScheme.findById(memberId);
+    if (!evaluationSchemeId) {
+      throw new Error();
+    }
+
+    let evaluationScheme = await EvaluationScheme.findById(evaluationSchemeId);
 
     if (!evaluationScheme) {
       throw new Error("Does not exists");

@@ -6,7 +6,7 @@ const {
 } = require("../constants/enrolment");
 const { BusinessSession, Member, Enrolment } = require("../models");
 const { isValidBusinessId } = require("./helpers/business");
-const isValidMemberId = require("./helpers/members/isValidMemberId");
+const { isValidMemberId } = require("./helpers/member");
 
 const checkValidSession =
   (dataField) =>
