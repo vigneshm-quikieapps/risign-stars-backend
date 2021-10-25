@@ -139,10 +139,8 @@ const updateClassValidationRules = () => {
     check("name", "name should be at least 3 char")
       .optional()
       .isLength({ min: 3 }),
-    check("businessId").optional().custom(isValidBusinessId),
     check("evaluationSchemeId").optional().custom(isValidEvaluationSchemeId),
     check("categoryId").optional().custom(isValidCategoryId),
-    check("sessionIds").optional().custom(isValidSessionId),
     check("status", `status should  only be ${ENUM_TERM_STATUS.join(" / ")}`)
       .optional()
       .isIn(ENUM_TERM_STATUS),
@@ -166,6 +164,12 @@ const updateClassValidationRules = () => {
       .optional()
       .isArray()
       .notEmpty(),
+    check("charges.*.name", "should be atleast 3 char").isLength({ min: 3 }),
+    check("charges.*.amount", "should be a number").isNumeric(),
+    check("charges.*.mandatory", "should be a boolean").isBoolean(),
+    check("charges.*.payFrequency", "should be atleast 3 char").isIn(
+      ENUM_PAY_FREQUENCY
+    ),
   ];
 };
 module.exports = {

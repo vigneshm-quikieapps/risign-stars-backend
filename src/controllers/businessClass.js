@@ -1,4 +1,9 @@
-const { BusinessClass, Member, BusinessSession } = require("../models");
+const {
+  BusinessClass,
+  Member,
+  BusinessSession,
+  Enrolment,
+} = require("../models");
 const { getPaginationOptions } = require("../helpers/query");
 const mongoose = require("mongoose");
 
@@ -10,7 +15,7 @@ module.exports.getBusinessClassIdById = (req, res, next, id) => {
     .exec((err, Class) => {
       if (err) {
         return res.status(400).json({
-          err: "cannot find business Class by id enter a valid ID",
+          err: "should be a valid class id",
         });
       }
       req.Class = Class;
@@ -122,51 +127,67 @@ module.exports.getBusinessClass = (req, res) => {
   return res.json(req.Class);
 };
 
-//Business Class Update
-
+/**
+ * update class
+ * @param {*} req
+ * @param {*} res
+ */
 module.exports.updateBusinessClass = (req, res) => {
   BusinessClass.findByIdAndUpdate(
     { _id: req.Class._id },
     { $set: req.body },
     { new: true, useFindAndModify: false },
-    (err, Class) => {
+    (err) => {
       if (err) {
         return res.status(400).json({
           err: "sorry Business Class Not Updated ",
         });
       }
 
-      res.json(Class);
+      res.json({ message: "update successful" });
     }
   );
 };
+
 //middleware for resticting deletion if session is present
 module.exports.isBusinessClassRestricted = (req, res, next) => {
   let Class = req.Class;
   if (!Class) {
     return res.status(400).json({
-      err: "Please Enter A valid Bussiness ID ",
-    });
-  }
-  if (Class.session) {
-    return res.status(400).json({
-      err: "Class deletion is Restricted as there are active Sessions Present ",
+      err: "should be a valid class id",
     });
   }
 
   next();
 };
 
-module.exports.deleteBusinessClass = (req, res) => {
-  const Class = req.Class;
-  Class.remove((err, Class) => {
-    if (err) {
-      return res.status(400).json({
-        err: "unable to delete Business Class",
-      });
+module.exports.deleteBusinessClass = async (req, res) => {
+  const session = await mongoose.startSession();
+  session.startTransaction();
+  try {
+    let classId = req.params.businessClassId;
+
+    let enrolmentCount = await Enrolment.count({
+      classId,
+    });
+
+    if (enrolmentCount) {
+      throw new Error(
+        "delete not allowed, there is atlest one enrolment in the class"
+      );
     }
-    res.json(Class);
-  });
+
+    await BusinessSession.deleteMany({ classId }, { session });
+    await BusinessClass.deleteOne({ _id: classId }, { session });
+
+    await session.commitTransaction();
+
+    return res.send({ message: "delete successful" });
+  } catch (err) {
+    return res.status(422).send({ message: err.message });
+  } finally {
+    session.endSession();
+  }
 };
 
 module.exports.getAllMembersInAClass = async (req, res) => {

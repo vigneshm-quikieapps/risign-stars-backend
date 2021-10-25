@@ -36,6 +36,7 @@ const businessClassSchema = new mongoose.Schema(
       type: ObjectId,
       ref: "Business",
       required: true,
+      immutable: true,
     },
     evaluationSchemeId: {
       type: ObjectId,
