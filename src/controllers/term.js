@@ -1,97 +1,116 @@
 const { getQuery, getOptions } = require("../helpers/query");
-const { Term } = require("../models");
+const { Term, BusinessSession } = require("../models");
+const { getPaginateOptions } = require("../helpers/query");
 
 //parameter extractor
-module.exports.getTermIdById = (req, res, next, id) => {
-  Term.findById(id)
-    .populate("business")
-    .exec((err, term) => {
-      if (err) {
-        return res.status(400).json({
-          err: "cannot find  Term by id",
-        });
-      }
-      req.term = term;
-      next();
-    });
-};
+// module.exports.getTermIdById = (req, res, next, id) => {
+//   Term.findById(id)
+//     .populate("business")
+//     .exec((err, term) => {
+//       if (err) {
+//         return res.status(400).json({
+//           err: "cannot find  Term by id",
+//         });
+//       }
+//       req.term = term;
+//       next();
+//     });
+// };
 
 //Business Class creation
 
-module.exports.createTerm = (req, res) => {
-  const term = new Term(req.body);
-  term.save((err, term) => {
-    if (err) {
-      return res.status(400).json({
-        error: "unable to save Term to database",
-        err,
-      });
+module.exports.createTerm = async (req, res) => {
+  try {
+    await Term.create(req.body);
+    return res.status(201).send({ message: "create successful" });
+  } catch (err) {
+    return res.status(422).send({ message: err.message });
+  }
+};
+
+/**
+ * get all terms
+ *
+ * @param {*} req
+ * @param {*} res
+ * @returns
+ */
+module.exports.getAllTerm = async (req, res) => {
+  try {
+    let { query, options } = getPaginateOptions(req);
+    options.populate = { path: "business" };
+
+    let response = await Term.paginate(query, options);
+    return res.send(response);
+  } catch (err) {
+    return res.status().send({ message: err.message });
+  }
+};
+
+/**
+ * get term
+ *
+ * @param {*} req
+ * @param {*} res
+ * @returns
+ */
+module.exports.getTerm = async (req, res) => {
+  try {
+    let termId = req.body.TermId;
+    let term = await Term.findById(termId);
+    return res.send({ term });
+  } catch (err) {
+    return res.status().send({ message: err.message });
+  }
+};
+
+/**
+ *
+ * @param {*} req
+ * @param {*} res
+ */
+module.exports.updateTerm = async (req, res) => {
+  try {
+    let { termId } = req.params;
+
+    let sessionCount = await BusinessSession.count({ "term._id": termId });
+
+    if (sessionCount) {
+      throw new Error("not allowed, there is atleast 1 session using the term");
     }
-    res.json(term);
-  });
+
+    await Term.findByIdAndUpdate(
+      { _id: termId },
+      { $set: req.body },
+      { new: true, useFindAndModify: false }
+    );
+
+    return res.send({ message: "update successful" });
+  } catch (err) {
+    return res.status(422).send({ message: err.message });
+  }
 };
 
-//Business Class listing all
+/**
+ *
+ * @param {*} req
+ * @param {*} res
+ */
+module.exports.deleteTerm = async (req, res) => {
+  try {
+    let { termId } = req.params;
 
-module.exports.getAllTerm = (req, res) => {
-  let limit = req.query.limit ? parseInt(req.query.limit) : "";
-  let page = req.query.page;
-  let skip = page ? parseInt(page) - 1 * limit : "";
-  let sortBy = req.query.sortBy ? req.query.sortBy : "_id";
+    let sessionCount = await BusinessSession.count({ "term._id": termId });
 
-  Term.find()
-    .populate("business")
-    .sort([[sortBy, "asc"]])
-    .skip(skip)
-    .limit(limit)
-    .exec((err, term) => {
-      if (err) {
-        console.log(err);
-        return res.status(400).json({
-          err: "cannot find Terms",
-        });
-      }
-      res.json(term);
-    });
-};
-
-//Term  listing
-
-module.exports.getTerm = (req, res) => {
-  return res.json(req.term);
-};
-
-//Term  Update
-
-module.exports.updateTerm = (req, res) => {
-  Term.findByIdAndUpdate(
-    { _id: req.term._id },
-    { $set: req.body },
-    { new: true, useFindAndModify: false },
-    (err, term) => {
-      if (err) {
-        return res.status(400).json({
-          err: "sorry  Term Not Updated ",
-        });
-      }
-
-      res.json(term);
+    if (sessionCount) {
+      throw new Error("not allowed, there is atleast 1 session using the term");
     }
-  );
-};
 
-//Term  delete
-
-module.exports.deleteTerm = (req, res) => {
-  const term = req.term;
-  term.remove((err, term) => {
-    if (err) {
-      return res.status(400).json({
-        err: "unable to delete  Term",
-      });
-    }
-    res.json(term);
-  });
+    await Term.deleteOne({ _id: termId });
+    return res.send({ message: "delete successful" });
+  } catch (err) {
+    return res.status(422).send({ message: err.message });
+  }
 };
 
 /**

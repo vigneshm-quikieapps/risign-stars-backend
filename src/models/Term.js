@@ -8,6 +8,7 @@ const termSchema = new mongoose.Schema(
       type: ObjectId,
       ref: "Business",
       required: true,
+      immutable: true,
     },
     label: {
       type: String,

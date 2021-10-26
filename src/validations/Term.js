@@ -26,7 +26,6 @@ const createTermValidationRules = () => {
 
 const updateTermValidationRules = () => {
   return [
-    check("business").optional().custom(businessIdValidation),
     // check("code", "code should be a Numbre/Integer  ").optional().isInt(),
     check("label", "label should be atleast 3 chatecters")
       .optional()

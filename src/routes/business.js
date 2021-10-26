@@ -13,7 +13,7 @@ const { BUSINESS_DEFINITION, CLASS_DEFINITION } = require("../constants/pages");
 const { CREATE, UPDATE, READ, DELETE } = require("../constants/rest");
 
 const {
-  getBusinessIdById,
+  // getBusinessIdById,
   getBusiness,
   getAllBusinesses,
   createBusiness,

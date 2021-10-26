@@ -4,6 +4,7 @@ const {
   EVALUATION_STATUS_ACTIVE,
 } = require("../constants/constant");
 const { ObjectId } = mongoose.Schema;
+const mongoosePaginate = require("mongoose-paginate-v2");
 
 const evaluationSchema = new mongoose.Schema(
   {
@@ -37,5 +38,7 @@ const evaluationSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
+
+evaluationSchema.plugin(mongoosePaginate);
 
 module.exports = mongoose.model("EvaluationScheme", evaluationSchema);

@@ -3,7 +3,6 @@ const router = express.Router();
 const { getAllSessionsInATerm } = require("../controllers/businessSession");
 
 const {
-  getTermIdById,
   createTerm,
   getTerm,
   getAllTerm,
@@ -19,8 +18,6 @@ const {
 } = require("../validations/Term");
 const validate = require("../validations/validate");
 
-router.param("TermId", getTermIdById);
-
 router.get(
   "/:termId/sessions",
   getAllSessionsInATermValidationRules(),
@@ -30,9 +27,9 @@ router.get(
 router.post("/", createTermValidationRules(), validate, createTerm);
 
 router.get("/", getAllTerm);
-router.get("/:TermId", getTerm);
-router.put("/:TermId", updateTermValidationRules(), validate, updateTerm);
+router.get("/:termId", getTerm);
+router.put("/:termId", updateTermValidationRules(), validate, updateTerm);
 
-router.delete("/:TermId", deleteTerm);
+router.delete("/:termId", deleteTerm);
 
 module.exports = router;
