@@ -61,4 +61,19 @@ const progressSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
+progressSchema.virtual("evaluationScheme", {
+  ref: "EvaluationScheme",
+  localField: "evaluationSchemeId",
+  foreignField: "_id",
+});
+
+// Ensure virtual fields are serialised.
+progressSchema.set("toJSON", {
+  virtuals: true,
+  versionKey: false,
+  transform: function (doc, ret) {
+    delete ret.id;
+  },
+});
+
 module.exports = mongoose.model("Progress", progressSchema);

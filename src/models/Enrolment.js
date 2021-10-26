@@ -23,7 +23,7 @@ const enrolmentSchema = new mongoose.Schema(
       type: ObjectId,
       ref: "Business",
     },
-    name: String,
+    name: String /** deprecated, will be removed, try not to use this */,
     clubMembershipId: {
       type: String,
       required: true,
