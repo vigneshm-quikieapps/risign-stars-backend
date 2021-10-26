@@ -43,7 +43,7 @@ module.exports.getAllTerm = async (req, res) => {
     let response = await Term.paginate(query, options);
     return res.send(response);
   } catch (err) {
-    return res.status().send({ message: err.message });
+    return res.status(422).send({ message: err.message });
   }
 };
 
