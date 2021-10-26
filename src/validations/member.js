@@ -7,10 +7,9 @@ const { userIdValidation } = require("./businessFinance");
 const createMemberValidationRules = () => {
   return [
     body("userId", "min length should be 2").custom(userIdValidation),
-    body(
-      "fullName",
-      "min length should be 2 and max length should be 70"
-    ).isLength({ min: 2, max: 70 }),
+    body("name", "min length should be 2 and max length should be 70").isLength(
+      { min: 2, max: 70 }
+    ),
     body("dob", "must be a valid date").isDate(),
     body("gender", `should be either ${ENUM_GENDER.join(" / ")}`).isIn(
       ENUM_GENDER
@@ -25,7 +24,7 @@ const createMemberValidationRules = () => {
       `should be either ${ADDRESS_TYPE.join(" / ")}`
     ).isIn(ADDRESS_TYPE),
     body(
-      "contacts.*.fullName",
+      "contacts.*.name",
       "min length should be 2 and max length should be 70"
     ).isLength({ min: 2, max: 70 }),
     body("contacts.*.contact", "min length should be 2").isLength({ min: 2 }),
@@ -48,7 +47,7 @@ const updateMemberValidationRules = () => {
     body("membership.*.clubMembershipId", "min length should be 2")
       .optional()
       .isLength({ min: 2 }),
-    body("fullName", "min length should be 2 and max length should be 70")
+    body("name", "min length should be 2 and max length should be 70")
       .optional()
       .isLength({ min: 2, max: 70 }),
     body("dob", "must be a valid date").optional().isDate(),
@@ -60,13 +59,7 @@ const updateMemberValidationRules = () => {
       .optional()
       .isIn(ADDRESS_TYPE),
     body(
-      "contacts.*.firstName",
-      "min length should be 2 and max length should be 70"
-    )
-      .optional()
-      .isLength({ min: 2, max: 70 }),
-    body(
-      "contacts.*.lastName",
+      "contacts.*.name",
       "min length should be 2 and max length should be 70"
     )
       .optional()
@@ -78,9 +71,6 @@ const updateMemberValidationRules = () => {
       .optional()
       .custom(userIdValidation)
       .isIn(RELATIONSHIPS),
-    body("updatedBy", "updatedBy should be a valid userId").custom(
-      userIdValidation
-    ),
   ];
 };
 const createEmergencyContactValidationRules = () => {
@@ -99,12 +89,6 @@ const createEmergencyContactValidationRules = () => {
     ).isLength({ min: 2, max: 70 }),
     body("contacts.*.contact", "min length should be 2").isLength({ min: 2 }),
     body("contacts.*.relationShip", "invalid relationship").isIn(RELATIONSHIPS),
-    body("updatedBy", "updatedBy should be a valid userId")
-      .optional()
-      .custom(userIdValidation),
-    body("createdBy", "createdBy should be a valid userId").custom(
-      userIdValidation
-    ),
   ];
 };
 const updateEmergencyContactValidationRules = () => {
@@ -114,14 +98,8 @@ const updateEmergencyContactValidationRules = () => {
       .optional()
       .isIn(ADDRESS_TYPE),
     body(
-      "contacts.*.firstName",
+      "contacts.*.name",
       "min length should be 2 and max length should be 70"
-    )
-      .optional()
-      .isLength({ min: 2, max: 70 }),
-    body(
-      "contacts.*.lastName",
-      "firstName:min length should be 2 and max length should be 70"
     )
       .optional()
       .isLength({ min: 2, max: 70 }),
@@ -131,12 +109,6 @@ const updateEmergencyContactValidationRules = () => {
     body("contacts.*.relationShip", "invalid relationship")
       .optional()
       .isIn(RELATIONSHIPS),
-    body("updatedBy", "updatedBy should be a valid userId")
-      .optional()
-      .custom(userIdValidation),
-    body("createdBy", "createdBy should be a valid userId")
-      .optional()
-      .custom(userIdValidation),
   ];
 };
 module.exports = {

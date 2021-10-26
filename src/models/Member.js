@@ -19,7 +19,7 @@ const memberSchema = new mongoose.Schema(
         clubMembershipId: String,
       },
     ],
-    fullName: {
+    name: {
       type: String,
       required: true,
     },
@@ -38,7 +38,7 @@ const memberSchema = new mongoose.Schema(
           type: String,
           enum: ADDRESS_TYPE,
         },
-        fullName: String,
+        name: String,
         contact: String,
         relationship: {
           type: String,
