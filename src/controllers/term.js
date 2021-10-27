@@ -21,8 +21,8 @@ const { getPaginateOptions } = require("../helpers/query");
 
 module.exports.createTerm = async (req, res) => {
   try {
-    await Term.create(req.body);
-    return res.status(201).send({ message: "create successful" });
+    let term = await Term.create(req.body);
+    return res.status(201).send({ message: "create successful", term });
   } catch (err) {
     return res.status(422).send({ message: err.message });
   }
