@@ -8,7 +8,7 @@ const {
 
 const {
   getAllEvaluations,
-  getEvaluationIdById,
+  // getEvaluationIdById,
   getEvaluation,
   createEvaluation,
   deleteEvaluation,
@@ -17,19 +17,19 @@ const {
 const validate = require("../validations/validate");
 
 //parameters
-router.param("evaluationId", getEvaluationIdById);
+// router.param("evaluationId", getEvaluationIdById);
 //create route
 router.post("/", createEvaluationValidationRules(), validate, createEvaluation);
 
 // read routes
-router.get("/:evaluationId", getEvaluation);
+router.get("/:evaluationSchemeId", getEvaluation);
 
 //delete route
-router.delete("/:evaluationId", deleteEvaluation);
+router.delete("/:evaluationSchemeId", deleteEvaluation);
 
 //update route
 router.put(
-  "/:evaluationId",
+  "/:evaluationSchemeId",
   updateEvaluationValidationRules(),
   validate,
   updateEvaluation

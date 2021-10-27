@@ -1,6 +1,7 @@
 const { check } = require("express-validator");
 const { Business, User, Discounts, BusinessFinance } = require("../models");
 const { Types } = require("mongoose");
+const { ENUM_BUSINESS_FINANCE } = require("../constants/businessFinance");
 
 const discountIdValidation = async (discountSchemesId) => {
   try {
@@ -99,12 +100,16 @@ const createBusinessFinanceValidationRules = () => {
       .isInt()
       .isLength({ min: 1 }),
     check("charges", "is required").bail().custom(isValidCharges),
-    check("paymentMethod", "paymentMethod should be a Object").isObject(),
-    check("paymentMethod.online", "online should be a true/false").isBoolean(),
-    check("paymentMethod.manual", "manual should be a true/false").isBoolean(),
+    check("paymentChannels", "should be a Object").isObject(),
+    check("paymentChannels.online", "should be a true/false").isBoolean(),
+    check("paymentChannels.manual", "should be a true/false").isBoolean(),
     check("discountSchemesId", "discountSchemesId should be a valid businessId")
       .optional()
       .custom(discountIdValidation),
+    check(
+      "paymentMethods.*",
+      `should be either: ${ENUM_BUSINESS_FINANCE.join(" / ")}`
+    ).isIn(ENUM_BUSINESS_FINANCE),
     // check("updatedBy", "updatedBy should be a valid userId")
     //   .optional()
     //   .isLength({ min: 12 })
@@ -145,23 +150,25 @@ const updateBusinessFinanceValidationRules = () => {
       .optional()
       .isInt()
       .isLength({ min: 1 }),
-    check("paymentMethod", "paymentMethod should be a Object")
-      .optional()
-      .isObject(),
-    check("paymentMethod.online", "online should be a true/false")
+    check("paymentChannels", "should be a Object").optional().isObject(),
+    check("paymentChannels.online", "should be a true/false")
       .optional()
       .isBoolean(),
-    check("paymentMethod.manual", "manual should be a true/false")
+    check("paymentChannels.manual", "should be a true/false")
       .optional()
       .isBoolean(),
     check("discountSchemesId", "discountSchemesId should be a valid businessId")
       .optional()
       .custom(discountIdValidation),
-    // check("updatedBy", "updatedBy should be a valid userId")
-    //   .isLength({ min: 12 })
-    //   .custom(userIdValidation),
+    check(
+      "paymentMethods.*",
+      `should be either: ${ENUM_BUSINESS_FINANCE.join(" / ")}`
+    )
+      .optional()
+      .isIn(ENUM_BUSINESS_FINANCE),
   ];
 };
+
 const addDiscountToBusinessFinanceValidationRules = () => {
   return [
     check(

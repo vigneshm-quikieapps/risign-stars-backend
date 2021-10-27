@@ -9,7 +9,7 @@ const {
 const validate = require("../validations/validate");
 
 const {
-  getBusinessFinanceIdById,
+  // getBusinessFinanceIdById,
   getBusinessFinance,
   getAllBusinessFinance,
   createBusinessFinance,
@@ -19,10 +19,8 @@ const {
 } = require("../controllers/businessFinance");
 
 //parameters
-router.param("businessFinanceId", getBusinessFinanceIdById);
+// router.param("businessFinanceId", getBusinessFinanceIdById);
 
-//all of actual routes
-// eslint-disable-next-line prettier/prettier
 //all of actual routes
 //create route
 router.post(

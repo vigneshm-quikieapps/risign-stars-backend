@@ -2,26 +2,23 @@ const Member = require("../models/Member");
 const DoesNotExistError = require("../exceptions/DoesNotExistError");
 const path = require("path");
 const multer = require("multer");
-const {
-  getQuery,
-  getOptions,
-  getPaginationOptions,
-} = require("../helpers/query");
+const { getPaginationOptions } = require("../helpers/query");
 const { Types } = require("mongoose");
 const { Enrolment } = require("../models");
 
 //parameter extractor
-module.exports.getmemberIdById = (req, res, next, id) => {
-  Member.findById(id).exec((err, member) => {
-    if (err) {
-      return res.status(400).json({
-        error: "Member not found",
-      });
-    }
-    req.member = member;
-    next();
-  });
-};
+// module.exports.getmemberIdById = (req, res, next, id) => {
+//   Member.findById(id).exec((err, member) => {
+//     if (err) {
+//       return res.status(400).json({
+//         error: "Member not found",
+//       });
+//     }
+//     req.member = member;
+//     next();
+//   });
+// };
+
 //createMember
 module.exports.create = async (req, res) => {
   try {
@@ -39,16 +36,16 @@ module.exports.create = async (req, res) => {
 module.exports.update = async (req, res) => {
   try {
     let options = { new: true };
-    console.log(req.params.id);
-    let student = await Member.findByIdAndUpdate(
+
+    let member = await Member.findByIdAndUpdate(
       req.params.id,
       req.body,
       options
     );
-    if (!student) {
+    if (!member) {
       throw new DoesNotExistError();
     }
-    return res.send({ message: "updated successfully", student });
+    return res.send({ message: "updated successfully", member });
   } catch (err) {
     console.error(err);
     return res.status(422).send({ message: err.message });
@@ -69,6 +66,7 @@ module.exports.delete = async (req, res) => {
     return res.status(422).send({ message: err.message });
   }
 };
+
 //add new Emergency contact
 module.exports.addNewEmergencyContact = (req, res) => {
   let EmergencyContacts = [];
@@ -81,6 +79,7 @@ module.exports.addNewEmergencyContact = (req, res) => {
       relationShip: contact.relationShip,
     });
   });
+
   //store this in DB
   Member.findOneAndUpdate(
     { _id: req.member._id },
@@ -96,6 +95,7 @@ module.exports.addNewEmergencyContact = (req, res) => {
     }
   );
 };
+
 //update emergency contacts
 module.exports.updateEmergencyContact = (req, res) => {
   Member.findOneAndUpdate(

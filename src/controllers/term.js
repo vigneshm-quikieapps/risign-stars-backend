@@ -78,13 +78,13 @@ module.exports.updateTerm = async (req, res) => {
       throw new Error("not allowed, there is atleast 1 session using the term");
     }
 
-    await Term.findByIdAndUpdate(
+    let term = await Term.findByIdAndUpdate(
       { _id: termId },
       { $set: req.body },
       { new: true, useFindAndModify: false }
     );
 
-    return res.send({ message: "update successful" });
+    return res.send({ message: "update successful", term });
   } catch (err) {
     return res.status(422).send({ message: err.message });
   }

@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 
 const {
-  getCategoryById,
+  // getCategoryById,
   createCategory,
   getCategory,
   getAllCategory,
@@ -15,7 +15,7 @@ const {
 } = require("../validations/Category");
 const validate = require("../validations/validate");
 
-router.param("categoryId", getCategoryById);
+// router.param("categoryId", getCategoryById);
 //router.param("userId",getUserById);
 
 // router.get("/category/:categoryId/",);

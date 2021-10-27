@@ -6,6 +6,14 @@ module.exports = {
   CHARGES_CLUB_MEMBERSHIP_ID,
 };
 
+module.exports.ENUM_BUSINESS_FINANCE = [
+  "CASH",
+  "REC_BANK",
+  "TOTZ_BANK",
+  "REC_CREDIT_CARD",
+  "TOTZ_CREDIT_CARD",
+];
+
 module.exports.ENUM_CHARGES = [CHARGES_CLUB_MEMBERSHIP_ID];
 
 module.exports.ENUM_PAY_FREQUENCY = [PAY_FREQUENCY_ANNUAL];

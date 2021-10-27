@@ -1,77 +1,95 @@
-const { getQuery, getOptions } = require("../helpers/query");
+const { getPaginationOptions } = require("../helpers/query");
+const { BusinessClass } = require("../models");
 const Category = require("../models/Category");
+const { DoesNotExistError } = require("../exceptions");
 
-module.exports.getCategoryById = (req, res, next, id) => {
-  Category.findById(id).exec((err, cat) => {
-    if (err) {
-      return res.status(400).json({
-        err: "cannot find category by id",
-      });
-    }
-    req.category = cat;
-    next();
-  });
+// module.exports.getCategoryById = (req, res, next, id) => {
+//   Category.findById(id).exec((err, cat) => {
+//     if (err) {
+//       return res.status(400).json({
+//         err: "cannot find category by id",
+//       });
+//     }
+//     req.category = cat;
+//     next();
+//   });
+// };
+
+module.exports.createCategory = async (req, res) => {
+  try {
+    const category = await Category.create(req.body);
+    return res.status(201).send({ message: "create successful", category });
+  } catch (err) {
+    return res.status(422).send({ message: err.message });
+  }
 };
 
-module.exports.createCategory = (req, res) => {
-  const category = new Category(req.body);
-  category.save((err, cat) => {
-    if (err) {
-      return res.status(400).json({
-        error: "unable to save category to database",
-      });
-    }
-    res.json(cat);
-  });
+module.exports.getAllCategory = async (req, res) => {
+  try {
+    let { query, options } = getPaginationOptions(req);
+    let response = await Category.paginate(query, options);
+    return res.send(response);
+  } catch (err) {
+    return res.send({ message: err.message });
+  }
 };
 
-module.exports.getAllCategory = (req, res) => {
-  Category.find().exec((err, categories) => {
-    if (err) {
-      return res.status(400).json({
-        err: "cannot find category by id",
-      });
-    }
-    res.json(categories);
-  });
+module.exports.getCategory = async (req, res) => {
+  try {
+    let { categoryId } = req.params;
+    let category = await Category.findById(categoryId);
+    return res.send({ category });
+  } catch (err) {
+    return res.send({ message: err.message });
+  }
 };
 
-module.exports.getCategory = (req, res) => {
-  return res.json(req.category);
+module.exports.updateCategory = async (req, res) => {
+  try {
+    let { categoryId } = req.params;
+    let { name } = req.body;
+    let options = { new: true };
+
+    let category = await Category.findByIdAndUpdate(
+      categoryId,
+      { name },
+      options
+    );
+
+    return res.send({ category });
+  } catch (err) {
+    return res.send({ message: err.message });
+  }
 };
 
-module.exports.updateCategory = (req, res) => {
-  const category = req.category;
-  category.name = req.body.name;
-  category.save((err, cat) => {
-    if (err) {
-      return res.status(400).json({
-        err: "unable to update category",
-      });
-    }
-    res.json(cat);
-  });
-};
+module.exports.removeCategory = async (req, res) => {
+  try {
+    let { categoryId } = req.params;
 
-module.exports.removeCategory = (req, res) => {
-  const category = req.category;
-  category.remove((err, cat) => {
-    if (err) {
-      return res.status(400).json({
-        err: "unable to delete category",
-      });
+    let businessClassCount = await BusinessClass.count({ categoryId });
+
+    if (businessClassCount) {
+      throw new Error("not allowed, it is used in atleast 1 class definition");
     }
-    res.json(cat);
-  });
+
+    let category = await Category.deleteOne({ _id: categoryId });
+
+    if (category.deletedCount < 1) {
+      throw new DoesNotExistError();
+    }
+
+    return res.send({ message: "deleted successful" });
+  } catch (err) {
+    return res.status(422).send({ message: err.message });
+  }
 };
 
 module.exports.getAllCategoriesInABusiness = async (req, res) => {
   try {
     let { businessId } = req.params;
 
-    let query = getQuery(req);
+    let { query, options } = getPaginationOptions(req);
     query = { ...query, businessId };
-    let options = getOptions(req);
 
     let response = await Category.paginate(query, options);
     return res.send(response);

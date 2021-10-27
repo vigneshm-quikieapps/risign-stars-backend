@@ -4,6 +4,7 @@ const {
   PAY_FREQUENCY_ANNUAL,
   ENUM_CHARGES,
   CHARGES_CLUB_MEMBERSHIP_ID,
+  ENUM_BUSINESS_FINANCE,
 } = require("../constants/businessFinance");
 const { ObjectId } = mongoose.Schema;
 const mongoosePaginate = require("mongoose-paginate-v2");
@@ -13,6 +14,7 @@ const businessFinanceSchema = new mongoose.Schema(
     businessId: {
       type: ObjectId,
       ref: "Business",
+      immutable: true,
     },
     bankDetails: {
       accHolderName: String,
@@ -27,13 +29,7 @@ const businessFinanceSchema = new mongoose.Schema(
     paymentMethods: [
       {
         type: String,
-        enum: [
-          "CASH",
-          "REC BANK",
-          "TOTZ BANK",
-          "REC CREDIT CARD",
-          "TOTZ CREDITCARD",
-        ],
+        enum: ENUM_BUSINESS_FINANCE,
       },
     ],
     discountSchemes: [

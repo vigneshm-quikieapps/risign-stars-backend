@@ -17,8 +17,11 @@ module.exports.getAll = async (req, res) => {
 
 module.exports.create = async (req, res) => {
   try {
-    await Role.create({ ...req.body, createdBy: req.authUserData._id });
-    return res.status(201).send({ message: "added successfully" });
+    let role = await Role.create({
+      ...req.body,
+      createdBy: req.authUserData._id,
+    });
+    return res.status(201).send({ message: "added successfully", role });
   } catch (err) {
     console.error(err);
     return res.status(422).send({ message: err.message });
@@ -51,7 +54,7 @@ module.exports.update = async (req, res) => {
     if (!role) {
       throw new DoesNotExistError();
     }
-    return res.send({ message: "updated successfully" });
+    return res.send({ message: "updated successfully", role });
   } catch (err) {
     console.error(err);
     return res.status(422).send({ message: err.message });

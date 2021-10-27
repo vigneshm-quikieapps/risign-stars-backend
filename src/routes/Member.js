@@ -11,7 +11,7 @@ const member = require("../controllers/Member");
 const validate = require("../validations/validate");
 const { isAuthorized } = require("../middlewares/auth");
 
-router.param("memberId", member.getmemberIdById);
+// router.param("memberId", member.getmemberIdById);
 
 /**
  * routes

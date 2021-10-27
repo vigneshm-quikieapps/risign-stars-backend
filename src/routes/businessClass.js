@@ -19,7 +19,7 @@ const {
 const { getAllBusinessSession } = require("../controllers/businessSession");
 
 //parameters
-router.param("businessClassId", getBusinessClassIdById);
+// router.param("businessClassId", getBusinessClassIdById);
 
 //all of actual routes
 //create route

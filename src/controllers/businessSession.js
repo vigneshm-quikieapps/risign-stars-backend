@@ -8,9 +8,17 @@ module.exports.createBusinessSession = async (req, res) => {
     let sessionPayload = { ...req.body };
     sessionPayload.businessId = req.classData.businessId;
 
-    await BusinessSession.create(sessionPayload);
+    let businessSession = await BusinessSession.create(sessionPayload);
+    businessSession = await BusinessSession.findById(
+      businessSession._id
+    ).populate({
+      path: "coach",
+      select: "name city",
+    });
 
-    return res.status(201).send({ message: "create successful" });
+    return res
+      .status(201)
+      .send({ message: "create successful", businessSession });
   } catch (err) {
     return res.status(422).send({ message: err.message });
   }
@@ -56,13 +64,13 @@ module.exports.updateBusinessSession = async (req, res) => {
   try {
     let { businessSessionId } = req.params;
 
-    await BusinessSession.findByIdAndUpdate(
+    let businessSession = await BusinessSession.findByIdAndUpdate(
       { _id: businessSessionId },
       { $set: req.body },
       { new: true, useFindAndModify: false }
     );
 
-    return res.send({ message: "update successful" });
+    return res.send({ message: "update successful", businessSession });
   } catch (err) {
     return res.status(422).send({ message: err.message });
   }

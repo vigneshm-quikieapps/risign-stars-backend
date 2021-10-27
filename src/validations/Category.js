@@ -1,5 +1,6 @@
-const Category = require("../models/Category");
+const { Category } = require("../models");
 const { check } = require("express-validator");
+const { isValidBusinessId } = require("./helpers/business");
 
 const checkIsUnique = async (name) => {
   try {
@@ -26,11 +27,14 @@ const createCategoryValidationRules = () => {
       .isLength({ min: 3 })
       .bail()
       .custom(checkIsUnique),
+    check("businessId").custom(isValidBusinessId),
   ];
 };
+
 const updateCategoryValidationRules = () => {
   return [check("name", "name should be at least 3 char").isLength({ min: 3 })];
 };
+
 module.exports = {
   createCategoryValidationRules,
   updateCategoryValidationRules,

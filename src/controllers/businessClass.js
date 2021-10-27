@@ -8,20 +8,20 @@ const { getPaginationOptions } = require("../helpers/query");
 const mongoose = require("mongoose");
 
 //parameter extractor
-module.exports.getBusinessClassIdById = (req, res, next, id) => {
-  BusinessClass.findById(id)
-    .populate("business")
-    .populate("sessions")
-    .exec((err, Class) => {
-      if (err) {
-        return res.status(400).json({
-          err: "should be a valid class id",
-        });
-      }
-      req.Class = Class;
-      next();
-    });
-};
+// module.exports.getBusinessClassIdById = (req, res, next, id) => {
+//   BusinessClass.findById(id)
+//     .populate("business")
+//     .populate("sessions")
+//     .exec((err, Class) => {
+//       if (err) {
+//         return res.status(400).json({
+//           err: "should be a valid class id",
+//         });
+//       }
+//       req.Class = Class;
+//       next();
+//     });
+// };
 
 /**
  * create class
@@ -52,7 +52,7 @@ module.exports.createBusinessClass = async (req, res) => {
     await BusinessSession.create(sessionsPayload, { session });
 
     await session.commitTransaction();
-    return res.send({ message: "created successful" });
+    return res.send({ message: "created successful", businessClass });
   } catch (err) {
     await session.abortTransaction();
     console.error(err);
@@ -122,9 +122,24 @@ module.exports.getAllClassesForALoggedInBusinessAdmin = async (req, res) => {
   }
 };
 
-//Business Class listing
-module.exports.getBusinessClass = (req, res) => {
-  return res.json(req.Class);
+/**
+ * get business class by id
+ *
+ * @param {*} req
+ * @param {*} res
+ * @returns
+ */
+module.exports.getBusinessClass = async (req, res) => {
+  try {
+    let { businessClassId } = req.params;
+    let businessClass = await BusinessClass.findById(businessClassId)
+      .populate("business")
+      .populate("sessions");
+
+    return res.send({ businessClass });
+  } catch (err) {
+    return res.status(422).send({ message: err.message });
+  }
 };
 
 /**
@@ -132,21 +147,19 @@ module.exports.getBusinessClass = (req, res) => {
  * @param {*} req
  * @param {*} res
  */
-module.exports.updateBusinessClass = (req, res) => {
-  BusinessClass.findByIdAndUpdate(
-    { _id: req.Class._id },
-    { $set: req.body },
-    { new: true, useFindAndModify: false },
-    (err) => {
-      if (err) {
-        return res.status(400).json({
-          err: "sorry Business Class Not Updated ",
-        });
-      }
+module.exports.updateBusinessClass = async (req, res) => {
+  try {
+    let { businessClassId } = req.params;
+    let businessClass = await BusinessClass.findByIdAndUpdate(
+      { _id: businessClassId },
+      { $set: req.body },
+      { new: true, useFindAndModify: false }
+    );
 
-      res.json({ message: "update successful" });
-    }
-  );
+    return res.send({ message: "update successful", businessClass });
+  } catch (err) {
+    return res.status(422).send({ message: err.message });
+  }
 };
 
 //middleware for resticting deletion if session is present

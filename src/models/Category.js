@@ -15,11 +15,17 @@ const categorySchema = new mongoose.Schema(
       type: ObjectId,
       ref: "Business",
       required: true,
+      immutable: true,
     },
-    updatedBy: String,
-    createdBy: String,
+    updatedBy: {
+      type: ObjectId,
+      ref: "User",
+    },
+    createdBy: {
+      type: ObjectId,
+      ref: "User",
+    },
   },
-
   { timestamps: true }
 );
 

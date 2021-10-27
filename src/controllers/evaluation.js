@@ -1,37 +1,32 @@
 const { EvaluationScheme } = require("../models");
 const { getPaginationOptions } = require("../helpers/query");
+const DoesNotExistError = require("../exceptions/DoesNotExistError");
 
 //parameter extractor
-module.exports.getEvaluationIdById = (req, res, next, id) => {
-  EvaluationScheme.findById(id).exec((err, evaluation) => {
-    if (err) {
-      return res.status(400).json({
-        err: "cannot find evaluation by id",
-      });
-    }
-    req.evaluation = evaluation;
-    next();
-  });
-};
+// module.exports.getEvaluationIdById = (req, res, next, id) => {
+//   EvaluationScheme.findById(id).exec((err, evaluation) => {
+//     if (err) {
+//       return res.status(400).json({
+//         err: "cannot find evaluation by id",
+//       });
+//     }
+//     req.evaluation = evaluation;
+//     next();
+//   });
+// };
 
 /**
  * create evaluation scheme
  * @param {*} req
  * @param {*} res
  */
-module.exports.createEvaluation = (req, res) => {
-  const evaluation = new EvaluationScheme(req.body);
-  evaluation.save((err, evaluation) => {
-    if (err) {
-      console.log(err);
-      console.log(req.body);
-
-      return res.status(400).json({
-        error: "name should be at least 3 char and unique",
-      });
-    }
-    res.status(201).json({ message: "created successfully" });
-  });
+module.exports.createEvaluation = async (req, res) => {
+  try {
+    const evaluationScheme = await EvaluationScheme.create(req.body);
+    res.status(201).json({ message: "created successfully", evaluationScheme });
+  } catch (err) {
+    return res.status().send({ message: err.message });
+  }
 };
 
 /**
@@ -53,8 +48,14 @@ module.exports.getAllEvaluations = async (req, res) => {
  * @param {*} res
  * @returns
  */
-module.exports.getEvaluation = (req, res) => {
-  return res.json(req.evaluation);
+module.exports.getEvaluation = async (req, res) => {
+  try {
+    let { evaluationSchemeId } = req.body;
+    let evaluationScheme = await EvaluationScheme.findById(evaluationSchemeId);
+    return res.send({ evaluationScheme });
+  } catch (err) {
+    return res.status(422).send({ messaeg: err.message });
+  }
 };
 
 /**
@@ -62,21 +63,19 @@ module.exports.getEvaluation = (req, res) => {
  * @param {} req
  * @param {*} res
  */
-module.exports.updateEvaluation = (req, res) => {
-  EvaluationScheme.findByIdAndUpdate(
-    { _id: req.evaluation._id },
-    { $set: req.body },
-    { new: true, useFindAndModify: false },
-    (err, evaluation) => {
-      if (err) {
-        return res.status(400).json({
-          err: "name should be at least 3 char and unique",
-        });
-      }
+module.exports.updateEvaluation = async (req, res) => {
+  try {
+    let { evaluationSchemeId } = req.params;
+    let evaluationScheme = await EvaluationScheme.findByIdAndUpdate(
+      { _id: evaluationSchemeId },
+      { $set: req.body },
+      { new: true, useFindAndModify: false }
+    );
 
-      res.json(evaluation);
-    }
-  );
+    return res.send({ message: "update successful", evaluationScheme });
+  } catch (err) {
+    return res.status(422).send({ message: err.message });
+  }
 };
 
 /**
@@ -84,14 +83,20 @@ module.exports.updateEvaluation = (req, res) => {
  * @param {*} req
  * @param {*} res
  */
-module.exports.deleteEvaluation = (req, res) => {
-  const evaluation = req.evaluation;
-  evaluation.remove((err, evaluation) => {
-    if (err) {
-      return res.status(400).json({
-        err: "unable to delete category",
-      });
+module.exports.deleteEvaluation = async (req, res) => {
+  try {
+    let { evaluationSchemeId } = req.params;
+
+    let evaluationScheme = await EvaluationScheme.deleteOne({
+      _id: evaluationSchemeId,
+    });
+
+    if (!evaluationScheme) {
+      throw new DoesNotExistError();
     }
-    res.json(evaluation);
-  });
+
+    return res.send({ message: "delete successful" });
+  } catch (err) {
+    return res.status(422).send({ message: err.message });
+  }
 };
