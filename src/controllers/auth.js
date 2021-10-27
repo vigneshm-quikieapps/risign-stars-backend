@@ -87,7 +87,7 @@ module.exports.refreshToken = async (req, res) => {
       payload = RefreshToken.verify(token);
     } catch (err) {
       console.error(err);
-      return res.send({
+      return res.status(422).send({
         ok: false,
         accessToken: "",
         message: "invalid refresh token",
