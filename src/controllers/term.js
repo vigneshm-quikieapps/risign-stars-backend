@@ -1,6 +1,5 @@
-const { getQuery, getOptions } = require("../helpers/query");
 const { Term, BusinessSession } = require("../models");
-const { getPaginateOptions } = require("../helpers/query");
+const { getPaginationOptions } = require("../helpers/query");
 
 //parameter extractor
 // module.exports.getTermIdById = (req, res, next, id) => {
@@ -37,7 +36,7 @@ module.exports.createTerm = async (req, res) => {
  */
 module.exports.getAllTerm = async (req, res) => {
   try {
-    let { query, options } = getPaginateOptions(req);
+    let { query, options } = getPaginationOptions(req);
     options.populate = { path: "business" };
 
     let response = await Term.paginate(query, options);
@@ -124,9 +123,8 @@ module.exports.getAllTermsInABusiness = async (req, res) => {
   try {
     let { businessId } = req.params;
 
-    let query = getQuery(req);
+    let { query, options } = getPaginationOptions(req);
     query = { ...query, businessId };
-    let options = getOptions(req);
 
     let response = await Term.paginate(query, options);
     return res.send(response);
