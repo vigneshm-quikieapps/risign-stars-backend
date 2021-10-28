@@ -1,5 +1,5 @@
 const Progress = require("../models/progress");
-const { EvaluationScheme, BusinessClass } = require("../models");
+const { Member } = require("../models");
 
 const { validationResult } = require("express-validator");
 
@@ -61,16 +61,27 @@ const progressPayloadRequest = async (req) => {
  */
 module.exports.createOrGetProgress = async (req, res) => {
   try {
-    let { clubMembershipId, evaluationSchemeId } = req.body;
+    let { clubMembershipId, evaluationSchemeId, businessId, memberId } =
+      req.body;
 
     /**
-     * TODO: validated if the combination of clubmembership and business is valid
+     * validate if the combination of clubmembership and businessId is valid
      */
+    let member = await Member.findOne({
+      _id: memberId,
+      "membership.businessId": businessId,
+      "membership.clubMembershipId": clubMembershipId,
+    });
+
+    if (!member) {
+      throw new Error("No progress record as member doesn't exist");
+    }
 
     /** check if progress record already exists */
     let progress = await Progress.findOne({
       clubMembershipId,
       evaluationSchemeId,
+      businessId,
     });
 
     /**
