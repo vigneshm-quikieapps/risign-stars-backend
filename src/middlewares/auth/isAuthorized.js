@@ -38,7 +38,7 @@ const isAuthorized =
       let tokenPayload = verify(token, process.env.ACCESS_TOKEN_SECRET);
       req.authUserData = tokenPayload;
     } catch (err) {
-      return res.send({ message: err.message });
+      return res.status(401).send({ message: err.message });
     }
 
     // if (isAuthHandler) {

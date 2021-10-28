@@ -63,6 +63,10 @@ module.exports.createOrGetProgress = async (req, res) => {
   try {
     let { clubMembershipId, evaluationSchemeId } = req.body;
 
+    /**
+     * TODO: validated if the combination of clubmembership and business is valid
+     */
+
     /** check if progress record already exists */
     let progress = await Progress.findOne({
       clubMembershipId,
