@@ -72,37 +72,28 @@ module.exports.isAuthenticated = (req, res, next) => {
 
 // Refresh Token
 module.exports.refreshToken = async (req, res) => {
+  let response = { ok: false, accessToken: "" };
   try {
     const token = req.cookies && req.cookies.jid;
     if (!token) {
-      return res.send({
-        ok: false,
-        accessToken: "",
-        message: "refresh token not found",
-      });
+      response = { ...response, message: "refresh token not found" };
+      throw new Error();
     }
 
     let payload = null;
     try {
       payload = RefreshToken.verify(token);
     } catch (err) {
-      console.error(err);
-      return res.status(422).send({
-        ok: false,
-        accessToken: "",
-        message: "invalid refresh token",
-      });
+      response = { ...response, message: "invalid refresh token" };
+      throw err;
     }
 
     let userId = payload._id;
     const user = await User.findById(userId);
 
     if (!user) {
-      return res.send({
-        ok: false,
-        accessToken: "",
-        message: "user does not exist",
-      });
+      response = { ...response, message: "user does not exist" };
+      throw new Error();
     }
 
     const data = generateTokens({ user });
@@ -111,7 +102,8 @@ module.exports.refreshToken = async (req, res) => {
     RefreshToken.send(res, refreshToken);
     return res.send(data);
   } catch (err) {
-    return res.status(422).send({ message: err.message });
+    console.error(err);
+    return res.status(401).send(response);
   }
 };
 
