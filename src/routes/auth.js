@@ -7,15 +7,12 @@ const {
   getOTPEmail,
   getOTPMobileNo,
 } = require("../controllers/auth");
-const {
-  getAllClassesForALoggedInBusinessAdmin,
-} = require("../controllers/businessClass");
+
 const { getMe } = require("../controllers/user");
 const { isAuthorized } = require("../middlewares/auth");
 const {
   getOTPEmailValidationRules,
   getOTPMobileNoValidationRules,
-  refreshTokenValidationRules,
 } = require("../validations/auth");
 const {
   signUpValidationRules,
@@ -37,19 +34,6 @@ router.post(
   getOTPMobileNoValidationRules(),
   validate,
   getOTPMobileNo
-);
-
-const isAuthHandler = (req, res) => {
-  /**
-   * TODO: add the logic.
-   */
-  return true;
-};
-
-router.get(
-  "/auth/user/classes",
-  isAuthorized(null, null, { isAuthHandler }),
-  getAllClassesForALoggedInBusinessAdmin
 );
 
 router.get("/auth/user/me", isAuthorized(null, null), getMe);

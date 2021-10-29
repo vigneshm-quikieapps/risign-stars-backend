@@ -4,24 +4,40 @@ const router = express.Router();
 const validate = require("../validations/validate");
 
 const {
-  getBusinessClassIdById,
+  // getBusinessClassIdById,
   getBusinessClass,
   updateBusinessClass,
   createBusinessClass,
   deleteBusinessClass,
   isBusinessClassRestricted,
   getAllMembersInAClass,
+  getAllClassesForALoggedInBusinessAdmin,
 } = require("../controllers/businessClass");
 const {
   createClassValidationRules,
   updateClassValidationRules,
 } = require("../validations/businessClass");
 const { getAllBusinessSession } = require("../controllers/businessSession");
+const { isAuthorized } = require("../middlewares/auth");
 
 //parameters
 // router.param("businessClassId", getBusinessClassIdById);
 
 //all of actual routes
+
+const isAuthHandler = (req, res) => {
+  /**
+   * TODO: add the logic.
+   */
+  return true;
+};
+
+router.get(
+  "/of-logged-in-user",
+  isAuthorized(null, null, { isAuthHandler }),
+  getAllClassesForALoggedInBusinessAdmin
+);
+
 //create route
 router.post("/", createClassValidationRules(), validate, createBusinessClass);
 

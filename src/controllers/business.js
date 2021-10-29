@@ -134,7 +134,7 @@ module.exports.getAllBusinessesOfLoginUser = async (req, res) => {
     let options = getOptions(req);
     query = { ...query, _id: { $in: businessIds } };
 
-    let response = await Business.find(query, options);
+    let response = await Business.paginate(query, options);
 
     return res.send(response);
   } catch (err) {
