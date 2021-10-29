@@ -10,6 +10,7 @@ const memberConsent = require("../controllers/memberConsent");
 const member = require("../controllers/Member");
 const validate = require("../validations/validate");
 const { isAuthorized } = require("../middlewares/auth");
+const { getAllProgressOfAMember } = require("../controllers/progress");
 
 // router.param("memberId", member.getmemberIdById);
 
@@ -30,6 +31,7 @@ router.get(
 );
 
 router.get("/:memberId", member.get);
+router.get("/:memberId/progress", getAllProgressOfAMember);
 router.post("/", createMemberValidationRules(), validate, member.create);
 router.get("/consent", memberConsent.get);
 router.put("/:id", updateMemberValidationRules(), validate, member.update);

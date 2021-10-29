@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const { ObjectId } = mongoose.Schema;
+const mongoosePaginate = require("mongoose-paginate-v2");
 
 const { SKILL_PROGRESS_STATUS } = require("../constants/progress");
 
@@ -75,5 +76,7 @@ progressSchema.set("toJSON", {
     delete ret.id;
   },
 });
+
+progressSchema.plugin(mongoosePaginate);
 
 module.exports = mongoose.model("Progress", progressSchema);

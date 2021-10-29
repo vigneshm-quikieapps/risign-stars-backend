@@ -7,18 +7,33 @@ const {
   PROGRESS_NOT_STARTED,
 } = require("../constants/progress");
 const { Types } = require("mongoose");
+const { getPaginationOptions } = require("../helpers/query");
 
 //pogress extractor
-module.exports.getProgressIdById = (req, res, next, id) => {
-  Progress.findById(id).exec((err, progress) => {
-    if (err) {
-      return res.status(400).json({
-        err: "cannot find progress by id",
-      });
-    }
-    req.progress = progress;
-    next();
-  });
+// module.exports.getProgressIdById = (req, res, next, id) => {
+//   Progress.findById(id).exec((err, progress) => {
+//     if (err) {
+//       return res.status(400).json({
+//         err: "cannot find progress by id",
+//       });
+//     }
+//     req.progress = progress;
+//     next();
+//   });
+// };
+
+module.exports.getAllProgressOfAMember = async (req, res) => {
+  try {
+    let { memberId } = req.params;
+
+    let { query, options } = getPaginationOptions(req);
+    query = { query, memberId };
+
+    let response = await Progress.paginate(query, options);
+    return res.send(response);
+  } catch (err) {
+    return res.status(422).send({ message: err.message });
+  }
 };
 
 /**
