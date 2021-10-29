@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const { ObjectId } = mongoose.Schema;
 
-const { SKILL_PROGRESS_STATUS } = require("../constants/constant");
+const { SKILL_PROGRESS_STATUS } = require("../constants/progress");
 
 const progressSchema = new mongoose.Schema(
   {

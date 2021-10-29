@@ -1,7 +1,12 @@
+const { validationResult } = require("express-validator");
 const Progress = require("../models/progress");
 const { Member } = require("../models");
-
-const { validationResult } = require("express-validator");
+const {
+  PROGRESS_IN_PROGRESS,
+  PROGRESS_AWARDED,
+  PROGRESS_NOT_STARTED,
+} = require("../constants/progress");
+const { Types } = require("mongoose");
 
 //pogress extractor
 module.exports.getProgressIdById = (req, res, next, id) => {
@@ -236,60 +241,90 @@ module.exports.markAProgress = async (req, res) => {
   }
 };
 
-/** code deprecated below this line */
+/**
+ * generated update payload for progress marking in bulkwrite
+ *
+ * @param {*} param0
+ * @returns
+ */
+const genUpdateForMultipleProgressMarking = ({ status, now }) => {
+  let update;
+  switch (status) {
+    case PROGRESS_AWARDED:
+      update = {
+        $set: {
+          "levels.$[level].skills.$[skill].status": status,
+          "levels.$[level].skills.$[skill].completedAt": now,
+        },
+      };
+      return update;
 
-// //pogress listing all
+    case PROGRESS_IN_PROGRESS:
+      update = {
+        $set: {
+          "levels.$[level].skills.$[skill].status": status,
+          "levels.$[level].skills.$[skill].startedAt": now,
+        },
+        $unset: {
+          "levels.$[level].skills.$[skill].completedAt": "",
+        },
+      };
+      return update;
 
-// module.exports.getAllProgress = async (req, res) => {
-//   try {
-//     const activity = await Progress.find({});
+    default:
+      update = {
+        $set: {
+          "levels.$[level].skills.$[skill].status": status,
+        },
+        $unset: {
+          "levels.$[level].skills.$[skill].startedAt": "",
+          "levels.$[level].skills.$[skill].completedAt": "",
+        },
+      };
+      return update;
+  }
+};
 
-//     if (!activity) {
-//       return res
-//         .status(200)
-//         .json({ success: true, message: "No activity added." });
-//     } else {
-//       res.status(200).json({
-//         success: true,
-//         message: "Showing activity...",
-//         activity: activity,
-//       });
-//     }
-//   } catch (err) {
-//     res.status(400).json({ success: false, message: err.message });
-//   }
-// };
+/**
+ * endpoint for: multiple marking of progress skill status
+ *
+ * @param {*} req
+ * @param {*} res
+ * @returns
+ */
+module.exports.multipleProgressMarking = async (req, res) => {
+  try {
+    let { progressId } = req.body;
+    let skillsData = [...req.body.skills];
+    let now = new Date();
 
-// //pogress listing
+    let bulkWritePayloadArr = skillsData.map(({ levelId, skillId, status }) => {
+      let update = genUpdateForMultipleProgressMarking({
+        status,
+        now,
+      });
 
-// module.exports.getProgress = (req, res) => {
-//   return res.json(req.progress);
-// };
+      return {
+        updateOne: {
+          filter: {
+            _id: progressId,
+          },
+          update,
+          arrayFilters: [
+            { "level._id": Types.ObjectId(levelId) },
+            { "skill._id": Types.ObjectId(skillId) },
+          ],
+        },
+      };
+    });
 
-// //pogress Update
+    let response = await Progress.bulkWrite(bulkWritePayloadArr, {
+      ordered: false,
+    });
 
-// module.exports.updateProgress = (req, res) => {
-//   const errors = validationResult(req);
-
-//   if (!errors.isEmpty()) {
-//     return res.status(422).json({
-//       error: errors.array()[0].msg,
-//     });
-//   }
-
-//   Progress.findByIdAndUpdate(
-//     { _id: req.progress._id },
-//     { $set: req.body }, //$push
-
-//     { new: true, useFindAndModify: false },
-//     (err, progress) => {
-//       if (err) {
-//         return res.status(400).json({
-//           err: "you are not ",
-//         });
-//       }
-
-//       res.json(progress);
-//     }
-//   );
-// };
+    return res.send({ message: "updated successful", response });
+  } catch (err) {
+    console.error(err);
+    return res.status(422).send({ message: err.message });
+  }
+};

@@ -4,6 +4,7 @@ const router = express.Router();
 const {
   createOrGetProgressValidationRules,
   markProgressValidationRules,
+  markMultipleProgressValidationRules,
 } = require("../validations/progress");
 
 const {
@@ -14,6 +15,7 @@ const {
   updateProgress,
   createOrGetProgress,
   addAttendence,
+  multipleProgressMarking,
 } = require("../controllers/progress");
 const validate = require("../validations/validate");
 
@@ -34,6 +36,13 @@ router.put(
   markProgressValidationRules(),
   validate,
   markAProgress
+);
+
+router.put(
+  "/update-multiple-status",
+  markMultipleProgressValidationRules(),
+  validate,
+  multipleProgressMarking
 );
 
 //update route

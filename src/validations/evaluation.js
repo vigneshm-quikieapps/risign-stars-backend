@@ -1,5 +1,5 @@
 const { check } = require("express-validator");
-const { EVALUATION_STATUS } = require("../constants/constant");
+const { EVALUATION_STATUS } = require("../constants/evaluation");
 
 const checkSkills = ({ skills }) => {
   /** skills should be an array */
