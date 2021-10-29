@@ -290,6 +290,10 @@ module.exports.getAllMemberOfALoggedInUser = async (req, res) => {
 
     let { query, options } = getPaginationOptions(req);
     query = { ...query, _id: { $in: memberIds } };
+    options.populate = {
+      path: "parent",
+      select: ["name", "email", "mobileNo"],
+    };
 
     let response = await Member.paginate(query, options);
     return res.send(response);
