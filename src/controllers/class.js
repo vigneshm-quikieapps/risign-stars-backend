@@ -1,35 +1,39 @@
-const Class = require("../models/class");
+/**
+ * deprecated
+ */
 
-//getAllMember
-module.exports.getAll = async (req, res) => {
-  try {
-    let users = await Class.find({});
-    return res.send({ users: users });
-  } catch (err) {
-    console.error(err);
-    return res.status(422).send({ message: err.message });
-  }
-};
-module.exports.get = async (req, res) => {
-  try {
-    let users = await Class.find({ _id: req.params.id });
-    return res.send({ users: users[0].charges });
-  } catch (err) {
-    console.error(err);
-    return res.status(422).send({ message: err.message });
-  }
-};
+// const Class = require("../models/class");
 
-module.exports.create = async (req, res) => {
-  try {
-    Class.init();
-    let data = req.body;
-    let member = await Class.create(data);
-    return res
-      .status(201)
-      .send({ message: "Member Added Successfully", member });
-  } catch (err) {
-    console.error(err);
-    return res.status(422).send({ message: err.message });
-  }
-};
+// //getAllMember
+// module.exports.getAll = async (req, res) => {
+//   try {
+//     let users = await Class.find({});
+//     return res.send({ users: users });
+//   } catch (err) {
+//     console.error(err);
+//     return res.status(422).send({ message: err.message });
+//   }
+// };
+// module.exports.get = async (req, res) => {
+//   try {
+//     let users = await Class.find({ _id: req.params.id });
+//     return res.send({ users: users[0].charges });
+//   } catch (err) {
+//     console.error(err);
+//     return res.status(422).send({ message: err.message });
+//   }
+// };
+
+// module.exports.create = async (req, res) => {
+//   try {
+//     Class.init();
+//     let data = req.body;
+//     let member = await Class.create(data);
+//     return res
+//       .status(201)
+//       .send({ message: "Member Added Successfully", member });
+//   } catch (err) {
+//     console.error(err);
+//     return res.status(422).send({ message: err.message });
+//   }
+// };

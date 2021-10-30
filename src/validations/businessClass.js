@@ -58,7 +58,7 @@ const createClassValidationRules = () => {
       .isIn(ENUM_STATUS),
     check(
       "registrationform",
-      `registrationform should only be ${ENUM_REGISTRATION_FORM}`
+      `registrationform should only be ${ENUM_REGISTRATION_FORM.join(" / ")}`
     )
       .optional()
       .isIn(ENUM_REGISTRATION_FORM),
@@ -83,6 +83,9 @@ const createClassValidationRules = () => {
     ).isIn(ENUM_PAY_FREQUENCY),
     check("sessions", "should be an array").isArray(),
     check("sessions.*.name", "name should be at least 3 char").isLength({
+      min: 3,
+    }),
+    check("sessions.*.facility", "name should be at least 3 char").isLength({
       min: 3,
     }),
     check("sessions.*.term", "term should be an object").isObject(),

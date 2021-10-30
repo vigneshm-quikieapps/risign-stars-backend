@@ -51,6 +51,9 @@ const businessSessionSchema = new mongoose.Schema(
         },
       },
     ],
+    facility: {
+      type: String,
+    },
     fullcapacity: {
       type: Number,
       default: 30,
