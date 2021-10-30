@@ -77,9 +77,10 @@ const createClassValidationRules = () => {
     check("charges.*.name", "should be atleast 3 char").isLength({ min: 3 }),
     check("charges.*.amount", "should be a number").isNumeric(),
     check("charges.*.mandatory", "should be a boolean").isBoolean(),
-    check("charges.*.payFrequency", "should be atleast 3 char").isIn(
-      ENUM_PAY_FREQUENCY
-    ),
+    check(
+      "charges.*.payFrequency",
+      `should be either: ${ENUM_PAY_FREQUENCY.join(" / ")}`
+    ).isIn(ENUM_PAY_FREQUENCY),
     check("sessions", "should be an array").isArray(),
     check("sessions.*.name", "name should be at least 3 char").isLength({
       min: 3,
@@ -160,9 +161,10 @@ const updateClassValidationRules = () => {
     check("charges.*.name", "should be atleast 3 char").isLength({ min: 3 }),
     check("charges.*.amount", "should be a number").isNumeric(),
     check("charges.*.mandatory", "should be a boolean").isBoolean(),
-    check("charges.*.payFrequency", "should be atleast 3 char").isIn(
-      ENUM_PAY_FREQUENCY
-    ),
+    check(
+      "charges.*.payFrequency",
+      `should be either: ${ENUM_PAY_FREQUENCY.join(" / ")}`
+    ).isIn(ENUM_PAY_FREQUENCY),
   ];
 };
 module.exports = {
