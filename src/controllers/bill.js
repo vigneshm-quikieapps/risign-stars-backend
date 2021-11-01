@@ -1,5 +1,6 @@
 const { Bill } = require("../models");
 const { getQuery, getOptions } = require("../helpers/query");
+const { PAYMENT_METHOD_MANUAL } = require("../constants/bill");
 
 module.exports.getAll = async (req, res) => {
   try {
@@ -37,5 +38,28 @@ module.exports.billsOfAMemberInABusiness = async (req, res) => {
     return res.send(response);
   } catch (err) {
     return res.send({ message: err.message });
+  }
+};
+
+module.exports.enterTransaction = async (req, res) => {
+  try {
+    let { billId, reference, type } = req.body;
+    let now = new Date();
+
+    let update = {
+      $set: {
+        reference,
+        method: PAYMENT_METHOD_MANUAL,
+        type,
+        paidAt: now,
+      },
+    };
+    let options = { new: true, useFindAndModify: false };
+
+    let bill = await Bill.findByIdAndUpdate(billId, update, options);
+
+    return res.send({ message: "transaction recorded", bill });
+  } catch (err) {
+    return res.status(422).send({ message: err.message });
   }
 };

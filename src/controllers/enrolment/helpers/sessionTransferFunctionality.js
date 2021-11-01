@@ -1,3 +1,7 @@
+const {
+  STATUS_WAITLISTED,
+  ENUM_TRANSFER_ALLOWED,
+} = require("../../../constants/enrolment");
 const { BusinessSession, Enrolment } = require("../../../models");
 
 /**
@@ -43,10 +47,14 @@ const sessionTransferfunctionality = async (req, session) => {
   let enrolmentBeforeUpdate = await Enrolment.findById(enrolmentId);
 
   let { enrolledStatus } = enrolmentBeforeUpdate;
+
+  /**
+   * decrement the current session filled capacity
+   */
   let incrementSessionPayload = {};
-  if (enrolledStatus === "ENROLLED") {
+  if (ENUM_TRANSFER_ALLOWED.includes(enrolledStatus)) {
     incrementSessionPayload = { fullcapacityfilled: -1 };
-  } else if (enrolledStatus === "WAITLISTED") {
+  } else if (enrolledStatus === STATUS_WAITLISTED) {
     incrementSessionPayload = { waitcapacityfilled: -1 };
   }
 

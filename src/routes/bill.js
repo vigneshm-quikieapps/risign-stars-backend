@@ -4,11 +4,13 @@ const {
   getAll,
   billsOfAMemberInAClass,
   billsOfAMemberInABusiness,
+  enterTransaction,
 } = require("../controllers/bill");
 const validate = require("../validations/validate");
 const {
   billOfAMemberInAClassValidationRules,
   billOfAMemberInABusinessValidationRules,
+  enterTransactionValidationRules,
 } = require("../validations/bill");
 
 // read routes
@@ -26,6 +28,13 @@ router.post(
   billOfAMemberInABusinessValidationRules(),
   validate,
   billsOfAMemberInABusiness
+);
+
+router.post(
+  "/enter-transaction",
+  enterTransactionValidationRules(),
+  validate,
+  enterTransaction
 );
 
 module.exports = router;

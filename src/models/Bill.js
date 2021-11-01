@@ -1,7 +1,12 @@
 const mongoose = require("mongoose");
 const { ObjectId } = mongoose.Schema;
 const mongoosePaginate = require("mongoose-paginate-v2");
-const { ENUM_STATUS, STATUS_ACTIVE } = require("../constants/bill");
+const {
+  ENUM_STATUS,
+  STATUS_ACTIVE,
+  ENUM_TRANSACTION_TYPES,
+  ENUM_PAYMENT_METHODS,
+} = require("../constants/bill");
 
 const billSchema = new mongoose.Schema(
   {
@@ -75,6 +80,17 @@ const billSchema = new mongoose.Schema(
       /** generated date is used to store the month, year info of the bill (when its generated) */
       type: Date,
       required: true,
+    },
+    transactionType: {
+      type: String,
+      enum: ENUM_TRANSACTION_TYPES,
+    },
+    reference: {
+      type: String,
+    },
+    method: {
+      type: String,
+      enum: ENUM_PAYMENT_METHODS,
     },
     updatedBy: {
       type: ObjectId,

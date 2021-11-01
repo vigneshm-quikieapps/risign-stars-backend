@@ -3,6 +3,7 @@ const {
   STATUS_SUSPEND,
   STATUS_ENROLLED,
   STATUS_RETURN_FROM_SUSPENSION,
+  ENUM_TRANSFER_NOT_ALLOWED,
 } = require("../constants/enrolment");
 const { BusinessSession, Member, Enrolment } = require("../models");
 const { isValidBusinessId } = require("./helpers/business");
@@ -198,17 +199,69 @@ const updateWaitlistEnrolmentValidationRules = () => {
   return [body("sessionId", "min length should be 2").custom(isValidSession)];
 };
 
+/**
+ * check if session transfer is allowed
+ *
+ * if the current enrol status is TRIAL, WAITLISTED, DROPPED or SUSPEND,
+ * do not allow session transfer
+ *
+ * @param {*} _
+ * @param {*} param1
+ * @returns
+ */
+const isAllowedToSessionTransfer = async (_, { req }) => {
+  try {
+    let { enrolledStatus } = req.enrolmentData;
+    console.log({ enrolledStatus });
+
+    if (ENUM_TRANSFER_NOT_ALLOWED.includes(enrolledStatus)) {
+      throw new Error(
+        `session transfer is not allowed for enrolled status: ${enrolledStatus}`
+      );
+    }
+
+    return true;
+  } catch (err) {
+    return Promise.reject(err.message);
+  }
+};
+
+/**
+ * check if the session has seats available
+ *
+ * @param {*} _
+ * @param {*} param1
+ * @returns
+ */
+const hasSeatsAvailable = async (_, { req }) => {
+  try {
+    let { fullcapacity, fullcapacityfilled } = req.newSessionData;
+
+    if (fullcapacityfilled >= fullcapacity) {
+      throw new Error("capacity not available in session");
+    }
+
+    return true;
+  } catch (err) {
+    return Promise.reject(err.message);
+  }
+};
+
 const sessionTransferEnrolmentValidationRules = () => {
   return [
-    body("newSessionId", "min length should be 2").custom(isValidNewSession),
-    body("enrolmentId").custom(isValidEnrolment),
+    body("newSessionId", "min length should be 2")
+      .custom(isValidNewSession)
+      .bail()
+      .custom(hasSeatsAvailable),
+    body("enrolmentId")
+      .custom(isValidEnrolment)
+      .bail()
+      .custom(isAllowedToSessionTransfer),
   ];
 };
 
 const classTransferEnrolmentValidationRules = () => {
-  return [
-    param("enrolmentId", "min length should be 2").custom(isValidEnrolment),
-  ];
+  return [param("enrolmentId").custom(isValidEnrolment)];
 };
 
 const trialEnrolmentValidationRules = () => {
