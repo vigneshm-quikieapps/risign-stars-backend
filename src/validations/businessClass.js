@@ -10,6 +10,7 @@ const { isValidEvaluationSchemeId } = require("./helpers/evaluationScheme");
 const { isValidBusinessId } = require("./helpers/business");
 const { isValidTermId } = require("./helpers/term");
 const { isValidCoachId } = require("./helpers/coach");
+const { isValidClassId } = require("./helpers/class");
 const { ENUM_DAYS } = require("../constants/session");
 
 /**
@@ -170,7 +171,13 @@ const updateClassValidationRules = () => {
     ).isIn(ENUM_PAY_FREQUENCY),
   ];
 };
+
+const getAllTermsInAClassValidationRules = () => {
+  return [check("classId").custom(isValidClassId)];
+};
+
 module.exports = {
   createClassValidationRules,
   updateClassValidationRules,
+  getAllTermsInAClassValidationRules,
 };

@@ -1,5 +1,6 @@
 const { Term, BusinessSession } = require("../models");
 const { getPaginationOptions } = require("../helpers/query");
+const { ObjectId } = require("mongoose").Types;
 
 //parameter extractor
 // module.exports.getTermIdById = (req, res, next, id) => {
@@ -128,6 +129,32 @@ module.exports.getAllTermsInABusiness = async (req, res) => {
 
     let response = await Term.paginate(query, options);
     return res.send(response);
+  } catch (err) {
+    return res.status(422).send({ message: err.message });
+  }
+};
+
+module.exports.getAllTermsInAClass = async (req, res) => {
+  try {
+    let { classId } = req.params;
+
+    let sessions = await BusinessSession.aggregate([
+      {
+        $match: {
+          classId: ObjectId(classId),
+        },
+      },
+      {
+        $group: {
+          _id: "$term._id",
+        },
+      },
+    ]);
+
+    let termIds = sessions.map((session) => session._id);
+    let terms = await Term.find({ _id: { $in: termIds } });
+
+    return res.send({ terms });
   } catch (err) {
     return res.status(422).send({ message: err.message });
   }

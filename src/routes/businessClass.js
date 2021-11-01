@@ -16,9 +16,11 @@ const {
 const {
   createClassValidationRules,
   updateClassValidationRules,
+  getAllTermsInAClassValidationRules,
 } = require("../validations/businessClass");
 const { getAllBusinessSession } = require("../controllers/businessSession");
 const { isAuthorized } = require("../middlewares/auth");
+const { getAllTermsInAClass } = require("../controllers/term");
 
 //parameters
 // router.param("businessClassId", getBusinessClassIdById);
@@ -63,5 +65,12 @@ router.get("/:classId/members", getAllMembersInAClass);
 
 //listing route
 router.get("/:classId/sessions", getAllBusinessSession);
+
+router.get(
+  "/:classId/terms",
+  getAllTermsInAClassValidationRules(),
+  validate,
+  getAllTermsInAClass
+);
 
 module.exports = router;

@@ -9,7 +9,6 @@ const getQuery2 = (filters = []) => {
   let query = {};
 
   for (let { field, type, value } of filters) {
-    console.log({ field, type, value });
     switch (type) {
       case STARTS_WITH_FILTER:
         query[field] = { $regex: new RegExp(`^${value}`, "i") };
