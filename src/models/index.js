@@ -13,8 +13,16 @@ const Progress = require("./progress");
 const Role = require("./Role");
 const Term = require("./Term");
 const User = require("./User");
+const {
+  AttendanceOfAClassByDate,
+  AttendanceOfAClassByMonth,
+  AttendanceOfAMemberInAClass,
+} = require("./attendanceManagement");
 
 module.exports = {
+  AttendanceOfAClassByDate,
+  AttendanceOfAClassByMonth,
+  AttendanceOfAMemberInAClass,
   Bill,
   Business,
   BusinessClass,

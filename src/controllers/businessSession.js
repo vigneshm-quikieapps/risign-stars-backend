@@ -101,7 +101,10 @@ module.exports.deleteBusinessSession = async (req, res) => {
 
 module.exports.getMembersInASession = async (req, res) => {
   try {
+    let { businessSessionId } = req.params;
+
     let { query, options } = getPaginationOptions(req);
+    query = { ...query, sessionId: businessSessionId };
     options.populate = [
       { path: "memberConsent", select: ["consent"] },
       { path: "member", select: ["name"] },

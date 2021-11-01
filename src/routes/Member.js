@@ -8,6 +8,7 @@ const {
 } = require("../validations/member");
 const memberConsent = require("../controllers/memberConsent");
 const member = require("../controllers/Member");
+const { getAllEnrolmentsOfAMember } = require("../controllers/enrolment");
 const validate = require("../validations/validate");
 const { isAuthorized } = require("../middlewares/auth");
 const { getAllProgressOfAMember } = require("../controllers/progress");

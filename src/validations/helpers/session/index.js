@@ -1,3 +1,4 @@
 const isValidSessionId = require("./isValidSessionId");
+const isValidSessionDate = require("./isValidSessionDate");
 
-module.exports = { isValidSessionId };
+module.exports = { isValidSessionId, isValidSessionDate };

@@ -2,21 +2,27 @@
 // Schema for attendance.
 
 const mongoose = require("mongoose");
+const { ObjectId } = require("mongoose").Schema;
 
+/**
+ * attendance of a session for a particular month
+ */
 const attendanceOfAClassByMonthSchema = new mongoose.Schema(
   {
-    attendanceMonth: {
+    month: {
       type: Date,
       required: true,
       trim: true,
-    },
+    } /** e.g 2021-09-01 in ISO format */,
     sessionId: {
-      type: String,
+      type: ObjectId,
+      ref: "BusinessSession",
       required: true,
       trim: true,
     },
     classId: {
-      type: String,
+      type: ObjectId,
+      ref: "BusinessClass",
       required: true,
       trim: true,
     },
@@ -24,16 +30,12 @@ const attendanceOfAClassByMonthSchema = new mongoose.Schema(
       type: Number,
       required: true,
       trim: true,
-    },
-    members: [
+    } /** used to store total number of classes */,
+    records: [
       {
-        id: {
-          type: String,
-          required: true,
-          trim: true,
-        },
-        name: {
-          type: String,
+        memberId: {
+          type: ObjectId,
+          ref: "Member",
           required: true,
           trim: true,
         },

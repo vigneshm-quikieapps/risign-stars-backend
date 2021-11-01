@@ -1,3 +1,5 @@
+const getDayIndexOfTheWeek = require("./getDayIndexOfTheWeek");
+
 /**
  * get the date of the next specific day
  * e.g
@@ -14,9 +16,7 @@ function getNextDayOfTheWeek(
   excludeToday = true,
   refDate = new Date()
 ) {
-  const dayOfWeek = ["sun", "mon", "tue", "wed", "thu", "fri", "sat"].indexOf(
-    dayName.slice(0, 3).toLowerCase()
-  );
+  const dayOfWeek = getDayIndexOfTheWeek(dayName);
   if (dayOfWeek < 0) return;
   refDate.setHours(0, 0, 0, 0);
   refDate.setDate(

@@ -2,30 +2,37 @@
 // Schema for attendance.
 
 const mongoose = require("mongoose");
+const { ObjectId } = require("mongoose").Schema;
 
-const attendanceOfAStudentInAClassSchema = new mongoose.Schema(
+/**
+ * attendance of a member in a session (for each month)
+ */
+const attendanceOfAMemberInAClassSchema = new mongoose.Schema(
   {
     id: {
       type: String,
       required: true,
       trim: true,
     },
-    studentId: {
-      type: String,
+    memberId: {
+      type: ObjectId,
+      ref: "Member",
       required: true,
       trim: true,
     },
     sessionId: {
-      type: String,
+      type: ObjectId,
+      ref: "BusinessSession",
       required: true,
       trim: true,
     },
     classId: {
-      type: String,
+      type: ObjectId,
+      ref: "BusinessClass",
       required: true,
       trim: true,
     },
-    attendanceMonth: {
+    month: {
       type: Date, // type - Date
       required: true,
       trim: true,
@@ -42,11 +49,6 @@ const attendanceOfAStudentInAClassSchema = new mongoose.Schema(
           required: true,
           trim: true,
         },
-        tardy: {
-          type: Boolean,
-          required: true,
-          trim: true,
-        },
       },
     ],
     attendedCount: {
@@ -58,6 +60,6 @@ const attendanceOfAStudentInAClassSchema = new mongoose.Schema(
   { timestamps: true }
 );
 module.exports = mongoose.model(
-  "AttendanceOfAStudentInAClass",
-  attendanceOfAStudentInAClassSchema
+  "AttendanceOfAMemberInAClass",
+  attendanceOfAMemberInAClassSchema
 );

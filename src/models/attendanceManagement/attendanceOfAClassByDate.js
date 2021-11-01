@@ -2,8 +2,9 @@
 // Schema for attendance.
 
 const mongoose = require("mongoose");
-const { ObjectId } = mongoose.Schema;
+const { ObjectId } = require("mongoose").Schema;
 
+/** attendance of a session for a particular date */
 const attendanceOfAClassByDateSchema = new mongoose.Schema(
   {
     date: {
@@ -12,36 +13,23 @@ const attendanceOfAClassByDateSchema = new mongoose.Schema(
       trim: true,
     },
     sessionId: {
-      type: String,
+      type: ObjectId,
+      ref: "BusinessSession",
       required: true,
       trim: true,
     },
     classId: {
       type: String,
+      ref: "BusinessClass",
       required: true,
       trim: true,
     },
-    className: {
-      type: String,
-      required: true,
-      trim: true,
-    },
-    members: [
+    records: [
       {
-        id: {
+        memberId: {
           type: ObjectId,
           ref: "Member",
           required: true,
-        },
-        memberConcentId: {
-          type: ObjectId,
-          ref: "MemberConsent",
-          required: true,
-        },
-        name: {
-          type: String,
-          required: true,
-          trim: true,
         },
         attended: {
           type: Boolean,
@@ -58,8 +46,24 @@ const attendanceOfAClassByDateSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
+
+attendanceOfAClassByDateSchema.virtual("records.member", {
+  ref: "Member",
+  localField: "memberId",
+  foreignField: "_id",
+  justOne: true,
+});
+
+// Ensure virtual fields are serialised.
+attendanceOfAClassByDateSchema.set("toJSON", {
+  virtuals: true,
+  versionKey: false,
+  transform: function (doc, ret) {
+    delete ret.id;
+  },
+});
+
 module.exports = mongoose.model(
   "AttendanceOfAClassByDate ",
   attendanceOfAClassByDateSchema
 );
-// end

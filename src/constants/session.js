@@ -1,3 +1,3 @@
-const ENUM_DAYS = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"];
+const ENUM_DAYS = ["sun", "mon", "tue", "wed", "thu", "fri", "sat"];
 
 module.exports = { ENUM_DAYS };

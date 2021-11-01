@@ -5,38 +5,58 @@ const express = require("express");
 const router = express.Router();
 
 const {
-  addAttendanceOfAStudentInAClass,
-  GetAllAttendanceByDate,
-  GetAllAttendanceOfAClassByMonth,
-  GetAttendanceOfAStudentByDate,
-  GetAttendanceOfAStudentByMonth,
-} = require("../controllers/attendanceManagement");
-
-const {
   addAttendance,
-  classbydate,
-  classbymonth,
-  studentsbyclass,
-  studentsbymonth,
-} = require("../validations/attendanceManagment");
+  getAttendanceOfASessionByDate,
+  getAttendanceOfASessionByMonth,
+  getAttendanceOfAMemberInASession,
+  getAttendanceOfAMemberInASessionByDate,
+  getAttendanceOfAMemberInASessionByMonth,
+} = require("../controllers/attendanceManagement");
+const validate = require("../validations/validate");
 
-//add attendance of a student in a class
-router.put("/addattendance", addAttendance(), addAttendanceOfAStudentInAClass);
+const vr = require("../validations/attendanceManagment");
 
-// get all the attendance of a class by date
-router.get("/classbydate", classbydate(), GetAllAttendanceByDate);
+// add attendance of a member in a session
+router.post("/", vr.addAttendance(), validate, addAttendance);
 
-// get all the attendance of a class by month
-router.get("/classbymonth", classbymonth(), GetAllAttendanceOfAClassByMonth);
+// get all the attendance of a session by date
+router.post(
+  "/of-a-session-by-date",
+  vr.getAttendanceOfASessionByDate(),
+  validate,
+  getAttendanceOfASessionByDate
+);
 
-// get attendance of a student in a class by date
-router.get("/studentbydate", studentsbyclass(), GetAttendanceOfAStudentByDate);
+// get all the attendance of a session by month
+router.post(
+  "/of-a-session-by-month",
+  vr.getAttendanceOfASessionByMonth(),
+  validate,
+  getAttendanceOfASessionByMonth
+);
 
-// get attendance of a student in a class by month
-router.get(
-  "/studentbymonth",
-  studentsbymonth(),
-  GetAttendanceOfAStudentByMonth
+// get attendance of a member in a session
+router.post(
+  "/of-a-member-in-a-session",
+  vr.getAttendanceOfAMemberInASession(),
+  validate,
+  getAttendanceOfAMemberInASession
+);
+
+// get attendance of a member in a session by date
+router.post(
+  "/of-a-member-in-a-session-by-date",
+  vr.getAttendanceOfAMemberInASessionByDate(),
+  validate,
+  getAttendanceOfAMemberInASessionByDate
+);
+
+// get attendance of a member in a session by month
+router.post(
+  "/of-a-member-in-a-session-by-month",
+  vr.getAttendanceOfAMemberInASessionByMonth(),
+  validate,
+  getAttendanceOfAMemberInASessionByMonth
 );
 
 module.exports = router;

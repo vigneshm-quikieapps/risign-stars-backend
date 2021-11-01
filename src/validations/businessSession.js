@@ -7,6 +7,7 @@ const { ENUM_DAYS } = require("../constants/session");
 const createSessionCommonValidationRules = () => {
   return [
     check("name", "should be at least 3 char").isLength({ min: 3 }),
+    check("facility", "should be at least 3 char").isLength({ min: 3 }),
     check("term", "should be an object").isObject(),
     check("term._id").custom(isValidTermId),
     check("term.startDate", "should be a date ").isDate({
@@ -78,6 +79,9 @@ const updateSessionValidationRules = () => {
     check("name", "name should be at least 3 char")
       .optional()
       .isLength({ min: 3 }),
+    check("facility", "name should be at least 3 char")
+      .optional()
+      .isLength({ min: 3 }),
     check("pattern.day", `should be either: ${ENUM_DAYS.join(" / ")}`)
       .optional()
       .isIn(ENUM_DAYS),
@@ -109,6 +113,7 @@ const getSessionsInAClassOfAParticularTermValidationRules = () => {
 const getAllSessionsInATermValidationRules = () => {
   return [param("termId", "is required").custom(isValidTermId)];
 };
+
 module.exports = {
   createSessionValidationRules,
   getAllSessionsInATermValidationRules,

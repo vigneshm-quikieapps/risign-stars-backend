@@ -6,8 +6,10 @@ const transferEnrolment = require("./transferEnrolment");
 const updateWaitlistEnrolment = require("./updateWaitlistEnrolment");
 const withdrawEnrolment = require("./withdrawEnrolment");
 const getAllEnrolmentOfAMemberInABusiness = require("./getAllEnrolmentOfAMemberInABusiness");
+const classTransferEnrolment = require("./classTransferEnrolment");
 
 module.exports = {
+  classTransferEnrolment,
   getAllEnrolmentOfAMemberInABusiness,
   newEnrolment,
   returnFromSuspensionEnrolment,

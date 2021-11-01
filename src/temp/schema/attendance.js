@@ -7,7 +7,7 @@
  * 3.
  *
  * Note:
- * Here, members are student (child).
+ * Here, members are member (child).
  */
 
 module.exports.AttendanceOfAClassByDate = {
@@ -17,8 +17,8 @@ module.exports.AttendanceOfAClassByDate = {
   className: String,
   members: [
     {
-      id: String /** student id */,
-      name: String /** student name */,
+      id: String /** member id */,
+      name: String /** member name */,
       attended: Boolean,
       comments: String,
     },
@@ -40,8 +40,8 @@ module.exports.AttendaceOfAClassByMonth = {
   classId: String,
   members: [
     {
-      id: String /** student id */,
-      name: String /** student name */,
+      id: String /** member id */,
+      name: String /** member name */,
       attendedCount: Number,
     },
   ],
@@ -54,12 +54,12 @@ module.exports.AttendaceOfAClassByMonth = {
 
 /**
  * API's
- * 1. get attendance of a student in a class by date
- * 2. get attendance of a student in a class by month
+ * 1. get attendance of a member in a class by date
+ * 2. get attendance of a member in a class by month
  */
 module.exports.AttendanceOfAStudentInAClass = {
   id: String,
-  studentId: String,
+  memberId: String,
   sessionId: String,
   classId: String,
   month: Date,

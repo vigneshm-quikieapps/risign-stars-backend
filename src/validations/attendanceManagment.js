@@ -2,101 +2,88 @@
 // validation for attendance management
 
 const { check } = require("express-validator");
+const { BUSINESS_SESSION, BUSINESS_CLASS } = require("./constants");
+const {
+  isValidSessionId,
+  isValidSessionDate,
+  isValidMemberId,
+} = require("./helpers");
+const { canAddAttendance } = require("./helpers/attendance");
 
-//validation for add attendance of a student in a class
+// validation for add attendance of members in a session
 module.exports.addAttendance = () => {
   return [
-    check("sessionId", "sessionId should be at least 3 char")
-      .isLength({ min: 3 })
-      .isString(),
-    check("classId", "classId should be at least 3 char")
-      .isLength({ min: 3 })
-      .isString(),
-    check("className", "className should be at least 3 char")
-      .isLength({ min: 3 })
-      .isString(),
-    check(
-      "date",
-      'date should be a string in Date format like "yyyy-mm-dd"'
-    ).isDate(),
-    check(
-      "attendanceMonth",
-      'date should be a string in Date format like "yyyy-mm-dd"'
-    ).isDate(),
-    check("members", "levels should be a array").isArray(),
+    check("sessionId", BUSINESS_SESSION.ID.MESSAGE).custom(isValidSessionId),
+    check("date", "should be: YYYY-MM-01")
+      .isDate({
+        format: "YYYY-MM-DD",
+        strictMode: true,
+      })
+      .bail()
+      .custom(isValidSessionDate)
+      .bail()
+      .custom(canAddAttendance),
+    check("records", "should be a array").isArray(),
+    check("records.*.memberId", "should be a valid member id").isMongoId(),
+    check("records.*.attended", "should be a boolean").isBoolean(),
+    check("records.*.comments", "should be a array").optional(),
   ];
 };
 
-// validation for get all the attendance of a class by date
-module.exports.classbydate = () => {
+// validation for get all the attendance of a session by date
+module.exports.getAttendanceOfASessionByDate = () => {
   return [
-    check("sessionId", "sessionId should be at least 3 char")
-      .isLength({ min: 3 })
-      .isString(),
-    check("classId", "classId should be at least 3 char")
-      .isLength({ min: 3 })
-      .isString(),
-    check(
-      "date",
-      'date should be a string in Date format like "yyyy-mm-dd"'
-    ).isDate(),
+    check("sessionId", BUSINESS_SESSION.ID.MESSAGE).custom(isValidSessionId),
+    check("date", "should be: YYYY-MM-DD").isDate({
+      format: "YYYY-MM-DD",
+      strictMode: true,
+    }),
   ];
 };
 
-// validation for get all the attendance of a class by month
-module.exports.classbymonth = () => {
+// validation for get the attendance of a session by month
+module.exports.getAttendanceOfASessionByMonth = () => {
   return [
-    check("sessionId", "sessionId should be at least 3 char")
-      .isLength({ min: 3 })
-      .isString(),
-    check("classId", "classId should be at least 3 char")
-      .isLength({ min: 3 })
-      .isString(),
-    check(
-      "attendancemonth",
-      "attendancemonth should be a Number between 1 to 12"
-    ).isInt({ min: 1, max: 12 }),
-    check(
-      "year",
-      'year should be a Number , format like "yyyy". eg: 2021'
-    ).isInt(),
+    check("sessionId", BUSINESS_SESSION.ID.MESSAGE).custom(isValidSessionId),
+    check("month", "should be a Number between 1 to 12").isInt({
+      min: 1,
+      max: 12,
+    }),
+    check("year", "format: YYYY. eg: 2021").isInt({
+      min: 2021,
+      max: 2050,
+    }),
   ];
 };
 
-// validation for get attendance of a student in a class by date
-module.exports.studentsbyclass = () => {
+module.exports.getAttendanceOfAMemberInASession = () => {
   return [
-    check("sessionId", "sessionId should be at least 3 char")
-      .isLength({ min: 3 })
-      .isString(),
-    check("classId", "classId should be at least 3 char")
-      .isLength({ min: 3 })
-      .isString(),
-    check(
-      "date",
-      'date should be a string in Date format like "yyyy-mm-dd"'
-    ).isDate(),
-    check("id", "id should be a string").isString().isLength({ min: 3 }),
+    check("sessionId", BUSINESS_SESSION.ID.MESSAGE).custom(isValidSessionId),
+    check("memberId").custom(isValidMemberId),
   ];
 };
 
-// validation for get attendance of a student in a class by month
-module.exports.studentsbymonth = () => {
+// validation for get attendance of a member in a session by date
+module.exports.getAttendanceOfAMemberInASessionByDate = () => {
   return [
-    check("sessionId", "sessionId should be at least 3 char")
-      .isLength({ min: 3 })
-      .isString(),
-    check("classId", "classId should be at least 3 char")
-      .isLength({ min: 3 })
-      .isString(),
-    check(
-      "attendancemonth",
-      "attendancemonth should be a Number between 1 to 12"
-    ).isInt({ min: 1, max: 12 }),
-    check(
-      "year",
-      'year should be a Number , format like "yyyy". eg: 2021'
-    ).isInt(),
-    check("id", "id should be a string").isString().isLength({ min: 3 }),
+    check("sessionId", BUSINESS_SESSION.ID.MESSAGE).custom(isValidSessionId),
+    check("date", "should be: YYYY-MM-DD").isDate({
+      format: "YYYY-MM-DD",
+      strictMode: true,
+    }),
+    check("memberId").custom(isValidMemberId),
+  ];
+};
+
+// validation for get attendance of a member in a session by month
+module.exports.getAttendanceOfAMemberInASessionByMonth = () => {
+  return [
+    check("sessionId", BUSINESS_SESSION.ID.MESSAGE).custom(isValidSessionId),
+    check("memberId").custom(isValidMemberId),
+    check("month", "should be a Number between 1 to 12").isInt({
+      min: 1,
+      max: 12,
+    }),
+    check("year", "format: YYYY. eg: 2021").isInt(),
   ];
 };

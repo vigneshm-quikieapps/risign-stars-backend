@@ -205,6 +205,12 @@ const sessionTransferEnrolmentValidationRules = () => {
   ];
 };
 
+const classTransferEnrolmentValidationRules = () => {
+  return [
+    param("enrolmentId", "min length should be 2").custom(isValidEnrolment),
+  ];
+};
+
 const trialEnrolmentValidationRules = () => {
   return [
     body("sessionId")
@@ -253,6 +259,7 @@ module.exports = {
   billsInAnEnrolmentValidationRules,
   sessionTransferEnrolmentValidationRules,
   createEnrolementValidationRules,
+  classTransferEnrolmentValidationRules,
   getAllEnrolmentOfAMemberInABusinessValidationRules,
   returnFromSuspensionEnrolmentValidationRules,
   suspendEnrolmentValidationRules,

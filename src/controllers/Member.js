@@ -4,7 +4,8 @@ const path = require("path");
 const multer = require("multer");
 const { getPaginationOptions } = require("../helpers/query");
 const { Types } = require("mongoose");
-const { Enrolment } = require("../models");
+const { Enrolment, User } = require("../models");
+const getQuery2 = require("../helpers/query/getQuery2");
 
 //parameter extractor
 // module.exports.getmemberIdById = (req, res, next, id) => {
@@ -258,6 +259,26 @@ module.exports.uploadImage = async (req, res) => {
   });
 };
 
+const getFilters = (req) => {
+  let { filters = [] } = req.query;
+
+  let parsedFilters = filters.map((filter) => JSON.parse(filter));
+
+  let parentFilters = parsedFilters.filter(
+    ({ field }) => field.split(".")[0] === "parent"
+  );
+  let memberFilters = parsedFilters.filter(
+    ({ field }) => field.split(".").length === 1
+  );
+
+  parentFilters = parentFilters.map((filter) => {
+    return { ...filter, field: filter.field.split(".")[1] };
+  });
+
+  req.filters = memberFilters.map((filter) => JSON.stringify(filter));
+  return { parentFilters, memberFilters };
+};
+
 /**
  * get all members of a logged in user
  *
@@ -288,8 +309,21 @@ module.exports.getAllMemberOfALoggedInUser = async (req, res) => {
 
     let memberIds = membersEnrolled.map(({ _id }) => _id);
 
+    /**
+     * filters
+     */
+    let { parentFilters } = getFilters(req);
+
     let { query, options } = getPaginationOptions(req);
     query = { ...query, _id: { $in: memberIds } };
+
+    if (parentFilters.length >= 1) {
+      let query2 = getQuery2(parentFilters);
+      let parents = await User.find(query2);
+      let parentIds = parents.map((parent) => parent._id);
+      query = { ...query, userId: { $in: parentIds } };
+    }
+
     options.populate = {
       path: "parent",
       select: ["name", "email", "mobileNo"],
@@ -298,6 +332,7 @@ module.exports.getAllMemberOfALoggedInUser = async (req, res) => {
     let response = await Member.paginate(query, options);
     return res.send(response);
   } catch (err) {
+    console.log(err);
     return res.status(422).send({ message: err.message });
   }
 };

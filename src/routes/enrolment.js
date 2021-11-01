@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const {
+  classTransferEnrolment,
   newEnrolment,
   transferEnrolment,
   updateWaitlistEnrolment,
@@ -19,6 +20,7 @@ const {
   suspendEnrolmentValidationRules,
   returnFromSuspensionEnrolmentValidationRules,
   getAllEnrolmentOfAMemberInABusinessValidationRules,
+  classTransferEnrolmentValidationRules,
 } = require("../validations/enrolment");
 const validate = require("../validations/validate");
 
@@ -69,6 +71,17 @@ router.post(
   validate,
   transferEnrolment
 );
+
+/**
+ * session transfer
+ */
+router.post(
+  "/class-transfer",
+  classTransferEnrolmentValidationRules(),
+  validate,
+  classTransferEnrolment
+);
+
 router.post(
   "/trial",
   trialEnrolmentValidationRules(),

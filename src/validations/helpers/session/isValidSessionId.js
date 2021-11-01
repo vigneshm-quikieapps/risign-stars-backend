@@ -15,7 +15,7 @@ const isValidSessionId = async (sessionId, { req }) => {
 
     return true;
   } catch (err) {
-    return Promise.reject(`Please select a valid session`);
+    return Promise.reject(`should be a valid session id`);
   }
 };
 
