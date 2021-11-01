@@ -19,7 +19,7 @@ const attendanceOfAClassByDateSchema = new mongoose.Schema(
       trim: true,
     },
     classId: {
-      type: String,
+      type: ObjectId,
       ref: "BusinessClass",
       required: true,
       trim: true,
@@ -43,6 +43,14 @@ const attendanceOfAClassByDateSchema = new mongoose.Schema(
         },
       },
     ],
+    createdBy: {
+      type: ObjectId,
+      ref: "User",
+    },
+    updatedBy: {
+      type: ObjectId,
+      ref: "User",
+    },
   },
   { timestamps: true }
 );

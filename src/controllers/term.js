@@ -151,6 +151,9 @@ module.exports.getAllTermsInAClass = async (req, res) => {
       },
     ]);
 
+    /**
+     * TODO. move the map code to database query
+     */
     let termIds = sessions.map((session) => session._id);
     let terms = await Term.find({ _id: { $in: termIds } });
 
