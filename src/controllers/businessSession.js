@@ -161,7 +161,10 @@ module.exports.getSessionsInAClassOfAParticularTerm = async (req, res) => {
 
     let { query, options } = getPaginationOptions(req);
     query = { ...query, "term._id": termId, classId };
-    options.populate = { path: "termData" };
+    options.populate = [
+      { path: "coach", select: ["name", "city"] },
+      { path: "termData" },
+    ];
 
     let response = await BusinessSession.paginate(query, options);
     return res.send(response);
