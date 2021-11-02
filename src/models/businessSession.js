@@ -26,6 +26,9 @@ const businessSessionSchema = new mongoose.Schema(
         ref: "Term",
         immutable: true,
       },
+      name: {
+        type: String,
+      },
       startDate: {
         type: Date,
         required: true,
@@ -94,18 +97,21 @@ businessSessionSchema.virtual("coach", {
   ref: "User",
   localField: "coachId",
   foreignField: "_id",
+  justOne: true,
 });
 
 businessSessionSchema.virtual("class", {
   ref: "BusinessClass",
   localField: "classId",
   foreignField: "_id",
+  justOne: true,
 });
 
 businessSessionSchema.virtual("business", {
   ref: "Business",
   localField: "businessId",
   foreignField: "_id",
+  justOne: true,
 });
 
 // Ensure virtual fields are serialised.
