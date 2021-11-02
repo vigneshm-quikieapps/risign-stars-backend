@@ -33,6 +33,7 @@ router.get(
 
 router.get("/:memberId", member.get);
 router.get("/:memberId/progress", getAllProgressOfAMember);
+router.get("/:memberId/enrolments", getAllEnrolmentsOfAMember);
 router.post("/", createMemberValidationRules(), validate, member.create);
 router.get("/consent", memberConsent.get);
 router.put("/:id", updateMemberValidationRules(), validate, member.update);

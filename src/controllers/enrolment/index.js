@@ -7,6 +7,7 @@ const updateWaitlistEnrolment = require("./updateWaitlistEnrolment");
 const withdrawEnrolment = require("./withdrawEnrolment");
 const getAllEnrolmentOfAMemberInABusiness = require("./getAllEnrolmentOfAMemberInABusiness");
 const classTransferEnrolment = require("./classTransferEnrolment");
+const getAllEnrolmentsOfAMember = require("./getAllEnrolmentOfAMember.js");
 
 module.exports = {
   classTransferEnrolment,
@@ -18,4 +19,5 @@ module.exports = {
   transferEnrolment,
   updateWaitlistEnrolment,
   withdrawEnrolment,
+  getAllEnrolmentsOfAMember,
 };

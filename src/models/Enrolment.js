@@ -91,6 +91,13 @@ enrolmentSchema.virtual("class", {
   justOne: true,
 });
 
+enrolmentSchema.virtual("business", {
+  ref: "Business",
+  localField: "businessId",
+  foreignField: "_id",
+  justOne: true,
+});
+
 enrolmentSchema.virtual("session", {
   ref: "BusinessSession",
   localField: "sessionId",
