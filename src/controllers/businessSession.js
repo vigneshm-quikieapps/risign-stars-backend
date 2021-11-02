@@ -114,7 +114,6 @@ module.exports.getMembersInASession = async (req, res) => {
     options.populate = [
       { path: "memberConsent", select: ["consent"] },
       { path: "member", select: ["name"] },
-      { path: "termData" },
     ];
 
     let response = await Enrolment.paginate(query, options);
