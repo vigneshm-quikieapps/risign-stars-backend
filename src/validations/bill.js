@@ -25,7 +25,7 @@ const billOfAMemberInABusinessValidationRules = () => {
 const enterTransactionValidationRules = () => {
   return [
     body("billId").custom(isValidBillId),
-    body("reference", "should be atleast 3 char").isLength({ min: 3 }),
+    body("reference", "should be at least 3 char").isLength({ min: 3 }),
     body(
       "transactionType",
       `should be either: ${ENUM_TRANSACTION_TYPES.join(" / ")}`

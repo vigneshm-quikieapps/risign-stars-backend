@@ -9,12 +9,12 @@ module.exports.createBusinessSession = async (req, res) => {
     sessionPayload.businessId = req.classData.businessId;
 
     let businessSession = await BusinessSession.create(sessionPayload);
-    businessSession = await BusinessSession.findById(
-      businessSession._id
-    ).populate({
-      path: "coach",
-      select: "name city",
-    });
+    businessSession = await BusinessSession.findById(businessSession._id)
+      .populate({
+        path: "coach",
+        select: "name city",
+      })
+      .populate("termData");
 
     return res
       .status(201)
@@ -30,7 +30,10 @@ module.exports.getAllBusinessSession = async (req, res) => {
     let { classId } = req.params;
 
     let { query, options } = getPaginationOptions(req);
-    options.populate = { path: "coach", select: ["name", "city"] };
+    options.populate = [
+      { path: "coach", select: ["name", "city"] },
+      { path: "termData" },
+    ];
     query = { ...query, classId };
 
     let response = await BusinessSession.paginate(query, options);
@@ -45,7 +48,10 @@ module.exports.getAllBusinessSession = async (req, res) => {
 module.exports.getBusinessSession = async (req, res) => {
   try {
     let { businessSessionId } = req.params;
-    let businessSession = await BusinessSession.findById(businessSessionId);
+    let businessSession = await BusinessSession.findById(
+      businessSessionId
+    ).populate("termData");
+
     return res.send({ businessSession });
   } catch (err) {
     return res.send({ message: err.message });
@@ -68,7 +74,7 @@ module.exports.updateBusinessSession = async (req, res) => {
       { _id: businessSessionId },
       { $set: req.body },
       { new: true, useFindAndModify: false }
-    );
+    ).populate("termData");
 
     return res.send({ message: "update successful", businessSession });
   } catch (err) {
@@ -88,7 +94,7 @@ module.exports.deleteBusinessSession = async (req, res) => {
     let enrolmentCount = await Enrolment.count({ sessionId });
 
     if (enrolmentCount) {
-      throw new Error("delete not allowed, session has atleast one enrolment");
+      throw new Error("delete not allowed, session has at least one enrolment");
     }
 
     await BusinessSession.deleteOne({ _id: sessionId });
@@ -108,6 +114,7 @@ module.exports.getMembersInASession = async (req, res) => {
     options.populate = [
       { path: "memberConsent", select: ["consent"] },
       { path: "member", select: ["name"] },
+      { path: "termData" },
     ];
 
     let response = await Enrolment.paginate(query, options);
@@ -130,7 +137,10 @@ module.exports.getAllSessionsInATerm = async (req, res) => {
 
     let { query, options } = getPaginationOptions(req);
     query = { query, "term._id": termId };
-    options.populate = { path: "coach", select: ["name", "city"] };
+    options.populate = [
+      { path: "coach", select: ["name", "city"] },
+      { path: "termData" },
+    ];
 
     let response = await BusinessSession.paginate(query, options);
     return res.send(response);
@@ -152,6 +162,7 @@ module.exports.getSessionsInAClassOfAParticularTerm = async (req, res) => {
 
     let { query, options } = getPaginationOptions(req);
     query = { ...query, "term._id": termId, classId };
+    options.populate = { path: "termData" };
 
     let response = await BusinessSession.paginate(query, options);
     return res.send(response);

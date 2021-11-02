@@ -86,15 +86,15 @@ const createBusinessFinanceValidationRules = () => {
     check("bankDetails", "bankDetails should be a object").isObject(),
     check(
       "bankDetails.accHolderName",
-      "accHolderName should be a String and atleast 3 char long"
+      "accHolderName should be a String and at least 3 char long"
     ).isLength({ min: 3 }),
     check(
       "bankDetails.bankName",
-      "bankName should be a String and atleast 3 char long"
+      "bankName should be a String and at least 3 char long"
     ).isLength({ min: 3 }),
     check(
       "bankDetails.sortCode",
-      "sortCode should be a String and atleast 3 char long"
+      "sortCode should be a String and at least 3 char long"
     ).isLength({ min: 3 }),
     check("bankDetails.accNo", "accNo should be a Number")
       .isInt()
@@ -130,19 +130,19 @@ const updateBusinessFinanceValidationRules = () => {
       .isObject(),
     check(
       "bankDetails.accHolderName",
-      "accHolderName should be a String and atleast 3 char long"
+      "accHolderName should be a String and at least 3 char long"
     )
       .optional()
       .isLength({ min: 3 }),
     check(
       "bankDetails.bankName",
-      "bankName should be a String and atleast 3 char long"
+      "bankName should be a String and at least 3 char long"
     )
       .optional()
       .isLength({ min: 3 }),
     check(
       "bankDetails.sortCode",
-      "sortCode should be a String and atleast 3 char long"
+      "sortCode should be a String and at least 3 char long"
     )
       .optional()
       .isLength({ min: 3 }),
@@ -195,11 +195,11 @@ const createDiscountValidationRules = () => {
     check("discountSchemes", "discountSchemes should be a Array").isArray(),
     check(
       "discountSchemes.*.name",
-      "name should be a String and atleast 3 char long"
+      "name should be a String and at least 3 char long"
     ).isLength({ min: 3 }),
     check(
       "discountSchemes.*.type",
-      "type should be a String and atleast 3 char long ,SHOULD BE PERCENTAGE"
+      "type should be a String and at least 3 char long ,SHOULD BE PERCENTAGE"
     ).isIn(["PERCENTAGE"]),
     check(
       "discountSchemes.*.value",
@@ -215,11 +215,11 @@ const addNewDiscountValidationRules = () => {
     check("discountSchemes", "discountSchemes should be a Array").isArray(),
     check(
       "discountSchemes.*.name",
-      "name should be a String and atleast 3 char long"
+      "name should be a String and at least 3 char long"
     ).isLength({ min: 3 }),
     check(
       "discountSchemes.*.type",
-      "type should be a String and atleast 3 char long ,SHOULD BE PERCENTAGE"
+      "type should be a String and at least 3 char long ,SHOULD BE PERCENTAGE"
     ).isIn(["PERCENTAGE"]),
     check(
       "discountSchemes.*.value",
@@ -232,12 +232,12 @@ const addNewDiscountValidationRules = () => {
 };
 const updateDiscountValidationRules = () => {
   return [
-    check("name", "name should be a String and atleast 3 char long").isLength({
+    check("name", "name should be a String and at least 3 char long").isLength({
       min: 3,
     }),
     check(
       "type",
-      "type should be a String and atleast 3 char long ,SHOULD BE PERCENTAGE"
+      "type should be a String and at least 3 char long ,SHOULD BE PERCENTAGE"
     ).isIn(["PERCENTAGE"]),
     check("value", "value should be a Number and an Int").isInt(),
     check("status", "status should be ACTIVE/INACTIVE ")

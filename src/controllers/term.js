@@ -76,7 +76,9 @@ module.exports.updateTerm = async (req, res) => {
     let sessionCount = await BusinessSession.count({ "term._id": termId });
 
     if (sessionCount) {
-      throw new Error("not allowed, there is atleast 1 session using the term");
+      throw new Error(
+        "not allowed, there is at least 1 session using the term"
+      );
     }
 
     let term = await Term.findByIdAndUpdate(
@@ -103,7 +105,9 @@ module.exports.deleteTerm = async (req, res) => {
     let sessionCount = await BusinessSession.count({ "term._id": termId });
 
     if (sessionCount) {
-      throw new Error("not allowed, there is atleast 1 session using the term");
+      throw new Error(
+        "not allowed, there is at least 1 session using the term"
+      );
     }
 
     await Term.deleteOne({ _id: termId });

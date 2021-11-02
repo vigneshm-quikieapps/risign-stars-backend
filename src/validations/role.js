@@ -20,19 +20,19 @@ const isUniqueName = async (name) => {
 
 const createRoleValidationRules = () => {
   return [
-    body("name", "Name should have atleast 3 characters")
+    body("name", "Name should have at least 3 characters")
       .isLength({
         min: 3,
       })
       .bail()
       .custom(isUniqueName),
-    body("code", "code should have atleast 3 characters")
+    body("code", "code should have at least 3 characters")
       .isLength({
         min: 3,
       })
       .bail()
       .custom(isUniqueCode),
-    body("description", "description should atleast 5 characters")
+    body("description", "description should at least 5 characters")
       .optional()
       .isLength({ min: 5 }),
     body("functionalPrivileges", "should be an array").isArray(),
@@ -61,17 +61,17 @@ const createRoleValidationRules = () => {
 
 const updateRoleValidationRules = () => {
   return [
-    body("name", "Name should have atleast 3 characters")
+    body("name", "Name should have at least 3 characters")
       .optional()
       .isLength({ min: 3 }),
-    body("code", "code should have atleast 3 characters")
+    body("code", "code should have at least 3 characters")
       .isLength({
         min: 3,
       })
       .optional()
       .bail()
       .custom(isUniqueCode),
-    body("description", "description should atleast 5 characters")
+    body("description", "description should at least 5 characters")
       .optional()
       .isLength({ min: 5 }),
     body("functionalPrivileges", "should be an array").optional().isArray(),

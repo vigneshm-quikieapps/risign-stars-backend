@@ -69,7 +69,7 @@ module.exports.removeCategory = async (req, res) => {
     let businessClassCount = await BusinessClass.count({ categoryId });
 
     if (businessClassCount) {
-      throw new Error("not allowed, it is used in atleast 1 class definition");
+      throw new Error("not allowed, it is used in at least 1 class definition");
     }
 
     let category = await Category.deleteOne({ _id: categoryId });

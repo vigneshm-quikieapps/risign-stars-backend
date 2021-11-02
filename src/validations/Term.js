@@ -6,7 +6,7 @@ const createTermValidationRules = () => {
   return [
     check("businessId").custom(isValidBusinessId),
     // check("code", "code should be a Numbre/Integer  ").isInt(),
-    check("label", "label should be atleast 3 chatecters").isLength({
+    check("label", "label should be at least 3 chatecters").isLength({
       min: 3,
     }),
     check("startDate", "should be in the following format: YYYY-MM-DD").isDate({
@@ -27,7 +27,7 @@ const createTermValidationRules = () => {
 const updateTermValidationRules = () => {
   return [
     // check("code", "code should be a Numbre/Integer  ").optional().isInt(),
-    check("label", "label should be atleast 3 chatecters")
+    check("label", "label should be at least 3 chatecters")
       .optional()
       .isLength({ min: 3 }),
     check(

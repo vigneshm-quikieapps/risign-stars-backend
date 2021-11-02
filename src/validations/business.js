@@ -33,7 +33,7 @@ const getAllBusinessValidationRules = () => {
 const createBusinessValidationRules = () => {
   return [
     check("name", "name should be at least 3 char").isLength({ min: 3 }),
-    check("code", "code should be atleast 3 char")
+    check("code", "code should be at least 3 char")
       // .optional()
       // .isLength({ min: 3 })
       .isString(),
@@ -42,7 +42,7 @@ const createBusinessValidationRules = () => {
       min: 3,
     }),
     check("type", BUSINESS.TYPE.MESSAGE).isIn(ENUM_BUSINESS_TYPE),
-    check("about", "about should be atleast 3 char")
+    check("about", "about should be at least 3 char")
       .optional()
       .isLength({ min: 3 }),
     check("postcode", "postcode should be at least 3 char").isLength({
@@ -70,7 +70,7 @@ const updateBusinessValidationRules = () => {
     check("name", "name should be at least 3 char")
       .optional()
       .isLength({ min: 3 }),
-    // check("code", "code should be atleast 3 char")
+    // check("code", "code should be at least 3 char")
     //   .optional()
     //   .isLength({ min: 3 }),
     check("status", BUSINESS.STATUS.MESSAGE).isIn(ENUM_STATUS),
@@ -78,7 +78,7 @@ const updateBusinessValidationRules = () => {
       .optional()
       .isLength({ min: 3 }),
     check("type", BUSINESS.TYPE.MESSAGE).optional().isIn(ENUM_BUSINESS_TYPE),
-    check("about", "about should be atleast 3 char")
+    check("about", "about should be at least 3 char")
       .optional()
       .isLength({ min: 3 }),
     check("postcode", "postcode should be at least 3 char")

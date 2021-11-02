@@ -26,7 +26,7 @@ const businessSessionSchema = new mongoose.Schema(
         ref: "Term",
         immutable: true,
       },
-      name: {
+      label: {
         type: String,
       },
       startDate: {
@@ -110,6 +110,13 @@ businessSessionSchema.virtual("class", {
 businessSessionSchema.virtual("business", {
   ref: "Business",
   localField: "businessId",
+  foreignField: "_id",
+  justOne: true,
+});
+
+businessSessionSchema.virtual("termData", {
+  ref: "Term",
+  localField: "term._id",
   foreignField: "_id",
   justOne: true,
 });

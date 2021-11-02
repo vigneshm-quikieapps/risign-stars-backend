@@ -33,7 +33,7 @@ const { ENUM_DAYS } = require("../constants/session");
 //     )
 //       .optional()
 //       .isIn(ENUM_REGISTRATION_FORM),
-//     check("about", "about should be atleast 3 char")
+//     check("about", "about should be at least 3 char")
 //       .optional()
 //       .isLength({ min: 3 }),
 //     check(
@@ -63,7 +63,7 @@ const createClassValidationRules = () => {
     )
       .optional()
       .isIn(ENUM_REGISTRATION_FORM),
-    check("about", "about should be atleast 3 char")
+    check("about", "about should be at least 3 char")
       .optional()
       .isLength({ min: 3 }),
     check(
@@ -75,7 +75,7 @@ const createClassValidationRules = () => {
     check("charges", "charges should be an Array and should not be empty")
       .isArray()
       .notEmpty(),
-    check("charges.*.name", "should be atleast 3 char").isLength({ min: 3 }),
+    check("charges.*.name", "should be at least 3 char").isLength({ min: 3 }),
     check("charges.*.amount", "should be a number").isNumeric(),
     check("charges.*.mandatory", "should be a boolean").isBoolean(),
     check(
@@ -148,7 +148,7 @@ const updateClassValidationRules = () => {
     )
       .optional()
       .isIn(ENUM_REGISTRATION_FORM),
-    check("about", "about should be atleast 3 char")
+    check("about", "about should be at least 3 char")
       .optional()
       .isLength({ min: 3 }),
     check(
@@ -162,7 +162,7 @@ const updateClassValidationRules = () => {
       .optional()
       .isArray()
       .notEmpty(),
-    check("charges.*.name", "should be atleast 3 char").isLength({ min: 3 }),
+    check("charges.*.name", "should be at least 3 char").isLength({ min: 3 }),
     check("charges.*.amount", "should be a number").isNumeric(),
     check("charges.*.mandatory", "should be a boolean").isBoolean(),
     check(

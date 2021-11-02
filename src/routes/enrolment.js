@@ -23,6 +23,7 @@ const {
   classTransferEnrolmentValidationRules,
 } = require("../validations/enrolment");
 const validate = require("../validations/validate");
+const validateSingle = require("../validations/validateSingle");
 
 /** routes */
 router.post("/", createEnrolementValidationRules(), validate, newEnrolment);
