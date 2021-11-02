@@ -34,6 +34,7 @@ const { getAllBusinessClass } = require("../controllers/businessClass");
 const { getAllCategoriesInABusiness } = require("../controllers/category");
 
 const user = require("../controllers/user");
+const { getAllDiscountInABusiness } = require("../controllers/discounts");
 /**
  * RBAC required for Create, Update, Delete
  * Read is public
@@ -57,6 +58,7 @@ router.get("/of-logged-in-user", isAuthorized(), getAllBusinessesOfLoginUser);
 
 router.get("/:businessId/terms", getAllTermsInABusiness);
 router.get("/:businessId/categories", getAllCategoriesInABusiness);
+router.get("/:businessId/discounts", getAllDiscountInABusiness);
 router.get("/:businessId", getBusiness);
 
 //delete route

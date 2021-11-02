@@ -1,21 +1,99 @@
 const Discounts = require("../models/discounts");
 const { STARTS_WITH_FILTER, EQUALS_FILTER } = require("../constants/constant");
+const mongoose = require("mongoose");
+const { Enrolment, Bill } = require("../models");
+const { ObjectId } = require("mongoose").Types;
 
 //discount api's are listed below
 
 //parameter extractor
-module.exports.getdiscountIdById = (req, res, next, id) => {
-  Discounts.findById(id).exec((err, discount) => {
-    if (err) {
-      return res.status(400).json({
-        error: "discounts not found",
-      });
-    }
-    req.discount = discount;
-    next();
-  });
-};
+// module.exports.getdiscountIdById = (req, res, next, id) => {
+//   Discounts.findById(id).exec((err, discount) => {
+//     if (err) {
+//       return res.status(400).json({
+//         error: "discounts not found",
+//       });
+//     }
+//     req.discount = discount;
+//     next();
+//   });
+// };
 //create Discounts
+
+const discountAllFutureCharges = async (data, session) => {
+  let { memberId, classId } = data;
+  let discountData = data.discount;
+
+  let now = new Date();
+
+  /**
+   * discount all future bills
+   */
+  let condition = {
+    memberId,
+    classId,
+    billDate: { $gt: now },
+  };
+
+  let bills = await Bill.find(condition);
+
+  let updatePayload = bills.map((bill) => {
+    let discount = bill.total * (discountData.value / 100);
+    let total = bill.subtotal - discount;
+    return {
+      updateOne: {
+        filter: { _id: ObjectId(bill._id) },
+        update: {
+          $set: {
+            discount,
+            total,
+          },
+        },
+      },
+    };
+  });
+  await Bill.bulkWrite(updatePayload, { session });
+};
+
+module.exports.applyDiscount = async (req, res) => {
+  const session = await mongoose.startSession();
+  session.startTransaction();
+
+  try {
+    let { enrolmentId } = req.body;
+    let { discountData, enrolmentData } = req;
+    let { classId, memberId } = enrolmentData;
+
+    let update = {
+      $set: {
+        discountDetail: {
+          name: discountData.name,
+          value: discountData.value,
+          type: discountData.type,
+        },
+      },
+    };
+
+    let options = {
+      new: true,
+    };
+    await Enrolment.findByIdAndUpdate(enrolmentId, update, options).session(
+      session
+    );
+
+    /**
+     * update all future charges with discount
+     */
+    let data = { classId, memberId, discount: discountData };
+    await discountAllFutureCharges(data, session);
+    session.commitTransaction();
+
+    return res.send({ message: "applied successful" });
+  } catch (err) {
+    session.abortTransaction();
+    return res.status(422).send({ message: err.message });
+  }
+};
 
 module.exports.createDiscounts = (req, res) => {
   const discounts = new Discounts(req.body);
@@ -27,6 +105,16 @@ module.exports.createDiscounts = (req, res) => {
     }
     res.json(discount);
   });
+};
+
+module.exports.getAllDiscountInABusiness = async (req, res) => {
+  try {
+    let { businessId } = req.params;
+    let discounts = await Discounts.find({ businessId });
+    return res.send({ discounts });
+  } catch (err) {
+    return res.send({ message: err.message });
+  }
 };
 
 //get discount by businessId

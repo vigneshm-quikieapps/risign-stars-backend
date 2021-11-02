@@ -1,6 +1,8 @@
 const { BusinessFinance } = require("../models");
 const { STARTS_WITH_FILTER, EQUALS_FILTER } = require("../constants/constant");
 const { Types } = require("mongoose");
+const mongoose = require("mongoose");
+const Discounts = require("../models/discounts");
 
 //parameter extractor
 // module.exports.getBusinessFinanceIdById = (req, res, next, id) => {
@@ -18,13 +20,34 @@ const { Types } = require("mongoose");
 //create businessFinance
 
 module.exports.createBusinessFinance = async (req, res) => {
+  const session = await mongoose.startSession();
+  session.startTransaction();
+
   try {
-    const businessFinance = await BusinessFinance.create(req.body);
+    let { businessId } = req.body;
+    let data = { ...req.body };
+    let { discountSchemes } = data;
+    const businessFinances = await BusinessFinance.create([data], { session });
+    let businessFinance = businessFinances[0];
+
+    let discountSchemesPayload = discountSchemes.map((discountScheme) => ({
+      ...discountScheme,
+      businessId,
+    }));
+
+    await Discounts.create(discountSchemesPayload, { session });
+
+    await session.commitTransaction();
+
     return res
       .status(201)
       .send({ message: "create successful", businessFinance });
   } catch (err) {
-    return res.send({ message: err.message });
+    await session.abortTransaction();
+    console.error(err);
+    return res.status(422).send({ message: err.message });
+  } finally {
+    session.endSession();
   }
 };
 

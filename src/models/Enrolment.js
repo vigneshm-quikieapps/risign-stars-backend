@@ -5,6 +5,10 @@ const {
   ENUM_DISCONTINUATION_REASON,
 } = require("../constants/enrolment");
 const mongoosePaginate = require("mongoose-paginate-v2");
+const {
+  ENUM_DISCOUNT_TYPES,
+  TYPE_PERCENTAGE,
+} = require("../constants/discount");
 
 const enrolmentSchema = new mongoose.Schema(
   {
@@ -53,6 +57,15 @@ const enrolmentSchema = new mongoose.Schema(
     returnFromSuspensionAt: {
       /** date on which the member return from suspension */
       type: Date,
+    },
+    discountDetail: {
+      name: String,
+      value: Number,
+      type: {
+        type: String,
+        enum: ENUM_DISCOUNT_TYPES,
+        default: TYPE_PERCENTAGE,
+      },
     },
     droppedDate: Date,
     updatedBy: {

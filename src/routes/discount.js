@@ -5,6 +5,7 @@ const {
   addNewDiscountValidationRules,
   updateDiscountValidationRules,
   updateStatusOfDiscountValidationRules,
+  applyDiscountValidationRules,
 } = require("../validations/businessFinance");
 const validate = require("../validations/validate");
 
@@ -18,12 +19,15 @@ const {
   deleteDiscountScheme,
   updateDiscountsScheme,
   updateStatusOfDiscountsScheme,
+  applyDiscount,
 } = require("../controllers/discounts");
 
 // discount routes are listed below
 
 //parameters
-router.param("discountId", getdiscountIdById);
+// router.param("discountId", getdiscountIdById);
+
+router.post("/apply", applyDiscountValidationRules(), validate, applyDiscount);
 
 //all of actual routes
 // eslint-disable-next-line prettier/prettier

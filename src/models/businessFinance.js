@@ -2,8 +2,6 @@ const mongoose = require("mongoose");
 const {
   ENUM_PAY_FREQUENCY,
   PAY_FREQUENCY_ANNUAL,
-  ENUM_CHARGES,
-  CHARGES_CLUB_MEMBERSHIP_ID,
   ENUM_BUSINESS_FINANCE,
 } = require("../constants/businessFinance");
 const { ObjectId } = mongoose.Schema;
@@ -32,19 +30,19 @@ const businessFinanceSchema = new mongoose.Schema(
         enum: ENUM_BUSINESS_FINANCE,
       },
     ],
-    discountSchemes: [
-      {
-        name: String,
-        type: { type: String, enum: ["PERCENTAGE"], default: "PERCENTAGE" },
-        value: Number,
-      },
-    ],
+    // discountSchemes: [
+    //   {
+    //     name: String,
+    //     type: { type: String, enum: ["PERCENTAGE"], default: "PERCENTAGE" },
+    //     value: Number,
+    //   },
+    // ],
     charges: [
       {
         name: {
           type: String,
-          enum: ENUM_CHARGES,
-          default: CHARGES_CLUB_MEMBERSHIP_ID,
+          // enum: ENUM_CHARGES,
+          // default: CHARGES_CLUB_MEMBERSHIP_ID,
         },
         amount: {
           type: Number,

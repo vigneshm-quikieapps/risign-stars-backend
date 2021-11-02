@@ -1,7 +1,9 @@
 const business = require("./business");
 const category = require("./category");
 const classes = require("./class");
+const discount = require("./discount");
 const coach = require("./coach");
+const enrolment = require("./enrolment");
 const evaluationScheme = require("./evaluationScheme");
 const members = require("./member");
 const mobileNo = require("./mobileNo");
@@ -13,6 +15,8 @@ module.exports = {
   ...category,
   ...classes,
   ...coach,
+  ...discount,
+  ...enrolment,
   ...evaluationScheme,
   ...members,
   ...mobileNo,

@@ -1,7 +1,16 @@
 const { check } = require("express-validator");
 const { Business, User, Discounts, BusinessFinance } = require("../models");
 const { Types } = require("mongoose");
-const { ENUM_BUSINESS_FINANCE } = require("../constants/businessFinance");
+const {
+  ENUM_BUSINESS_FINANCE,
+  ENUM_PAY_FREQUENCY,
+} = require("../constants/businessFinance");
+const {
+  isValidClassId,
+  isValidDiscountId,
+  isValidMemberId,
+  isValidEnrolmentId,
+} = require("./helpers");
 
 const discountIdValidation = async (discountSchemesId) => {
   try {
@@ -19,7 +28,7 @@ const discountIdValidation = async (discountSchemesId) => {
     return Promise.reject(`Please select a valid discountSchemesId`);
   }
 };
-const businessIdValidation = async (businessId) => {
+const businessIdValidation = async (businessId, { req }) => {
   try {
     if (!businessId) {
       throw new Error();
@@ -30,6 +39,8 @@ const businessIdValidation = async (businessId) => {
     if (!business) {
       throw new Error("should be a valid business");
     }
+
+    req.businessData = business;
 
     /** finance record should not exists for this particular business */
     let businessFinanceCount = await BusinessFinance.count({
@@ -99,24 +110,24 @@ const createBusinessFinanceValidationRules = () => {
     check("bankDetails.accNo", "accNo should be a Number")
       .isInt()
       .isLength({ min: 1 }),
-    check("charges", "is required").bail().custom(isValidCharges),
+    check("charges", "charges should be an Array and should not be empty")
+      .isArray()
+      .notEmpty(),
+    check("charges.*.name", "should be at least 3 char").isLength({ min: 3 }),
+    check("charges.*.amount", "should be a number").isNumeric(),
+    check(
+      "charges.*.payFrequency",
+      `should be either: ${ENUM_PAY_FREQUENCY.join(" / ")}`
+    ).isIn(ENUM_PAY_FREQUENCY),
     check("paymentChannels", "should be a Object").isObject(),
     check("paymentChannels.online", "should be a true/false").isBoolean(),
     check("paymentChannels.manual", "should be a true/false").isBoolean(),
-    check("discountSchemesId", "discountSchemesId should be a valid businessId")
-      .optional()
-      .custom(discountIdValidation),
+    check("discountSchemes.*.name").isLength({ min: 3 }),
+    check("discountSchemes.*.value").isInt(),
     check(
       "paymentMethods.*",
       `should be either: ${ENUM_BUSINESS_FINANCE.join(" / ")}`
     ).isIn(ENUM_BUSINESS_FINANCE),
-    // check("updatedBy", "updatedBy should be a valid userId")
-    //   .optional()
-    //   .isLength({ min: 12 })
-    //   .custom(userIdValidation),
-    // check("createdBy", "createdBy should be a valid userId")
-    //   .isLength({ min: 12 })
-    //   .custom(userIdValidation),
   ];
 };
 const updateBusinessFinanceValidationRules = () => {
@@ -157,9 +168,8 @@ const updateBusinessFinanceValidationRules = () => {
     check("paymentChannels.manual", "should be a true/false")
       .optional()
       .isBoolean(),
-    check("discountSchemesId", "discountSchemesId should be a valid businessId")
-      .optional()
-      .custom(discountIdValidation),
+    check("discountSchemes.*.name").isLength({ min: 3 }),
+    check("discountSchemes.*.value").isInt(),
     check(
       "paymentMethods.*",
       `should be either: ${ENUM_BUSINESS_FINANCE.join(" / ")}`
@@ -189,9 +199,7 @@ const updateStatusOfDiscountValidationRules = () => {
 //discount validations
 const createDiscountValidationRules = () => {
   return [
-    check("businessId", "businessId should be a valid businessId")
-      .isLength({ min: 3 })
-      .custom(businessIdValidation),
+    check("businessId").custom(businessIdValidation),
     check("discountSchemes", "discountSchemes should be a Array").isArray(),
     check(
       "discountSchemes.*.name",
@@ -245,7 +253,16 @@ const updateDiscountValidationRules = () => {
       .isIn(["ACTIVE", "INACTIVE"]),
   ];
 };
+
+const applyDiscountValidationRules = () => {
+  return [
+    check("discountId").custom(isValidDiscountId),
+    check("enrolmentId").custom(isValidEnrolmentId),
+  ];
+};
+
 module.exports = {
+  applyDiscountValidationRules,
   createBusinessFinanceValidationRules,
   updateBusinessFinanceValidationRules,
   createDiscountValidationRules,

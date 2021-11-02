@@ -5,6 +5,7 @@ const BusinessSession = require("./businessSession");
 const BusinessFinance = require("./businessFinance");
 const Category = require("./Category");
 const Counter = require("./Counter");
+const Discounts = require("./discounts");
 const Enrolment = require("./Enrolment");
 const EvaluationScheme = require("./evaluationScheme");
 const Member = require("./Member");
@@ -30,6 +31,7 @@ module.exports = {
   BusinessFinance,
   Category,
   Counter,
+  Discounts,
   Enrolment,
   EvaluationScheme,
   Member,
