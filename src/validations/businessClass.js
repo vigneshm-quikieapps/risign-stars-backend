@@ -48,6 +48,30 @@ const { ENUM_DAYS } = require("../constants/session");
 //   ];
 // };
 
+// const is24Hours = async (timeString) => {
+//   try {
+//     let [hour, min] = timeString.split(":");
+//     console.log({ timeString });
+//     console.log({ hour });
+//     console.log({ min });
+//     if (
+//       !hour ||
+//       !min ||
+//       !Number.isInteger(hour) ||
+//       !Number.isInteger(min) ||
+//       hour < 0 ||
+//       hour > 23 ||
+//       min < 0 ||
+//       min > 59
+//     ) {
+//       throw new Error("should be HH:MM, 24 hour format, e.g: 14:30");
+//     }
+//     return true;
+//   } catch (err) {
+//     return Promise.reject(err.message);
+//   }
+// };
+
 const createClassValidationRules = () => {
   return [
     check("name", "name should be at least 3 char").isLength({ min: 3 }),
@@ -113,10 +137,12 @@ const createClassValidationRules = () => {
       "sessions.*.pattern.startTime",
       "should be a valid iso format"
     ).isISO8601(),
+    // check("sessions.*.pattern.startTime", "should be HH:MM").custom(is24Hours),
     check(
       "sessions.*.pattern.endTime",
       "should be a valid iso format"
     ).isISO8601(),
+    // check("sessions.*.pattern.endTime", "should be HH:MM").custom(is24Hours),
     check(
       "sessions.*.fullcapacity",
       "fullcapacity should be a Number/Integer  "
