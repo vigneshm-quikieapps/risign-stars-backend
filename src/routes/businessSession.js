@@ -9,6 +9,7 @@ const {
   getMembersInASession,
   getSessionsInAClassOfAParticularTerm,
 } = require("../controllers/businessSession");
+const { updateWaitlistEnrolment } = require("../controllers/enrolment");
 const {
   updateSessionValidationRules,
   createSessionValidationRules,
@@ -28,6 +29,11 @@ router.post(
 );
 
 router.get("/:businessSessionId/members", getMembersInASession);
+router.get(
+  "/:businessSessionId/update-waitlist-enrolments",
+  updateWaitlistEnrolment
+);
+
 router.post(
   "/in-a-class/of-a-particular-term",
   getSessionsInAClassOfAParticularTermValidationRules(),

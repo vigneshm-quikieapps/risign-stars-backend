@@ -12,6 +12,7 @@ const { getAllEnrolmentsOfAMember } = require("../controllers/enrolment");
 const validate = require("../validations/validate");
 const { isAuthorized } = require("../middlewares/auth");
 const { getAllProgressOfAMember } = require("../controllers/progress");
+const { getBillStatusOfMembersInASession } = require("../controllers/bill");
 
 // router.param("memberId", member.getmemberIdById);
 
@@ -30,6 +31,8 @@ router.get(
   isAuthorized(null, null),
   member.getAllMemberOfALoggedInParent
 );
+
+router.post("/bill-status-in-a-session", getBillStatusOfMembersInASession);
 
 router.get("/:memberId", member.get);
 router.get("/:memberId/progress", getAllProgressOfAMember);

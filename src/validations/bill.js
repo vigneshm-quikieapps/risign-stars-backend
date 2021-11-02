@@ -4,7 +4,10 @@ const { isValidMemberId } = require("./helpers/member");
 const { isValidBusinessId } = require("./helpers/business");
 const isValidBillId = require("./helpers/bill");
 const { ENUM_TRANSFER_ALLOWED } = require("../constants/enrolment");
-const { ENUM_TRANSACTION_TYPES } = require("../constants/bill");
+const {
+  ENUM_TRANSACTION_TYPES,
+  ENUM_PAYMENT_METHODS,
+} = require("../constants/bill");
 
 const billOfAMemberInAClassValidationRules = () => {
   return [
@@ -32,6 +35,9 @@ const enterTransactionValidationRules = () => {
     )
       .optional()
       .isIn(ENUM_TRANSACTION_TYPES),
+    body("paymentMethod", `should be min 3 char`)
+      .optional()
+      .isLength({ min: 3 }),
   ];
 };
 

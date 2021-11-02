@@ -5,7 +5,6 @@ const {
   ENUM_STATUS,
   STATUS_ACTIVE,
   ENUM_TRANSACTION_TYPES,
-  ENUM_PAYMENT_METHODS,
 } = require("../constants/bill");
 
 const billSchema = new mongoose.Schema(
@@ -90,7 +89,6 @@ const billSchema = new mongoose.Schema(
     },
     method: {
       type: String,
-      enum: ENUM_PAYMENT_METHODS,
     },
     updatedBy: {
       type: ObjectId,
@@ -103,6 +101,13 @@ const billSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
+
+billSchema.virtual("member", {
+  ref: "Member",
+  localField: "memberId",
+  foreignField: "_id",
+  justOne: true,
+});
 
 // Ensure virtual fields are serialised.
 billSchema.set("toJSON", {
