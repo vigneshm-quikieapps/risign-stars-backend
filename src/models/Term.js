@@ -34,6 +34,7 @@ termSchema.virtual("business", {
   ref: "Business",
   localField: "businessId",
   foreignField: "_id",
+  justOne: true,
 });
 
 // Ensure virtual fields are serialised.

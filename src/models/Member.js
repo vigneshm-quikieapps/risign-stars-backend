@@ -65,6 +65,7 @@ memberSchema.virtual("parent", {
   ref: "User",
   localField: "userId",
   foreignField: "_id",
+  justOne: true,
 });
 // Ensure virtual fields are serialised.
 memberSchema.set("toJSON", {

@@ -66,6 +66,7 @@ progressSchema.virtual("evaluationScheme", {
   ref: "EvaluationScheme",
   localField: "evaluationSchemeId",
   foreignField: "_id",
+  justOne: true,
 });
 
 // Ensure virtual fields are serialised.
