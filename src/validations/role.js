@@ -1,61 +1,36 @@
 const { body } = require("express-validator");
-const { FUNCTIONAL_PRIVILEGES } = require("../constants/constant");
-const Role = require("../models/Role");
+const {
+  FUNCTIONAL_PRIVILEDGES
 
-const isUniqueCode = async (code) => {
-  let roleCount = await Role.count({ code });
-  if (roleCount) {
-    return Promise.reject("code already exists");
-  }
-  return true;
-};
-
-const isUniqueName = async (name) => {
-  let roleCount = await Role.count({ name });
-  if (roleCount) {
-    return Promise.reject("name already exists");
-  }
-  return true;
-};
+} = require("../contants/constant");
 
 const createRoleValidationRules = () => {
   return [
-    body("name", "Name should have atleast 3 characters")
-      .isLength({
-        min: 3,
-      })
-      .bail()
-      .custom(isUniqueName),
-    body("code", "code should have atleast 3 characters")
-      .isLength({
-        min: 3,
-      })
-      .bail()
-      .custom(isUniqueCode),
+    body("name", "Name should have atleast 3 characters").isLength({ min: 3 }),
     body("description", "description should atleast 5 characters")
       .optional()
       .isLength({ min: 5 }),
-    body("functionalPrivileges", "should be an array").isArray(),
     body(
-      "functionalPrivileges.*.type",
-      `page name should be either: ${FUNCTIONAL_PRIVILEGES.join("/")}`
-    ).isIn(FUNCTIONAL_PRIVILEGES),
+      "functionalPriviledges.*.type",
+      `page name should be either: ${FUNCTIONAL_PRIVILEDGES.join("/")}`
+    ).isIn(FUNCTIONAL_PRIVILEDGES),
     body(
-      "functionalPrivileges.*.permission.create",
+      "functionPriviledges.*.permission.create",
       "permission.create must be boolean"
     ).isBoolean(),
     body(
-      "functionalPrivileges.*.permission.read",
+      "functionPriviledges.*.permission.read",
       "permission.read must be boolean"
     ).isBoolean(),
     body(
-      "functionalPrivileges.*.permission.update",
+      "functionPriviledges.*.permission.update",
       "permission.update must be boolean"
     ).isBoolean(),
     body(
-      "functionalPrivileges.*.permission.delete",
+      "functionPriviledges.*.permission.delete",
       "permission.delete must be boolean"
     ).isBoolean(),
+   
   ];
 };
 
@@ -64,47 +39,40 @@ const updateRoleValidationRules = () => {
     body("name", "Name should have atleast 3 characters")
       .optional()
       .isLength({ min: 3 }),
-    body("code", "code should have atleast 3 characters")
-      .isLength({
-        min: 3,
-      })
-      .optional()
-      .bail()
-      .custom(isUniqueCode),
     body("description", "description should atleast 5 characters")
       .optional()
       .isLength({ min: 5 }),
-    body("functionalPrivileges", "should be an array").optional().isArray(),
     body(
-      "functionalPrivileges.*.type",
-      `page name should be either: ${FUNCTIONAL_PRIVILEGES.join("/")}`
+      "functionalPriviledges.*.type",
+      `page name should be either: ${FUNCTIONAL_PRIVILEDGES.join("/")}`
     )
       .optional()
-      .isIn(FUNCTIONAL_PRIVILEGES),
+      .isIn(FUNCTIONAL_PRIVILEDGES),
     body(
-      "functionalPrivileges.*.permission.create",
+      "functionPriviledges.*.permission.create",
       "permission.create must be boolean"
     )
       .optional()
       .isBoolean(),
     body(
-      "functionalPrivileges.*.permission.read",
+      "functionPriviledges.*.permission.read",
       "permission.read must be boolean"
     )
       .optional()
       .isBoolean(),
     body(
-      "functionalPrivileges.*.permission.update",
+      "functionPriviledges.*.permission.update",
       "permission.update must be boolean"
     )
       .optional()
       .isBoolean(),
     body(
-      "functionalPrivileges.*.permission.delete",
+      "functionPriviledges.*.permission.delete",
       "permission.delete must be boolean"
     )
       .optional()
       .isBoolean(),
+    
   ];
 };
 

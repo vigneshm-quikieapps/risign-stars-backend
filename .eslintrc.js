@@ -3,18 +3,21 @@ module.exports = {
     browser: true,
     commonjs: true,
     es2021: true,
-    "jest/globals": true,
   },
   extends: [
     "eslint:recommended",
     "plugin:node/recommended",
     "prettier",
     "plugin:prettier/recommended",
+    "error",
+    {
+      endOfLine: "auto",
+    },
   ],
   parserOptions: {
     ecmaVersion: 12,
   },
-  plugins: ["prettier", "unused-imports", "jest"],
+  plugins: ["prettier"],
   rules: {
     "prettier/prettier": [
       "error",
@@ -31,21 +34,6 @@ module.exports = {
     "node/prefer-global/url": ["error", "always"],
     "node/prefer-promises/dns": "error",
     "node/prefer-promises/fs": "error",
-    "jest/no-disabled-tests": "warn",
-    "jest/no-focused-tests": "error",
-    "jest/no-identical-title": "error",
-    "jest/prefer-to-have-length": "warn",
-    "jest/valid-expect": "error",
-    "no-unused-vars": "off",
-    "unused-imports/no-unused-imports": "error",
-    "unused-imports/no-unused-vars": [
-      "warn",
-      {
-        vars: "all",
-        varsIgnorePattern: "^_",
-        args: "after-used",
-        argsIgnorePattern: "^_",
-      },
-    ],
   },
+ 
 };

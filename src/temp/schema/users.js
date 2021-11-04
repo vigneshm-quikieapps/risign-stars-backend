@@ -1,5 +1,29 @@
-//const DATA_PRIVILEDGES_TYPE = ["ALL", "ONE"];
-const { ENUM_USER_TYPES, ENUM_DATA_PRIVILEGES_TYPE } = require("./constants");
+const FUNCTIONAL_PRIVILEDGES = [
+  "ACTIVITY_DEFINITION",
+  "ACTIVITY_ENROLMENT",
+  "ACTIVITY_ATTENDANCE",
+  "PROGRESS_RECORD",
+];
+
+const ADDRESS_TYPE = ["PRIMARY", "SECONDARY"];
+
+const RELATIONSHIPS = [
+  "FATHER",
+  "MOTHER",
+  "SON",
+  "DAUGHTER",
+  "HUSBAND",
+  "WIFE",
+  "BROTHER",
+  "SISTER",
+  "UNCLE",
+  "AUNT",
+  "NEPHEW",
+  "NIECE",
+  "COUSIN",
+];
+
+const DATA_PRIVILEDGES_TYPE = ["ALL", "ONE"];
 
 /**
  * API's
@@ -22,39 +46,91 @@ const { ENUM_USER_TYPES, ENUM_DATA_PRIVILEGES_TYPE } = require("./constants");
  */
 module.exports.users = {
   id: String,
-  platformId: String,
   firstName: String,
   lastName: String,
-  name: String,
   email: String,
   contact: String,
-  // address: String,
-  status: ["ACTIVE", "INACTIVE"],
+  address: String,
   password: String,
-  user_types: ENUM_USER_TYPES,
   roles: [
     /** name of roles */
     {
       id: String,
       name: String,
+      businessId: String /** optional */,
+      businessName: String /** optional */,
     },
   ],
-  emailVerified: Boolean /** default false */,
-  phoneVerified: Boolean /** default false */,
-  dataPrivileges: [
-    {
-      type: ENUM_DATA_PRIVILEGES_TYPE,
-      businessId: String,
-      businessName: String,
-    },
-  ],
-  postcode: String,
-  addressLine1: String,
-  addressLine2: String,
-  city: String,
-  country: String,
   createdAt: Date,
-  createdBy: String /** User id */,
+  updateAt: Date,
+};
+
+/**
+ * API's
+ * 1. get a list of roles,
+ * 2. get a role
+ * 3. create a role
+ * 4. update a role
+ * 5. delete a role
+ *
+ * Note:
+ * 3a. on creating a role, add the business name to dataPriviledges
+ * 4a. on updating a role, update the relevant information in the roles section of users (collection)
+ */
+module.exports.roles = {
+  name: String,
+  description: String,
+  functionalPriviledges: [
+    {
+      type: FUNCTIONAL_PRIVILEDGES,
+      permission: {
+        create: Boolean,
+        read: Boolean,
+        update: Boolean,
+        delete: Boolean,
+      },
+    },
+  ],
+  dataPriviledges: {
+    type: DATA_PRIVILEDGES_TYPE,
+    businessId: String,
+    businessName: String,
+  },
+};
+
+/**
+ * API's
+ * 1. get a list of child
+ * 2. CRUD a child
+ * 3. Provide Consent for a child
+ */
+module.exports.students = {
+  id: String,
+  userId: String,
+  firstName: String,
+  lastName: String,
+  dob: Date,
+  contacts: [
+    {
+      type: ADDRESS_TYPE,
+      firstName: String,
+      lastName: String,
+      contact: String,
+      relationShip: RELATIONSHIPS,
+    },
+  ],
+  consent: {
+    allergies: String,
+    condition: String,
+    photographConsent: Boolean,
+    signedByParent: Boolean,
+    signedAt: Date,
+  },
+  newsletter: {
+    email: Boolean,
+    telephone: Boolean,
+    sms: Boolean,
+  },
+  createdAt: Date,
   updatedAt: Date,
-  updatedBy: String /** User id */,
 };

@@ -1,9 +1,4 @@
 const mongoose = require("mongoose");
-const {
-  EVALUATION_STATUS,
-  EVALUATION_STATUS_ACTIVE,
-} = require("../constants/constant");
-const { ObjectId } = mongoose.Schema;
 
 const evaluationSchema = new mongoose.Schema(
   {
@@ -14,10 +9,10 @@ const evaluationSchema = new mongoose.Schema(
     },
     status: {
       type: String,
-      default: EVALUATION_STATUS_ACTIVE,
-      enum: EVALUATION_STATUS,
+      default: "active",
+      enum: ["active", "inactive"],
     },
-    levelCount: {
+    levelcount: {
       type: Number,
       required: true,
     },
@@ -26,14 +21,6 @@ const evaluationSchema = new mongoose.Schema(
         skills: [],
       },
     ],
-    updatedBy: {
-      type: ObjectId,
-      ref: "User",
-    },
-    createdBy: {
-      type: ObjectId,
-      ref: "User",
-    },
   },
   { timestamps: true }
 );

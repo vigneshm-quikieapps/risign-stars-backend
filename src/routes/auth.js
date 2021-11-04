@@ -1,60 +1,58 @@
 const express = require("express");
 const router = express.Router();
+const { check } = require("express-validator");
 const {
   signup,
   signin,
+  isSignedIn,
   refreshToken,
-  getOTPEmail,
-  getOTPMobileNo,
 } = require("../controllers/auth");
-const {
-  getAllClassesForALoggedInBusinessAdmin,
-} = require("../controllers/businessClass");
-const { isAuthorized } = require("../middlewares/auth");
-const {
-  getOTPEmailValidationRules,
-  getOTPMobileNoValidationRules,
-  refreshTokenValidationRules,
-} = require("../validations/auth");
-const {
-  signUpValidationRules,
-  signInValidationRules,
-} = require("../validations/user");
+const { createUserValidationRules } = require("../validations/user");
 const validate = require("../validations/validate");
-const { verify } = require("jsonwebtoken");
-
-router.post("/sign-up", signUpValidationRules(), validate, signup);
-router.post("/sign-in", signInValidationRules(), validate, signin);
-router.post("/refresh-token", refreshToken);
+// ROUTES
+// Signup Route
 router.post(
-  "/get-otp/email",
-  getOTPEmailValidationRules(),
-  validate,
-  getOTPEmail
+  "/signup",
+  [
+    check("firstName", "name should be at least 2 char").isLength({ min: 3 }),
+    check("lastName", "name should be at least 2 char").isLength({ min: 3 }),
+    check("email", "email is required")
+      .isEmail()
+      .custom(createUserValidationRules),
+    check("password", "password should be at least 3 char").isLength({
+      min: 3,
+    }),
+    check("contact", "Contact must be 10 Digit No").isLength({
+      min: 10,
+      max: 10,
+    }),
+  ],
+  signup
 );
+
+// Signin Route
 router.post(
-  "/get-otp/mobile-no",
-  getOTPMobileNoValidationRules(),
-  validate,
-  getOTPMobileNo
+  "/signin",
+  [
+    check("email").isEmail().withMessage("Please provide a valid Email"),
+
+    check("password")
+      .isLength({ min: 1 })
+      .withMessage("Password Field is Requried")
+      .matches(/\d/),
+  ],
+  signin
 );
 
-const isAuthHandler = (req, res) => {
-  /**
-   * TODO: add the logic.
-   */
-  return true;
-};
+// Signout Route
+// router.get("/signout", signout);
 
-router.get(
-  "/auth/user/classes",
-  isAuthorized(null, null, { isAuthHandler }),
-  getAllClassesForALoggedInBusinessAdmin
-);
+// REFRESH TOKEN
+router.post("/refereshtoken", refreshToken);
 
 // Testing Route
-router.get("/testroute", (req, res) => {
-  res.send("hello");
+router.get("/testroute", isSignedIn, (req, res) => {
+  res.json(req.auth);
 });
 
 module.exports = router;

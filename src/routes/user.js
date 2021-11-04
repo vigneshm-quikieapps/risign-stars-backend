@@ -1,51 +1,30 @@
 /* eslint-disable prettier/prettier */
 const express = require("express");
-const { USER } = require("../constants/pages");
-const { CREATE, UPDATE, READ, DELETE } = require("../constants/rest");
 const router = express.Router();
 const user = require("../controllers/user");
-const { isAuthorized } = require("../middlewares/auth");
-const {
-  createUserValidationRules,
+const { createUserValidationRules,
   updateUserValidationRules,
 } = require("../validations/user");
 const validate = require("../validations/validate");
 
 // create route
-router.post(
-  "/",
-  isAuthorized(USER, CREATE),
-  createUserValidationRules(),
-  validate,
-  user.create
-);
+router.post("/users", createUserValidationRules(), validate, user.create);
 
 // read route
-router.get("/:userId", isAuthorized(USER, READ), user.get);
+router.get("/users/:userId", user.get);
 
-/**
- * delete route
- * don't allow delete user functionality
- * if required, implement soft delete / deactivate / block functionality
- */
-// router.delete("/:userId", isAuthorized(USER, DELETE), user.delete);
+// delete route
+router.delete("/users/:userId", user.delete);
 
 // update route
 router.put(
-  "/:userId",
-  isAuthorized(USER, UPDATE),
+  "/users/:userId",
   updateUserValidationRules(),
   validate,
   user.update
 );
 
 // listing route
-router.get("/", isAuthorized(USER, READ), user.getAll);
+router.get("/users", user.getAll);
 
-/* 
-
-  note: to sudharshan
-  /businesess/:businessId/coaches
-
-*/
 module.exports = router;

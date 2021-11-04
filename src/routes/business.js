@@ -1,16 +1,9 @@
 /* eslint-disable prettier/prettier */
 const express = require("express");
 const router = express.Router();
-const {
-  getAllBusinessValidationRules,
-  updateBusinessValidationRules,
-  createBusinessValidationRules,
-} = require("../validations/business");
-const { getFinanceOfABusiness } = require("../controllers/businessFinance");
-
+const { check } = require("express-validator");
+const { getAllBusinessValidationRules } = require("../validations/business");
 const validate = require("../validations/validate");
-const { BUSINESS_DEFINITION, CLASS_DEFINITION } = require("../constants/pages");
-const { CREATE, UPDATE, READ, DELETE } = require("../constants/rest");
 
 const {
   getBusinessIdById,
@@ -19,86 +12,96 @@ const {
   createBusiness,
   deleteBusiness,
   updateBusiness,
-  //uploadFile,
-  uploadXLXSFile,
-  // convertXLXSFile,
-  businessImageUploadHelper,
-  uploadImage,
+  uploadFile,
 } = require("../controllers/business");
-const { isAuthorized } = require("../middlewares/auth");
-const { getAllBusinessClass } = require("../controllers/businessClass");
-const user = require("../controllers/user");
-/**
- * RBAC required for Create, Update, Delete
- * Read is public
- */
+
+
+
+
 //parameters
 router.param("businessId", getBusinessIdById);
 
 //all of actual routes
 // eslint-disable-next-line prettier/prettier
 //all of actual routes
-//create route
+//create route 
 router.post(
-  "/",
-  isAuthorized(BUSINESS_DEFINITION, CREATE),
-  createBusinessValidationRules(),
-  validate,
+  "/business/create",
+  [
+    check("name", "name should be at least 3 char").isLength({ min: 3 }),
+    check("code", "code should be atleast 3 char")
+      .optional()
+      .isLength({ min: 3 }),
+    check("tradename", "tradename should be at least 3 char").isLength({
+      min: 3,
+    }),
+    check("type", "type should be at least 3 char").isLength({ min: 3 }),
+    check("about", "about should be atleast 3 char")
+      .optional()
+      .isLength({ min: 3 }),
+    check("postcode", "postcode should be at least 3 char").isLength({
+      min: 3,
+    }),
+    check("line1", "line1 should be at least 3 char").isLength({ min: 3 }),
+    check("city", "city should be at least 3 char").isLength({ min: 3 }),
+    check("country", "country should be at least 3 char").isLength({ min: 3 }),
+  ],
   createBusiness
 );
 
 // read routes
-router.get("/:businessId", getBusiness);
+router.get("/business/:businessId", getBusiness);
 
 //delete route
-router.delete(
-  "/:businessId",
-  isAuthorized(BUSINESS_DEFINITION, DELETE),
-  deleteBusiness
-);
+router.delete("/business/:businessId", deleteBusiness);
 
 //update route
 router.put(
-  "/:businessId",
-  isAuthorized(BUSINESS_DEFINITION, UPDATE),
-  updateBusinessValidationRules(),
-  validate,
+  "/business/:businessId",
+  [
+    check("name", "name should be at least 3 char")
+      .optional()
+      .isLength({ min: 3 }),
+    check("code", "code should be atleast 3 char")
+      .optional()
+      .isLength({ min: 3 }),
+    check("tradename", "tradename should be at least 3 char")
+      .optional()
+      .isLength({ min: 3 }),
+    check("type", "type should be at least 3 char")
+      .optional()
+      .isLength({ min: 3 }),
+    check("about", "about should be atleast 3 char")
+      .optional()
+      .isLength({ min: 3 }),
+    check("postcode", "postcode should be at least 3 char")
+      .optional()
+      .isLength({ min: 3 }),
+    check("line1", "line1 should be at least 3 char")
+      .optional()
+      .isLength({ min: 3 }),
+    check("city", "city should be at least 3 char")
+      .optional()
+      .isLength({ min: 3 }),
+    check("country", "country should be at least 3 char")
+      .optional()
+      .isLength({ min: 3 }),
+  ],
   updateBusiness
 );
 
 //listing route
-router.get("/", getAllBusinessValidationRules(), validate, getAllBusinesses);
-
-/**
- * classes
- */
 router.get(
-  "/:businessId/classes",
-  // isAuthorized(CLASS_DEFINITION, "read"),
-  getAllBusinessClass
+  "/business",
+  getAllBusinessValidationRules(),
+  validate,
+  getAllBusinesses
 );
 
-/**
- * file upload
- */
-//router.post("/fileupload", uploadFile);
-router.post("/xlxsupload", uploadXLXSFile);
-//router.get("/convertxlxs/json", convertXLXSFile);
+router.post("/business/fileupload", uploadFile);
 
-/**
- * finance
- */
-router.get("/:businessId/finance", getFinanceOfABusiness);
-
-router.post(
-  "/:businessId/image-upload",
-  businessImageUploadHelper.single("image"),
-  uploadImage
-);
-
-/**
- * coach
- */
-router.get("/:businessId/coaches", user.getAllCoach);
+// WORKING ON THE DUMMY DATA
+// router.post("/business/memberdata", storeMemberData);
+// router.get("/business/memberdata", getMemberData);
 
 module.exports = router;

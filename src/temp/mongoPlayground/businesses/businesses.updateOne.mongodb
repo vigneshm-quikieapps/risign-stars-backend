@@ -1,3 +1,0 @@
-use('risingStarDev');
-
-db.businesses.updateOne({}, {$set: {}})

@@ -1,5 +1,7 @@
 const Evaluation = require("../models/evaluation");
 
+const { validationResult } = require("express-validator");
+
 //parameter extractor
 module.exports.getEvaluationIdById = (req, res, next, id) => {
   Evaluation.findById(id).exec((err, evaluation) => {
@@ -16,6 +18,13 @@ module.exports.getEvaluationIdById = (req, res, next, id) => {
 //Evaluation creation
 
 module.exports.createEvaluation = (req, res) => {
+  const errors = validationResult(req);
+
+  if (!errors.isEmpty()) {
+    return res.status(422).json({
+      error: errors.array()[0].msg,
+    });
+  }
   const evaluation = new Evaluation(req.body);
   evaluation.save((err, evaluation) => {
     if (err) {
@@ -23,10 +32,10 @@ module.exports.createEvaluation = (req, res) => {
       console.log(req.body);
 
       return res.status(400).json({
-        error: "name should be at least 3 char and unique",
+        error: "unable to save evaluation to database",
       });
     }
-    res.status(201).json({ message: "created successfully" });
+    res.json(evaluation);
   });
 };
 
@@ -61,6 +70,14 @@ module.exports.getEvaluation = (req, res) => {
 //Evaluation Update
 
 module.exports.updateEvaluation = (req, res) => {
+  const errors = validationResult(req);
+
+  if (!errors.isEmpty()) {
+    return res.status(422).json({
+      error: errors.array()[0].msg,
+    });
+  }
+
   Evaluation.findByIdAndUpdate(
     { _id: req.evaluation._id },
     { $set: req.body },
@@ -68,7 +85,7 @@ module.exports.updateEvaluation = (req, res) => {
     (err, evaluation) => {
       if (err) {
         return res.status(400).json({
-          err: "name should be at least 3 char and unique",
+          err: "you are not ",
         });
       }
 

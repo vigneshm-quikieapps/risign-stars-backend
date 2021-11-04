@@ -1,10 +1,7 @@
 /* eslint-disable prettier/prettier */
 const express = require("express");
-const { ROLES } = require("../constants/pages");
-const { CREATE, READ, UPDATE, DELETE } = require("../constants/rest");
 const router = express.Router();
 const role = require("../controllers/role");
-const { isAuthorized } = require("../middlewares/auth");
 const {
   createRoleValidationRules,
   updateRoleValidationRules,
@@ -12,30 +9,23 @@ const {
 const validate = require("../validations/validate");
 
 // create route
-router.post(
-  "/",
-  isAuthorized(ROLES, CREATE),
-  createRoleValidationRules(),
-  validate,
-  role.create
-);
+router.post("/roles", createRoleValidationRules(), validate, role.create);
 
 // read routes
-router.get("/:roleId", isAuthorized(ROLES, READ), role.get);
+router.get("/roles/:roleId", role.get);
 
 //delete route
-router.delete("/:roleId", isAuthorized(ROLES, DELETE), role.delete);
+router.delete("/roles/:roleId", role.delete);
 
 //update route
 router.put(
-  "/:roleId",
-  isAuthorized(ROLES, UPDATE),
+  "/roles/:roleId",
   updateRoleValidationRules(),
   validate,
   role.update
 );
 
 //listing route
-router.get("/", role.getAll);
+router.get("/roles", role.getAll);
 
 module.exports = router;
