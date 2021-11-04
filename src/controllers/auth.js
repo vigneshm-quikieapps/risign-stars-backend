@@ -1,90 +1,56 @@
-const mongoose = require("mongoose");
-const express = require("express");
-const { check, validationResult } = require("express-validator");
-// const jwt = require("jsonwebtoken");
-const expressJwt = require("express-jwt");
-const jwt = require("jsonwebtoken");
 const User = require("../models/User");
-const generatePassword = require("../helpers/auth/generatePassword");
-const generateHash = require("../helpers/auth/generateHash");
-const createAccessToken = require("../helpers/auth/createAccessToken");
-const verifyRefreshToken = require("../helpers/auth/verifyRefreshToken");
+const { VerifyMobileSms } = require("../services/notification/Sms");
+const DoesNotExistError = require("../exceptions/DoesNotExistError");
+const expressJwt = require("express-jwt");
+const { generateTokens, RefreshToken } = require("../services/auth");
+const { OTPEmail } = require("../services/notification/Email");
+const { VerifyContactOTP } = require("../services/otp");
 
 // Signup Method
-module.exports.signup = (req, res) => {
-  const errors = validationResult(req);
-
-  if (!errors.isEmpty()) {
-    return res.status(422).json({
-      errors: errors.array()[0].msg,
-    });
+module.exports.signup = async (req, res) => {
+  try {
+    let data = req.body;
+    data = { ...data, mobileNoVerified: true };
+    await User.create(data);
+    return res.status(201).send({ message: "created successfully" });
+  } catch (err) {
+    return res.status(400).send({ message: err.message });
   }
+};
 
-  const user = new User(req.body);
-  user.save((err, user) => {
-    if (err) {
-      return res.status(400).send({
-        Message: "Email has already Registereds",
-      });
-    }
-    res.json({ user });
-  });
-  const token = jwt.sign({ _id: user._id }, "ACCESS_TOKEN", {
-    expiresIn: "20s",
-  });
-  const refreshToken = jwt.sign({ _id: user._id }, "REFRESH_TOKEN", {
-    expiresIn: "1y",
-  });
+module.exports.logout = async (req, res) => {
+  try {
+    RefreshToken.send(req, "");
+  } catch (err) {
+    return res.status(422).send({ message: err.message });
+  }
 };
 
 // Signed Method
-exports.signin = (req, res) => {
-  const { email, password } = req.body;
-  const errors = validationResult(req);
+module.exports.signin = async (req, res) => {
+  try {
+    const { mobileNo, password } = req.body;
 
-  if (!errors.isEmpty()) {
-    return res.status(422).json({
-      errors: errors.array()[0].msg,
-    });
+    let user = await User.findOne({ mobileNo });
+
+    if (!user || !user.isValidPassword(password)) {
+      throw new DoesNotExistError();
+    }
+
+    let data = generateTokens({ user });
+    RefreshToken.send(res, data.refreshToken);
+
+    let userData = JSON.parse(JSON.stringify(user));
+    delete userData.password;
+
+    return res.send({ ...data, user: userData });
+  } catch (err) {
+    return res.status(422).send({ message: err.message });
   }
-
-  User.findOne({ email }, (err, user) => {
-    if (err || !user) {
-      return res.status(400).json({
-        error: "USER does not exit",
-      });
-    }
-    if (!user.autheticate(password)) {
-      return res.status(401).json({
-        error: "Email and Passoword does not Match",
-      });
-    }
-    // creating the token
-    const token = jwt.sign({ _id: user._id }, "ACCESS_TOKEN", {
-      expiresIn: "20s",
-    });
-    const refreshToken = jwt.sign({ _id: user._id }, "REFRESH_TOKEN", {
-      expiresIn: "15days",
-    });
-
-    console.log("====================================");
-    console.log("token", token);
-    console.log("====================================");
-
-    console.log("====================================");
-    console.log("refreshToken", refreshToken);
-    console.log("====================================");
-    res.send({ token, refreshToken });
-    // put token in cookie
-    res.cookie("token", token, { expire: new Date() + 9999 }); // exipry time
-    //  send response to frontend
-    const { _id, name, email, role } = user;
-    return res.json({ token, user: { _id, name, email, role } });
-  });
 };
 
 // Protected Routes
-exports.isSignedIn = expressJwt({
+module.exports.isSignedIn = expressJwt({
   // in this middleware the next() is already there or written in expressJwt so we no need to specify explicitely
   secret: "TEMPU",
   algorithms: ["RSA", "sha1", "RS256", "HS256"],
@@ -92,7 +58,7 @@ exports.isSignedIn = expressJwt({
 });
 
 // custom middlewares
-exports.isAuthenticated = (req, res, next) => {
+module.exports.isAuthenticated = (req, res, next) => {
   //  isAuthenticated means user can change things in his own account
   const checker = req.profile && req.auth && req.profile._id == req.auth._id; // through a frontend we will set a property called profile, and this property is only going to set if user is login
   if (!checker) {
@@ -107,40 +73,72 @@ exports.isAuthenticated = (req, res, next) => {
 // Refresh Token
 module.exports.refreshToken = async (req, res) => {
   try {
-    const { refreshToken } = req.body;
-    if (!refreshToken) {
-      res.send({ Message: "Refresh Token is Not resent" });
+    const token = req.cookies && req.cookies.jid;
+    if (!token) {
+      return res.send({
+        ok: false,
+        accessToken: "",
+        message: "refresh token not found",
+      });
     }
-    const userId = await verifyRefreshToken(refreshToken);
-    const token = jwt.sign({ userId }, "TEMPU", { expiresIn: "50s" });
-    const newRefreshToken = jwt.sign({ userId }, "REFRESHTOKEN", {
-      expiresIn: "1y",
-    });
-    res.send({ userId, token, newRefreshToken });
-  } catch (error) {
-    console.log("====================================");
-    console.log(error);
-    console.log("====================================");
-    res.send({ error });
+
+    let payload = null;
+    try {
+      payload = RefreshToken.verify(token);
+    } catch (err) {
+      console.error(err);
+      return res.send({
+        ok: false,
+        accessToken: "",
+        message: "invalid refresh token",
+      });
+    }
+
+    let userId = payload._id;
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.send({
+        ok: false,
+        accessToken: "",
+        message: "user does not exist",
+      });
+    }
+
+    const data = generateTokens({ user });
+    let { refreshToken } = data;
+
+    RefreshToken.send(res, refreshToken);
+    return res.send(data);
+  } catch (err) {
+    return res.status(422).send({ message: err.message });
   }
 };
 
-// if (!errors.isEmpty()) {
-//   return res.status(422).json({
-//     errors: errors.array()[0].msg,
-//   });
-// }
-// try {
-//   // let password = generatePassword();
+/**
+ * generate the otp, send the otp via appropriate channel (e.g. sms, email)
+ * @param {*} req
+ * @param {*} res
+ * @returns
+ */
+module.exports.getOTPMobileNo = async (req, res) => {
+  try {
+    let { mobileNo } = req.body;
+    let otp = await VerifyContactOTP.generate(mobileNo);
+    VerifyMobileSms.send({ to: mobileNo, otp });
+    return res.send({ message: `OTP has been sent to ${mobileNo}`, otp });
+  } catch (err) {
+    return res.status(422).send({ message: err.message });
+  }
+};
 
-//   let data = req.body;
-//   // data.password = generateHash(password);
-
-//   let user = await User.create(data);
-
-//   // return res.status(201).send(token);
-//   return res.status(201).send({ message: "added successfully", user });
-// } catch (err) {
-//   return res.status(422).send({ message: "Email is already Register" });
-
-// }
+module.exports.getOTPEmail = async (req, res) => {
+  try {
+    let { email } = req.body;
+    let otp = await VerifyContactOTP.generate(email);
+    OTPEmail.send({ to: email, otp });
+    return res.send({ otp, message: "OTP has been sent to email" });
+  } catch (err) {
+    return res.status(422).send({ message: err.message });
+  }
+};

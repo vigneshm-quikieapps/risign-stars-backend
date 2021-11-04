@@ -1,75 +1,51 @@
 const express = require("express");
 const router = express.Router();
-const { check } = require("express-validator");
-const { TERM_STATUS } = require("../contants/constant");
 
-
+const validate = require("../validations/validate");
 
 const {
   getBusinessClassIdById,
   getBusinessClass,
-  getAllBusinessClass,
   updateBusinessClass,
   createBusinessClass,
-  deleteBusinessClass
+  deleteBusinessClass,
+  isBusinessClassRestricted,
+  getAllMembersInAClass,
 } = require("../controllers/businessClass");
-const { businessIdValidation, evaluationIdValidation, categoryIdValidation, sessionIdValidation } = require("../validations/businessClass");
-
-
-
+const {
+  createClassValidationRules,
+  updateClassValidationRules,
+} = require("../validations/businessClass");
+const { getAllBusinessSession } = require("../controllers/businessSession");
 
 //parameters
 router.param("businessClassId", getBusinessClassIdById);
 
 //all of actual routes
-// eslint-disable-next-line prettier/prettier
-//all of actual routes
 //create route
-router.post(
-  "/businessClass/create",[
-    check("name", "name should be at least 3 char").isLength({ min: 3 }),
-    check("business").custom(businessIdValidation),
-    check("evaluation").custom(evaluationIdValidation),
-    check("category").custom(categoryIdValidation),
-    check("session").custom(sessionIdValidation),
-    check("status", "status should  only be [active, inactive]").optional().isIn(TERM_STATUS),
-    check("registrationform", "registrationform should only be standard").optional().isIn("standard"),
-    check("about", "about should be atleast 3 char").optional().isLength({ min: 3 }),
-    check("enrolmentControls", "enrolmentControls should be an Array and should not be empty ").isArray().notEmpty(),
-    check("session", "session should be an Array and should not be empty ").isArray().notEmpty(),
-    check("charges", "charges should be an Array and should not be empty").isArray().notEmpty(),
-  ],
-  createBusinessClass
-);
+router.post("/", createClassValidationRules(), validate, createBusinessClass);
 
 // read routes
-router.get("/businessClass/:businessClassId", getBusinessClass);
+router.get("/:businessClassId", getBusinessClass);
 
 //delete route
-router.delete("/businessClass/:businessClassId", deleteBusinessClass);
+router.delete(
+  "/:businessClassId",
+  isBusinessClassRestricted,
+  deleteBusinessClass
+);
 
 //update route
 router.put(
-  "/businessClass/:businessClassId",[
-    check("name", "name should be at least 3 char").optional().isLength({ min: 3 }),
-    check("business").optional().custom(businessIdValidation),
-    check("evaluation").optional().custom(evaluationIdValidation),
-    check("category").optional().custom(categoryIdValidation),
-    check("session").optional().custom(sessionIdValidation),
-    check("status", "status should  only be [active, inactive]").optional().isIn(TERM_STATUS),
-    check("registrationform", "registrationform should only be standard").optional().isIn("standard"),
-    check("about", "about should be atleast 3 char").optional().isLength({ min: 3 }),
-    check("enrolmentControls", "enrolmentControls should be an Array and should not be empty ").optional().isArray().notEmpty(),
-    check("session", "session should be an Array and should not be empty ").optional().isArray().notEmpty(),
-    check("charges", "charges should be an Array and should not be empty").optional().isArray().notEmpty(),
-  ],
+  "/:businessClassId",
+  updateClassValidationRules(),
+  validate,
   updateBusinessClass
 );
 
+router.get("/:classId/members", getAllMembersInAClass);
+
 //listing route
-router.get(
-  "/businessClass",
-    getAllBusinessClass
-);
+router.get("/:classId/sessions", getAllBusinessSession);
 
 module.exports = router;

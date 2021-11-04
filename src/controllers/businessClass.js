@@ -1,18 +1,12 @@
-const BusinessClass = require("../models/businessClass");
-
-const { validationResult } = require("express-validator");
+const { BusinessClass, Member } = require("../models");
+const { getQuery, getOptions } = require("../helpers/query");
 
 //parameter extractor
 module.exports.getBusinessClassIdById = (req, res, next, id) => {
-    BusinessClass.findById(id)
-      .populate("category")
-      .populate("business")
-      .populate("evaluation")
-      .populate("session")
-        .exec((err, Class) => {
+  BusinessClass.findById(id).exec((err, Class) => {
     if (err) {
       return res.status(400).json({
-        err: "cannot find business Class by id",
+        err: "cannot find business Class by id enter a valid ID",
       });
     }
     req.Class = Class;
@@ -23,15 +17,8 @@ module.exports.getBusinessClassIdById = (req, res, next, id) => {
 //Business Class creation
 
 module.exports.createBusinessClass = (req, res) => {
-   const errors = validationResult(req);
-
-  if (!errors.isEmpty()) {
-    return res.status(422).json({
-      error: errors.array()[0].msg,
-    });
-  }
   const Class = new BusinessClass(req.body);
-   Class.save((err, Class) => {
+  Class.save((err, Class) => {
     if (err) {
       console.log(err);
       console.log(req.body);
@@ -44,31 +31,53 @@ module.exports.createBusinessClass = (req, res) => {
   });
 };
 
-//Business Class listing all
+//Business Class listing all / search for Class
+module.exports.getAllBusinessClass = async (req, res) => {
+  try {
+    let { businessId } = req.params;
 
-module.exports.getAllBusinessClass= (req, res) => {
-  let limit = req.query.limit ? parseInt(req.query.limit) : "";
-  let page = req.query.page;
-  let skip = page ? parseInt(page) - 1 * limit : "";
-  let sortBy = req.query.sortBy ? req.query.sortBy : "_id";
+    let query = getQuery(req);
+    query = { ...query, businessId };
+    let options = getOptions(req);
 
-    BusinessClass.find()
-    .populate("category").populate("business").populate("evaluation").populate("session")
-    .sort([[sortBy, "asc"]])
-    .skip(skip)
-    .limit(limit)
-    .exec((err, Class) => {
-      if (err) {
-        return res.status(400).json({
-          err: "cannot find Business Classes",
-        });
-      }
-      res.json(Class);
-    });
+    let response = await BusinessClass.paginate(query, options);
+    return res.send(response);
+  } catch (err) {
+    return res.status(422).send({ message: err.message });
+  }
+};
+
+/**
+ * get all classes for the logged in business admin
+ * @param {*} req
+ * @param {*} res
+ * @returns
+ */
+module.exports.getAllClassesForALoggedInBusinessAdmin = async (req, res) => {
+  try {
+    let { authUserData } = req;
+
+    /**
+     * get the business ids
+     */
+    let { dataPrivileges } = authUserData;
+    let businessIds = dataPrivileges.map((dataPriv) => dataPriv.businessId);
+
+    /**
+     * filter classes by business ids
+     */
+    let query = getQuery(req);
+    query = { ...query, businessId: { $in: businessIds } };
+    let options = getOptions(req);
+
+    let response = await BusinessClass.paginate(query, options);
+    return res.send(response);
+  } catch (err) {
+    return res.status(422).send({ message: err.message });
+  }
 };
 
 //Business Class listing
-
 module.exports.getBusinessClass = (req, res) => {
   return res.json(req.Class);
 };
@@ -76,14 +85,6 @@ module.exports.getBusinessClass = (req, res) => {
 //Business Class Update
 
 module.exports.updateBusinessClass = (req, res) => {
-   const errors = validationResult(req);
-
-  if (!errors.isEmpty()) {
-    return res.status(422).json({
-      error: errors.array()[0].msg,
-    });
-  }
-
   BusinessClass.findByIdAndUpdate(
     { _id: req.Class._id },
     { $set: req.body },
@@ -99,8 +100,22 @@ module.exports.updateBusinessClass = (req, res) => {
     }
   );
 };
+//middleware for resticting deletion if session is present
+module.exports.isBusinessClassRestricted = (req, res, next) => {
+  let Class = req.Class;
+  if (!Class) {
+    return res.status(400).json({
+      err: "Please Enter A valid Bussiness ID ",
+    });
+  }
+  if (Class.session) {
+    return res.status(400).json({
+      err: "Class deletion is Restricted as there are active Sessions Present ",
+    });
+  }
 
-//Business Class delete
+  next();
+};
 
 module.exports.deleteBusinessClass = (req, res) => {
   const Class = req.Class;
@@ -112,4 +127,19 @@ module.exports.deleteBusinessClass = (req, res) => {
     }
     res.json(Class);
   });
+};
+
+module.exports.getAllMembersInAClass = async (req, res) => {
+  try {
+    let { classId } = req.params;
+
+    let query = getQuery(req);
+    query = { ...query, classId };
+    let options = getOptions(req);
+
+    let response = await Member.paginate(query, options);
+    return res.send(response);
+  } catch (err) {
+    return res.status(422).send({ message: err.message });
+  }
 };

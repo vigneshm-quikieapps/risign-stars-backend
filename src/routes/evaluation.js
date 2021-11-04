@@ -14,36 +14,33 @@ const {
   deleteEvaluation,
   updateEvaluation,
 } = require("../controllers/evaluation");
+const validate = require("../validations/validate");
 
 //parameters
 router.param("evaluationId", getEvaluationIdById);
 
 // router.param("userId", getuserIdById);
 
-
 //all of actual routes
 //all of actual routes
 //create route
-router.post(
-  "/evaluation/create",
-  createEvaluationValidationRules(),
-  createEvaluation
-);
+router.post("/", createEvaluationValidationRules(), validate, createEvaluation);
 
 // read routes
-router.get("/evaluation/:evaluationId", getEvaluation);
+router.get("/:evaluationId", getEvaluation);
 
 //delete route
-router.delete("/evaluation/:evaluationId", deleteEvaluation);
+router.delete("/:evaluationId", deleteEvaluation);
 
 //update route
 router.put(
-  "/evaluation/:evaluationId",
-  // updateEvaluationValidationRules(),
+  "/:evaluationId",
+  updateEvaluationValidationRules(),
+  validate,
   updateEvaluation
 );
 
 //listing route
-router.get("/evaluation", getAllEvaluations);
+router.get("/", getAllEvaluations);
 
 module.exports = router;

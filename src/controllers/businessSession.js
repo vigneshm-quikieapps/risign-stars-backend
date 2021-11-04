@@ -1,12 +1,12 @@
 const BusinessSession = require("../models/businessSession");
 
-const { validationResult } = require("express-validator");
+const { STARTS_WITH_FILTER, EQUALS_FILTER } = require("../constants/constant");
+const { getQuery, getOptions } = require("../helpers/query");
+const Enrolment = require("../models/Enrolment");
 
 //parameter extractor
 module.exports.getBusinessSessionIdById = (req, res, next, id) => {
-    BusinessSession.findById(id)
-        .populate("coach")
-        .exec((err, Session) => {
+  BusinessSession.findById(id).exec((err, Session) => {
     if (err) {
       return res.status(400).json({
         err: "cannot find business Session by id",
@@ -20,13 +20,6 @@ module.exports.getBusinessSessionIdById = (req, res, next, id) => {
 //Business Session creation
 
 module.exports.createBusinessSession = (req, res) => {
-   const errors = validationResult(req);
-
-  if (!errors.isEmpty()) {
-    return res.status(422).json({
-      error: errors.array()[0].msg,
-    });
-  }
   const Session = new BusinessSession(req.body);
   Session.save((err, Session) => {
     if (err) {
@@ -41,27 +34,21 @@ module.exports.createBusinessSession = (req, res) => {
   });
 };
 
-//Business Session listing all
+//Business Session listing all /search for Class
+module.exports.getAllBusinessSession = async (req, res) => {
+  try {
+    let { classId } = req.params;
 
-module.exports.getAllBusinessSession= (req, res) => {
-  let limit = req.query.limit ? parseInt(req.query.limit) : "";
-  let page = req.query.page;
-  let skip = page ? parseInt(page) - 1 * limit : "";
-  let sortBy = req.query.sortBy ? req.query.sortBy : "_id";
+    let query = getQuery(req);
+    let options = getOptions(req);
+    options.populate = { path: "coach", select: ["name", "city"] };
+    query = { ...query, classId };
 
-    BusinessSession.find()
-    .populate("coach")
-    .sort([[sortBy, "asc"]])
-    .skip(skip)
-    .limit(limit)
-    .exec((err,Session) => {
-      if (err) {
-        return res.status(400).json({
-          err: "cannot find Business Sessions",
-        });
-      }
-      res.json(Session);
-    });
+    let response = await BusinessSession.paginate(query, options);
+    return res.send(response);
+  } catch (err) {
+    return res.status(422).send({ message: err.message });
+  }
 };
 
 //Business Session listing
@@ -73,14 +60,6 @@ module.exports.getBusinessSession = (req, res) => {
 //Business Session Update
 
 module.exports.updateBusinessSession = (req, res) => {
-   const errors = validationResult(req);
-
-  if (!errors.isEmpty()) {
-    return res.status(422).json({
-      error: errors.array()[0].msg,
-    });
-  }
-
   BusinessSession.findByIdAndUpdate(
     { _id: req.businessSession._id },
     { $set: req.body },
@@ -109,4 +88,20 @@ module.exports.deleteBusinessSession = (req, res) => {
     }
     res.json(Session);
   });
+};
+
+module.exports.getMembersInASession = async (req, res) => {
+  try {
+    let query = getQuery(req);
+    let options = getOptions(req);
+    options.populate = [
+      { path: "memberConsent", select: ["consent"] },
+      { path: "member", select: ["name"] },
+    ];
+
+    let response = await Enrolment.paginate(query, options);
+    return res.send(response);
+  } catch (err) {
+    return res.status(422).send({ message: err.message });
+  }
 };

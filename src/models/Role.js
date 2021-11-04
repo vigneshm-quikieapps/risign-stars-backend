@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
-const {
-  FUNCTIONAL_PRIVILEDGES
-} = require("../contants/constant");
+const { ObjectId } = mongoose.Schema;
+const { FUNCTIONAL_PRIVILEGES } = require("../constants/constant");
+const mongoosePaginate = require("mongoose-paginate-v2");
 
 const roleSchema = new mongoose.Schema(
   {
@@ -9,17 +9,22 @@ const roleSchema = new mongoose.Schema(
       type: String,
       maxlength: 32,
       required: true,
+      unique: true,
       trim: true,
+    },
+    code: {
+      type: String,
+      required: true,
+      unique: true,
     },
     description: {
       type: String,
-      required: true,
     },
-    functionalPriviledges: [
+    functionalPrivileges: [
       {
         type: {
           type: String,
-          enum: FUNCTIONAL_PRIVILEDGES,
+          enum: FUNCTIONAL_PRIVILEGES,
           required: true,
         },
         permission: {
@@ -42,9 +47,18 @@ const roleSchema = new mongoose.Schema(
         },
       },
     ],
-   
+    updatedBy: {
+      type: ObjectId,
+      ref: "User",
+    },
+    createdBy: {
+      type: ObjectId,
+      ref: "User",
+    },
   },
   { timestamps: true }
 );
+
+roleSchema.plugin(mongoosePaginate);
 
 module.exports = mongoose.model("Role", roleSchema);
