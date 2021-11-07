@@ -43,6 +43,30 @@ const getAttendanceOfASessionByDate = async (req, res) => {
         $unwind: "$member",
       },
       {
+        $lookup: {
+          from: "users",
+          localField: "member.userId",
+          foreignField: "_id",
+          as: "parent",
+        },
+      },
+      {
+        $project: {
+          _id: 1,
+          date: 1,
+          classId: 1,
+          sessionId: 1,
+          member: 1,
+          "parent._id": 1,
+          "parent.name": 1,
+          "parent.email": 1,
+          "parent.mobileNo": 1,
+        },
+      },
+      {
+        $unwind: "$parent",
+      },
+      {
         $addFields: {
           membership: {
             $filter: {
@@ -69,12 +93,17 @@ const getAttendanceOfASessionByDate = async (req, res) => {
       },
       {
         $addFields: {
+          "member.parent": "$parent",
+        },
+      },
+      {
+        $addFields: {
           "records.member": "$member",
           "records.memberConsent": "$memberConsent",
         },
       },
       {
-        $unset: ["member", "memberConsent", "membership"],
+        $unset: ["member", "memberConsent", "membership", "parent"],
       },
       {
         $group: {
@@ -99,12 +128,12 @@ const getAttendanceOfASessionByDate = async (req, res) => {
       },
     ]);
 
-    let attendance = null;
-    if (attendances.length >= 1) {
-      attendance = attendances[0];
-    }
+    // let attendance = null;
+    // if (attendances.length >= 1) {
+    //   attendance = attendances[0];
+    // }
 
-    return res.send({ attendance });
+    return res.send({ attendances });
   } catch (err) {
     res.status(422).json({ message: err.message });
   }

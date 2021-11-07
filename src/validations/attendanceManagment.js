@@ -2,7 +2,10 @@
 // validation for attendance management
 
 const { check } = require("express-validator");
+const { Enrolment } = require("../models");
 const { BUSINESS_SESSION, BUSINESS_CLASS } = require("./constants");
+const { ObjectId } = require("mongoose").Types;
+const { STATUS_ENROLLED } = require("../constants/enrolment");
 const {
   isValidSessionId,
   isValidSessionDate,
@@ -10,10 +13,44 @@ const {
 } = require("./helpers");
 const { canAddAttendance } = require("./helpers/attendance");
 
+const isMembersPartOfTheSession = async (sessionId, { req }) => {
+  try {
+    let { records } = req.body;
+    let memberIds = records.map((record) => ObjectId(record.memberId));
+
+    let enrolledCount = await Enrolment.count({
+      sessionId,
+      enrolledStatus: STATUS_ENROLLED,
+    });
+
+    let membersIsPartOfSessionCount = await Enrolment.count({
+      sessionId,
+      memberId: { $in: memberIds },
+      enrolledStatus: STATUS_ENROLLED,
+    });
+
+    if (
+      enrolledCount !== membersIsPartOfSessionCount ||
+      membersIsPartOfSessionCount != memberIds.length
+    ) {
+      throw new Error(
+        "attendance of all members in the session should be added together"
+      );
+    }
+
+    return true;
+  } catch (err) {
+    return Promise.reject(err.message);
+  }
+};
+
 // validation for add attendance of members in a session
 module.exports.addAttendance = () => {
   return [
-    check("sessionId", BUSINESS_SESSION.ID.MESSAGE).custom(isValidSessionId),
+    check("sessionId", BUSINESS_SESSION.ID.MESSAGE)
+      .custom(isValidSessionId)
+      .bail()
+      .custom(isMembersPartOfTheSession),
     check("date", "should be: YYYY-MM-01")
       .isDate({
         format: "YYYY-MM-DD",
