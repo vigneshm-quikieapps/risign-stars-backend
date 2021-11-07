@@ -108,6 +108,7 @@ module.exports.refreshToken = async (req, res) => {
 };
 
 /**
+ * sent OTP for mobile verification during signup
  * generate the otp, send the otp via appropriate channel (e.g. sms, email)
  * @param {*} req
  * @param {*} res
@@ -124,6 +125,12 @@ module.exports.getOTPMobileNo = async (req, res) => {
   }
 };
 
+/**
+ * sent OTP for email verification during signup
+ * @param {*} req
+ * @param {*} res
+ * @returns
+ */
 module.exports.getOTPEmail = async (req, res) => {
   try {
     let { email } = req.body;

@@ -85,6 +85,25 @@ const resetPasswordValidationRules = () => {
 };
 
 /**
+ * Note:
+ * both email and mobile no is required for forgot password
+ *
+ * @param {*} mobileNo
+ * @param {*} params
+ * @returns
+ */
+const isRegisteredUserForgotPassword = async (mobileNo, params) => {
+  let { email } = params.req.body;
+
+  if (!email) {
+    return Promise.reject("email is also required");
+  }
+
+  let filter = { mobileNo, email };
+  return isRegisteredUser(filter, params);
+};
+
+/**
  * forgot password using mobile validation
  * @returns
  */
@@ -93,7 +112,8 @@ const forgotPasswordMobileValidationRules = () => {
     body("mobileNo", "Invalid mobile number")
       .custom(isValidMobile)
       .bail()
-      .custom(isRegisteredMobile),
+      .custom(isRegisteredUserForgotPassword),
+    body("email", "is required").isEmail(),
   ];
 };
 
@@ -106,7 +126,8 @@ const resetPasswordMobileValidationRules = () => {
     body("mobileNo", "Invalid mobile number")
       .custom(isValidMobile)
       .bail()
-      .custom(isRegisteredMobile),
+      .custom(isRegisteredUserForgotPassword),
+    body("email", "is required").isEmail(),
     body("password", USER.PASSWORD.MESSAGE).isLength({
       min: USER.PASSWORD.LENGTH,
     }),
