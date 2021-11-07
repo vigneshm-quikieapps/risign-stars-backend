@@ -254,10 +254,24 @@ const updateDiscountValidationRules = () => {
   ];
 };
 
+const canApply = async (_, { req }) => {
+  try {
+    let { discountDetail } = req.enrolmentData;
+
+    if (discountDetail) {
+      throw new Error("not allowed, enrolment has atleast one discount");
+    }
+
+    return true;
+  } catch (err) {
+    return Promise.reject(err.message);
+  }
+};
+
 const applyDiscountValidationRules = () => {
   return [
     check("discountId").custom(isValidDiscountId),
-    check("enrolmentId").custom(isValidEnrolmentId),
+    check("enrolmentId").custom(isValidEnrolmentId).bail().custom(canApply),
   ];
 };
 
