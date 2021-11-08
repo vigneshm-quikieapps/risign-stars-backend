@@ -20,6 +20,18 @@ const addAttendance = async (req, res) => {
   let { classId } = sessionData;
   let month = moment(date).format("YYYY-MM-01");
 
+  let { authUserData } = req;
+
+  let createdBy = {
+    _id: authUserData._id,
+    name: authUserData.name,
+  };
+
+  let updatedBy = {
+    _id: authUserData._id,
+    name: authUserData.name,
+  };
+
   date = new Date(date);
   month = new Date(month);
 
@@ -38,6 +50,7 @@ const addAttendance = async (req, res) => {
           sessionId,
           date,
           records,
+          createdBy,
         },
       },
       { new: true, useFindAndModify: false, upsert: true }
@@ -66,6 +79,12 @@ const addAttendance = async (req, res) => {
                   comments: record.comments,
                 },
               ],
+            },
+            $setOnInsert: {
+              createdBy,
+            },
+            $set: {
+              updatedBy,
             },
             $inc: { attendedCount: record.attended && 1 },
           },
@@ -99,6 +118,12 @@ const addAttendance = async (req, res) => {
                   attendedCount: 0,
                 },
               },
+              $setOnInsert: {
+                createdBy,
+              },
+              $set: {
+                updatedBy,
+              },
             },
             upsert: true,
           },
@@ -120,6 +145,9 @@ const addAttendance = async (req, res) => {
             $inc: {
               "records.$.attendedCount": record.attended && 1,
             },
+            $set: {
+              updatedBy,
+            },
           },
           // upsert: true
         },
@@ -135,6 +163,7 @@ const addAttendance = async (req, res) => {
       },
       {
         $inc: { classCount: 1 },
+        $set: { updatedBy },
       },
       { new: true, useFindAndModify: false }
     ).session(session);

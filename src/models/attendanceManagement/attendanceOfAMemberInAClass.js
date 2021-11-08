@@ -56,6 +56,14 @@ const attendanceOfAMemberInAClassSchema = new mongoose.Schema(
       required: true,
       trim: true,
     },
+    createdBy: {
+      _id: ObjectId,
+      name: String,
+    },
+    updatedBy: {
+      _id: ObjectId,
+      name: String,
+    },
   },
   { timestamps: true }
 );

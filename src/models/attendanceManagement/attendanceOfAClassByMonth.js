@@ -46,6 +46,14 @@ const attendanceOfAClassByMonthSchema = new mongoose.Schema(
         },
       },
     ],
+    createdBy: {
+      _id: ObjectId,
+      name: String,
+    },
+    updatedBy: {
+      _id: ObjectId,
+      name: String,
+    },
   },
   { timestamps: true }
 );

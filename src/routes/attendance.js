@@ -14,10 +14,18 @@ const {
 } = require("../controllers/attendanceManagement");
 const validate = require("../validations/validate");
 
+const { isAuthorized } = require("../middlewares/auth");
+
 const vr = require("../validations/attendanceManagment");
 
 // add attendance of a member in a session
-router.post("/", vr.addAttendance(), validate, addAttendance);
+router.post(
+  "/",
+  isAuthorized(null, null),
+  vr.addAttendance(),
+  validate,
+  addAttendance
+);
 
 // get all the attendance of a session by date
 router.post(

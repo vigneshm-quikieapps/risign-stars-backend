@@ -4,6 +4,7 @@ const { verify } = require("jsonwebtoken");
 const { hasPermission, hasAllPermission } = require("./utils");
 const getRoleIds = require("./utils/getRoleIds");
 const getRoles = require("./utils/getRoles");
+const { User } = require("../../models");
 
 /**
  * Note:
@@ -36,7 +37,8 @@ const isAuthorized =
       token =
         req.headers.authorization && req.headers.authorization.split(" ")[1];
       let tokenPayload = verify(token, process.env.ACCESS_TOKEN_SECRET);
-      req.authUserData = tokenPayload;
+      req.authUserData = await User.findById(tokenPayload._id);
+      req.tokenData = tokenPayload;
     } catch (err) {
       return res.status(401).send({ message: err.message });
     }

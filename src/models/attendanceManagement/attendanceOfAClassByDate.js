@@ -44,12 +44,12 @@ const attendanceOfAClassByDateSchema = new mongoose.Schema(
       },
     ],
     createdBy: {
-      type: ObjectId,
-      ref: "User",
+      _id: ObjectId,
+      name: String,
     },
     updatedBy: {
-      type: ObjectId,
-      ref: "User",
+      _id: ObjectId,
+      name: String,
     },
   },
   { timestamps: true }
