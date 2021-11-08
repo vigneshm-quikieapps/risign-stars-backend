@@ -3,6 +3,7 @@ const {
   Member,
   BusinessSession,
   Enrolment,
+  Business,
 } = require("../models");
 const { getPaginationOptions } = require("../helpers/query");
 const mongoose = require("mongoose");
@@ -179,6 +180,12 @@ module.exports.deleteBusinessClass = async (req, res) => {
   session.startTransaction();
   try {
     let classId = req.params.businessClassId;
+
+    let businessClass = await BusinessClass.findById(classId);
+
+    if (!businessClass) {
+      throw new Error("invalid class id");
+    }
 
     let enrolmentCount = await Enrolment.count({
       classId,
