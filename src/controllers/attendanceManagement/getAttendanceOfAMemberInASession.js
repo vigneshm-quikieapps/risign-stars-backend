@@ -22,6 +22,7 @@ const getAttendanceOfAMemberInASession = async (req, res) => {
           memberId: "$memberId",
         },
         records: { $push: "$records" },
+        attendedCount: { $sum: "$attendedCount" },
       },
     };
 
@@ -37,6 +38,7 @@ const getAttendanceOfAMemberInASession = async (req, res) => {
             in: { $concatArrays: ["$$value", "$$this"] },
           },
         },
+        totalCount: { $size: "$records" },
       },
     };
 
