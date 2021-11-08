@@ -4,6 +4,7 @@ const {
   BY_ID_FILTER,
   NOT_EQUALS_FILTER,
 } = require("../../constants/constant");
+const { escapeRegex2 } = require("../regex");
 
 const getQuery2 = (filters = []) => {
   let query = {};
@@ -11,10 +12,10 @@ const getQuery2 = (filters = []) => {
   for (let { field, type, value } of filters) {
     switch (type) {
       case STARTS_WITH_FILTER:
-        query[field] = { $regex: new RegExp(`^${value}`, "i") };
+        query[field] = { $regex: new RegExp(`^${escapeRegex2(value)}`, "i") };
         break;
       case EQUALS_FILTER:
-        query[field] = value;
+        query[field] = { $regex: new RegExp(escapeRegex2(value), "i") };
         break;
       case NOT_EQUALS_FILTER:
         query[field] = { $ne: value };

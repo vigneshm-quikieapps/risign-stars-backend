@@ -49,7 +49,7 @@ router.get("/:businessClassId", getBusinessClass);
 //delete route
 router.delete(
   "/:businessClassId",
-  isBusinessClassRestricted,
+  // isBusinessClassRestricted,
   deleteBusinessClass
 );
 
