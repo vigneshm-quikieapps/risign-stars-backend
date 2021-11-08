@@ -51,6 +51,7 @@ const addAttendance = async (req, res) => {
           date,
           records,
           createdBy,
+          updatedBy,
         },
       },
       { new: true, useFindAndModify: false, upsert: true }
