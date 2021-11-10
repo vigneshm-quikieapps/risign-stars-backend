@@ -109,6 +109,10 @@ billSchema.virtual("member", {
   justOne: true,
 });
 
+billSchema.virtual("paid").get(function () {
+  return this.paidAt ? true : false;
+});
+
 // Ensure virtual fields are serialised.
 billSchema.set("toJSON", {
   virtuals: true,
