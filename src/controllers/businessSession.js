@@ -5,6 +5,10 @@ const Enrolment = require("../models/Enrolment");
 //Business Session creation
 module.exports.createBusinessSession = async (req, res) => {
   try {
+    const { startTime, endTime, pattern } = req.body;
+    const updatedPattern = pattern.map((day) => ({ day, startTime, endTime }));
+    req.body.pattern = updatedPattern;
+
     let sessionPayload = { ...req.body };
     sessionPayload.businessId = req.classData.businessId;
 

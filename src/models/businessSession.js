@@ -81,6 +81,12 @@ const businessSessionSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    startDate: {
+      type: Date,
+    },
+    endDate: {
+      type: Date,
+    },
     updatedBy: {
       type: ObjectId,
       ref: "User",
