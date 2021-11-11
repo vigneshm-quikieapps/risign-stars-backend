@@ -106,7 +106,6 @@ const createClassValidationRules = () => {
       .isArray()
       .bail()
       .notEmpty(),
-
     check("charges", "charges should be an Array and should not be empty")
       .isArray()
       .notEmpty(),
@@ -131,16 +130,18 @@ const createClassValidationRules = () => {
     }),
     check(
       "sessions.*.term.startDate",
-      "should be in the following format: YYYY-MM-DD"
+      "should be a valid iso format"
     ).isISO8601(),
     check(
       "sessions.*.term.endDate",
-      "should be a in the following format: YYYY-MM-DD"
+      "should be a valid iso format"
     ).isISO8601(),
-    check(
-      "sessions.*.pattern.*",
-      `should be an  in ${ENUM_DAYS.join(" / ")}`
-    ).isIn(ENUM_DAYS),
+    check("sessions.*.pattern.*", `should be: ${ENUM_DAYS.join(" / ")}`)
+      .isArray()
+      .bail()
+      .notEmpty()
+      .bail()
+      .isIn(ENUM_DAYS),
     check("sessions.*.startTime", "should be a valid iso format").isISO8601(),
     // check("sessions.*.pattern.startTime", "should be HH:MM").custom(is24Hours),
     check("sessions.*.endTime", "should be a valid iso format").isISO8601(),
@@ -185,6 +186,15 @@ const updateClassValidationRules = () => {
     )
       .optional()
       .isArray()
+      .bail()
+      .notEmpty(),
+    check(
+      "enrolmentControls.*.name",
+      `should be either: ${ENUM_ENROLMENT_CONTROLS.join(" / ")}`
+    ).isIn(ENUM_ENROLMENT_CONTROLS),
+    check("enrolmentControls.*.values", "should be an array")
+      .isArray()
+      .bail()
       .notEmpty(),
     check("charges", "charges should be an Array and should not be empty")
       .optional()
