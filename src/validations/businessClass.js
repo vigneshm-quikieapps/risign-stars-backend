@@ -136,12 +136,14 @@ const createClassValidationRules = () => {
       "sessions.*.term.endDate",
       "should be a valid iso format"
     ).isISO8601(),
-    check("sessions.*.pattern.*", `should be: ${ENUM_DAYS.join(" / ")}`)
+    check("sessions.*.pattern", `should be an array`)
       .isArray()
       .bail()
       .notEmpty()
-      .bail()
-      .isIn(ENUM_DAYS),
+      .withMessage(`should be an array of: ${ENUM_DAYS.join(" / ")}`),
+    check("sessions.*.pattern.*", `should be: ${ENUM_DAYS.join(" / ")}`).isIn(
+      ENUM_DAYS
+    ),
     check("sessions.*.startTime", "should be a valid iso format").isISO8601(),
     // check("sessions.*.pattern.startTime", "should be HH:MM").custom(is24Hours),
     check("sessions.*.endTime", "should be a valid iso format").isISO8601(),
