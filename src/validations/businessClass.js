@@ -4,6 +4,7 @@ const {
   ENUM_TERM_STATUS,
   ENUM_STATUS,
   ENUM_PAY_FREQUENCY,
+  ENUM_ENROLMENT_CONTROLS,
 } = require("../constants/class");
 const { isValidCategoryId } = require("./helpers/category");
 const { isValidEvaluationSchemeId } = require("./helpers/evaluationScheme");
@@ -95,7 +96,17 @@ const createClassValidationRules = () => {
       "enrolmentControls should be an Array and should not be empty "
     )
       .isArray()
+      .bail()
       .notEmpty(),
+    check(
+      "enrolmentControls.*.name",
+      `should be either: ${ENUM_ENROLMENT_CONTROLS.join(" / ")}`
+    ).isIn(ENUM_ENROLMENT_CONTROLS),
+    check("enrolmentControls.*.values", "should be an array")
+      .isArray()
+      .bail()
+      .notEmpty(),
+
     check("charges", "charges should be an Array and should not be empty")
       .isArray()
       .notEmpty(),

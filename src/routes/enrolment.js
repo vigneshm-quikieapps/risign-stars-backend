@@ -44,6 +44,7 @@ router.post(
 
 router.post(
   "/:enrolmentId/withdraw",
+  isAuthorized(null, null),
   withdrawEnrolmentValidationRules(),
   validate,
   withdrawEnrolment
@@ -51,6 +52,7 @@ router.post(
 
 router.post(
   "/:enrolmentId/return-from-suspension",
+  isAuthorized(null, null),
   returnFromSuspensionEnrolmentValidationRules(),
   validate,
   returnFromSuspensionEnrolment
@@ -58,6 +60,7 @@ router.post(
 
 router.post(
   "/:enrolmentId/suspend",
+  isAuthorized(null, null),
   suspendEnrolmentValidationRules(),
   validate,
   suspendEnrolment
@@ -65,6 +68,7 @@ router.post(
 
 router.post(
   "/update-waitlist",
+  isAuthorized(null, null),
   updateWaitlistEnrolmentValidationRules(),
   validate,
   updateWaitlistEnrolment
@@ -75,16 +79,18 @@ router.post(
  */
 router.post(
   "/transfer",
+  isAuthorized(null, null),
   sessionTransferEnrolmentValidationRules(),
   validate,
   transferEnrolment
 );
 
 /**
- * session transfer
+ * class transfer
  */
 router.post(
   "/class-transfer",
+  isAuthorized(null, null),
   classTransferEnrolmentValidationRules(),
   validate,
   classTransferEnrolment
@@ -92,6 +98,7 @@ router.post(
 
 router.post(
   "/trial",
+  isAuthorized(null, null),
   trialEnrolmentValidationRules(),
   validate,
   trailEnrolment

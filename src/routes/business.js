@@ -54,7 +54,11 @@ router.post(
   createBusiness
 );
 
-router.get("/of-logged-in-user", isAuthorized(), getAllBusinessesOfLoginUser);
+router.get(
+  "/of-logged-in-user",
+  isAuthorized(null, null),
+  getAllBusinessesOfLoginUser
+);
 
 router.get("/:businessId/terms", getAllTermsInABusiness);
 router.get("/:businessId/categories", getAllCategoriesInABusiness);
@@ -103,6 +107,7 @@ router.get("/:businessId/finance", getFinanceOfABusiness);
 
 router.post(
   "/:businessId/image-upload",
+  isAuthorized(null, null),
   businessImageUploadHelper.single("image"),
   uploadImage
 );

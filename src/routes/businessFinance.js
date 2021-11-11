@@ -41,6 +41,7 @@ router.delete("/:businessFinanceId", deleteBusinessFinance);
 //update route
 router.put(
   "/:businessFinanceId",
+  isAuthorized(null, null),
   updateBusinessFinanceValidationRules(),
   validate,
   updateBusinessFinance

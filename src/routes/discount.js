@@ -21,6 +21,7 @@ const {
   updateStatusOfDiscountsScheme,
   applyDiscount,
 } = require("../controllers/discounts");
+const { isAuthorized } = require("../middlewares/auth");
 
 // discount routes are listed below
 
@@ -33,7 +34,13 @@ router.post("/apply", applyDiscountValidationRules(), validate, applyDiscount);
 // eslint-disable-next-line prettier/prettier
 //all of actual routes
 //create route
-router.post("/", createDiscountValidationRules(), validate, createDiscounts);
+router.post(
+  "/",
+  isAuthorized(null, null),
+  createDiscountValidationRules(),
+  validate,
+  createDiscounts
+);
 
 // read routes
 router.get("/:businessId", getDiscounts);

@@ -9,6 +9,7 @@ const {
   updateTerm,
   deleteTerm,
 } = require("../controllers/term");
+const { isAuthorized } = require("../middlewares/auth");
 const {
   getAllSessionsInATermValidationRules,
 } = require("../validations/businessSession");
@@ -24,12 +25,24 @@ router.get(
   validate,
   getAllSessionsInATerm
 );
-router.post("/", createTermValidationRules(), validate, createTerm);
+router.post(
+  "/",
+  isAuthorized(null, null),
+  createTermValidationRules(),
+  validate,
+  createTerm
+);
 
 router.get("/", getAllTerm);
 router.get("/:termId", getTerm);
-router.put("/:termId", updateTermValidationRules(), validate, updateTerm);
+router.put(
+  "/:termId",
+  isAuthorized(null, null),
+  updateTermValidationRules(),
+  validate,
+  updateTerm
+);
 
-router.delete("/:termId", deleteTerm);
+router.delete("/:termId", isAuthorized(null, null), deleteTerm);
 
 module.exports = router;
