@@ -5,6 +5,7 @@ const {
   createEvaluationValidationRules,
   updateEvaluationValidationRules,
 } = require("../validations/evaluation");
+const { isAuthorized } = require("../middlewares/auth");
 
 const {
   getAllEvaluations,
@@ -19,17 +20,28 @@ const validate = require("../validations/validate");
 //parameters
 // router.param("evaluationId", getEvaluationIdById);
 //create route
-router.post("/", createEvaluationValidationRules(), validate, createEvaluation);
+router.post(
+  "/",
+  isAuthorized(null, null),
+  createEvaluationValidationRules(),
+  validate,
+  createEvaluation
+);
 
 // read routes
 router.get("/:evaluationSchemeId", getEvaluation);
 
 //delete route
-router.delete("/:evaluationSchemeId", deleteEvaluation);
+router.delete(
+  "/:evaluationSchemeId",
+  isAuthorized(null, null),
+  deleteEvaluation
+);
 
 //update route
 router.put(
   "/:evaluationSchemeId",
+  isAuthorized(null, null),
   updateEvaluationValidationRules(),
   validate,
   updateEvaluation

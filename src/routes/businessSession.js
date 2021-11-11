@@ -10,6 +10,7 @@ const {
   getSessionsInAClassOfAParticularTerm,
 } = require("../controllers/businessSession");
 const { updateWaitlistEnrolment } = require("../controllers/enrolment");
+const { isAuthorized } = require("../middlewares/auth");
 const {
   updateSessionValidationRules,
   createSessionValidationRules,
@@ -23,6 +24,7 @@ const validate = require("../validations/validate");
 //create route
 router.post(
   "/",
+  isAuthorized(null, null),
   createSessionValidationRules(),
   validate,
   createBusinessSession

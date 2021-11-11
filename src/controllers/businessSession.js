@@ -1,11 +1,17 @@
 const BusinessSession = require("../models/businessSession");
 const { getPaginationOptions } = require("../helpers/query");
 const Enrolment = require("../models/Enrolment");
+const { auditCreatedBy, auditUpdatedBy } = require("../helpers/audit");
 
 //Business Session creation
 module.exports.createBusinessSession = async (req, res) => {
   try {
+    const { startTime, endTime, pattern } = req.body;
+    const updatedPattern = pattern.map((day) => ({ day, startTime, endTime }));
+    req.body.pattern = updatedPattern;
+
     let sessionPayload = { ...req.body };
+    sessionPayload = auditCreatedBy(req, sessionPayload);
     sessionPayload.businessId = req.classData.businessId;
 
     let businessSession = await BusinessSession.create(sessionPayload);
@@ -72,7 +78,7 @@ module.exports.updateBusinessSession = async (req, res) => {
 
     let businessSession = await BusinessSession.findByIdAndUpdate(
       { _id: businessSessionId },
-      { $set: req.body },
+      { $set: { ...req.body, updatedBy: auditUpdatedBy(req) } },
       { new: true, useFindAndModify: false }
     ).populate("termData");
 

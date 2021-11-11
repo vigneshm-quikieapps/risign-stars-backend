@@ -2,6 +2,7 @@ const { getPaginationOptions } = require("../helpers/query");
 const { BusinessClass } = require("../models");
 const Category = require("../models/Category");
 const { DoesNotExistError } = require("../exceptions");
+const { auditCreatedBy, auditUpdatedBy } = require("../helpers/audit");
 
 // module.exports.getCategoryById = (req, res, next, id) => {
 //   Category.findById(id).exec((err, cat) => {
@@ -17,7 +18,9 @@ const { DoesNotExistError } = require("../exceptions");
 
 module.exports.createCategory = async (req, res) => {
   try {
-    const category = await Category.create(req.body);
+    let payload = { ...req.body };
+    payload = auditCreatedBy(req, payload);
+    const category = await Category.create(payload);
     return res.status(201).send({ message: "create successful", category });
   } catch (err) {
     return res.status(422).send({ message: err.message });
@@ -49,10 +52,12 @@ module.exports.updateCategory = async (req, res) => {
     let { categoryId } = req.params;
     let { name } = req.body;
     let options = { new: true };
+    let payload = { name };
+    payload = auditUpdatedBy(req, payload);
 
     let category = await Category.findByIdAndUpdate(
       categoryId,
-      { name },
+      { $set: payload },
       options
     );
 

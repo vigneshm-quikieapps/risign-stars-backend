@@ -3,6 +3,7 @@ const { STARTS_WITH_FILTER, EQUALS_FILTER } = require("../constants/constant");
 const mongoose = require("mongoose");
 const { Enrolment, Bill } = require("../models");
 const { ObjectId } = require("mongoose").Types;
+const { auditCreatedBy } = require("../helpers/audit");
 
 //discount api's are listed below
 
@@ -96,7 +97,9 @@ module.exports.applyDiscount = async (req, res) => {
 };
 
 module.exports.createDiscounts = (req, res) => {
-  const discounts = new Discounts(req.body);
+  let payload = { ...req.body };
+  payload = auditCreatedBy(req, payload);
+  const discounts = new Discounts(payload);
   discounts.save((err, discount) => {
     if (err) {
       return res.status(400).json({

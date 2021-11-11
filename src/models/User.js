@@ -24,6 +24,10 @@ const UserSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    isDeleted: {
+      type: Boolean,
+      default: false,
+    },
     userTypes: {
       type: String,
       enum: ENUM_USER_TYPES,
@@ -62,6 +66,14 @@ const UserSchema = new mongoose.Schema(
     },
     password: {
       type: String,
+    },
+    updatedBy: {
+      type: ObjectId,
+      ref: "User",
+    },
+    createdBy: {
+      type: ObjectId,
+      ref: "User",
     },
     dataPrivileges: [
       {

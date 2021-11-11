@@ -1,6 +1,7 @@
-const { Term, BusinessSession } = require("../models");
+const { Term, BusinessSession, Enrolment } = require("../models");
 const { getPaginationOptions } = require("../helpers/query");
 const { ObjectId } = require("mongoose").Types;
+const { auditCreatedBy } = require("../helpers/audit");
 
 //parameter extractor
 // module.exports.getTermIdById = (req, res, next, id) => {
@@ -21,7 +22,9 @@ const { ObjectId } = require("mongoose").Types;
 
 module.exports.createTerm = async (req, res) => {
   try {
-    let term = await Term.create(req.body);
+    let payload = { ...req.body };
+    payload = auditCreatedBy(req, payload);
+    let term = await Term.create(payload);
     return res.status(201).send({ message: "create successful", term });
   } catch (err) {
     return res.status(422).send({ message: err.message });
@@ -73,21 +76,37 @@ module.exports.updateTerm = async (req, res) => {
   try {
     let { termId } = req.params;
 
-    let sessionCount = await BusinessSession.count({ "term._id": termId });
+    // let sessionCount = await BusinessSession.count({ "term._id": termId });
 
-    if (sessionCount) {
-      throw new Error(
-        "not allowed, there is at least 1 session using the term"
-      );
+    // if (sessionCount) {
+    //   throw new Error(
+    //     "not allowed, there is at least 1 session using the term"
+    //   );
+    // }
+
+    let sessions = await BusinessSession.find({"term._id":termId});
+
+    if(sessions.length==0){
+      let sessionIds= sessions.map((sessionData)=>ObjectId(sessionData._id));
+
+      let enrolments = await Enrolment.find({ sessionId: { $in: sessionIds }});
+  
+      if(enrolments.length==0){
+        let term = await Term.findByIdAndUpdate(
+          { _id: termId },
+          { $set: req.body },
+          { new: true, useFindAndModify: false }
+        );
+    
+        return res.send({ message: "update successful", term });
+      }else{
+        return res.send({ message: "not allowed, members are already enrolled in this term"});
+      }
+    }else{
+      return res.send({ message: "not allowed, there is at least 1 session using the term"});
     }
 
-    let term = await Term.findByIdAndUpdate(
-      { _id: termId },
-      { $set: req.body },
-      { new: true, useFindAndModify: false }
-    );
-
-    return res.send({ message: "update successful", term });
+  
   } catch (err) {
     return res.status(422).send({ message: err.message });
   }

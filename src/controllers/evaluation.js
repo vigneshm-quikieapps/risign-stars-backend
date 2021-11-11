@@ -1,6 +1,7 @@
 const { EvaluationScheme } = require("../models");
 const { getPaginationOptions } = require("../helpers/query");
 const DoesNotExistError = require("../exceptions/DoesNotExistError");
+const { auditCreatedBy } = require("../helpers/audit");
 
 //parameter extractor
 // module.exports.getEvaluationIdById = (req, res, next, id) => {
@@ -22,7 +23,9 @@ const DoesNotExistError = require("../exceptions/DoesNotExistError");
  */
 module.exports.createEvaluation = async (req, res) => {
   try {
-    const evaluationScheme = await EvaluationScheme.create(req.body);
+    let payload = { ...req.body };
+    payload = auditCreatedBy(req, payload);
+    const evaluationScheme = await EvaluationScheme.create(payload);
     res.status(201).json({ message: "created successfully", evaluationScheme });
   } catch (err) {
     return res.status().send({ message: err.message });

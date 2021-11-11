@@ -17,6 +17,7 @@ const {
   updateBusinessFinance,
   addDiscountToBusinessFinance,
 } = require("../controllers/businessFinance");
+const { isAuthorized } = require("../middlewares/auth");
 
 //parameters
 // router.param("businessFinanceId", getBusinessFinanceIdById);
@@ -25,6 +26,7 @@ const {
 //create route
 router.post(
   "/",
+  isAuthorized(null, null),
   createBusinessFinanceValidationRules(),
   validate,
   createBusinessFinance

@@ -9,6 +9,7 @@ const fs = require("fs");
 const { promisify } = require("util");
 const { Types } = require("mongoose");
 const DoesNotExistError = require("../exceptions/DoesNotExistError");
+const { auditCreatedBy } = require("../helpers/audit");
 
 const unlinkAsync = promisify(fs.unlink);
 //parameter extractor
@@ -26,7 +27,9 @@ const unlinkAsync = promisify(fs.unlink);
 
 //create business
 module.exports.createBusiness = (req, res) => {
-  const business = new Business(req.body);
+  let payload = { ...req.body };
+  payload = auditCreatedBy(req, payload);
+  const business = new Business(payload);
   business.save((err, business) => {
     if (err) {
       console.error(err.message);
