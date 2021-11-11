@@ -18,6 +18,7 @@ const {
   multipleProgressMarking,
 } = require("../controllers/progress");
 const validate = require("../validations/validate");
+const { isAuthorized } = require("../middlewares/auth");
 
 //parameters
 // router.param("progressId", getProgressIdById);
@@ -25,6 +26,7 @@ const validate = require("../validations/validate");
 // create routes
 router.post(
   "/",
+  isAuthorized(null, null),
   createOrGetProgressValidationRules(),
   validate,
   createOrGetProgress

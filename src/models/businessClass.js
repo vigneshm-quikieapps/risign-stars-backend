@@ -80,10 +80,12 @@ const businessClassSchema = new mongoose.Schema(
       },
     ],
     updatedBy: {
-      type: String,
+      type: ObjectId,
+      ref: "User",
     },
     createdBy: {
-      type: String,
+      type: ObjectId,
+      ref: "User",
     },
   },
   { timestamps: true }

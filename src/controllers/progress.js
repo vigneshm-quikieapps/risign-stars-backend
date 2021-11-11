@@ -8,6 +8,7 @@ const {
 } = require("../constants/progress");
 const { Types } = require("mongoose");
 const { getPaginationOptions } = require("../helpers/query");
+const { auditCreatedBy } = require("../helpers/audit");
 
 //pogress extractor
 // module.exports.getProgressIdById = (req, res, next, id) => {
@@ -109,6 +110,7 @@ module.exports.createOrGetProgress = async (req, res) => {
      */
     if (!progress) {
       let progressPayload = await progressPayloadRequest(req);
+      progressPayload = auditCreatedBy(req, progressPayload);
       progress = await Progress.create(progressPayload);
     }
 

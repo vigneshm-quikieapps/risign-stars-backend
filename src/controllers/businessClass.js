@@ -7,6 +7,7 @@ const {
 } = require("../models");
 const { getPaginationOptions } = require("../helpers/query");
 const mongoose = require("mongoose");
+const { auditCreatedBy, auditUpdatedBy } = require("../helpers/audit");
 
 //parameter extractor
 // module.exports.getBusinessClassIdById = (req, res, next, id) => {
@@ -36,21 +37,26 @@ module.exports.createBusinessClass = async (req, res) => {
   session.startTransaction();
 
   try {
-    let { sessions, businessId } = req.body;
-    const businessClasses = await BusinessClass.create([req.body], { session });
+    // let { sessions, businessId } = req.body;
+
+    let payload = { ...req.body };
+
+    payload = auditCreatedBy(req, payload);
+
+    const businessClasses = await BusinessClass.create([payload], { session });
     let businessClass = businessClasses[0];
 
-    let classId = businessClass._id;
+    // let classId = businessClass._id;
 
-    let sessionsPayload = sessions.map((sessionData) => {
-      return {
-        ...sessionData,
-        businessId,
-        classId,
-      };
-    });
+    // let sessionsPayload = sessions.map((sessionData) => {
+    //   return {
+    //     ...sessionData,
+    //     businessId,
+    //     classId,
+    //   };
+    // });
 
-    await BusinessSession.create(sessionsPayload, { session });
+    // await BusinessSession.create(sessionsPayload, { session });
 
     await session.commitTransaction();
     return res.send({ message: "created successful", businessClass });
@@ -151,9 +157,15 @@ module.exports.getBusinessClass = async (req, res) => {
 module.exports.updateBusinessClass = async (req, res) => {
   try {
     let { businessClassId } = req.params;
+
+    let payload = { ...req.body };
+    delete payload.businessId;
+
+    payload = auditUpdatedBy(req, payload);
+
     let businessClass = await BusinessClass.findByIdAndUpdate(
       { _id: businessClassId },
-      { $set: req.body },
+      { $set: payload },
       { new: true, useFindAndModify: false }
     );
 

@@ -9,6 +9,7 @@ const {
   updateCategory,
   removeCategory,
 } = require("../controllers/category");
+const { isAuthorized } = require("../middlewares/auth");
 const {
   updateCategoryValidationRules,
   createCategoryValidationRules,
@@ -19,7 +20,13 @@ const validate = require("../validations/validate");
 //router.param("userId",getUserById);
 
 // router.get("/category/:categoryId/",);
-router.post("/", createCategoryValidationRules(), validate, createCategory);
+router.post(
+  "/",
+  isAuthorized(null, null),
+  createCategoryValidationRules(),
+  validate,
+  createCategory
+);
 
 router.get("/", getAllCategory);
 router.get("/:categoryId", getCategory);

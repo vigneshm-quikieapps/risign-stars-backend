@@ -3,6 +3,7 @@ const User = require("../models/User");
 const { STARTS_WITH_FILTER, EQUALS_FILTER } = require("../constants/constant");
 const { getQuery, getOptions } = require("../helpers/query");
 const { Types } = require("mongoose");
+const { auditCreatedBy } = require("../helpers/audit");
 
 module.exports.getUserById = (req, res, next, id) => {
   User.findById(id).exec((error, user) => {
@@ -21,6 +22,8 @@ module.exports.create = async (req, res) => {
     let data = req.body;
     let password = User.generatePassword();
     data.password = password;
+
+    data = auditCreatedBy(req, data);
     let user = await User.create(data);
     return res
       .status(201)

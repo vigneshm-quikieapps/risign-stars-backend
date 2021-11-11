@@ -3,6 +3,7 @@ const { STARTS_WITH_FILTER, EQUALS_FILTER } = require("../constants/constant");
 const { Types } = require("mongoose");
 const mongoose = require("mongoose");
 const Discounts = require("../models/discounts");
+const { auditCreatedBy } = require("../helpers/audit");
 
 //parameter extractor
 // module.exports.getBusinessFinanceIdById = (req, res, next, id) => {
@@ -27,6 +28,8 @@ module.exports.createBusinessFinance = async (req, res) => {
     let { businessId } = req.body;
     let data = { ...req.body };
     let { discountSchemes } = data;
+
+    data = auditCreatedBy(req, data);
     const businessFinances = await BusinessFinance.create([data], { session });
     let businessFinance = businessFinances[0];
 
@@ -35,6 +38,7 @@ module.exports.createBusinessFinance = async (req, res) => {
       businessId,
     }));
 
+    discountSchemesPayload = auditCreatedBy(req, discountSchemesPayload);
     await Discounts.create(discountSchemesPayload, { session });
 
     await session.commitTransaction();

@@ -41,7 +41,13 @@ router.get(
 );
 
 //create route
-router.post("/", createClassValidationRules(), validate, createBusinessClass);
+router.post(
+  "/",
+  isAuthorized(null, null),
+  createClassValidationRules(),
+  validate,
+  createBusinessClass
+);
 
 // read routes
 router.get("/:businessClassId", getBusinessClass);
@@ -49,6 +55,7 @@ router.get("/:businessClassId", getBusinessClass);
 //delete route
 router.delete(
   "/:businessClassId",
+  isAuthorized(null, null),
   // isBusinessClassRestricted,
   deleteBusinessClass
 );
@@ -56,6 +63,7 @@ router.delete(
 //update route
 router.put(
   "/:businessClassId",
+  isAuthorized(null, null),
   updateClassValidationRules(),
   validate,
   updateBusinessClass

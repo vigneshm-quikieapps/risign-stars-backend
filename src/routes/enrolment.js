@@ -11,6 +11,7 @@ const {
   getAllEnrolmentOfAMemberInABusiness,
 } = require("../controllers/enrolment");
 const suspendEnrolment = require("../controllers/enrolment/suspendEnrolment");
+const { isAuthorized } = require("../middlewares/auth");
 const {
   createEnrolementValidationRules,
   withdrawEnrolmentValidationRules,
@@ -26,7 +27,13 @@ const validate = require("../validations/validate");
 const validateSingle = require("../validations/validateSingle");
 
 /** routes */
-router.post("/", createEnrolementValidationRules(), validate, newEnrolment);
+router.post(
+  "/",
+  isAuthorized(null, null),
+  createEnrolementValidationRules(),
+  validate,
+  newEnrolment
+);
 
 router.post(
   "/of-a-member-in-a-business",

@@ -23,6 +23,14 @@ const termSchema = new mongoose.Schema(
       type: Date,
       required: true,
     },
+    updatedBy: {
+      type: ObjectId,
+      ref: "User",
+    },
+    createdBy: {
+      type: ObjectId,
+      ref: "User",
+    },
     // classsequence: {
     //   type: Number,
     // },

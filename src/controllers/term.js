@@ -1,6 +1,7 @@
 const { Term, BusinessSession } = require("../models");
 const { getPaginationOptions } = require("../helpers/query");
 const { ObjectId } = require("mongoose").Types;
+const { auditCreatedBy } = require("../helpers/audit");
 
 //parameter extractor
 // module.exports.getTermIdById = (req, res, next, id) => {
@@ -21,7 +22,9 @@ const { ObjectId } = require("mongoose").Types;
 
 module.exports.createTerm = async (req, res) => {
   try {
-    let term = await Term.create(req.body);
+    let payload = { ...req.body };
+    payload = auditCreatedBy(req, payload);
+    let term = await Term.create(payload);
     return res.status(201).send({ message: "create successful", term });
   } catch (err) {
     return res.status(422).send({ message: err.message });

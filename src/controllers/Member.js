@@ -6,6 +6,7 @@ const { getPaginationOptions } = require("../helpers/query");
 const { Types } = require("mongoose");
 const { Enrolment, User } = require("../models");
 const getQuery2 = require("../helpers/query/getQuery2");
+const { auditCreatedBy, auditUpdatedBy } = require("../helpers/audit");
 
 //parameter extractor
 // module.exports.getmemberIdById = (req, res, next, id) => {
@@ -24,6 +25,7 @@ const getQuery2 = require("../helpers/query/getQuery2");
 module.exports.create = async (req, res) => {
   try {
     let data = req.body;
+    data = auditCreatedBy(data);
     let member = await Member.create(data);
     return res
       .status(201)
@@ -37,10 +39,12 @@ module.exports.create = async (req, res) => {
 module.exports.update = async (req, res) => {
   try {
     let options = { new: true };
+    let payload = { ...req.body };
+    payload = auditUpdatedBy(req, payload);
 
     let member = await Member.findByIdAndUpdate(
       req.params.id,
-      req.body,
+      { $set: payload },
       options
     );
     if (!member) {

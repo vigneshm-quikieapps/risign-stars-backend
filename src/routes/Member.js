@@ -37,7 +37,13 @@ router.post("/bill-status-in-a-session", getBillStatusOfMembersInASession);
 router.get("/:memberId", member.get);
 router.get("/:memberId/progress", getAllProgressOfAMember);
 router.get("/:memberId/enrolments", getAllEnrolmentsOfAMember);
-router.post("/", createMemberValidationRules(), validate, member.create);
+router.post(
+  "/",
+  isAuthorized(null, null),
+  createMemberValidationRules(),
+  validate,
+  member.create
+);
 router.get("/consent", memberConsent.get);
 router.put("/:id", updateMemberValidationRules(), validate, member.update);
 router.get("/:id/emergency-contact", member.getEmergencyContact);
