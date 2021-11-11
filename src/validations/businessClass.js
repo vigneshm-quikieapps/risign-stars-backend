@@ -106,55 +106,46 @@ const createClassValidationRules = () => {
       "charges.*.payFrequency",
       `should be either: ${ENUM_PAY_FREQUENCY.join(" / ")}`
     ).isIn(ENUM_PAY_FREQUENCY),
-    // check("sessions", "should be an array").isArray(),
-    // check("sessions.*.name", "name should be at least 3 char").isLength({
-    //   min: 3,
-    // }),
-    // check("sessions.*.facility", "name should be at least 3 char").isLength({
-    //   min: 3,
-    // }),
-    // check("sessions.*.term", "term should be an object").isObject(),
-    // check("sessions.*.term._id").custom(isValidTermId),
-    // check(
-    //   "sessions.*.term.startDate",
-    //   "should be in the following format: YYYY-MM-DD"
-    // ).isDate({
-    //   format: "YYYY-MM-DD",
-    //   strictMode: true,
-    // }),
-    // check(
-    //   "sessions.*.term.endDate",
-    //   "should be a in the following format: YYYY-MM-DD"
-    // ).isDate({
-    //   format: "YYYY-MM-DD",
-    //   strictMode: true,
-    // }),
-    // check(
-    //   "sessions.*.pattern.day",
-    //   `should be an  in ${ENUM_DAYS.join(" / ")}`
-    // ).isIn(ENUM_DAYS),
-    // check(
-    //   "sessions.*.pattern.startTime",
-    //   "should be a valid iso format"
-    // ).isISO8601(),
-    // // check("sessions.*.pattern.startTime", "should be HH:MM").custom(is24Hours),
-    // check(
-    //   "sessions.*.pattern.endTime",
-    //   "should be a valid iso format"
-    // ).isISO8601(),
-    // // check("sessions.*.pattern.endTime", "should be HH:MM").custom(is24Hours),
-    // check(
-    //   "sessions.*.fullcapacity",
-    //   "fullcapacity should be a Number/Integer  "
-    // ).isInt(),
-    // check(
-    //   "sessions.*.waitcapacity",
-    //   "waitcapacity should be a Number/Integer  "
-    // ).isInt(),
-    // check(
-    //   "sessions.*.coachId",
-    //   "coach should be a Coach Id and it should not be Empty!!"
-    // ).custom(isValidCoachId),
+    check("sessions", "should be an array").isArray(),
+    check("sessions.*.name", "name should be at least 3 char").isLength({
+      min: 3,
+    }),
+    check("sessions.*.facility", "name should be at least 3 char").isLength({
+      min: 3,
+    }),
+    check("sessions.*.term", "term should be an object").isObject(),
+    check("sessions.*.term._id").custom(isValidTermId),
+    check("sessions.*.term.label", "should be at least 3 char").isLength({
+      min: 3,
+    }),
+    check(
+      "sessions.*.term.startDate",
+      "should be in the following format: YYYY-MM-DD"
+    ).isISO8601(),
+    check(
+      "sessions.*.term.endDate",
+      "should be a in the following format: YYYY-MM-DD"
+    ).isISO8601(),
+    check(
+      "sessions.*.pattern.*",
+      `should be an  in ${ENUM_DAYS.join(" / ")}`
+    ).isIn(ENUM_DAYS),
+    check("sessions.*.startTime", "should be a valid iso format").isISO8601(),
+    // check("sessions.*.pattern.startTime", "should be HH:MM").custom(is24Hours),
+    check("sessions.*.endTime", "should be a valid iso format").isISO8601(),
+    // check("sessions.*.pattern.endTime", "should be HH:MM").custom(is24Hours),
+    check(
+      "sessions.*.fullcapacity",
+      "fullcapacity should be a Number/Integer  "
+    ).isInt(),
+    check(
+      "sessions.*.waitcapacity",
+      "waitcapacity should be a Number/Integer  "
+    ).isInt(),
+    check(
+      "sessions.*.coachId",
+      "coach should be a Coach Id and it should not be Empty!!"
+    ).custom(isValidCoachId),
   ];
 };
 

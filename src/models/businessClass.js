@@ -101,7 +101,7 @@ businessClassSchema.virtual("business", {
 businessClassSchema.virtual("sessions", {
   ref: "BusinessSession",
   localField: "_id",
-  foreignField: "businessId",
+  foreignField: "classId",
 });
 
 // Ensure virtual fields are serialised.

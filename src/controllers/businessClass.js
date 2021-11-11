@@ -37,7 +37,7 @@ module.exports.createBusinessClass = async (req, res) => {
   session.startTransaction();
 
   try {
-    // let { sessions, businessId } = req.body;
+    let { sessions, businessId } = req.body;
 
     let payload = { ...req.body };
 
@@ -46,19 +46,32 @@ module.exports.createBusinessClass = async (req, res) => {
     const businessClasses = await BusinessClass.create([payload], { session });
     let businessClass = businessClasses[0];
 
-    // let classId = businessClass._id;
+    let classId = businessClass._id;
 
-    // let sessionsPayload = sessions.map((sessionData) => {
-    //   return {
-    //     ...sessionData,
-    //     businessId,
-    //     classId,
-    //   };
-    // });
+    let sessionsPayload = sessions.map((sessionData) => {
+      let { startTime, endTime, pattern } = sessionData;
+      const updatedPattern = pattern.map((day) => ({
+        day,
+        startTime,
+        endTime,
+      }));
 
-    // await BusinessSession.create(sessionsPayload, { session });
+      return {
+        ...sessionData,
+        pattern: updatedPattern,
+        businessId,
+        classId,
+      };
+    });
+
+    await BusinessSession.create(sessionsPayload, { session });
 
     await session.commitTransaction();
+
+    businessClass = await BusinessClass.findById(businessClass._id).populate(
+      "sessions"
+    );
+
     return res.send({ message: "created successful", businessClass });
   } catch (err) {
     await session.abortTransaction();
