@@ -1,5 +1,5 @@
 const getOptions = (req) => {
-  let { limit, page, sortBy } = req.query;
+  let { limit, page, sortBy, sortByDate } = req.query;
 
   let options = {};
 
