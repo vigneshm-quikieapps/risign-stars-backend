@@ -84,29 +84,31 @@ module.exports.updateTerm = async (req, res) => {
     //   );
     // }
 
-    let sessions = await BusinessSession.find({"term._id":termId});
+    let sessions = await BusinessSession.find({ "term._id": termId });
 
-    if(sessions.length==0){
-      let sessionIds= sessions.map((sessionData)=>ObjectId(sessionData._id));
+    if (sessions.length == 0) {
+      let sessionIds = sessions.map((sessionData) => ObjectId(sessionData._id));
 
-      let enrolments = await Enrolment.find({ sessionId: { $in: sessionIds }});
-  
-      if(enrolments.length==0){
+      let enrolments = await Enrolment.find({ sessionId: { $in: sessionIds } });
+
+      if (enrolments.length == 0) {
         let term = await Term.findByIdAndUpdate(
           { _id: termId },
           { $set: req.body },
           { new: true, useFindAndModify: false }
         );
-    
-        return res.send({ message: "update successful", term });
-      }else{
-        return res.send({ message: "not allowed, members are already enrolled in this term"});
-      }
-    }else{
-      return res.send({ message: "not allowed, there is at least 1 session using the term"});
-    }
 
-  
+        return res.send({ message: "update successful", term });
+      } else {
+        return res.send({
+          message: "not allowed, members are already enrolled in this term",
+        });
+      }
+    } else {
+      return res.send({
+        message: "not allowed, there is at least 1 session using the term",
+      });
+    }
   } catch (err) {
     return res.status(422).send({ message: err.message });
   }
