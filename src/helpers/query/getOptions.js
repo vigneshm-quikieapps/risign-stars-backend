@@ -16,6 +16,11 @@ const getOptions = (req) => {
     options.sort = { name: nameSortBy };
   }
 
+  if (sortByDate) {
+    let dateSortBy = sortByDate === "asc" ? 1 : -1;
+    options.sort = { createdAt: dateSortBy };
+  }
+
   return options;
 };
 
