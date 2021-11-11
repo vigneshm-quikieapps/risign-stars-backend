@@ -75,26 +75,21 @@ const { ENUM_DAYS } = require("../constants/session");
 
 const createClassValidationRules = () => {
   return [
-    check("name", "name should be at least 3 char").isLength({ min: 3 }),
+    check("name", "should be at least 3 char").isLength({ min: 3 }),
     check("businessId").custom(isValidBusinessId),
     check("evaluationSchemeId").custom(isValidEvaluationSchemeId),
     check("categoryId").custom(isValidCategoryId),
-    check("status", `status should either be ${ENUM_STATUS.join(" / ")}`)
+    check("status", `should either be ${ENUM_STATUS.join(" / ")}`)
       .optional()
       .isIn(ENUM_STATUS),
     check(
       "registrationform",
-      `registrationform should only be ${ENUM_REGISTRATION_FORM.join(" / ")}`
+      `should only be ${ENUM_REGISTRATION_FORM.join(" / ")}`
     )
       .optional()
       .isIn(ENUM_REGISTRATION_FORM),
-    check("about", "about should be at least 3 char")
-      .optional()
-      .isLength({ min: 3 }),
-    check(
-      "enrolmentControls",
-      "enrolmentControls should be an Array and should not be empty "
-    )
+    check("about", "should be at least 3 char").optional().isLength({ min: 3 }),
+    check("enrolmentControls", "should be an Array and should not be empty ")
       .isArray()
       .bail()
       .notEmpty(),
@@ -106,7 +101,7 @@ const createClassValidationRules = () => {
       .isArray()
       .bail()
       .notEmpty(),
-    check("charges", "charges should be an Array and should not be empty")
+    check("charges", "should be an Array and should not be empty")
       .isArray()
       .notEmpty(),
     check("charges.*.name", "should be at least 3 char").isLength({ min: 3 }),
@@ -117,13 +112,13 @@ const createClassValidationRules = () => {
       `should be either: ${ENUM_PAY_FREQUENCY.join(" / ")}`
     ).isIn(ENUM_PAY_FREQUENCY),
     check("sessions", "should be an array").isArray(),
-    check("sessions.*.name", "name should be at least 3 char").isLength({
+    check("sessions.*.name", "should be at least 3 char").isLength({
       min: 3,
     }),
-    check("sessions.*.facility", "name should be at least 3 char").isLength({
+    check("sessions.*.facility", "should be at least 3 char").isLength({
       min: 3,
     }),
-    check("sessions.*.term", "term should be an object").isObject(),
+    check("sessions.*.term", "should be an object").isObject(),
     check("sessions.*.term._id").custom(isValidTermId),
     check("sessions.*.term.label", "should be at least 3 char").isLength({
       min: 3,
@@ -158,34 +153,27 @@ const createClassValidationRules = () => {
     ).isInt(),
     check(
       "sessions.*.coachId",
-      "coach should be a Coach Id and it should not be Empty!!"
+      "should be a Coach Id and it should not be Empty!!"
     ).custom(isValidCoachId),
   ];
 };
 
 const updateClassValidationRules = () => {
   return [
-    check("name", "name should be at least 3 char")
-      .optional()
-      .isLength({ min: 3 }),
+    check("name", "should be at least 3 char").optional().isLength({ min: 3 }),
     check("evaluationSchemeId").optional().custom(isValidEvaluationSchemeId),
     check("categoryId").optional().custom(isValidCategoryId),
-    check("status", `status should  only be ${ENUM_TERM_STATUS.join(" / ")}`)
+    check("status", `should  only be ${ENUM_TERM_STATUS.join(" / ")}`)
       .optional()
       .isIn(ENUM_TERM_STATUS),
     check(
       "registrationform",
-      `registrationform should only be ${ENUM_REGISTRATION_FORM.join(" / ")}`
+      `should only be ${ENUM_REGISTRATION_FORM.join(" / ")}`
     )
       .optional()
       .isIn(ENUM_REGISTRATION_FORM),
-    check("about", "about should be at least 3 char")
-      .optional()
-      .isLength({ min: 3 }),
-    check(
-      "enrolmentControls",
-      "enrolmentControls should be an Array and should not be empty "
-    )
+    check("about", "should be at least 3 char").optional().isLength({ min: 3 }),
+    check("enrolmentControls", "should be an Array and should not be empty ")
       .optional()
       .isArray()
       .bail()
@@ -198,7 +186,7 @@ const updateClassValidationRules = () => {
       .isArray()
       .bail()
       .notEmpty(),
-    check("charges", "charges should be an Array and should not be empty")
+    check("charges", "should be an Array and should not be empty")
       .optional()
       .isArray()
       .notEmpty(),
