@@ -1,5 +1,5 @@
 const getOptions = (req) => {
-  let { limit, page, sortBy } = req.query;
+  let { limit, page, sortBy, sortByDate } = req.query;
 
   let options = {};
 
@@ -14,6 +14,11 @@ const getOptions = (req) => {
   if (sortBy) {
     let nameSortBy = sortBy === "asc" ? 1 : -1;
     options.sort = { name: nameSortBy };
+  }
+
+  if (sortByDate) {
+    let dateSortBy = sortByDate === "asc" ? 1 : -1;
+    options.sort = { createdAt: dateSortBy };
   }
 
   return options;
