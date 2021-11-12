@@ -51,12 +51,16 @@ const getAttendanceOfASessionByDate = async (req, res) => {
         },
       },
       {
+        $unwind: "$parent",
+      },
+      {
         $project: {
           _id: 1,
           date: 1,
           classId: 1,
           sessionId: 1,
           member: 1,
+          records: 1,
           "parent._id": 1,
           "parent.name": 1,
           "parent.email": 1,
@@ -66,9 +70,6 @@ const getAttendanceOfASessionByDate = async (req, res) => {
           updatedAt: 1,
           updatedBy: 1,
         },
-      },
-      {
-        $unwind: "$parent",
       },
       {
         $addFields: {
