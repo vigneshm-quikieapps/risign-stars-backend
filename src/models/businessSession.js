@@ -24,7 +24,6 @@ const businessSessionSchema = new mongoose.Schema(
         type: ObjectId,
         required: true,
         ref: "Term",
-        immutable: true,
       },
       label: {
         type: String,
