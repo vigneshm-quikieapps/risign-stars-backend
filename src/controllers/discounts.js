@@ -3,7 +3,8 @@ const { STARTS_WITH_FILTER, EQUALS_FILTER } = require("../constants/constant");
 const mongoose = require("mongoose");
 const { Enrolment, Bill } = require("../models");
 const { ObjectId } = require("mongoose").Types;
-const { auditCreatedBy } = require("../helpers/audit");
+const { auditCreatedBy, auditUpdatedBy } = require("../helpers/audit");
+const { INACTIVE_STATUS } = require("../constants/discount");
 
 //discount api's are listed below
 
@@ -96,24 +97,39 @@ module.exports.applyDiscount = async (req, res) => {
   }
 };
 
-module.exports.createDiscounts = (req, res) => {
-  let payload = { ...req.body };
-  payload = auditCreatedBy(req, payload);
-  const discounts = new Discounts(payload);
-  discounts.save((err, discount) => {
-    if (err) {
-      return res.status(400).json({
-        error: err,
-      });
-    }
-    res.json(discount);
-  });
+module.exports.createDiscounts = async (req, res) => {
+  try {
+    let payload = { ...req.body };
+    payload = auditCreatedBy(req, payload);
+    const discount = await Discounts.create(payload);
+    return res.send({ message: "create successful", discount });
+  } catch (err) {
+    console.log({ err });
+    return res.status(422).send({ message: err.message });
+  }
+};
+
+module.exports.updateDiscounts = async (req, res) => {
+  try {
+    let payload = { ...req.body };
+    let { discountId } = req.params;
+    payload = auditUpdatedBy(req, payload);
+    let discount = await Discounts.findOneAndUpdate(
+      { _id: discountId },
+      { $set: payload },
+      { new: true }
+    );
+    return res.send({ message: "update successful", discount });
+  } catch (err) {
+    console.log(err);
+    return res.status(422).send({ message: err.message });
+  }
 };
 
 module.exports.getAllDiscountInABusiness = async (req, res) => {
   try {
     let { businessId } = req.params;
-    let discounts = await Discounts.find({ businessId });
+    let discounts = await Discounts.find({ businessId, isDeleted: false });
     return res.send({ discounts });
   } catch (err) {
     return res.send({ message: err.message });
@@ -134,19 +150,28 @@ module.exports.getDiscounts = (req, res) => {
 };
 
 // delete  discount by businessId
-module.exports.deleteDiscounts = (req, res) => {
-  let discounts = req.discount;
-  discounts.remove((err, discount) => {
-    if (err) {
-      return res.status(400).json({
-        error: "Failed to delete the Discounts",
-      });
+module.exports.deleteDiscounts = async (req, res) => {
+  try {
+    let { discountId } = req.params;
+    let { discountData } = req;
+
+    if (discountData && discountData.isDeleted) {
+      /**
+       * discount is already soft deleted
+       */
+      throw new Error("Does not exist");
     }
-    res.json({
-      message: "Discounts Deletion was a success",
-      discount,
-    });
-  });
+
+    await Discounts.findOneAndUpdate(
+      { _id: discountId },
+      { $set: { isDeleted: true, status: INACTIVE_STATUS } }
+    );
+
+    return res.send({ message: "delete successful" });
+  } catch (err) {
+    console.error(err);
+    return res.status(422).send({ message: err.message });
+  }
 };
 
 //all getAllDiscounts listing

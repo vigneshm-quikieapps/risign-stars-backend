@@ -4,6 +4,7 @@ const { Types } = require("mongoose");
 const mongoose = require("mongoose");
 const Discounts = require("../models/discounts");
 const { auditCreatedBy } = require("../helpers/audit");
+const { ObjectId } = require("mongoose").Types;
 
 //parameter extractor
 // module.exports.getBusinessFinanceIdById = (req, res, next, id) => {
@@ -132,6 +133,41 @@ module.exports.updateBusinessFinance = async (req, res) => {
       { $set: updatePayload },
       { new: true, useFindAndModify: false }
     );
+
+    return res.send({ message: "update successful", businessFinance });
+  } catch (err) {
+    return res.status(422).send({ message: err.message });
+  }
+};
+
+module.exports.updateBusinessFinance2 = async (req, res) => {
+  try {
+    let { businessId } = req.params;
+    let updatePayload = { ...req.body };
+
+    if (!businessId) {
+      throw new Error("Does not exist");
+    }
+
+    /**
+     * don't allow
+     * 1. updating charges and
+     * 2. discountSchemes
+     * from this API
+     * update charges will be in separate API
+     */
+    delete updatePayload.discountSchemes;
+    delete updatePayload.charges;
+
+    let businessFinance = await BusinessFinance.findOneAndUpdate(
+      { businessId: ObjectId(businessId) },
+      { $set: updatePayload },
+      { new: true, useFindAndModify: false }
+    );
+
+    if (!businessFinance) {
+      throw new Error("Does not exist");
+    }
 
     return res.send({ message: "update successful", businessFinance });
   } catch (err) {

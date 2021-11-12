@@ -6,7 +6,10 @@ const {
   updateBusinessValidationRules,
   createBusinessValidationRules,
 } = require("../validations/business");
-const { getFinanceOfABusiness } = require("../controllers/businessFinance");
+const {
+  getFinanceOfABusiness,
+  updateBusinessFinance2,
+} = require("../controllers/businessFinance");
 
 const validate = require("../validations/validate");
 const { BUSINESS_DEFINITION, CLASS_DEFINITION } = require("../constants/pages");
@@ -104,6 +107,11 @@ router.post("/xlxsupload", uploadXLXSFile);
  * finance
  */
 router.get("/:businessId/finance", getFinanceOfABusiness);
+router.put(
+  "/:businessId/finance",
+  isAuthorized(null, null),
+  updateBusinessFinance2
+);
 
 router.post(
   "/:businessId/image-upload",

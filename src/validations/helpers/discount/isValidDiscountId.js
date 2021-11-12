@@ -2,7 +2,10 @@ const { Discounts } = require("../../../models");
 
 const isValidDiscountId = async (discountId, { req }) => {
   try {
-    let discount = await Discounts.findById(discountId);
+    let discount = await Discounts.findOne({
+      _id: discountId,
+      isDeleted: false,
+    });
 
     if (!discount) {
       throw new Error("Does not exists");

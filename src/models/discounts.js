@@ -25,6 +25,11 @@ const discountsSchema = new mongoose.Schema(
       enum: ENUM_STATUS,
       default: ACTIVE_STATUS,
     },
+    isDeleted: {
+      type: Boolean,
+      default: false,
+      select: false,
+    },
     updatedBy: {
       type: ObjectId,
       ref: "User",

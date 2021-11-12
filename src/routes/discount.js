@@ -1,12 +1,15 @@
 const express = require("express");
 const router = express.Router();
 const {
-  createDiscountValidationRules,
   addNewDiscountValidationRules,
-  updateDiscountValidationRules,
   updateStatusOfDiscountValidationRules,
   applyDiscountValidationRules,
 } = require("../validations/businessFinance");
+const {
+  createDiscountValidationRules,
+  updateDiscountValidationRules,
+  deleteDiscountValidationRules,
+} = require("../validations/discount");
 const validate = require("../validations/validate");
 
 const {
@@ -20,6 +23,7 @@ const {
   updateDiscountsScheme,
   updateStatusOfDiscountsScheme,
   applyDiscount,
+  updateDiscounts,
 } = require("../controllers/discounts");
 const { isAuthorized } = require("../middlewares/auth");
 
@@ -42,11 +46,23 @@ router.post(
   createDiscounts
 );
 
-// read routes
-router.get("/:businessId", getDiscounts);
-
-//delete route
-router.delete("/:discountId", deleteDiscounts);
+/**
+ * get discounts of a business is in business routes
+ */
+router.put(
+  "/:discountId",
+  isAuthorized(null, null),
+  updateDiscountValidationRules(),
+  validate,
+  updateDiscounts
+);
+router.delete(
+  "/:discountId",
+  isAuthorized(null, null),
+  deleteDiscountValidationRules(),
+  validate,
+  deleteDiscounts
+);
 
 //update route
 // router.put(
