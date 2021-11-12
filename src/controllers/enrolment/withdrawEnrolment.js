@@ -38,9 +38,9 @@ const withdrawEnrolment = async (req, res) => {
     let { memberId } = enrolment;
     let data = { memberId, sessionData };
     await cancelAllFutureBills(data, session);
-    let email = await findUserEmail(memberId);
+    let {userData,businessSessionData,businessClassData} = await findUserEmail(memberId,'',sessionData.classId);
     await session.commitTransaction();
-    WithdrawEnrollmentEmail.send({to:email});
+    WithdrawEnrollmentEmail.send(userData,sessionData,businessClassData);
     return res.status(201).send({ message: "cancellation successfull" });
   } catch (err) {
     console.error(err);

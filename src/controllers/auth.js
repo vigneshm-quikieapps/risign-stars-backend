@@ -12,6 +12,7 @@ module.exports.signup = async (req, res) => {
     let data = req.body;
     data = { ...data, mobileNoVerified: true };
     await User.create(data);
+    
     return res.status(201).send({ message: "created successfully" });
   } catch (err) {
     return res.status(400).send({ message: err.message });

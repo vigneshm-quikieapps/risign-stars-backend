@@ -6,6 +6,9 @@ const WithdrawEnrollmentEmail =  require("./WithdrawEnrollmentEmail");
 const SessionTransferEmail =  require("./SessionTransferEmail");
 const SuspendEmail =  require("./SuspendEmail");
 const ReturnFromSuspensionEmail =  require("./ReturnFromSuspensionEmail");
+const SuccessfullTrialEnrollmentEmail =  require("./SuccessfullTrialEnrollmentEmail");
+const SignUpEmail =  require("./SignUpEmail");
+
 
 module.exports = {
   OTPEmail,
@@ -15,5 +18,7 @@ module.exports = {
   WithdrawEnrollmentEmail,
   SessionTransferEmail,
   SuspendEmail,
-  ReturnFromSuspensionEmail
+  ReturnFromSuspensionEmail,
+  SuccessfullTrialEnrollmentEmail,
+  SignUpEmail
 };
