@@ -2,6 +2,8 @@ const mongoose = require("mongoose");
 const Enrolment = require("../../models/Enrolment");
 const BusinessSession = require("../../models/businessSession");
 const { cancelAllFutureBills } = require("../../helpers/bill");
+const { WithdrawEnrollmentEmail } = require("../../services/notification/Email");
+const { findUserEmail } = require("../../helpers/user/findUserEmail");
 
 // cancel Membership
 const withdrawEnrolment = async (req, res) => {
@@ -36,8 +38,9 @@ const withdrawEnrolment = async (req, res) => {
     let { memberId } = enrolment;
     let data = { memberId, sessionData };
     await cancelAllFutureBills(data, session);
-
+    let email = await findUserEmail(memberId);
     await session.commitTransaction();
+    WithdrawEnrollmentEmail.send({to:email});
     return res.status(201).send({ message: "cancellation successfull" });
   } catch (err) {
     console.error(err);

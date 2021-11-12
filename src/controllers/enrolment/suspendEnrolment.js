@@ -3,6 +3,8 @@ const Enrolment = require("../../models/Enrolment");
 const BusinessSession = require("../../models/businessSession");
 const { cancelAllFutureBills } = require("../../helpers/bill");
 const { STATUS_SUSPEND } = require("../../constants/enrolment");
+const { SuspendEmail } = require("../../services/notification/Email");
+const { findUserEmail } = require("../../helpers/user/findUserEmail");
 
 // cancel Membership
 const suspendEnrolment = async (req, res) => {
@@ -34,8 +36,9 @@ const suspendEnrolment = async (req, res) => {
     let { memberId } = enrolment;
     let data = { memberId, sessionData };
     await cancelAllFutureBills(data, session);
-
+    let email = await findUserEmail(memberId);
     await session.commitTransaction();
+    SuspendEmail.send({to:email});
     return res.status(201).send({ message: "suspension successful" });
   } catch (err) {
     console.error(err);
