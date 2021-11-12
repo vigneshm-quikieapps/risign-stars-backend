@@ -26,6 +26,18 @@ const businessSchema = new mongoose.Schema(
       required: true,
       enum: ENUM_BUSINESS_TYPE,
     },
+    contactName: {
+      type: String,
+    },
+    contactEmail: {
+      type: String,
+    },
+    primaryPhone: {
+      type: String,
+    },
+    primaryMobileNo: {
+      type: String,
+    },
     about: {
       type: String,
       maxlength: 3200,
