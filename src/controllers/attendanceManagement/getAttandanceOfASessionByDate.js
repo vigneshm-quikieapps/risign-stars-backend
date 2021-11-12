@@ -140,12 +140,12 @@ const getAttendanceOfASessionByDate = async (req, res) => {
       },
     ]);
 
-    // let attendance = null;
-    // if (attendances.length >= 1) {
-    //   attendance = attendances[0];
-    // }
+    let attendance = null;
+    if (attendances.length >= 1) {
+      attendance = attendances[0];
+    }
 
-    return res.send({ attendances });
+    return res.send({ attendance });
   } catch (err) {
     res.status(422).json({ message: err.message });
   }
