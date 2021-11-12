@@ -1,7 +1,7 @@
-const BusinessSession = require("../models/businessSession");
 const { getPaginationOptions } = require("../helpers/query");
-const Enrolment = require("../models/Enrolment");
+const { Enrolment, BusinessSession } = require("../models");
 const { auditCreatedBy, auditUpdatedBy } = require("../helpers/audit");
+const moment = require("moment");
 
 //Business Session creation
 module.exports.createBusinessSession = async (req, res) => {
@@ -76,7 +76,27 @@ module.exports.updateBusinessSession = async (req, res) => {
   try {
     let { businessSessionId } = req.params;
 
-    let businessSession = await BusinessSession.findByIdAndUpdate(
+    const { startTime, endTime, pattern, startDate, endDate } = req.body;
+    const updatedPattern = pattern.map((day) => ({ day, startTime, endTime }));
+    req.body.pattern = updatedPattern;
+
+    let businessSession = await BusinessSession.findById(businessSessionId);
+
+    let enrolmentCount = await Enrolment.count({
+      sessionId: businessSessionId,
+    });
+
+    if (
+      enrolmentCount &&
+      (!moment(startDate).isSame(businessSession.startDate) ||
+        !moment(endDate).isSame(businessSession.endDate))
+    ) {
+      throw new Error(
+        "startDate / endDate update is not allowed, session has at least one enrolment"
+      );
+    }
+
+    businessSession = await BusinessSession.findByIdAndUpdate(
       { _id: businessSessionId },
       { $set: { ...req.body, updatedBy: auditUpdatedBy(req) } },
       { new: true, useFindAndModify: false }
