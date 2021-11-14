@@ -9,12 +9,13 @@ const isValidSessionDate = async (date, { req }) => {
       throw new Error("pattern not available in session Data");
     }
 
-    let { day } = pattern[0];
-    let dayIndex = getDayIndexOfTheWeek(day);
     let providedDateIndex = moment(date).day();
+    for (const { day } of pattern) {
+      let dayIndex = getDayIndexOfTheWeek(day);
 
-    if (providedDateIndex != dayIndex) {
-      throw new Error("attendance date not matching with session pattern");
+      if (providedDateIndex != dayIndex) {
+        throw new Error("attendance date not matching with session pattern");
+      }
     }
 
     return true;

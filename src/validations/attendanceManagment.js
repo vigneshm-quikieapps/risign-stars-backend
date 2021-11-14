@@ -51,15 +51,15 @@ module.exports.addAttendance = () => {
       .custom(isValidSessionId)
       .bail()
       .custom(isMembersPartOfTheSession),
-    check("date", "should be: YYYY-MM-01")
+    check("date", "should be: YYYY-MM-DD")
       .isDate({
         format: "YYYY-MM-DD",
         strictMode: true,
       })
       .bail()
-      .custom(isValidSessionDate)
-      .bail()
-      .custom(canAddAttendance),
+      .custom(isValidSessionDate),
+    // .bail()
+    // .custom(canAddAttendance),
     check("records", "should be a array").isArray(),
     check("records.*.memberId", "should be a valid member id").isMongoId(),
     check("records.*.attended", "should be a boolean").isBoolean(),
