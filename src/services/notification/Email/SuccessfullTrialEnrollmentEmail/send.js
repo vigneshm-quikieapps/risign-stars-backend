@@ -8,7 +8,7 @@ const send = ({to},{userData,sessionData,classData}) => {
     from: FROM, // Change to your verified sender
     subject: "Enrolled Sucessfull",
     text: "and easy to do anywhere, even with Node.js",
-    html: `<strong>${userData.name} has been successfully enroll to ${sessionData.name} of ${classData.name}</strong>`,
+    html: `<strong>${userData.name} has been successfully trial enroll to ${sessionData.name} of ${classData.name}</strong>`,
   };
   sendEmail(msg);
 };

@@ -2,13 +2,13 @@ const sendEmail = require("../sendEmail");
 const { FROM } = require("../../../../constants/email");
 
 
-const send = ({to}) => {
+const send = ({to},{userData,sessionData,classData}) => {
   const msg = {
     to,
     from: FROM, // Change to your verified sender
-    subject: "Sending with SendGrid is Fun",
+    subject: "Enrolled Sucessfull",
     text: "and easy to do anywhere, even with Node.js",
-    html: `<strong>Return from suspension successful</strong>`,
+    html: `<strong>${userData.name} has been successfully return from suspension to ${sessionData.name} of ${classData.name}</strong>`,
   };
   sendEmail(msg);
 };

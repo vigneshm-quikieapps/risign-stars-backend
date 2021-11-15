@@ -3,8 +3,7 @@ const mongoose = require("mongoose");
 const getClubMembershipId = require("./getClubMembershipId");
 const trialEnrolmentHandler = require("./trialEnrolmentHandler");
 const nonTrialEnrolmentHandler = require("./nonTrialEnrolmentHandler");
-const { SuccessfullEnrollmentEmail } = require("../../../services/notification/Email");
-const { findUserEmail } = require("../../../helpers/user/findUserEmail");
+
 
 const { Enrolment } = require("../../../models");
 
@@ -19,7 +18,7 @@ const newEnrolmentHandler = async (req, res) => {
   session.startTransaction();
 
   try {
-    let { classId } = req.businessSessionData;
+    let { classId, _id } = req.businessSessionData;
     let { memberId, isTrialEnrolment } = req.body;
 
     /**
@@ -45,9 +44,9 @@ const newEnrolmentHandler = async (req, res) => {
     } else {
       message = await nonTrialEnrolmentHandler(req, session);
     }
-    let email = await findUserEmail(memberId);
+  
     await session.commitTransaction();
-    SuccessfullEnrollmentEmail.send({to:email});
+  
     return res.status(201).send({ message });
   } catch (err) {
     console.error(err);
