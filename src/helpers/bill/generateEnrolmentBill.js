@@ -20,8 +20,8 @@ const generateEnrolmentBill = async (
 ) => {
   let now = new Date();
 
-  let { term, classId, pattern } = sessionData;
-  let { startDate, endDate } = term;
+  let { term, classId, pattern, startDate, endDate } = sessionData;
+  // let { startDate, endDate } = term;
   let { charges: businessFinanceCharges, businessId } = businessFinanceData;
   let classCharges = classData.charges;
   let memberId = memberData._id;

@@ -1,5 +1,6 @@
 const moment = require("moment");
 const getNoOfSessions = require("../sessions/getNoOfSessions");
+const getNoOfWeeks = require("../sessions/getNoOfWeeks");
 
 /**
  * calculates the partial charge:
@@ -55,20 +56,30 @@ const partialCharge = ({ pattern, startDate, endDate, charge }) => {
     throw new Error("Start date and end date should be in the same month");
   }
 
-  let noOfSessions = getNoOfSessions({ pattern, startDate, endDate });
+  // let noOfSessions = getNoOfSessions({ pattern, startDate, endDate });
+  let noOfWeeks = getNoOfWeeks({ pattern, startDate, endDate });
 
-  console.log({ charge, noOfSessions });
+  console.log({ charge, noOfWeeks });
 
   /**
    * we are considering maximum of 4 classes in a month,
    * there might month where there are 5 classes in a month
    * but if a student attends 4 classes, he should pay for the whole month
    */
-  if (noOfSessions > 4) {
-    noOfSessions = 4;
+  // if (noOfSessions > 4) {
+  //   noOfSessions = 4;
+  // }
+
+  /**
+   * we are considering maximum of 4 weeks in a month,
+   * there might month where there are 5 weeks in a month
+   * but if a student attends 4 weeks, he should pay for the whole month
+   */
+  if (noOfWeeks > 4) {
+    noOfWeeks = 4;
   }
 
-  return (charge.amount * noOfSessions) / 4;
+  return (charge.amount * noOfWeeks) / 4;
 };
 
 module.exports = partialCharge;
