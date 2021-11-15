@@ -20,10 +20,11 @@ const transferEnrolment = async (req, res) => {
     let enrolment = await Enrolment.findById({_id:enrolmentId});
     let {memberId,sessionId,classId} = enrolment;
     let {userData,businessSessionData,businessClassData} = await findUserEmail(memberId,sessionId,classId);
+    let {email}=userData;
     await sessionTransferfunctionality(req, session);
     await session.commitTransaction();
     let newSession = await BusinessSession.findById({_id:req.body.newSessionId});
-    SessionTransferEmail.send(userData,businessSessionData,businessClassData,newSession);
+    SessionTransferEmail.send({to:email},{userData,businessSessionData,businessClassData,newSession});
     return res.status(201).send({ message: "Transfer successful" });
   } catch (err) {
     console.error(err);

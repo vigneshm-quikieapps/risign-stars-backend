@@ -2,9 +2,9 @@ const sendEmail = require("../sendEmail");
 const { FROM } = require("../../../../constants/email");
 
 
-const send = (userData,oldSessionData,classData,newSessionData) => {
+const send = ({to},{userData,oldSessionData,classData,newSessionData}) => {
   const msg = {
-    to:userData.email,
+    to,
     from: FROM, // Change to your verified sender
     subject: "Enrolled Sucessfull",
     text: "and easy to do anywhere, even with Node.js",

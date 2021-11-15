@@ -37,8 +37,9 @@ const suspendEnrolment = async (req, res) => {
     let data = { memberId, sessionData };
     await cancelAllFutureBills(data, session);
     let {userData,businessSessionData,businessClassData} = await findUserEmail(memberId,'',sessionData.classId);
+    let {email}=userData;
     await session.commitTransaction();
-    SuspendEmail.send(userData,sessionData,businessClassData);
+    SuspendEmail.send({to:email},{userData,sessionData,businessClassData});
     return res.status(201).send({ message: "suspension successful" });
   } catch (err) {
     console.error(err);

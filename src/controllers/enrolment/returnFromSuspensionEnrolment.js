@@ -42,8 +42,9 @@ const returnFromSuspensionEnrolment = async (req, res) => {
     let data = { memberId, sessionData, classData, enrolmentData, now };
     await activateAllFutureBills(data, session);
     let {userData,businessSessionData,businessClassData} = await findUserEmail(memberId,'','');
+    let {email}=userData;
     await session.commitTransaction();
-    ReturnFromSuspensionEmail.send(userData,sessionData,classData);
+    ReturnFromSuspensionEmail.send({to:email},{userData,sessionData,classData});
     return res
       .status(201)
       .send({ message: "return from suspension successful" });

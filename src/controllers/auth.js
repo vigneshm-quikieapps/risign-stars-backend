@@ -5,6 +5,7 @@ const expressJwt = require("express-jwt");
 const { generateTokens, RefreshToken } = require("../services/auth");
 const { OTPEmail } = require("../services/notification/Email");
 const { VerifyContactOTP } = require("../services/otp");
+const { SignUpEmail } = require("../services/notification/Email");
 
 // Signup Method
 module.exports.signup = async (req, res) => {
@@ -12,7 +13,7 @@ module.exports.signup = async (req, res) => {
     let data = req.body;
     data = { ...data, mobileNoVerified: true };
     await User.create(data);
-    
+    SignUpEmail.send(data);
     return res.status(201).send({ message: "created successfully" });
   } catch (err) {
     return res.status(400).send({ message: err.message });
