@@ -1,3 +1,4 @@
+const mongoose = require("mongoose");
 const {
   AttendanceOfAClassByDate,
 } = require("../../models/attendanceManagement");
@@ -32,8 +33,9 @@ const getAttendanceOfASessionByDate = async (req, res) => {
     }else{
       let startDate=req.sessionData.startDate;
       let endDate=req.sessionData.endDate;
-      if(date>=startDate && date<endDate){
-        let enrolments = await Enrolment.find({sessionId:sessionId,startDate:{$lte: date }});
+      let date1 = new Date(date);
+      if(date1>=startDate && date1<=endDate){
+        let enrolments = await Enrolment.find({sessionId:sessionId,startDate:{$lte: date1 }});
         if(enrolments.length>0){
           // create the record for the members
           req.body.records=[];
