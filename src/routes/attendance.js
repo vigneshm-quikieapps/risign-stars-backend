@@ -30,6 +30,7 @@ router.post(
 // get all the attendance of a session by date
 router.post(
   "/of-a-session-by-date",
+  isAuthorized(null, null),
   vr.getAttendanceOfASessionByDate(),
   validate,
   getAttendanceOfASessionByDate
