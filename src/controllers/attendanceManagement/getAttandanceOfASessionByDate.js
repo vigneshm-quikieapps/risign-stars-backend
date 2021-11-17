@@ -33,7 +33,7 @@ const getAttendanceOfASessionByDate = async (req, res) => {
       let startDate=req.sessionData.startDate;
       let endDate=req.sessionData.endDate;
       if(date>=startDate && date<endDate){
-        let enrolments = await Enrolment.find({sessionId:sessionId,enrolledStatus:'ENROLLED',startDate:{$lte: date }});
+        let enrolments = await Enrolment.find({sessionId:sessionId,startDate:{$lte: date }});
         if(enrolments.length>0){
           // create the record for the members
           req.body.records=[];
@@ -64,7 +64,7 @@ const getAttendanceOfASessionByDate = async (req, res) => {
   }
 };
 
-const aggregateResponse = async (sessionId,date,classId,businessId,req) => { 
+const aggregateResponse = async (sessionId,date,classId,businessId) => { 
   let attendances = await AttendanceOfAClassByDate.aggregate([
     {
       $match: {
