@@ -24,7 +24,7 @@ const getAttendanceOfASessionByDate = async (req, res) => {
     //   sessionId,
     // }).populate({ path: "records.memberId", select: "name gender dob" });
 
-    let attendances = await aggregateResponse(sessionId,date,classId,businessId,req);
+    let attendances = await aggregateResponse(sessionId,date,classId,businessId);
 
     let attendance = null;
     if (attendances.length >= 1) {
@@ -46,7 +46,7 @@ const getAttendanceOfASessionByDate = async (req, res) => {
             req.body.records.push(recordObj);
           }
           await addAttendanceHandler(req, { session });
-          attendances = aggregateResponse(sessionId,date,classId,businessId,req);
+          attendances = aggregateResponse(sessionId,date,classId,businessId);
           if(attendances.length >= 1) {
             attendance = attendances[0];
           }
