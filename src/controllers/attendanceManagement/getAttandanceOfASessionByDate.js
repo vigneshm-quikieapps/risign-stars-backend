@@ -48,7 +48,7 @@ const getAttendanceOfASessionByDate = async (req, res) => {
             req.body.records.push(recordObj);
           }
           await addAttendanceHandler(req, { session });
-          attendances = aggregateResponse(sessionId,date,classId,businessId);
+          attendances = await aggregateResponse(sessionId,date,classId,businessId);
           if(attendances.length >= 1) {
             attendance = attendances[0];
           }
