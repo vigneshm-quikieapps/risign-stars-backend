@@ -10,12 +10,19 @@ const isValidSessionDate = async (date, { req }) => {
     }
 
     let providedDateIndex = moment(date).day();
+
+    let patternMatched = false;
     for (const { day } of pattern) {
       let dayIndex = getDayIndexOfTheWeek(day);
 
-      if (providedDateIndex != dayIndex) {
-        throw new Error("attendance date not matching with session pattern");
+      if (providedDateIndex === dayIndex) {
+        patternMatched = true;
+        break;
       }
+    }
+
+    if (!patternMatched) {
+      throw new Error("attendance date not matching with session pattern");
     }
 
     return true;
