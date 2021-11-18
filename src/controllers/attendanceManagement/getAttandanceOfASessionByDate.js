@@ -45,7 +45,7 @@ const getAttendanceOfASessionByDate = async (req, res) => {
             let recordObj = {
               'memberId':enrolments[i].memberId,
               'attended':false,
-              'comment':''
+              'comments':''
             }
             req.body.records.push(recordObj);
          }

@@ -48,9 +48,9 @@ const isMembersPartOfTheSession = async (sessionId, { req }) => {
 module.exports.addAttendance = () => {
   return [
     check("sessionId", BUSINESS_SESSION.ID.MESSAGE)
-      .custom(isValidSessionId)
-      .bail()
-      .custom(isMembersPartOfTheSession),
+      .custom(isValidSessionId),
+      // .bail()
+      // .custom(isMembersPartOfTheSession),
     check("date", "should be: YYYY-MM-DD")
       .isDate({
         format: "YYYY-MM-DD",
