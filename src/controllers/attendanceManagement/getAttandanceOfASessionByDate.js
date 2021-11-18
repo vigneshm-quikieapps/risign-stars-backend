@@ -36,23 +36,25 @@ const getAttendanceOfASessionByDate = async (req, res) => {
       let date1 = new Date(date);
       if(date1>=startDate && date1<=endDate){
         let enrolments = await Enrolment.find({sessionId:sessionId,startDate:{$lte: date1 }});
-        if(enrolments.length>0){
+        if(enrolments.length==0){
+          throw new Error("No enrollments are there");
+        }
           // create the record for the members
-          req.body.records=[];
-          for(let i=0;i<enrolments.length;i++){
+        req.body.records=[];
+        for(let i=0;i<enrolments.length;i++){
             let recordObj = {
               'memberId':enrolments[i].memberId,
               'attended':false,
               'comment':''
             }
             req.body.records.push(recordObj);
-          }
-          await addAttendanceHandler(req, { session });
-          attendances = await aggregateResponse(sessionId,date,classId,businessId);
-          if(attendances.length >= 1) {
-            attendance = attendances[0];
-          }
+         }
+        await addAttendanceHandler(req, { session });
+        attendances = await aggregateResponse(sessionId,date,classId,businessId);
+        if(attendances.length >= 1) {
+          attendance = attendances[0];
         }
+        
       }
     }
 

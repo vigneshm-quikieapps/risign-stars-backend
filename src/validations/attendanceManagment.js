@@ -74,7 +74,9 @@ module.exports.getAttendanceOfASessionByDate = () => {
     check("date", "should be: YYYY-MM-DD").isDate({
       format: "YYYY-MM-DD",
       strictMode: true,
-    }),
+    })
+    .bail()
+    .custom(isValidSessionDate),
   ];
 };
 
