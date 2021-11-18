@@ -8,6 +8,7 @@ const getAttendanceOfAMemberInAClassByMonth = require("./getAttendanceOfAMemberI
 const getAttendanceOfAMemberInASession = require("./getAttendanceOfAMemberInASession");
 const getAttendanceOfAMemberInASessionByDate = require("./getAttendanceOfAMemberInASessionByDate");
 const getAttendanceOfAMemberInASessionByMonth = require("./getAttendanceOfAMemberInASessionByMonth");
+const testingEndPoint = require("./testingEndPoint");
 
 /**
  * attendance Management controller
@@ -23,6 +24,7 @@ module.exports = {
   getAttendanceOfAMemberInASession,
   getAttendanceOfAMemberInASessionByDate,
   getAttendanceOfAMemberInASessionByMonth,
+  testingEndPoint
 };
 
 // module.exports.test = async (req, res) => {
