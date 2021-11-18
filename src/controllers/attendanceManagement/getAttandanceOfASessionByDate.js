@@ -45,11 +45,12 @@ const getAttendanceOfASessionByDate = async (req, res) => {
             let recordObj = {
               'memberId':enrolments[i].memberId,
               'attended':false,
-              'comment':''
+              'comments':''
             }
             req.body.records.push(recordObj);
          }
         await addAttendanceHandler(req, { session });
+        await session.commitTransaction();
         attendances = await aggregateResponse(sessionId,date,classId,businessId);
         if(attendances.length >= 1) {
           attendance = attendances[0];
@@ -58,7 +59,6 @@ const getAttendanceOfASessionByDate = async (req, res) => {
       }
     }
 
-    await session.commitTransaction();
     return res.send({ attendance });
   } catch (err) {
     await session.abortTransaction();
