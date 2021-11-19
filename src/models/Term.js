@@ -31,6 +31,10 @@ const termSchema = new mongoose.Schema(
       type: ObjectId,
       ref: "User",
     },
+    termFee:{
+      type:Number,
+      required: true,
+    }
     // classsequence: {
     //   type: Number,
     // },
