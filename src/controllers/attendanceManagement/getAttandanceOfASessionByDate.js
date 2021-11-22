@@ -93,6 +93,14 @@ const aggregateResponse = async (sessionId,date,classId,businessId) => {
     },
     {
       $lookup: {
+        from: "enrolments",
+        localField: "member._id",
+        foreignField: "memberId",
+        as: "enrolments",
+      },
+    },
+    {
+      $lookup: {
         from: "users",
         localField: "member.userId",
         foreignField: "_id",
@@ -114,11 +122,29 @@ const aggregateResponse = async (sessionId,date,classId,businessId) => {
         "parent.name": 1,
         "parent.email": 1,
         "parent.mobileNo": 1,
+        enrolments:1,
         createdAt: 1,
         createdBy: 1,
         updatedAt: 1,
         updatedBy: 1,
       },
+    },
+    {
+      $addFields: {
+        enrolment: {
+          $filter: {
+            input: "$enrolments",
+            as: "enrolment",
+            cond: { $and: [ 
+              { $eq: ["$$enrolment.sessionId", ObjectId(sessionId)]},
+              { $eq: ["$$enrolment.memberId", "$member._id"]}
+             ]},
+          },
+        },
+      },
+    },
+    {
+      $unwind: "$enrolment",
     },
     {
       $addFields: {
@@ -148,6 +174,7 @@ const aggregateResponse = async (sessionId,date,classId,businessId) => {
     {
       $addFields: {
         "member.parent": "$parent",
+        "member.enrolment": "$enrolment",
       },
     },
     {
@@ -157,7 +184,7 @@ const aggregateResponse = async (sessionId,date,classId,businessId) => {
       },
     },
     {
-      $unset: ["member", "memberConsent", "membership", "parent"],
+      $unset: ["member", "memberConsent", "membership", "parent","enrolments","enrolment"],
     },
     {
       $group: {
