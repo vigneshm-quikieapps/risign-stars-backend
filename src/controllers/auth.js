@@ -35,10 +35,14 @@ module.exports.signin = async (req, res) => {
 
     let user = await User.findOne({ mobileNo });
 
-    if (!user || !user.isValidPassword(password)) {
+    if (!user) {
       throw new DoesNotExistError();
     }
 
+    if (!user.isValidPassword(password)){
+      throw new Error('Username or password is not correct') ;
+    }
+    
     let data = generateTokens({ user });
     RefreshToken.send(res, data.refreshToken);
 
