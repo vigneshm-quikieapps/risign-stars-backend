@@ -37,7 +37,9 @@ const getAttendanceOfASessionByDate = async (req, res) => {
       if(date1>=startDate && date1<=endDate){
         let enrolments = await Enrolment.find({sessionId:sessionId,startDate:{$lte: date1 }});
         if(enrolments.length==0){
-          throw new Error("No enrollments are there");
+          attendance={}
+          attendance.records=[]
+          return res.send({ message:'No enrollments are there',attendance });
         }
           // create the record for the members
         req.body.records=[];
