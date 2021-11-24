@@ -3,6 +3,7 @@ const { FROM } = require("../../../../constants/email");
 
 
 const send = ({to},{userData,businessSessionData,businessClassData,newSession}) => {
+  // arguments sending from send function has to match with the parameters.
   const msg = {
     to,
     from: FROM, // Change to your verified sender
