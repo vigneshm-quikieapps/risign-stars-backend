@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const { Types } = require("mongoose");
 const { BusinessSession, Enrolment,Member,BusinessClass,BusinessFinance,MemberConsent} = require("../../models");
 const { generateEnrolmentBill } = require("../../helpers/bill");
 const { findUserEmail } = require("../../helpers/user/findUserEmail");
