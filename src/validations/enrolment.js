@@ -196,7 +196,30 @@ const returnFromSuspensionEnrolmentValidationRules = () => {
 };
 
 const updateWaitlistEnrolmentValidationRules = () => {
-  return [body("sessionId", "min length should be 2").custom(isValidSession)];
+  // return [body("sessionId", "min length should be 2").custom(isValidSession)];
+  return [
+    body("sessionId", "min length should be 2").custom(isValidSession),
+    body("memberId", "min length should be 2").custom(isValidMember),
+    // body("name", "min length should be 2 and max length should be 70").isLength(
+    //   { min: 2, max: 70 }
+    // ),
+    body("consent").isObject(),
+    body("consent.allergies", "min length should be 2").isLength({
+      min: 2,
+    }),
+    body("consent.condition", "min length should be 2").isLength({
+      min: 2,
+    }),
+    body("consent.photographConsent", "value should be boolean").isBoolean(
+      true
+    ),
+    body("consent.signedByParent", "value should be boolean").isBoolean(true),
+    body("newsletter").isObject(),
+    body("newsletter.email", "value should be boolean").isBoolean(true),
+    body("newsletter.telephone", "value should be boolean").isBoolean(true),
+    body("newsletter.sms", "value should be boolean").isBoolean(true),
+    // body("startDate", "must be a valid date").isDate().trim(),
+  ];
 };
 
 /**
