@@ -3,7 +3,7 @@ const { Types } = require("mongoose");
 const { BusinessSession, Enrolment,Member,BusinessClass,BusinessFinance,MemberConsent} = require("../../models");
 const { generateEnrolmentBill } = require("../../helpers/bill");
 const { findUserEmail } = require("../../helpers/user/findUserEmail");
-const { UpdateWaitListEnrolment } = require("../../services/notification/Email");
+const { UpdateWaitListEnrolmentEmail } = require("../../services/notification/Email");
 
 // update enrolment for waitlist
 const updateWaitlistEnrolment = async (req, res) => {
@@ -13,11 +13,9 @@ const updateWaitlistEnrolment = async (req, res) => {
 
   try {
     let { memberId, isTrialEnrolment,sessionId,consent, newsletter  } = req.body;
-    const businessSessiondata = await BusinessSession.findOne({
-      _id: req.body.sessionId,
-    }).session(session);
+    const businessSessiondata = req.businessSessionData;
     let { classId } = businessSessiondata;
-    
+    let { memberData } = req;
 
     let capacityLeft = businessSessiondata.fullcapacity - businessSessiondata.fullcapacityfilled;
     if(capacityLeft>0){
@@ -31,24 +29,25 @@ const updateWaitlistEnrolment = async (req, res) => {
       );
       if(updatedEnrollemnt){
         let {clubMembershipId,businessId} = updatedEnrollemnt;
-
-        let consentFilter = { clubMembershipId };
-        let consentUpdate = {
-          businessId,
-          memberId,
-          clubMembershipId,
-          consent,
-          newsletter,
-        };
-        let consentOption = {
-          new: true,
-          upsert: true,
-        };
-        await MemberConsent.findOneAndUpdate(
-          consentFilter,
-          consentUpdate,
-          consentOption
-        ).session(session);
+        if(consent){
+          let consentFilter = { clubMembershipId };
+          let consentUpdate = {
+            businessId,
+            memberId,
+            clubMembershipId,
+            consent,
+            newsletter,
+          };
+          let consentOption = {
+            new: true,
+            upsert: true,
+          };
+          await MemberConsent.findOneAndUpdate(
+            consentFilter,
+            consentUpdate,
+            consentOption
+          ).session(session);
+        }
       
         await BusinessSession.findOneAndUpdate(
             { sessionId: req.body.sessionId },
@@ -64,7 +63,6 @@ const updateWaitlistEnrolment = async (req, res) => {
         });
 
         let classData = await BusinessClass.findById(classId);
-        let memberData = await Member.findById(memberId);
         let sessionData=businessSessiondata;
         let enrolmentBillData = {
           businessFinanceData,
@@ -78,7 +76,7 @@ const updateWaitlistEnrolment = async (req, res) => {
         businessSessionData=sessionData;
         businessClassData=classData;
         let {email}=userData;
-        UpdateWaitListEnrolment.send({to:email},{userData,businessSessionData,businessClassData});
+        UpdateWaitListEnrolmentEmail.send({to:email},{userData,businessSessionData,businessClassData});
         await session.commitTransaction();
         return res.status(201).send({ message:'enrolled successful!' });
       }else{

@@ -203,17 +203,17 @@ const updateWaitlistEnrolmentValidationRules = () => {
     // body("name", "min length should be 2 and max length should be 70").isLength(
     //   { min: 2, max: 70 }
     // ),
-    body("consent").isObject(),
+    body("consent").isObject().optional(),
     body("consent.allergies", "min length should be 2").isLength({
       min: 2,
-    }),
+    }).optional(),
     body("consent.condition", "min length should be 2").isLength({
       min: 2,
-    }),
+    }).optional(),
     body("consent.photographConsent", "value should be boolean").isBoolean(
       true
-    ),
-    body("consent.signedByParent", "value should be boolean").isBoolean(true),
+    ).optional(),
+    body("consent.signedByParent", "value should be boolean").isBoolean(true).optional(),
     body("newsletter").isObject(),
     body("newsletter.email", "value should be boolean").isBoolean(true),
     body("newsletter.telephone", "value should be boolean").isBoolean(true),
