@@ -2,7 +2,6 @@ const express = require("express");
 const router = express.Router();
 
 const validate = require("../validations/validate");
-
 const {
   // getBusinessClassIdById,
   getBusinessClass,
@@ -21,18 +20,15 @@ const {
 const { getAllBusinessSession } = require("../controllers/businessSession");
 const { isAuthorized } = require("../middlewares/auth");
 const { getAllTermsInAClass } = require("../controllers/term");
+const { CLASS_DEFINITION } = require("../constants/pages");
+const getResourceBusinessIdInCreate = require("../middlewares/auth/utils/getResourceBusinessIdInCreate");
+const getResourceBusinessIdInUpdate = require("../middlewares/auth/utils/getResourceBusinessIdInUpdate");
+const isAuthHandler = require("../middlewares/auth/utils/isAuthHandler");
 
 //parameters
 // router.param("businessClassId", getBusinessClassIdById);
 
 //all of actual routes
-
-const isAuthHandler = (req, res) => {
-  /**
-   * TODO: add the logic.
-   */
-  return true;
-};
 
 router.get(
   "/of-logged-in-user",
@@ -43,7 +39,9 @@ router.get(
 //create route
 router.post(
   "/",
-  isAuthorized(null, null),
+  isAuthorized(CLASS_DEFINITION, "create", {
+    getResourceBusinessId: getResourceBusinessIdInCreate,
+  }),
   createClassValidationRules(),
   validate,
   createBusinessClass
@@ -55,7 +53,9 @@ router.get("/:businessClassId", getBusinessClass);
 //delete route
 router.delete(
   "/:businessClassId",
-  isAuthorized(null, null),
+  isAuthorized(CLASS_DEFINITION, "delete", {
+    getResourceBusinessId: getResourceBusinessIdInUpdate,
+  }),
   // isBusinessClassRestricted,
   deleteBusinessClass
 );
@@ -63,7 +63,9 @@ router.delete(
 //update route
 router.put(
   "/:businessClassId",
-  isAuthorized(null, null),
+  isAuthorized(CLASS_DEFINITION, "update", {
+    getResourceBusinessId: getResourceBusinessIdInUpdate,
+  }),
   updateClassValidationRules(),
   validate,
   updateBusinessClass

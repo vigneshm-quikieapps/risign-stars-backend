@@ -1,7 +1,7 @@
-const CREATE = "CREATE";
-const READ = "READ";
-const UPDATE = "UPDATE";
-const DELETE = "DELETE";
+const CREATE = "create";
+const READ = "read";
+const UPDATE = "update";
+const DELETE = "delete";
 const CRUD = [CREATE, READ, UPDATE, DELETE];
 const REST_API = {
   METHODS: {

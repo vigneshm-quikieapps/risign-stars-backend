@@ -12,6 +12,7 @@ const {
 } = require("../controllers/enrolment");
 const suspendEnrolment = require("../controllers/enrolment/suspendEnrolment");
 const { isAuthorized } = require("../middlewares/auth");
+const { Member } = require("../models");
 const {
   createEnrolementValidationRules,
   withdrawEnrolmentValidationRules,
@@ -25,11 +26,20 @@ const {
 } = require("../validations/enrolment");
 const validate = require("../validations/validate");
 const validateSingle = require("../validations/validateSingle");
+const UnauthorizedError = require("../exceptions/UnauthorizedError");
 
+const isAuthHandler = async (req, res) => {
+  const memberId = req.body.memberId;
+  const member = await Member.findById(memberId);
+  if (req.tokenData._id !== member.userId) {
+    throw new UnauthorizedError();
+  }
+  return true;
+};
 /** routes */
 router.post(
   "/",
-  isAuthorized(null, null),
+  isAuthorized(null, null, { isAuthHandler }),
   createEnrolementValidationRules(),
   validate,
   newEnrolment
