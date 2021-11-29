@@ -10,7 +10,9 @@ const businessFilter = (filters) => {
   }
 
   for (let i = 0; i < filters.length; i++) {
-    let { field, type, value } = filters[i];
+    let filter = JSON.parse(filters[i]);
+
+    let { field, type, value } = filter;
     if (!field || typeof field != "string") {
       return Promise.reject(`filters[${i}].field should be string`);
     }
