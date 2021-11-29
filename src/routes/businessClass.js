@@ -24,7 +24,7 @@ const { CLASS_DEFINITION } = require("../constants/pages");
 const getResourceBusinessIdInCreate = require("../middlewares/auth/utils/getResourceBusinessIdInCreate");
 const getResourceBusinessIdInUpdate = require("../middlewares/auth/utils/getResourceBusinessIdInUpdate");
 const isAuthHandler = require("../middlewares/auth/utils/isAuthHandler");
-const { CREATE, DELETE, UPDATE, READ } = require("../constants/rest");
+const { CREATE, DELETE, UPDATE } = require("../constants/rest");
 
 //parameters
 // router.param("businessClassId", getBusinessClassIdById);
