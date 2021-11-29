@@ -26,7 +26,7 @@ const updateWaitlistEnrolment = async (req, res) => {
         {
           new: true
         }
-      );
+      ).session(session);
       if(updatedEnrollemnt){
         let {clubMembershipId,businessId} = updatedEnrollemnt;
         if(consent){
