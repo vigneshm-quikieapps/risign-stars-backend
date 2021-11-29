@@ -47,10 +47,9 @@ const isMembersPartOfTheSession = async (sessionId, { req }) => {
 // validation for add attendance of members in a session
 module.exports.addAttendance = () => {
   return [
-    check("sessionId", BUSINESS_SESSION.ID.MESSAGE)
-      .custom(isValidSessionId),
-      // .bail()
-      // .custom(isMembersPartOfTheSession),
+    check("sessionId", BUSINESS_SESSION.ID.MESSAGE).custom(isValidSessionId),
+    // .bail()
+    // .custom(isMembersPartOfTheSession),
     check("date", "should be: YYYY-MM-DD")
       .isDate({
         format: "YYYY-MM-DD",
@@ -71,12 +70,13 @@ module.exports.addAttendance = () => {
 module.exports.getAttendanceOfASessionByDate = () => {
   return [
     check("sessionId", BUSINESS_SESSION.ID.MESSAGE).custom(isValidSessionId),
-    check("date", "should be: YYYY-MM-DD").isDate({
-      format: "YYYY-MM-DD",
-      strictMode: true,
-    })
-    .bail()
-    .custom(isValidSessionDate),
+    check("date", "should be: YYYY-MM-DD")
+      .isDate({
+        format: "YYYY-MM-DD",
+        strictMode: true,
+      })
+      .bail()
+      .custom(isValidSessionDate),
   ];
 };
 

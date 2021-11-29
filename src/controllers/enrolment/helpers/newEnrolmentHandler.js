@@ -4,7 +4,6 @@ const getClubMembershipId = require("./getClubMembershipId");
 const trialEnrolmentHandler = require("./trialEnrolmentHandler");
 const nonTrialEnrolmentHandler = require("./nonTrialEnrolmentHandler");
 
-
 const { Enrolment } = require("../../../models");
 
 /**
@@ -44,9 +43,9 @@ const newEnrolmentHandler = async (req, res) => {
     } else {
       message = await nonTrialEnrolmentHandler(req, session);
     }
-  
+
     await session.commitTransaction();
-  
+
     return res.status(201).send({ message });
   } catch (err) {
     console.error(err);

@@ -39,10 +39,10 @@ module.exports.signin = async (req, res) => {
       throw new DoesNotExistError();
     }
 
-    if (!user.isValidPassword(password)){
-      throw new Error('Username or password is not correct') ;
+    if (!user.isValidPassword(password)) {
+      throw new Error("Username or password is not correct");
     }
-    
+
     let data = generateTokens({ user });
     RefreshToken.send(res, data.refreshToken);
 
