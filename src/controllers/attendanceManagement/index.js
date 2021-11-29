@@ -24,7 +24,7 @@ module.exports = {
   getAttendanceOfAMemberInASession,
   getAttendanceOfAMemberInASessionByDate,
   getAttendanceOfAMemberInASessionByMonth,
-  testingEndPoint
+  testingEndPoint,
 };
 
 // module.exports.test = async (req, res) => {

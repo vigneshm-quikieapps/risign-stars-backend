@@ -1,4 +1,8 @@
 const getResourceBusinessIdInCreate = (req, res) => {
-  return req.body.businessId;
+  if (req.body.businessId) {
+    return req.body.businessId;
+  } else {
+    return false;
+  }
 };
 module.exports = getResourceBusinessIdInCreate;

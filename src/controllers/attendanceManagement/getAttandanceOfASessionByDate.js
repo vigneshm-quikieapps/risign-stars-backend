@@ -25,39 +25,51 @@ const getAttendanceOfASessionByDate = async (req, res) => {
     //   sessionId,
     // }).populate({ path: "records.memberId", select: "name gender dob" });
 
-    let attendances = await aggregateResponse(sessionId,date,classId,businessId);
+    let attendances = await aggregateResponse(
+      sessionId,
+      date,
+      classId,
+      businessId
+    );
 
     let attendance = null;
     if (attendances.length >= 1) {
       attendance = attendances[0];
-    }else{
-      let startDate=req.sessionData.startDate;
-      let endDate=req.sessionData.endDate;
+    } else {
+      let startDate = req.sessionData.startDate;
+      let endDate = req.sessionData.endDate;
       let date1 = new Date(date);
-      if(date1>=startDate && date1<=endDate){
-        let enrolments = await Enrolment.find({sessionId:sessionId,startDate:{$lte: date1 }});
-        if(enrolments.length==0){
-          attendance={}
-          attendance.records=[]
-          return res.send({ message:'No enrollments are there',attendance });
+      if (date1 >= startDate && date1 <= endDate) {
+        let enrolments = await Enrolment.find({
+          sessionId: sessionId,
+          startDate: { $lte: date1 },
+        });
+        if (enrolments.length == 0) {
+          attendance = {};
+          attendance.records = [];
+          return res.send({ message: "No enrollments are there", attendance });
         }
-          // create the record for the members
-        req.body.records=[];
-        for(let i=0;i<enrolments.length;i++){
-            let recordObj = {
-              'memberId':enrolments[i].memberId,
-              'attended':false,
-              'comments':''
-            }
-            req.body.records.push(recordObj);
-         }
+        // create the record for the members
+        req.body.records = [];
+        for (let i = 0; i < enrolments.length; i++) {
+          let recordObj = {
+            memberId: enrolments[i].memberId,
+            attended: false,
+            comments: "",
+          };
+          req.body.records.push(recordObj);
+        }
         await addAttendanceHandler(req, { session });
         await session.commitTransaction();
-        attendances = await aggregateResponse(sessionId,date,classId,businessId);
-        if(attendances.length >= 1) {
+        attendances = await aggregateResponse(
+          sessionId,
+          date,
+          classId,
+          businessId
+        );
+        if (attendances.length >= 1) {
           attendance = attendances[0];
         }
-        
       }
     }
 
@@ -65,12 +77,12 @@ const getAttendanceOfASessionByDate = async (req, res) => {
   } catch (err) {
     await session.abortTransaction();
     res.status(422).json({ message: err.message });
-  }finally {
+  } finally {
     session.endSession();
   }
 };
 
-const aggregateResponse = async (sessionId,date,classId,businessId) => { 
+const aggregateResponse = async (sessionId, date, classId, businessId) => {
   let attendances = await AttendanceOfAClassByDate.aggregate([
     {
       $match: {
@@ -124,7 +136,7 @@ const aggregateResponse = async (sessionId,date,classId,businessId) => {
         "parent.name": 1,
         "parent.email": 1,
         "parent.mobileNo": 1,
-        enrolments:1,
+        enrolments: 1,
         createdAt: 1,
         createdBy: 1,
         updatedAt: 1,
@@ -137,10 +149,12 @@ const aggregateResponse = async (sessionId,date,classId,businessId) => {
           $filter: {
             input: "$enrolments",
             as: "enrolment",
-            cond: { $and: [ 
-              { $eq: ["$$enrolment.sessionId", ObjectId(sessionId)]},
-              { $eq: ["$$enrolment.memberId", "$member._id"]}
-             ]},
+            cond: {
+              $and: [
+                { $eq: ["$$enrolment.sessionId", ObjectId(sessionId)] },
+                { $eq: ["$$enrolment.memberId", "$member._id"] },
+              ],
+            },
           },
         },
       },
@@ -186,7 +200,14 @@ const aggregateResponse = async (sessionId,date,classId,businessId) => {
       },
     },
     {
-      $unset: ["member", "memberConsent", "membership", "parent","enrolments","enrolment"],
+      $unset: [
+        "member",
+        "memberConsent",
+        "membership",
+        "parent",
+        "enrolments",
+        "enrolment",
+      ],
     },
     {
       $group: {
@@ -218,8 +239,8 @@ const aggregateResponse = async (sessionId,date,classId,businessId) => {
       },
     },
   ]);
-  
-  return attendances
-}
+
+  return attendances;
+};
 
 module.exports = getAttendanceOfASessionByDate;

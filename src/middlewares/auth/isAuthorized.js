@@ -59,7 +59,7 @@ const isAuthorized =
     // }
 
     switch (true) {
-      case page == null && action == null:
+      case page == null && action == null && !options.isAuthHandler:
         //it allows users who has valid access token
         next();
         break;
@@ -82,7 +82,7 @@ const isAuthorized =
               throw err;
             }
 
-            isAuthHandler(req, res);
+            await isAuthHandler(req, res);
             next();
           } catch (err2) {
             console.error(err2.message);
@@ -102,7 +102,7 @@ const checkIsAuthorized = async (req, res, next, { page, action, options }) => {
 
   let tokenPayload = req.authUserData;
   let businessId = await options.getResourceBusinessId(req, res);
-  console.log(businessId);
+  //console.log("bussinessId from getResourceBusinessId funcn:", businessId);
   /**
    * if data privileges type is "ALL": the user has full access to any api
    * else check if the user has permission for that particular api

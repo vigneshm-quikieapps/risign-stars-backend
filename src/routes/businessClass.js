@@ -24,6 +24,7 @@ const { CLASS_DEFINITION } = require("../constants/pages");
 const getResourceBusinessIdInCreate = require("../middlewares/auth/utils/getResourceBusinessIdInCreate");
 const getResourceBusinessIdInUpdate = require("../middlewares/auth/utils/getResourceBusinessIdInUpdate");
 const isAuthHandler = require("../middlewares/auth/utils/isAuthHandler");
+const { CREATE, DELETE, UPDATE } = require("../constants/rest");
 
 //parameters
 // router.param("businessClassId", getBusinessClassIdById);
@@ -39,7 +40,7 @@ router.get(
 //create route
 router.post(
   "/",
-  isAuthorized(CLASS_DEFINITION, "create", {
+  isAuthorized(CLASS_DEFINITION, CREATE, {
     getResourceBusinessId: getResourceBusinessIdInCreate,
   }),
   createClassValidationRules(),
@@ -53,7 +54,7 @@ router.get("/:businessClassId", getBusinessClass);
 //delete route
 router.delete(
   "/:businessClassId",
-  isAuthorized(CLASS_DEFINITION, "delete", {
+  isAuthorized(CLASS_DEFINITION, DELETE, {
     getResourceBusinessId: getResourceBusinessIdInUpdate,
   }),
   // isBusinessClassRestricted,
@@ -63,7 +64,7 @@ router.delete(
 //update route
 router.put(
   "/:businessClassId",
-  isAuthorized(CLASS_DEFINITION, "update", {
+  isAuthorized(CLASS_DEFINITION, UPDATE, {
     getResourceBusinessId: getResourceBusinessIdInUpdate,
   }),
   updateClassValidationRules(),

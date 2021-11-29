@@ -1,8 +1,10 @@
 const sendEmail = require("../sendEmail");
 const { FROM } = require("../../../../constants/email");
 
-
-const send = ({to},{userData,oldSessionData,classData,newSessionData}) => {
+const send = (
+  { to },
+  { userData, oldSessionData, classData, newSessionData }
+) => {
   const msg = {
     to,
     from: FROM, // Change to your verified sender
