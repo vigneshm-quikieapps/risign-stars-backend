@@ -75,7 +75,7 @@ const isAuthorized =
           next();
         } catch (err) {
           try {
-            //it allowshandle for parent
+            //it allows/restrict the access to a resource by a parent
             let { isAuthHandler } = options;
 
             if (!isAuthHandler) {
