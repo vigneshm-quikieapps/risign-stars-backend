@@ -1,8 +1,9 @@
-const { BusinessSession, Enrolment } = require("../../../models");
+const { BusinessSession, Enrolment,MemberConsent } = require("../../../models");
 const enrolmentPayloadRequest = require("./enrolmentPayloadRequest");
 
 const waitlistedEnrolment = async (req, session) => {
-  let { sessionId } = req.body;
+  let { sessionId,memberId,consent, newsletter } = req.body;
+  let { businessId } = req.businessSessionData;
 
   // creating enrolment till session capacity
   const createEnrolmentData = await enrolmentPayloadRequest(req);
@@ -16,6 +17,25 @@ const waitlistedEnrolment = async (req, session) => {
     ],
     { session }
   );
+
+  let {clubMembershipId} = req;
+  let consentFilter = { clubMembershipId };
+  let consentUpdate = {
+    businessId,
+    memberId,
+    clubMembershipId,
+    consent,
+    newsletter,
+  };
+  let consentOption = {
+    new: true,
+    upsert: true,
+  };
+  await MemberConsent.findOneAndUpdate(
+    consentFilter,
+    consentUpdate,
+    consentOption
+  ).session(session);
 
   // // creating progress Record
   // const createProgressData = await progressPayloadRequest(req, enrolment);

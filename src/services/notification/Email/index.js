@@ -8,6 +8,8 @@ const SuspendEmail =  require("./SuspendEmail");
 const ReturnFromSuspensionEmail =  require("./ReturnFromSuspensionEmail");
 const SuccessfullTrialEnrollmentEmail =  require("./SuccessfullTrialEnrollmentEmail");
 const SignUpEmail =  require("./SignUpEmail");
+const UpdateWaitListEnrolmentEmail =  require("./UpdateWaitListEnrolmentEmail");
+
 
 
 module.exports = {
@@ -20,5 +22,6 @@ module.exports = {
   SuspendEmail,
   ReturnFromSuspensionEmail,
   SuccessfullTrialEnrollmentEmail,
-  SignUpEmail
+  SignUpEmail,
+  UpdateWaitListEnrolmentEmail
 };

@@ -1,5 +1,9 @@
 const mongoose = require("mongoose");
-const { BusinessSession, Enrolment } = require("../../models");
+const { Types } = require("mongoose");
+const { BusinessSession, Enrolment,Member,BusinessClass,BusinessFinance,MemberConsent} = require("../../models");
+const { generateEnrolmentBill } = require("../../helpers/bill");
+const { findUserEmail } = require("../../helpers/user/findUserEmail");
+const { UpdateWaitListEnrolmentEmail } = require("../../services/notification/Email");
 
 // update enrolment for waitlist
 const updateWaitlistEnrolment = async (req, res) => {
@@ -8,42 +12,84 @@ const updateWaitlistEnrolment = async (req, res) => {
   session.startTransaction();
 
   try {
-    const businessSessiondata = await BusinessSession.findOne({
-      _id: req.body.sessionId,
-    }).session(session);
+    let { memberId, isTrialEnrolment,sessionId,consent, newsletter  } = req.body;
+    const businessSessiondata = req.businessSessionData;
+    let { classId } = businessSessiondata;
+    let { memberData } = req;
 
-    let capacityLeft =
-      businessSessiondata.fullcapacity - businessSessiondata.fullcapacityfilled;
+    let capacityLeft = businessSessiondata.fullcapacity - businessSessiondata.fullcapacityfilled;
+    if(capacityLeft>0){
+      
+      let updatedEnrollemnt = await Enrolment.findOneAndUpdate(
+        {sessionId:req.body.sessionId,memberId:req.body.memberId,enrolledStatus:'WAITLISTED'},
+        {enrolledStatus: "ENROLLED"},
+        {
+          new: true
+        }
+      ).session(session);
+      if(updatedEnrollemnt){
+        let {clubMembershipId,businessId} = updatedEnrollemnt;
+        if(consent){
+          let consentFilter = { clubMembershipId };
+          let consentUpdate = {
+            businessId,
+            memberId,
+            clubMembershipId,
+            consent,
+            newsletter,
+          };
+          let consentOption = {
+            new: true,
+            upsert: true,
+          };
+          await MemberConsent.findOneAndUpdate(
+            consentFilter,
+            consentUpdate,
+            consentOption
+          ).session(session);
+        }
+      
+        await BusinessSession.findOneAndUpdate(
+            { sessionId: req.body.sessionId },
+            {
+              $inc: { 
+                fullcapacityfilled: 1, 
+                waitcapacityfilled: -1
+              }
+            }
+        ).session(session);
+        let businessFinanceData = await BusinessFinance.findOne({
+          businessId: Types.ObjectId(businessId),
+        });
 
-    let updatedEnrollemnt = await Enrolment.updateMany(
-      { enrolledStatus: "WAITLISTED" },
-      { enrolledStatus: "ENROLLED" }
-    ).limit(capacityLeft);
-
-    // console.log(updatedEnrollemnt)
-    // let createDocumentProgress = updatedEnrollemnt.map((li) => {
-    //   return li.name, li.sessionId, li.classId, li.memberId;
-    // });
-
-    // await Progress.insertMany(createDocumentProgress).session(session);
-
-    await BusinessSession.findOneAndUpdate(
-      { sessionId: req.body.sessionId },
-      {
-        $inc: {
-          fullcapacityfilled: capacityLeft,
-          waitcapacityfilled: -capacityLeft,
-        },
+        let classData = await BusinessClass.findById(classId);
+        let sessionData=businessSessiondata;
+        let enrolmentBillData = {
+          businessFinanceData,
+          classData,
+          sessionData,
+          memberData,
+          clubMembershipId,
+        };
+        await generateEnrolmentBill(enrolmentBillData, session);
+        let {userData,businessSessionData,businessClassData} = await findUserEmail(memberId);
+        businessSessionData=sessionData;
+        businessClassData=classData;
+        let {email}=userData;
+        UpdateWaitListEnrolmentEmail.send({to:email},{userData,businessSessionData,businessClassData});
+        await session.commitTransaction();
+        return res.status(201).send({ message:'enrolled successful!' });
+      }else{
+        throw new Error("User is not in waitlist");
       }
-    ).session(session);
+    }else{
+      throw new Error("Cannot be enrolled beacause maximum limit of enrolment is reached");
+    }
 
-    await session.commitTransaction();
-
-    console.log("success");
 
     /** comment this because member is not defined due to commenting the above code. */
     // return res.status(201).send({ message: "enrolled Successfully", member });
-  } catch (err) {
+  }catch (err) {
     console.log("error");
     await session.abortTransaction();
     return res.status(422).send({ message: err.message });
