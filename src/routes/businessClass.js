@@ -31,7 +31,11 @@ const { CREATE, DELETE, UPDATE } = require("../constants/rest");
 
 //all of actual routes
 
-router.get("/of-logged-in-user", getAllClassesForALoggedInBusinessAdmin);
+router.get(
+  "/of-logged-in-user",
+  isAuthorized(null, null),
+  getAllClassesForALoggedInBusinessAdmin
+);
 
 //create route
 router.post(
