@@ -2,7 +2,6 @@ const express = require("express");
 const router = express.Router();
 
 const validate = require("../validations/validate");
-
 const {
   // getBusinessClassIdById,
   getBusinessClass,
@@ -21,29 +20,29 @@ const {
 const { getAllBusinessSession } = require("../controllers/businessSession");
 const { isAuthorized } = require("../middlewares/auth");
 const { getAllTermsInAClass } = require("../controllers/term");
+const { CLASS_DEFINITION } = require("../constants/pages");
+const getResourceBusinessIdInCreate = require("../middlewares/auth/utils/getResourceBusinessIdInCreate");
+const getResourceBusinessIdInUpdate = require("../middlewares/auth/utils/getResourceBusinessIdInUpdate");
+const isAuthHandler = require("../middlewares/auth/utils/isAuthHandler");
+const { CREATE, DELETE, UPDATE } = require("../constants/rest");
 
 //parameters
 // router.param("businessClassId", getBusinessClassIdById);
 
 //all of actual routes
 
-const isAuthHandler = (req, res) => {
-  /**
-   * TODO: add the logic.
-   */
-  return true;
-};
-
 router.get(
   "/of-logged-in-user",
-  isAuthorized(null, null, { isAuthHandler }),
+  isAuthorized(null, null),
   getAllClassesForALoggedInBusinessAdmin
 );
 
 //create route
 router.post(
   "/",
-  isAuthorized(null, null),
+  isAuthorized(CLASS_DEFINITION, CREATE, {
+    getResourceBusinessId: getResourceBusinessIdInCreate,
+  }),
   createClassValidationRules(),
   validate,
   createBusinessClass
@@ -55,7 +54,9 @@ router.get("/:businessClassId", getBusinessClass);
 //delete route
 router.delete(
   "/:businessClassId",
-  isAuthorized(null, null),
+  isAuthorized(CLASS_DEFINITION, DELETE, {
+    getResourceBusinessId: getResourceBusinessIdInUpdate,
+  }),
   // isBusinessClassRestricted,
   deleteBusinessClass
 );
@@ -63,7 +64,9 @@ router.delete(
 //update route
 router.put(
   "/:businessClassId",
-  isAuthorized(null, null),
+  isAuthorized(CLASS_DEFINITION, UPDATE, {
+    getResourceBusinessId: getResourceBusinessIdInUpdate,
+  }),
   updateClassValidationRules(),
   validate,
   updateBusinessClass

@@ -9,7 +9,9 @@ const {
 } = require("../../../models");
 
 const enrolmentPayloadRequest = require("./enrolmentPayloadRequest");
-const { SuccessfullEnrollmentEmail } = require("../../../services/notification/Email");
+const {
+  SuccessfullEnrollmentEmail,
+} = require("../../../services/notification/Email");
 const { findUserEmail } = require("../../../helpers/user/findUserEmail");
 
 /**
@@ -21,7 +23,7 @@ const { findUserEmail } = require("../../../helpers/user/findUserEmail");
  * @param {*} session
  */
 const regularEnrolment = async (req, session) => {
-  let {  memberData } = req;
+  let { memberData } = req;
   let { businessId, memberId, consent, newsletter } = req.body;
   let sessionData = req.businessSessionData;
   // creating enrolment till session capacity
@@ -91,10 +93,14 @@ const regularEnrolment = async (req, session) => {
   await generateEnrolmentBill(enrolmentBillData, session);
 
   /** TODO: send Email */
-  let classId=sessionData.classId;
-  let {userData,businessSessionData,businessClassData} = await findUserEmail(memberId,sessionData.id,classId);
-  let {email}=userData;
-  SuccessfullEnrollmentEmail.send({to:email},{userData,businessSessionData,businessClassData});
+  let classId = sessionData.classId;
+  let { userData, businessSessionData, businessClassData } =
+    await findUserEmail(memberId, sessionData.id, classId);
+  let { email } = userData;
+  SuccessfullEnrollmentEmail.send(
+    { to: email },
+    { userData, businessSessionData, businessClassData }
+  );
 };
 
 module.exports = regularEnrolment;

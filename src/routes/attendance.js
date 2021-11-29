@@ -11,7 +11,7 @@ const {
   getAttendanceOfAMemberInASession,
   getAttendanceOfAMemberInASessionByDate,
   getAttendanceOfAMemberInASessionByMonth,
-  testingEndPoint
+  testingEndPoint,
 } = require("../controllers/attendanceManagement");
 const validate = require("../validations/validate");
 
@@ -28,10 +28,7 @@ router.post(
   addAttendance
 );
 
-router.get(
-  "/testing-endpoint",
-  testingEndPoint
-);
+router.get("/testing-endpoint", testingEndPoint);
 // get all the attendance of a session by date
 router.post(
   "/of-a-session-by-date",

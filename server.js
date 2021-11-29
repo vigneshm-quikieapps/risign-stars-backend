@@ -4,7 +4,7 @@ const { app } = require("./src/app");
 //connecting to mongodb database
 mongoose
   .connect(
-    process.env.MONGODB_URL || "mongodb://localhost:27017/raisingstars",
+    process.env.MONGODB_URL || "mongodb://localhost:27017/risingStarDev",
     {
       useNewUrlParser: true,
     }
@@ -12,8 +12,8 @@ mongoose
   .then(() => {
     console.log("DB CONNECTED!!");
   })
-  .catch(() => {
-    console.log("DB NOT CONNECTED!!");
+  .catch((err) => {
+    console.log("DB NOT CONNECTED!!", err);
   });
 
 //initialising host and port no

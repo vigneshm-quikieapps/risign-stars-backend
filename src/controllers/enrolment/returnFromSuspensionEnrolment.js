@@ -2,7 +2,9 @@ const mongoose = require("mongoose");
 const { BusinessSession, Enrolment, BusinessClass } = require("../../models");
 const { STATUS_RETURN_FROM_SUSPENSION } = require("../../constants/enrolment");
 const { activateAllFutureBills } = require("../../helpers/bill");
-const { ReturnFromSuspensionEmail } = require("../../services/notification/Email");
+const {
+  ReturnFromSuspensionEmail,
+} = require("../../services/notification/Email");
 const { findUserEmail } = require("../../helpers/user/findUserEmail");
 
 /**
@@ -41,10 +43,14 @@ const returnFromSuspensionEnrolment = async (req, res) => {
     let classData = await BusinessClass.findById(classId);
     let data = { memberId, sessionData, classData, enrolmentData, now };
     await activateAllFutureBills(data, session);
-    let {userData,businessSessionData,businessClassData} = await findUserEmail(memberId,'','');
-    let {email}=userData;
+    let { userData, businessSessionData, businessClassData } =
+      await findUserEmail(memberId, "", "");
+    let { email } = userData;
     await session.commitTransaction();
-    ReturnFromSuspensionEmail.send({to:email},{userData,sessionData,classData});
+    ReturnFromSuspensionEmail.send(
+      { to: email },
+      { userData, sessionData, classData }
+    );
     return res
       .status(201)
       .send({ message: "return from suspension successful" });
