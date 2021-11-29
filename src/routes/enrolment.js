@@ -24,12 +24,20 @@ const {
   classTransferEnrolmentValidationRules,
 } = require("../validations/enrolment");
 const validate = require("../validations/validate");
-const validateSingle = require("../validations/validateSingle");
+//const validateSingle = require("../validations/validateSingle");
+//const UnauthorizedError = require("../exceptions/UnauthorizedError");
+const { CLASS_ENROLMENT } = require("../constants/pages");
+const isAuthHandler = require("../middlewares/auth/utils/isAuthHandler");
+const { CREATE } = require("../constants/rest");
+const getResourceBusinessIdBySession = require("../middlewares/auth/utils/getResourceBusinessIdBySession");
 
 /** routes */
 router.post(
   "/",
-  isAuthorized(null, null),
+  isAuthorized(CLASS_ENROLMENT, CREATE, {
+    getResourceBusinessId: getResourceBusinessIdBySession,
+    isAuthHandler,
+  }),
   createEnrolementValidationRules(),
   validate,
   newEnrolment

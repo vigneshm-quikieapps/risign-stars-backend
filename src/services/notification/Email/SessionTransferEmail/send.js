@@ -1,8 +1,10 @@
 const sendEmail = require("../sendEmail");
 const { FROM } = require("../../../../constants/email");
 
-
-const send = ({to},{userData,businessSessionData,businessClassData,newSession}) => {
+const send = (
+  { to },
+  { userData, businessSessionData, businessClassData, newSession }
+) => {
   // arguments sending from send function has to match with the parameters.
   const msg = {
     to,

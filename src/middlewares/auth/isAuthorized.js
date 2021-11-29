@@ -59,27 +59,30 @@ const isAuthorized =
     // }
 
     switch (true) {
-      case page == null && action == null:
+      case page == null && action == null && !options.isAuthHandler:
+        //it allows users who has valid access token
         next();
         break;
 
       case process.env.IS_AUTHORIZED_CHECK === "DISABLE":
+        //it disables the authoraisation check
         next();
         break;
-
       default:
         try {
+          //it allows bussiness admin with required permission to the page
           await checkIsAuthorized(req, res, next, { page, action, options });
           next();
         } catch (err) {
           try {
+            //it allows/restrict the access to a resource by a parent
             let { isAuthHandler } = options;
 
             if (!isAuthHandler) {
               throw err;
             }
 
-            isAuthHandler(req, res);
+            await isAuthHandler(req, res);
             next();
           } catch (err2) {
             console.error(err2.message);
@@ -98,7 +101,8 @@ const checkIsAuthorized = async (req, res, next, { page, action, options }) => {
   }
 
   let tokenPayload = req.authUserData;
-
+  let businessId = await options.getResourceBusinessId(req, res);
+  //console.log("bussinessId from getResourceBusinessId funcn:", businessId);
   /**
    * if data privileges type is "ALL": the user has full access to any api
    * else check if the user has permission for that particular api
@@ -106,8 +110,7 @@ const checkIsAuthorized = async (req, res, next, { page, action, options }) => {
   if (!hasAllPermission(tokenPayload)) {
     let roleIds = getRoleIds(tokenPayload);
     let roles = await getRoles(roleIds);
-
-    if (!hasPermission(roles, { page, action })) {
+    if (!hasPermission(businessId, roles, { page, action }, tokenPayload)) {
       throw new UnauthorizedError();
     }
   }
