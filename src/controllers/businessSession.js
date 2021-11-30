@@ -96,12 +96,24 @@ module.exports.updateBusinessSession = async (req, res) => {
       );
     }
 
-    const term = await Term.findById(req.body.term._id);
+    const { term, ...sessionWithOutTerm } = req.body;
     businessSession = await BusinessSession.findByIdAndUpdate(
       { _id: businessSessionId },
-      { $set: { ...req.body, term, updatedBy: auditUpdatedBy(req) } },
+      {
+        $set: {
+          ...sessionWithOutTerm,
+          "term._id": term._id,
+          updatedBy: auditUpdatedBy(req),
+        },
+      },
       { new: true, useFindAndModify: false }
     ).populate("termData");
+    // const term = await Term.findById(req.body.term._id);
+    // businessSession = await BusinessSession.findByIdAndUpdate(
+    //   { _id: businessSessionId },
+    //   { $set: { ...req.body, term, updatedBy: auditUpdatedBy(req) } },
+    //   { new: true, useFindAndModify: false }
+    // ).populate("termData");
 
     return res.send({ message: "update successful", businessSession });
   } catch (err) {
