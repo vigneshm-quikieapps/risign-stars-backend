@@ -80,9 +80,9 @@ const updateSessionValidationRules = () => {
       .isLength({ min: 3 }),
     check("term", "should be an object").isObject(),
     check("term._id").custom(isValidTermId),
-    check("term.label", "should be at least 3 char").isLength({ min: 3 }),
-    check("term.startDate", "should be a date ").isISO8601(),
-    check("term.endDate", "should be a date ").isISO8601(),
+    // check("term.label", "should be at least 3 char").isLength({ min: 3 }),
+    // check("term.startDate", "should be a date ").isISO8601(),
+    // check("term.endDate", "should be a date ").isISO8601(),
     check("pattern.*", `should be either: ${ENUM_DAYS.join(" / ")}`).isIn(
       ENUM_DAYS
     ),
