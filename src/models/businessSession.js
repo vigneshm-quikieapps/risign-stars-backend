@@ -31,12 +31,12 @@ const businessSessionSchema = new mongoose.Schema(
       startDate: {
         type: Date,
         required: true,
-        immutable: true,
+        // immutable: true,
       },
       endDate: {
         type: Date,
         required: true,
-        immutable: true,
+        // immutable: true,
       },
     },
     pattern: [

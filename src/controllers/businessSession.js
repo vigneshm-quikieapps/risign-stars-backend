@@ -1,5 +1,5 @@
 const { getPaginationOptions } = require("../helpers/query");
-const { Enrolment, BusinessSession } = require("../models");
+const { Enrolment, BusinessSession,Term } = require("../models");
 const { auditCreatedBy, auditUpdatedBy } = require("../helpers/audit");
 const moment = require("moment");
 
@@ -96,9 +96,10 @@ module.exports.updateBusinessSession = async (req, res) => {
       );
     }
 
+    const term = await Term.findById(req.body.term._id);
     businessSession = await BusinessSession.findByIdAndUpdate(
       { _id: businessSessionId },
-      { $set: { ...req.body, updatedBy: auditUpdatedBy(req) } },
+      { $set: { ...req.body, term, updatedBy: auditUpdatedBy(req) } },
       { new: true, useFindAndModify: false }
     ).populate("termData");
 
