@@ -1,4 +1,6 @@
 const express = require("express");
+const { SESSION_DEFINITION } = require("../constants/pages");
+const { CREATE, UPDATE, DELETE } = require("../constants/rest");
 const router = express.Router();
 
 const {
@@ -11,6 +13,8 @@ const {
 } = require("../controllers/businessSession");
 const { updateWaitlistEnrolment } = require("../controllers/enrolment");
 const { isAuthorized } = require("../middlewares/auth");
+const getResourceBusinessIdForSession = require("../middlewares/auth/utils/getResourceBusinessId/getResourceBusinessIdForSession");
+const getResourceBusinessIdBySessionId = require("../middlewares/auth/utils/getResourceBusinessId/getResourceBusinessIdBySessionId");
 const {
   updateSessionValidationRules,
   createSessionValidationRules,
@@ -24,7 +28,9 @@ const validate = require("../validations/validate");
 //create route
 router.post(
   "/",
-  isAuthorized(null, null),
+  isAuthorized(SESSION_DEFINITION, CREATE, {
+    getResourceBusinessId: getResourceBusinessIdForSession,
+  }),
   createSessionValidationRules(),
   validate,
   createBusinessSession
@@ -46,11 +52,20 @@ router.post(
 router.get("/:businessSessionId", getBusinessSession);
 
 //delete route
-router.delete("/:businessSessionId", deleteBusinessSession);
+router.delete(
+  "/:businessSessionId",
+  isAuthorized(SESSION_DEFINITION, DELETE, {
+    getResourceBusinessId: getResourceBusinessIdBySessionId,
+  }),
+  deleteBusinessSession
+);
 
 //update route
 router.put(
   "/:businessSessionId",
+  isAuthorized(SESSION_DEFINITION, UPDATE, {
+    getResourceBusinessId: getResourceBusinessIdBySessionId,
+  }),
   updateSessionValidationRules(),
   validate,
   updateBusinessSession

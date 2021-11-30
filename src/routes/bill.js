@@ -12,6 +12,10 @@ const {
   billOfAMemberInABusinessValidationRules,
   enterTransactionValidationRules,
 } = require("../validations/bill");
+const { isAuthorized } = require("../middlewares/auth");
+const getResourceBusinessIdForBill = require("../middlewares/auth/utils/getResourceBusinessId/getResourceBusinessIdForBill");
+const { CREATE, DELETE, UPDATE, READ } = require("../constants/rest");
+const { CLASS_DEFINITION } = require("../constants/pages");
 
 // read routes
 router.get("/", getAll);
@@ -32,6 +36,9 @@ router.post(
 
 router.post(
   "/enter-transaction",
+  isAuthorized(CLASS_DEFINITION, CREATE, {
+    getResourceBusinessId: getResourceBusinessIdForBill,
+  }),
   enterTransactionValidationRules(),
   validate,
   enterTransaction

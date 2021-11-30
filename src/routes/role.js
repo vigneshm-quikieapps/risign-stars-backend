@@ -10,7 +10,7 @@ const {
   updateRoleValidationRules,
 } = require("../validations/role");
 const validate = require("../validations/validate");
-
+//super admin
 // create route
 router.post(
   "/",

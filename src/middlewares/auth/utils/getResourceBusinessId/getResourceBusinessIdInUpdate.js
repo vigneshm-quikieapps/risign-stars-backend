@@ -1,4 +1,4 @@
-const { BusinessClass } = require("../../../models");
+const { BusinessClass } = require("../../../../models");
 
 const getResourceBusinessIdInUpdate = async (req, res) => {
   let { businessClassId } = req.params;

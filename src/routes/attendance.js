@@ -18,7 +18,7 @@ const validate = require("../validations/validate");
 const { isAuthorized } = require("../middlewares/auth");
 
 const vr = require("../validations/attendanceManagment");
-
+// buss or coach
 // add attendance of a member in a session
 router.post(
   "/",
