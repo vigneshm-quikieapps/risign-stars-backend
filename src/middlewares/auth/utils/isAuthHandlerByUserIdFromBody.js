@@ -3,7 +3,7 @@ const UnauthorizedError = require("../../../exceptions/UnauthorizedError");
 const isAuthHandlerByUserIdFromBody = async (req, res) => {
   const userId = await req.body.userId;
 
-  if (!userId) return false;
+  if (!userId) throw new UnauthorizedError();
 
   if (req.tokenData._id !== userId) {
     throw new UnauthorizedError();
