@@ -26,7 +26,7 @@ const {
   updateDiscounts,
 } = require("../controllers/discounts");
 const { isAuthorized } = require("../middlewares/auth");
-const { CLASS_ENROLMENT } = require("../constants/pages");
+const { DISCOUNT } = require("../constants/pages");
 const { CREATE, DELETE, UPDATE } = require("../constants/rest");
 const getResourceBusinessIdInCreate = require("../middlewares/auth/utils/getResourceBusinessId/getResourceBusinessIdInCreate");
 const getResourceBusinessIdByDiscountId = require("../middlewares/auth/utils/getResourceBusinessId/getResourceBusinessIdByDiscountId");
@@ -43,7 +43,7 @@ router.post("/apply", applyDiscountValidationRules(), validate, applyDiscount);
 //create route
 router.post(
   "/",
-  isAuthorized(CLASS_ENROLMENT, CREATE, {
+  isAuthorized(DISCOUNT, CREATE, {
     getResourceBusinessId: getResourceBusinessIdInCreate,
   }),
   createDiscountValidationRules(),
@@ -56,7 +56,7 @@ router.post(
  */
 router.put(
   "/:discountId",
-  isAuthorized(CLASS_ENROLMENT, UPDATE, {
+  isAuthorized(DISCOUNT, UPDATE, {
     getResourceBusinessId: getResourceBusinessIdByDiscountId,
   }),
   updateDiscountValidationRules(),
@@ -65,7 +65,7 @@ router.put(
 );
 router.delete(
   "/:discountId",
-  isAuthorized(CLASS_ENROLMENT, DELETE, {
+  isAuthorized(DISCOUNT, DELETE, {
     getResourceBusinessId: getResourceBusinessIdByDiscountId,
   }),
   deleteDiscountValidationRules(),
@@ -90,7 +90,7 @@ router.get("/", getAllDiscounts);
 //discountSchemes routes
 router.put(
   "/discountsSchemes/:discountId",
-  isAuthorized(CLASS_ENROLMENT, UPDATE, {
+  isAuthorized(DISCOUNT, UPDATE, {
     getResourceBusinessId: getResourceBusinessIdByDiscountId,
   }),
   addNewDiscountValidationRules(),
@@ -99,7 +99,7 @@ router.put(
 );
 router.delete(
   "/:discountId",
-  isAuthorized(CLASS_ENROLMENT, DELETE, {
+  isAuthorized(DISCOUNT, DELETE, {
     getResourceBusinessId: getResourceBusinessIdByDiscountId,
   }),
   deleteDiscountScheme
@@ -107,7 +107,7 @@ router.delete(
 
 router.put(
   "/discountsSchemes/:discountId/:discountSchemesId",
-  isAuthorized(CLASS_ENROLMENT, UPDATE, {
+  isAuthorized(DISCOUNT, UPDATE, {
     getResourceBusinessId: getResourceBusinessIdByDiscountId,
   }),
   updateDiscountValidationRules(),
@@ -116,7 +116,7 @@ router.put(
 );
 router.put(
   "/discountsSchemes/enable-disable/:discountId/:discountSchemesId",
-  isAuthorized(CLASS_ENROLMENT, UPDATE, {
+  isAuthorized(DISCOUNT, UPDATE, {
     getResourceBusinessId: getResourceBusinessIdByDiscountId,
   }),
   updateStatusOfDiscountValidationRules(),
