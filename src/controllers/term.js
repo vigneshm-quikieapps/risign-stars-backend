@@ -100,14 +100,20 @@ module.exports.updateTerm = async (req, res) => {
 
         return res.send({ message: "update successful", term });
       } else {
-        return res.send({
-          message: "not allowed, members are already enrolled in this term",
-        });
+        // return res.send({
+        //   message: "not allowed, members are already enrolled in this term",
+        // });
+        throw new Error(
+          "not allowed, members are already enrolled in this term"
+        );
       }
     } else {
-      return res.send({
-        message: "not allowed, there is at least 1 session using the term",
-      });
+      // return res.send({
+      //   message: "not allowed, there is at least 1 session using the term",
+      // });
+      throw new Error(
+        "not allowed, there is at least 1 session using the term"
+      );
     }
   } catch (err) {
     return res.status(422).send({ message: err.message });

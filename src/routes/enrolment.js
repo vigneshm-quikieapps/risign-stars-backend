@@ -28,8 +28,12 @@ const validate = require("../validations/validate");
 //const UnauthorizedError = require("../exceptions/UnauthorizedError");
 const { CLASS_ENROLMENT } = require("../constants/pages");
 const isAuthHandler = require("../middlewares/auth/utils/isAuthHandler");
-const { CREATE } = require("../constants/rest");
-const getResourceBusinessIdBySession = require("../middlewares/auth/utils/getResourceBusinessIdBySession");
+const isAuthHandlerByEnrolementId = require("../middlewares/auth/utils/isAuthHandlerByEnrolementId");
+const { CREATE, UPDATE } = require("../constants/rest");
+const getResourceBusinessIdBySession = require("../middlewares/auth/utils/getResourceBusinessId/getResourceBusinessIdBySession");
+const getResourceBusinessIdByEnrollmentId = require("../middlewares/auth/utils/getResourceBusinessId/getResourceBusinessIdByEnrollmentId");
+const isAuthHandlerByEnrolementIdFromBody = require("../middlewares/auth/utils/isAuthHandlerByEnrolementIdFromBody");
+const getResourceBusinessIdByEnrollmentIdFromBody = require("../middlewares/auth/utils/getResourceBusinessId/getResourceBusinessIdByEnrollmentIdFromBody");
 
 /** routes */
 router.post(
@@ -52,7 +56,10 @@ router.post(
 
 router.post(
   "/:enrolmentId/withdraw",
-  isAuthorized(null, null),
+  isAuthorized(CLASS_ENROLMENT, UPDATE, {
+    getResourceBusinessId: getResourceBusinessIdByEnrollmentId,
+    isAuthHandler: isAuthHandlerByEnrolementId,
+  }),
   withdrawEnrolmentValidationRules(),
   validate,
   withdrawEnrolment
@@ -60,7 +67,10 @@ router.post(
 
 router.post(
   "/:enrolmentId/return-from-suspension",
-  isAuthorized(null, null),
+  isAuthorized(CLASS_ENROLMENT, UPDATE, {
+    getResourceBusinessId: getResourceBusinessIdByEnrollmentId,
+    isAuthHandler: isAuthHandlerByEnrolementId,
+  }),
   returnFromSuspensionEnrolmentValidationRules(),
   validate,
   returnFromSuspensionEnrolment
@@ -68,12 +78,15 @@ router.post(
 
 router.post(
   "/:enrolmentId/suspend",
-  isAuthorized(null, null),
+  isAuthorized(CLASS_ENROLMENT, UPDATE, {
+    getResourceBusinessId: getResourceBusinessIdByEnrollmentId,
+    isAuthHandler: isAuthHandlerByEnrolementId,
+  }),
   suspendEnrolmentValidationRules(),
   validate,
   suspendEnrolment
 );
-
+//ALLOW BUSSINESS ADMIN ONLY, note: i didnt find this route in postman docs soo not restricted the user
 router.post(
   "/update-waitlist",
   isAuthorized(null, null),
@@ -87,7 +100,10 @@ router.post(
  */
 router.post(
   "/transfer",
-  isAuthorized(null, null),
+  isAuthorized(CLASS_ENROLMENT, UPDATE, {
+    getResourceBusinessId: getResourceBusinessIdByEnrollmentIdFromBody,
+    isAuthHandler: isAuthHandlerByEnrolementIdFromBody,
+  }),
   sessionTransferEnrolmentValidationRules(),
   validate,
   transferEnrolment
@@ -96,6 +112,7 @@ router.post(
 /**
  * class transfer
  */
+//ALLOW BUSSINESS ADMIN ONLY, note: i didnt find this route in postman docs soo not restricted the user
 router.post(
   "/class-transfer",
   isAuthorized(null, null),
@@ -103,10 +120,11 @@ router.post(
   validate,
   classTransferEnrolment
 );
-
 router.post(
   "/trial",
-  isAuthorized(null, null),
+  isAuthorized(null, null, {
+    isAuthHandler,
+  }),
   trialEnrolmentValidationRules(),
   validate,
   trailEnrolment

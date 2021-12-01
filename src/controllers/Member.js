@@ -43,7 +43,7 @@ module.exports.update = async (req, res) => {
     payload = auditUpdatedBy(req, payload);
 
     let member = await Member.findByIdAndUpdate(
-      req.params.id,
+      req.params.memberId,
       { $set: payload },
       options
     );
@@ -61,7 +61,7 @@ module.exports.update = async (req, res) => {
 module.exports.delete = async (req, res) => {
   try {
     // let  studentId  = req.params.id;
-    let { deletedCount } = await Member.deleteOne({ _id: req.params.id });
+    let { deletedCount } = await Member.deleteOne({ _id: req.params.memberId });
     if (!deletedCount) {
       throw new DoesNotExistError();
     }
@@ -132,7 +132,7 @@ module.exports.updateEmergencyContact = (req, res) => {
 //getMemberEmerengyContacts
 module.exports.getEmergencyContact = async (req, res) => {
   try {
-    let member = await Member.findById(req.params.id);
+    let member = await Member.findById(req.params.memberId);
     return res.send({ member: member.contacts });
   } catch (err) {
     console.error(err);
