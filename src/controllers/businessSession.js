@@ -1,5 +1,5 @@
 const { getPaginationOptions } = require("../helpers/query");
-const { Enrolment, BusinessSession,Term } = require("../models");
+const { Enrolment, BusinessSession, Term } = require("../models");
 const { auditCreatedBy, auditUpdatedBy } = require("../helpers/audit");
 const moment = require("moment");
 

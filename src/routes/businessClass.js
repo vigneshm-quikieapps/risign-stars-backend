@@ -48,13 +48,7 @@ router.post(
 );
 
 // read routes
-router.get(
-  "/:businessClassId",
-  isAuthorized(CLASS_DEFINITION, READ, {
-    getResourceBusinessId: getResourceBusinessIdInUpdate,
-  }),
-  getBusinessClass
-);
+router.get("/:businessClassId", isAuthorized(null, null), getBusinessClass);
 
 //delete route
 router.delete(

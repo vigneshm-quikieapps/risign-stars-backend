@@ -18,7 +18,7 @@ const {
   addDiscountToBusinessFinance,
 } = require("../controllers/businessFinance");
 const { isAuthorized } = require("../middlewares/auth");
-const { BUSINESS_DEFINITION } = require("../constants/pages");
+const { BUSINESS_FINANCE } = require("../constants/pages");
 const { CREATE, UPDATE } = require("../constants/rest");
 const getResourceBusinessIdInCreate = require("../middlewares/auth/utils/getResourceBusinessId/getResourceBusinessIdInCreate");
 const getResourceBusinessIdForFinance = require("../middlewares/auth/utils/getResourceBusinessId/getResourceBusinessIdForFinance");
@@ -31,7 +31,7 @@ const getResourceBusinessIdForFinance = require("../middlewares/auth/utils/getRe
 
 router.post(
   "/",
-  isAuthorized(BUSINESS_DEFINITION, CREATE, {
+  isAuthorized(BUSINESS_FINANCE, CREATE, {
     getResourceBusinessId: getResourceBusinessIdInCreate,
   }),
   createBusinessFinanceValidationRules(),
@@ -48,7 +48,7 @@ router.delete("/:businessFinanceId", deleteBusinessFinance);
 //update route
 router.put(
   "/:businessFinanceId",
-  isAuthorized(BUSINESS_DEFINITION, UPDATE, {
+  isAuthorized(BUSINESS_FINANCE, UPDATE, {
     getResourceBusinessId: getResourceBusinessIdForFinance,
   }),
   updateBusinessFinanceValidationRules(),
@@ -61,7 +61,7 @@ router.get("/", getAllBusinessFinance);
 
 router.put(
   "/:businessFinanceId/addDiscounts",
-  isAuthorized(BUSINESS_DEFINITION, UPDATE, {
+  isAuthorized(BUSINESS_FINANCE, UPDATE, {
     getResourceBusinessId: getResourceBusinessIdForFinance,
   }),
   addDiscountToBusinessFinanceValidationRules(),
