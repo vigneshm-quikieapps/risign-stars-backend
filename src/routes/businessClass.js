@@ -21,10 +21,9 @@ const { getAllBusinessSession } = require("../controllers/businessSession");
 const { isAuthorized } = require("../middlewares/auth");
 const { getAllTermsInAClass } = require("../controllers/term");
 const { CLASS_DEFINITION } = require("../constants/pages");
-const getResourceBusinessIdInCreate = require("../middlewares/auth/utils/getResourceBusinessIdInCreate");
-const getResourceBusinessIdInUpdate = require("../middlewares/auth/utils/getResourceBusinessIdInUpdate");
-const isAuthHandler = require("../middlewares/auth/utils/isAuthHandler");
-const { CREATE, DELETE, UPDATE } = require("../constants/rest");
+const getResourceBusinessIdInCreate = require("../middlewares/auth/utils/getResourceBusinessId/getResourceBusinessIdInCreate");
+const getResourceBusinessIdInUpdate = require("../middlewares/auth/utils/getResourceBusinessId/getResourceBusinessIdInUpdate");
+const { CREATE, DELETE, UPDATE, READ } = require("../constants/rest");
 
 //parameters
 // router.param("businessClassId", getBusinessClassIdById);
@@ -49,7 +48,7 @@ router.post(
 );
 
 // read routes
-router.get("/:businessClassId", getBusinessClass);
+router.get("/:businessClassId", isAuthorized(null, null), getBusinessClass);
 
 //delete route
 router.delete(

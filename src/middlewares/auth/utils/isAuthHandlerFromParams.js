@@ -1,8 +1,8 @@
 const UnauthorizedError = require("../../../exceptions/UnauthorizedError");
 const { Member } = require("../../../models");
 
-const isAuthHandler = async (req, res) => {
-  const memberId = req.body.memberId;
+const isAuthHandlerFromParams = async (req, res) => {
+  const memberId = req.params.memberId;
   //console.log("memberId from body:", memberId);
   const member = await Member.findById(memberId);
   if (!member) throw new UnauthorizedError();
@@ -14,4 +14,4 @@ const isAuthHandler = async (req, res) => {
   }
   return true;
 };
-module.exports = isAuthHandler;
+module.exports = isAuthHandlerFromParams;

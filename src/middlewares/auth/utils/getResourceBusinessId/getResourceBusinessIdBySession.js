@@ -1,4 +1,4 @@
-const { BusinessSession } = require("../../../models");
+const { BusinessSession } = require("../../../../models");
 
 const getResourceBusinessIdBySession = async (req, res) => {
   let sessionId = req.body.sessionId;

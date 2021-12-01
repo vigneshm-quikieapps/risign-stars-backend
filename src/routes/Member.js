@@ -13,6 +13,10 @@ const validate = require("../validations/validate");
 const { isAuthorized } = require("../middlewares/auth");
 const { getAllProgressOfAMember } = require("../controllers/progress");
 const { getBillStatusOfMembersInASession } = require("../controllers/bill");
+const { UPDATE, CREATE } = require("../constants/rest");
+const { MEMBERS } = require("../constants/pages");
+const isAuthHandlerFromParams = require("../middlewares/auth/utils/isAuthHandlerFromParams");
+const isAuthHandlerByUserIdFromBody = require("../middlewares/auth/utils/isAuthHandlerByUserIdFromBody");
 
 // router.param("memberId", member.getmemberIdById);
 
@@ -37,32 +41,70 @@ router.post("/bill-status-in-a-session", getBillStatusOfMembersInASession);
 router.get("/:memberId", member.get);
 router.get("/:memberId/progress", getAllProgressOfAMember);
 router.get("/:memberId/enrolments", getAllEnrolmentsOfAMember);
+
 router.post(
   "/",
-  isAuthorized(null, null),
+  isAuthorized(null, null, {
+    isAuthHandler: isAuthHandlerByUserIdFromBody,
+  }),
   createMemberValidationRules(),
   validate,
   member.create
 );
 router.get("/consent", memberConsent.get);
-router.put("/:id", updateMemberValidationRules(), validate, member.update);
-router.get("/:id/emergency-contact", member.getEmergencyContact);
+
+router.put(
+  "/:memberId",
+  isAuthorized(null, null, {
+    isAuthHandler: isAuthHandlerFromParams,
+  }),
+  updateMemberValidationRules(),
+  validate,
+  member.update
+);
+router.get("/:memberId/emergency-contact", member.getEmergencyContact);
+
 router.post(
   "/:memberId",
+  isAuthorized(null, null, {
+    isAuthHandler: isAuthHandlerFromParams,
+  }),
   createEmergencyContactValidationRules(),
   validate,
   member.addNewEmergencyContact
 );
+
 router.put(
   "/contact/:memberId/update/:contactsId",
+  isAuthorized(null, null, {
+    isAuthHandler: isAuthHandlerFromParams,
+  }),
   updateEmergencyContactValidationRules(),
   validate,
   member.updateEmergencyContact
 );
-router.delete("/member/:id", member.delete);
-router.put("/member/:memberId/:businessId", member.addMembership);
+
+router.delete(
+  "/member/:memberId",
+  isAuthorized(null, null, {
+    isAuthHandler: isAuthHandlerFromParams,
+  }),
+  member.delete
+);
+
+router.put(
+  "/member/:memberId/:businessId",
+  isAuthorized(null, null, {
+    isAuthHandler: isAuthHandlerFromParams,
+  }),
+  member.addMembership
+);
+
 router.post(
   "/:memberId/image-upload",
+  isAuthorized(null, null, {
+    isAuthHandler: isAuthHandlerFromParams,
+  }),
   member.memberImageUploadHelper.single("image"),
   member.uploadImage
 );

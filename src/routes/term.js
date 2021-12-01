@@ -18,7 +18,7 @@ const {
   updateTermValidationRules,
 } = require("../validations/Term");
 const validate = require("../validations/validate");
-
+//buss
 router.get(
   "/:termId/sessions",
   getAllSessionsInATermValidationRules(),
