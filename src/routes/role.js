@@ -14,22 +14,30 @@ const validate = require("../validations/validate");
 // create route
 router.post(
   "/",
-  isAuthorized(ROLES, CREATE),
+  isAuthorized(null, null, { isSuperAdminOnly: true }),
   createRoleValidationRules(),
   validate,
   role.create
 );
 
 // read routes
-router.get("/:roleId", isAuthorized(ROLES, READ), role.get);
+router.get(
+  "/:roleId",
+  isAuthorized(null, null, { isSuperAdminOnly: true }),
+  role.get
+);
 
 //delete route
-router.delete("/:roleId", isAuthorized(ROLES, DELETE), role.delete);
+router.delete(
+  "/:roleId",
+  isAuthorized(null, null, { isSuperAdminOnly: true }),
+  role.delete
+);
 
 //update route
 router.put(
   "/:roleId",
-  isAuthorized(ROLES, UPDATE),
+  isAuthorized(null, null, { isSuperAdminOnly: true }),
   updateRoleValidationRules(),
   validate,
   role.update
