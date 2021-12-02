@@ -59,7 +59,10 @@ const isAuthorized =
     // }
 
     switch (true) {
-      case page == null && action == null && !options.isAuthHandler:
+      case page == null &&
+        action == null &&
+        !options.isAuthHandler &&
+        !options.isSuperAdminOnly:
         //it allows users who has valid access token
         next();
         break;
