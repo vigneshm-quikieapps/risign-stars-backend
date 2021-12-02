@@ -19,7 +19,7 @@ const {
 } = require("../controllers/businessFinance");
 const { isAuthorized } = require("../middlewares/auth");
 const { BUSINESS_FINANCE } = require("../constants/pages");
-const { CREATE, UPDATE } = require("../constants/rest");
+const { CREATE, UPDATE, DELETE } = require("../constants/rest");
 const getResourceBusinessIdInCreate = require("../middlewares/auth/utils/getResourceBusinessId/getResourceBusinessIdInCreate");
 const getResourceBusinessIdForFinance = require("../middlewares/auth/utils/getResourceBusinessId/getResourceBusinessIdForFinance");
 
@@ -43,7 +43,13 @@ router.post(
 router.get("/:businessFinanceId", getBusinessFinance);
 
 //delete route
-router.delete("/:businessFinanceId", deleteBusinessFinance);
+router.delete(
+  "/:businessFinanceId",
+  isAuthorized(BUSINESS_FINANCE, DELETE, {
+    getResourceBusinessId: getResourceBusinessIdForFinance,
+  }),
+  deleteBusinessFinance
+);
 
 //update route
 router.put(

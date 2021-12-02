@@ -68,6 +68,21 @@ const isAuthorized =
         //it disables the authoraisation check
         next();
         break;
+      case options.isSuperAdminOnly:
+        //it checks for the Super Admin Only
+        try {
+          //it allows access only for Super Admin
+          if (!hasAllPermission(req.authUserData)) {
+            throw new UnauthorizedError();
+          }
+          next();
+        } catch (err) {
+          console.error(err.message);
+          return res
+            .status(StatusCodes.UNAUTHORIZED)
+            .send({ message: "Unauthorized" });
+        }
+        break;
       default:
         try {
           //it allows bussiness admin with required permission to the page

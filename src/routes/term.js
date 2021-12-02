@@ -18,6 +18,11 @@ const {
   updateTermValidationRules,
 } = require("../validations/Term");
 const validate = require("../validations/validate");
+const { CREATE, DELETE, UPDATE, READ } = require("../constants/rest");
+const { SESSION_TERM } = require("../constants/pages");
+const getResourceBusinessIdInCreate = require("../middlewares/auth/utils/getResourceBusinessId/getResourceBusinessIdInCreate");
+const getResourceBusinessIdByTermId = require("../middlewares/auth/utils/getResourceBusinessId/getResourceBusinessIdByTermId");
+
 //buss
 router.get(
   "/:termId/sessions",
@@ -27,7 +32,9 @@ router.get(
 );
 router.post(
   "/",
-  isAuthorized(null, null),
+  isAuthorized(SESSION_TERM, CREATE, {
+    getResourceBusinessId: getResourceBusinessIdInCreate,
+  }),
   createTermValidationRules(),
   validate,
   createTerm
@@ -37,12 +44,20 @@ router.get("/", getAllTerm);
 router.get("/:termId", getTerm);
 router.put(
   "/:termId",
-  isAuthorized(null, null),
+  isAuthorized(SESSION_TERM, UPDATE, {
+    getResourceBusinessId: getResourceBusinessIdByTermId,
+  }),
   updateTermValidationRules(),
   validate,
   updateTerm
 );
 
-router.delete("/:termId", isAuthorized(null, null), deleteTerm);
+router.delete(
+  "/:termId",
+  isAuthorized(SESSION_TERM, DELETE, {
+    getResourceBusinessId: getResourceBusinessIdByTermId,
+  }),
+  deleteTerm
+);
 
 module.exports = router;

@@ -14,6 +14,7 @@ const {
 const validate = require("../validations/validate");
 const { BUSINESS_DEFINITION, CLASS_DEFINITION } = require("../constants/pages");
 const { CREATE, UPDATE, READ, DELETE } = require("../constants/rest");
+const getResourceBusinessIdByParamsForBussiness = require("../middlewares/auth/utils/getResourceBusinessId/getResourceBusinessIdByParamsForBussiness");
 
 const {
   // getBusinessIdById,
@@ -51,7 +52,7 @@ const { getAllDiscountInABusiness } = require("../controllers/discounts");
 //create route
 router.post(
   "/",
-  isAuthorized(BUSINESS_DEFINITION, CREATE),
+  isAuthorized(null, null, { isSuperAdminOnly: true }),
   createBusinessValidationRules(),
   validate,
   createBusiness
@@ -59,7 +60,7 @@ router.post(
 
 router.get(
   "/of-logged-in-user",
-  isAuthorized(null, null),
+  isAuthorized(null, null, { isSuperAdminOnly: true }),
   getAllBusinessesOfLoginUser
 );
 
@@ -71,19 +72,18 @@ router.get("/:businessId", getBusiness);
 //delete route
 router.delete(
   "/:businessId",
-  isAuthorized(BUSINESS_DEFINITION, DELETE),
+  isAuthorized(null, null, { isSuperAdminOnly: true }),
   deleteBusiness
 );
 
 //update route
 router.put(
   "/:businessId",
-  isAuthorized(BUSINESS_DEFINITION, UPDATE),
+  isAuthorized(null, null, { isSuperAdminOnly: true }),
   updateBusinessValidationRules(),
   validate,
   updateBusiness
 );
-
 //listing route
 router.get("/", getAllBusinessValidationRules(), validate, getAllBusinesses);
 
@@ -93,6 +93,9 @@ router.get("/", getAllBusinessValidationRules(), validate, getAllBusinesses);
 router.get(
   "/:businessId/classes",
   // isAuthorized(CLASS_DEFINITION, "read"),
+  isAuthorized(CLASS_DEFINITION, READ, {
+    getResourceBusinessId: getResourceBusinessIdByParamsForBussiness,
+  }),
   getAllBusinessClass
 );
 
@@ -100,24 +103,34 @@ router.get(
  * file upload
  */
 //router.post("/fileupload", uploadFile);
-//buss
-router.post("/xlxsupload", uploadXLXSFile);
+
+router.post(
+  "/xlxsupload",
+  isAuthorized(BUSINESS_DEFINITION, UPDATE, {
+    getResourceBusinessId: getResourceBusinessIdByParamsForBussiness,
+  }),
+  uploadXLXSFile
+);
 //router.get("/convertxlxs/json", convertXLXSFile);
 
 /**
  * finance
  */
 router.get("/:businessId/finance", getFinanceOfABusiness);
-//buss
+
 router.put(
   "/:businessId/finance",
-  isAuthorized(null, null),
+  isAuthorized(BUSINESS_DEFINITION, UPDATE, {
+    getResourceBusinessId: getResourceBusinessIdByParamsForBussiness,
+  }),
   updateBusinessFinance2
 );
-//buss
+
 router.post(
   "/:businessId/image-upload",
-  isAuthorized(null, null),
+  isAuthorized(BUSINESS_DEFINITION, CREATE, {
+    getResourceBusinessId: getResourceBusinessIdByParamsForBussiness,
+  }),
   businessImageUploadHelper.single("image"),
   uploadImage
 );

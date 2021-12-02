@@ -1,7 +1,5 @@
 /* eslint-disable prettier/prettier */
 const express = require("express");
-const { USER } = require("../constants/pages");
-const { CREATE, UPDATE, READ, DELETE } = require("../constants/rest");
 const router = express.Router();
 const user = require("../controllers/user");
 const { isAuthorized } = require("../middlewares/auth");
@@ -14,14 +12,18 @@ const validate = require("../validations/validate");
 // create route
 router.post(
   "/",
-  isAuthorized(USER, CREATE),
+  isAuthorized(null, null, { isSuperAdminOnly: true }),
   createUserValidationRules(),
   validate,
   user.create
 );
 
 // read route
-router.get("/:userId", isAuthorized(USER, READ), user.get);
+router.get(
+  "/:userId",
+  isAuthorized(null, null, { isSuperAdminOnly: true }),
+  user.get
+);
 
 /**
  * delete route
@@ -33,19 +35,17 @@ router.get("/:userId", isAuthorized(USER, READ), user.get);
 // update route
 router.put(
   "/:userId",
-  isAuthorized(USER, UPDATE),
+  isAuthorized(null, null, { isSuperAdminOnly: true }),
   updateUserValidationRules(),
   validate,
   user.update
 );
 
 // listing route
-router.get("/", isAuthorized(USER, READ), user.getAll);
+router.get(
+  "/",
+  isAuthorized(null, null, { isSuperAdminOnly: true }),
+  user.getAll
+);
 
-/* 
-
-  note: to sudharshan
-  /businesess/:businessId/coaches
-
-*/
 module.exports = router;
