@@ -19,14 +19,19 @@ const {
 } = require("../controllers/progress");
 const validate = require("../validations/validate");
 const { isAuthorized } = require("../middlewares/auth");
-
+const { PROGRESS_RECORD } = require("../constants/pages");
+const getResourceBusinessIdInCreate = require("../middlewares/auth/utils/getResourceBusinessId/getResourceBusinessIdInCreate");
+const getResourceBusinessIdByProgressIdFromBody = require("../middlewares/auth/utils/getResourceBusinessId/getResourceBusinessIdByProgressIdFromBody");
+const { CREATE, UPDATE, READ } = require("../constants/rest");
 //parameters
 // router.param("progressId", getProgressIdById);
 //buss
 // create routes
 router.post(
   "/",
-  isAuthorized(null, null),
+  isAuthorized(PROGRESS_RECORD, CREATE, {
+    getResourceBusinessId: getResourceBusinessIdInCreate,
+  }),
   createOrGetProgressValidationRules(),
   validate,
   createOrGetProgress
@@ -35,6 +40,9 @@ router.post(
 // mark progress
 router.put(
   "/update-status",
+  isAuthorized(PROGRESS_RECORD, UPDATE, {
+    getResourceBusinessId: getResourceBusinessIdByProgressIdFromBody,
+  }),
   markProgressValidationRules(),
   validate,
   markAProgress
@@ -42,6 +50,9 @@ router.put(
 
 router.put(
   "/update-multiple-status",
+  isAuthorized(PROGRESS_RECORD, UPDATE, {
+    getResourceBusinessId: getResourceBusinessIdByProgressIdFromBody,
+  }),
   markMultipleProgressValidationRules(),
   validate,
   multipleProgressMarking

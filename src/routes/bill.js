@@ -14,7 +14,7 @@ const {
 } = require("../validations/bill");
 const { isAuthorized } = require("../middlewares/auth");
 const getResourceBusinessIdForBill = require("../middlewares/auth/utils/getResourceBusinessId/getResourceBusinessIdForBill");
-const { CREATE, DELETE, UPDATE, READ } = require("../constants/rest");
+const { CREATE } = require("../constants/rest");
 const { CLASS_DEFINITION } = require("../constants/pages");
 
 // read routes

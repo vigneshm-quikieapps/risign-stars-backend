@@ -59,7 +59,10 @@ const isAuthorized =
     // }
 
     switch (true) {
-      case page == null && action == null && !options.isAuthHandler:
+      case page == null &&
+        action == null &&
+        !options.isAuthHandler &&
+        !options.isSuperAdminOnly:
         //it allows users who has valid access token
         next();
         break;
@@ -67,6 +70,21 @@ const isAuthorized =
       case process.env.IS_AUTHORIZED_CHECK === "DISABLE":
         //it disables the authoraisation check
         next();
+        break;
+      case options.isSuperAdminOnly:
+        //it checks for the Super Admin Only
+        try {
+          //it allows access only for Super Admin
+          if (!hasAllPermission(req.authUserData)) {
+            throw new UnauthorizedError();
+          }
+          next();
+        } catch (err) {
+          console.error(err.message);
+          return res
+            .status(StatusCodes.UNAUTHORIZED)
+            .send({ message: "Unauthorized" });
+        }
         break;
       default:
         try {
