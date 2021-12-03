@@ -60,7 +60,7 @@ router.post(
 
 router.get(
   "/of-logged-in-user",
-  isAuthorized(null, null, { isSuperAdminOnly: true }),
+  isAuthorized(null, null),
   getAllBusinessesOfLoginUser
 );
 
