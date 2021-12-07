@@ -18,7 +18,7 @@ const getQuery = (req) => {
         query[field] = { $regex: new RegExp(`^${escapeRegex2(value)}`, "i") };
         break;
       case EQUALS_FILTER:
-        query[field] = { $regex: new RegExp(escapeRegex2(value), "i") };
+        query[field] = { $regex: new RegExp(`^${escapeRegex2(value)}$`, "i") };
         break;
       case NOT_EQUALS_FILTER:
         query[field] = { $ne: value };

@@ -7,7 +7,7 @@ const { Types } = require("mongoose");
  */
 const getRoleIds = (tokenPayload) => {
   let { roles } = tokenPayload;
-  return roles.map((role) => Types.ObjectId(role.id));
+  return roles.map((role) => Types.ObjectId(role._id));
 };
 
 module.exports = getRoleIds;
