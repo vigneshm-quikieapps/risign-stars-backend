@@ -29,9 +29,7 @@ const { CREATE, UPDATE, READ } = require("../constants/rest");
 // create routes
 router.post(
   "/",
-  isAuthorized(PROGRESS_RECORD, CREATE, {
-    getResourceBusinessId: getResourceBusinessIdInCreate,
-  }),
+  isAuthorized(null, null),
   createOrGetProgressValidationRules(),
   validate,
   createOrGetProgress

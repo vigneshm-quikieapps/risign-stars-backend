@@ -32,7 +32,12 @@ const UserSchema = new mongoose.Schema(
       type: String,
       enum: ENUM_USER_TYPES,
     },
-    roles: [{}],
+    roles: [
+      {
+        type: ObjectId,
+        ref: "Role",
+      },
+    ],
     mobileNo: {
       type: String,
     },

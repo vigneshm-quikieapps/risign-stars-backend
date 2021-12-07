@@ -28,7 +28,7 @@ router.post(
 );
 
 // read routes
-router.get("/:evaluationSchemeId", getEvaluation);
+router.get("/:evaluationSchemeId", isAuthorized(null, null), getEvaluation);
 
 //delete route
 router.delete(
