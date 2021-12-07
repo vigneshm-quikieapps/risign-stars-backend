@@ -19,7 +19,7 @@ const {
 } = require("../validations/Term");
 const validate = require("../validations/validate");
 const { CREATE, DELETE, UPDATE, READ } = require("../constants/rest");
-const { SESSION_TERM } = require("../constants/pages");
+const { TERM } = require("../constants/pages");
 const getResourceBusinessIdInCreate = require("../middlewares/auth/utils/getResourceBusinessId/getResourceBusinessIdInCreate");
 const getResourceBusinessIdByTermId = require("../middlewares/auth/utils/getResourceBusinessId/getResourceBusinessIdByTermId");
 
@@ -32,7 +32,7 @@ router.get(
 );
 router.post(
   "/",
-  isAuthorized(SESSION_TERM, CREATE, {
+  isAuthorized(TERM, CREATE, {
     getResourceBusinessId: getResourceBusinessIdInCreate,
   }),
   createTermValidationRules(),
@@ -44,7 +44,7 @@ router.get("/", getAllTerm);
 router.get("/:termId", getTerm);
 router.put(
   "/:termId",
-  isAuthorized(SESSION_TERM, UPDATE, {
+  isAuthorized(TERM, UPDATE, {
     getResourceBusinessId: getResourceBusinessIdByTermId,
   }),
   updateTermValidationRules(),
@@ -54,7 +54,7 @@ router.put(
 
 router.delete(
   "/:termId",
-  isAuthorized(SESSION_TERM, DELETE, {
+  isAuthorized(TERM, DELETE, {
     getResourceBusinessId: getResourceBusinessIdByTermId,
   }),
   deleteTerm
