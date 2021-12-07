@@ -5,7 +5,8 @@ const {
   billsOfAMemberInAClass,
   billsOfAMemberInABusiness,
   enterTransaction,
-  deleteTransactions
+  deleteTransactions,
+  updateTransactions
 } = require("../controllers/bill");
 const validate = require("../validations/validate");
 const {
@@ -51,6 +52,11 @@ router.post(
   deleteTransactionValidationRules(),
   validate,
   deleteTransactions
+);
+
+router.post(
+  "/update-transactions",
+  updateTransactions
 );
 
 module.exports = router;

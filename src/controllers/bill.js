@@ -189,6 +189,72 @@ module.exports.deleteTransactions = async (req, res) => {
   }
 };
 
+module.exports.updateTransactions = async (req, res) => {
+  const session = await mongoose.startSession();
+  session.startTransaction();
+  try {
+    let { billData } = req.body;
+    if (billData.length > 0) {
+      let updatedBillTransactions = [];
+      for (let i = 0; i < billData.length; i++) {
+        let { billId } = billData[i];
+        let bill = await Bill.findById(billId);
+        if (bill) {
+          if (bill.partialTransactions) {
+            if (bill.partialTransactions.length > 0) {
+              let { partialTransactions } = bill;
+              let newPartialTransactions = [];
+              for (let j = 0; j < partialTransactions.length; j++) {
+                let index = billData[i].transactions.findIndex(
+                  ({ _id }) => _id === partialTransactions[j]._id.toString()
+                );
+                if (index > -1) {
+                  let id = partialTransactions[j]._id;
+                  let newObj = partialTransactions[j];
+                  for (let key in billData[i].transactions[index]) {
+                    newObj[key] = billData[i].transactions[index][key];
+                  }
+                  partialTransactions[j] = newObj;
+                  newPartialTransactions.push(partialTransactions[j]);
+                } else {
+                  newPartialTransactions.push(partialTransactions[j]);
+                }
+              }
+              let update = {
+                $set: {
+                  partialTransactions: newPartialTransactions,
+                },
+              };
+              let options = { new: true, useFindAndModify: false };
+
+              let updatedBill = await Bill.findByIdAndUpdate(
+                billId,
+                update,
+                options
+              ).session(session);
+              updatedBillTransactions.push(updatedBill);
+            }
+            // return res.send({ message: "transaction recorded", updatedBill });
+          } else {
+            throw new Error("There is no partial transactions in a bill");
+          }
+        } else {
+          throw new Error(`There is no bill of this ${billId} bill id `);
+        }
+      }
+      await session.commitTransaction();
+      return res.send({
+        message: "transaction updated",
+        updatedBillTransactions,
+      });
+    }
+  } catch (err) {
+    await session.abortTransaction();
+    return res.status(422).send({ message: err.message });
+  } finally {
+    session.endSession();
+  }
+};
 /**
  * get bill status of members in a session
  *
