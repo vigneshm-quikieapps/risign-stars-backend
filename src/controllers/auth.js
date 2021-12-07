@@ -33,7 +33,7 @@ module.exports.signin = async (req, res) => {
   try {
     const { mobileNo, password } = req.body;
 
-    let user = await User.findOne({ mobileNo });
+    let user = await User.findOne({ mobileNo }).populate("roles");
 
     if (!user) {
       throw new DoesNotExistError();
