@@ -6,6 +6,7 @@ const {
 } = require("../helpers/query");
 const { PAYMENT_METHOD_MANUAL } = require("../constants/bill");
 const { ENUM_TRANSFER_ALLOWED } = require("../constants/enrolment");
+const mongoose = require("mongoose");
 const { ObjectId } = require("mongoose").Types;
 
 module.exports.getAll = async (req, res) => {
@@ -47,26 +48,108 @@ module.exports.billsOfAMemberInABusiness = async (req, res) => {
   }
 };
 
+// module.exports.enterTransaction = async (req, res) => {
+//   try {
+//     let { billId, reference, type } = req.body;
+//     let now = new Date();
+
+//     let update = {
+//       $set: {
+//         reference,
+//         method: PAYMENT_METHOD_MANUAL,
+//         type,
+//         paidAt: now,
+//       },
+//     };
+//     let options = { new: true, useFindAndModify: false };
+
+//     let bill = await Bill.findByIdAndUpdate(billId, update, options);
+
+//     return res.send({ message: "transaction recorded", bill });
+//   } catch (err) {
+//     return res.status(422).send({ message: err.message });
+//   }
+// };
+
 module.exports.enterTransaction = async (req, res) => {
+  const session = await mongoose.startSession();
+  session.startTransaction();
   try {
-    let { billId, reference, type } = req.body;
+    let { billId, reference, type, amount } = req.body;
     let now = new Date();
+    let billData = await Bill.findById(billId);
+    let transactionArray = [];
+    if (billData.partialTransactions.length == 0) {
+      if (amount <= billData.subtotal) {
+        let partialObj = {};
+        partialObj.amount = amount;
+        partialObj.reference = reference;
+        partialObj.method = PAYMENT_METHOD_MANUAL;
+        partialObj.transactionType = type;
+        partialObj.paidAt = now;
+        partialObj.updateMethod = PAYMENT_METHOD_MANUAL;
+        partialObj.processDate = now;
+        transactionArray.push(partialObj);
+        let update = {
+          $set: {
+            partialTransactions: transactionArray,
+          },
+        };
+        let options = { new: true, useFindAndModify: false };
 
-    let update = {
-      $set: {
-        reference,
-        method: PAYMENT_METHOD_MANUAL,
-        type,
-        paidAt: now,
-      },
-    };
-    let options = { new: true, useFindAndModify: false };
+        let bill = await Bill.findByIdAndUpdate(
+          billId,
+          update,
+          options
+        ).session(session);
+        await session.commitTransaction();
 
-    let bill = await Bill.findByIdAndUpdate(billId, update, options);
+        return res.send({ message: "transaction recorded", bill });
+      } else {
+        throw new Error("Transaction amount is greater than sub total");
+      }
+    } else {
+      let totalSum = 0;
+      for (let i = 0; i < billData.partialTransactions.length; i++) {
+        totalSum += billData.partialTransactions[i].amount;
+      }
+      let diff = billData.subtotal - totalSum;
+      if (totalSum < billData.subtotal && amount <= diff) {
+        let partialObj = {};
+        partialObj.amount = amount;
+        partialObj.reference = reference;
+        partialObj.method = PAYMENT_METHOD_MANUAL;
+        partialObj.transactionType = type;
+        partialObj.paidAt = now;
+        partialObj.updateMethod = PAYMENT_METHOD_MANUAL;
+        partialObj.processDate = now;
+        transactionArray = billData.partialTransactions;
+        transactionArray.push(partialObj);
+        let update = {
+          $set: {
+            partialTransactions: transactionArray,
+          },
+        };
+        let options = { new: true, useFindAndModify: false };
 
-    return res.send({ message: "transaction recorded", bill });
+        let bill = await Bill.findByIdAndUpdate(
+          billId,
+          update,
+          options
+        ).session(session);
+        await session.commitTransaction();
+
+        return res.send({ message: "transaction recorded", bill });
+      } else {
+        throw new Error("No due left cannot record this transaction");
+      }
+    }
+
   } catch (err) {
+    await session.abortTransaction();
     return res.status(422).send({ message: err.message });
+  } finally {
+    session.endSession();
   }
 };
 
