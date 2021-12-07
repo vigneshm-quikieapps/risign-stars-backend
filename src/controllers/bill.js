@@ -153,6 +153,42 @@ module.exports.enterTransaction = async (req, res) => {
   }
 };
 
+module.exports.deleteTransactions = async (req, res) => {
+  const session = await mongoose.startSession();
+  session.startTransaction();
+  try {
+    let { billId, transactionId } = req.body;
+    let billData = await Bill.findById(billId);
+    if (billData) {
+      if (billData.partialTransactions) {
+        let { partialTransactions } = billData;
+        let newTransactions = partialTransactions.filter((transaction) => {
+          return transaction._id != transactionId;
+        });
+        let update = {
+          $set: {
+            partialTransactions: newTransactions,
+          },
+        };
+        let options = { new: true, useFindAndModify: false };
+
+        let bill = await Bill.findByIdAndUpdate(
+          billId,
+          update,
+          options
+        ).session(session);
+        await session.commitTransaction();
+        return res.send({ message: "transaction deleted", bill });
+      }
+    }
+  } catch (err) {
+    await session.abortTransaction();
+    return res.status(422).send({ message: err.message });
+  } finally {
+    session.endSession();
+  }
+};
+
 /**
  * get bill status of members in a session
  *
