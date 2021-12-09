@@ -3,6 +3,7 @@ const { FILTER_TYPES } = require("../constants/constant");
 const { check } = require("express-validator");
 const { ENUM_STATUS, ENUM_BUSINESS_TYPE } = require("../constants/business");
 const { BUSINESS } = require("./constants");
+const { Business } = require("../models");
 
 const businessFilter = (filters) => {
   if (!Array.isArray(filters)) {
@@ -31,10 +32,18 @@ const getAllBusinessValidationRules = () => {
   return [query("filters").optional().custom(businessFilter)];
 };
 
+const isUniqueCode = async (code) => {
+  let business = await Business.find({ code: code });
+  if (business.length)
+    return Promise.reject(
+      "This code is already used in another business. Please input a new unique code"
+    );
+};
+
 const createBusinessValidationRules = () => {
   return [
     check("name", "is required").notEmpty(),
-    check("code", "is required and should be at most 5 chars ")
+    check("code", "is required and should be at most 5 chars ").custom(isUniqueCode)
     // .optional()
     .isLength({ max: 5 })
     .isString(),
