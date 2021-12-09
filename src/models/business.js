@@ -67,7 +67,11 @@ const businessSchema = new mongoose.Schema(
       required: true,
       trim: true,
     },
-    facebok: String,
+    geo:{
+      type:String,
+      trim:true
+    },
+    facebook: String,
     instagram: String,
     linkedin: String,
     pinterest: String,
