@@ -3,6 +3,7 @@ const { FILTER_TYPES } = require("../constants/constant");
 const { check } = require("express-validator");
 const { ENUM_STATUS, ENUM_BUSINESS_TYPE } = require("../constants/business");
 const { BUSINESS } = require("./constants");
+const { Business } = require("../models");
 
 const businessFilter = (filters) => {
   if (!Array.isArray(filters)) {
@@ -31,38 +32,41 @@ const getAllBusinessValidationRules = () => {
   return [query("filters").optional().custom(businessFilter)];
 };
 
+const isUniqueCode = async (code) => {
+  let business = await Business.find({ code: code });
+  if (business.length)
+    return Promise.reject(
+      "This code is already used in another business. Please input a new unique code"
+    );
+};
+
 const createBusinessValidationRules = () => {
   return [
-    check("name", "should be at least 3 char").isLength({ min: 3 }),
-    check("code", "should be at least 3 char")
-      // .optional()
-      // .isLength({ min: 3 })
-      .isString(),
+    check("name", "is required").notEmpty(),
+    check("code", "is required and should be at most 5 chars ").custom(isUniqueCode)
+    // .optional()
+    .isLength({ max: 5 })
+    .isString(),
     check("status", BUSINESS.STATUS.MESSAGE).isIn(ENUM_STATUS),
-    check("tradename", "should be at least 3 char").isLength({
-      min: 3,
-    }),
+    check("tradename", "is required").notEmpty(),
+
     check("type", BUSINESS.TYPE.MESSAGE).isIn(ENUM_BUSINESS_TYPE),
-    check("contactName", "should be at least 3 char")
+    check("contactEmail", "should be a valid email address")
       .optional()
-      .isLength({ min: 3 }),
-    check("contactEmail", "should be at least 3 char")
+      .isEmail(),
+    check("primaryPhone", "should be at least 6 chars")
       .optional()
-      .isLength({ min: 3 }),
-    check("primaryPhone", "should be at least 3 char")
+      .isLength({ min: 6 }),
+    check("primaryMobileNo", "should be at least 9 chars")
       .optional()
-      .isLength({ min: 3 }),
-    check("primaryMobileNo", "should be at least 3 char")
-      .optional()
-      .isLength({ min: 3 }),
-    check("about", "should be at least 3 char").optional().isLength({ min: 3 }),
-    check("postcode", "should be at least 3 char").isLength({
-      min: 3,
+      .isLength({ min: 9 }),
+    check("postcode", "should be at least 6 chars").isLength({
+      min: 6,
     }),
-    check("line1", "should be at least 3 char").isLength({ min: 3 }),
-    check("city", "should be at least 3 char").isLength({ min: 3 }),
-    check("country", "should be at least 3 char").isLength({ min: 3 }),
-    check("facebok", "should be a valid url").optional().isURL(),
+    check("line1", "is required").notEmpty(),
+    check("city", "is required").notEmpty(),
+    check("country", "is required").notEmpty(),
+    check("facebook", "should be a valid url").optional().isURL(),
     check("instagram", "should be a valid url").optional().isURL(),
     check("linkedin", "should be a valid url").optional().isURL(),
     check("pinterest", "should be a valid url").optional().isURL(),
