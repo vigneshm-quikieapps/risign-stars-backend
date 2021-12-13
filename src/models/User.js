@@ -24,6 +24,10 @@ const UserSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    status: {
+      type: String,
+      enum: ["ACTIVE", "INACTIVE"],
+    },
     isDeleted: {
       type: Boolean,
       default: false,
