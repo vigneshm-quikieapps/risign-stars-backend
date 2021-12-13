@@ -114,12 +114,18 @@ const createUserValidationRules = () => {
     body("roles", "should be an array of ids").isArray(),
     //body("roles", "should contain id"),
     // body("roles.*.name", "should contain name"),
-    body("dataPrivileges", "should be an array").isArray(),
-    body(
-      "dataPrivileges.*.type",
-      `data privileges type should be: ${DATA_PRIVILEGES_TYPE.join("/")}`
-    ).isIn(DATA_PRIVILEGES_TYPE),
-    body("dataPrivileges.*.businessId").custom(businessIdValidation),
+    // body("dataPrivileges", "should be an array").isArray(),
+    // body(
+    //   "dataPrivileges.*.type",
+    //   `data privileges type should be: ${DATA_PRIVILEGES_TYPE.join("/")}`
+    // ).isIn(DATA_PRIVILEGES_TYPE),
+    // body("dataPrivileges.*.businessId").custom(businessIdValidation),
+    body("dataPrivileges", "dataPrivileges should be a object")
+    .isObject(),
+    body("dataPrivileges.all", "should be a true/false")
+    .isBoolean(),
+    body("dataPrivileges.list", "should be an array")
+    .isArray(),
   ];
 };
 
@@ -150,14 +156,23 @@ const updateUserValidationRules = () => {
     body("roles", "should be an array").isArray(),
     body("roles.*.id"),
     body("roles.*.name"),
-    body("dataPrivileges", "should be an array").isArray(),
-    body(
-      "dataPrivileges.*.type",
-      `data privileges type should be: ${DATA_PRIVILEGES_TYPE.join("/")}`
-    )
-      .optional()
-      .isIn(DATA_PRIVILEGES_TYPE),
-    body("dataPrivileges.*.businessId").optional().custom(businessIdValidation),
+    // body("dataPrivileges", "should be an array").isArray(),
+    // body(
+    //   "dataPrivileges.*.type",
+    //   `data privileges type should be: ${DATA_PRIVILEGES_TYPE.join("/")}`
+    // )
+    //   .optional()
+    //   .isIn(DATA_PRIVILEGES_TYPE),
+    // body("dataPrivileges.*.businessId").optional().custom(businessIdValidation),
+    body("dataPrivileges", "dataPrivileges should be a object")
+    .optional()
+    .isObject(),
+    body("dataPrivileges.all", "should be a true/false")
+    .optional()
+    .isBoolean(),
+    body("dataPrivileges.list", "should be an array")
+    .optional()
+    .isArray(),
   ];
 };
 
