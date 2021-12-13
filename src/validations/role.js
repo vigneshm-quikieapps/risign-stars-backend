@@ -20,21 +20,14 @@ const isUniqueName = async (name) => {
 
 const createRoleValidationRules = () => {
   return [
-    body("name", "Name should have at least 3 characters")
+    body("name", "is required").notEmpty().bail().custom(isUniqueName),
+    body("code", "is required and should have at most 5 characters ")
+      .notEmpty()
       .isLength({
-        min: 3,
-      })
-      .bail()
-      .custom(isUniqueName),
-    body("code", "code should have at least 3 characters")
-      .isLength({
-        min: 3,
+        max: 5,
       })
       .bail()
       .custom(isUniqueCode),
-    body("description", "description should at least 5 characters")
-      .optional()
-      .isLength({ min: 5 }),
     body("functionalPrivileges", "should be an array").isArray(),
     body(
       "functionalPrivileges.*.type",
@@ -61,19 +54,17 @@ const createRoleValidationRules = () => {
 
 const updateRoleValidationRules = () => {
   return [
-    body("name", "Name should have at least 3 characters")
-      .optional()
-      .isLength({ min: 3 }),
-    body("code", "code should have at least 3 characters")
-      .isLength({
-        min: 3,
-      })
-      .optional()
-      .bail()
-      .custom(isUniqueCode),
-    body("description", "description should at least 5 characters")
-      .optional()
-      .isLength({ min: 5 }),
+    body("name", "is required").optional().notEmpty(),
+    // body("code", "code should have at least 3 characters")
+    //   .isLength({
+    //     min: 3,
+    //   })
+    //   .optional()
+    //   .bail()
+    //   .custom(isUniqueCode),
+    // body("description", "description should at least 5 characters")
+    //   .optional()
+    //   .isLength({ min: 5 }),
     body("functionalPrivileges", "should be an array").optional().isArray(),
     body(
       "functionalPrivileges.*.type",
