@@ -103,6 +103,10 @@ const createUserValidationRules = () => {
     body("password", USER.PASSWORD.MESSAGE).isLength({
       min: USER.PASSWORD.LENGTH,
     }),
+    body("status", "should be either ACTIVE/INACTIVE").isIn([
+      "ACTIVE",
+      "INACTIVE",
+    ]),
     body("mobileNo", USER.MOBILE_NO.MESSAGE)
       .custom(isValidMobile)
       .bail()
@@ -134,6 +138,9 @@ const updateUserValidationRules = () => {
     body("password", USER.PASSWORD.MESSAGE).optional().isLength({
       min: USER.PASSWORD.LENGTH,
     }),
+    body("status", "should be either ACTIVE/INACTIVE")
+      .optional()
+      .isIn(["ACTIVE", "INACTIVE"]),
 
     body("mobileNo", USER.MOBILE_NO.MESSAGE)
       .optional()
