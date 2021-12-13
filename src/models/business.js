@@ -67,9 +67,9 @@ const businessSchema = new mongoose.Schema(
       required: true,
       trim: true,
     },
-    geo:{
-      type:String,
-      trim:true
+    geo: {
+      type: String,
+      trim: true,
     },
     facebook: String,
     instagram: String,

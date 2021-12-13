@@ -45,10 +45,13 @@ module.exports.get = async (req, res) => {
 module.exports.update = async (req, res) => {
   try {
     let { roleId } = req.params;
+    let data = { ...req.body };
     let options = { new: true };
+    delete data.code; /** updating role code is not allowed  */
+
     let role = await Role.findByIdAndUpdate(
       roleId,
-      { ...req.body, updatedBy: req.authUserData._id },
+      { ...data, updatedBy: req.authUserData._id },
       options
     );
     if (!role) {

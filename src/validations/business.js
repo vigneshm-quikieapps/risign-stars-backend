@@ -43,10 +43,11 @@ const isUniqueCode = async (code) => {
 const createBusinessValidationRules = () => {
   return [
     check("name", "is required").notEmpty(),
-    check("code", "is required and should be at most 5 chars ").custom(isUniqueCode)
-    // .optional()
-    .isLength({ max: 5 })
-    .isString(),
+    check("code", "is required and should be at most 5 chars ")
+      .custom(isUniqueCode)
+      // .optional()
+      .isLength({ max: 5 })
+      .isString(),
     check("status", BUSINESS.STATUS.MESSAGE).isIn(ENUM_STATUS),
     check("tradename", "is required").notEmpty(),
 
@@ -82,37 +83,33 @@ const createBusinessValidationRules = () => {
  */
 const updateBusinessValidationRules = () => {
   return [
-    check("name", "name should be at least 3 char")
-      .optional()
-      .isLength({ min: 3 }),
-    // check("code", "code should be at least 3 char")
+    check("name", "is required").optional().notEmpty(),
+    // check("code", "is required and should be at most 5 chars ")
     //   .optional()
-    //   .isLength({ min: 3 }),
-    check("status", BUSINESS.STATUS.MESSAGE).isIn(ENUM_STATUS),
-    check("tradename", "tradename should be at least 3 char")
-      .optional()
-      .isLength({ min: 3 }),
+    //   //.custom(isUniqueCode)
+    //   // .optional()
+    //   .isLength({ max: 5 })
+    //   .isString(),
+    check("status", BUSINESS.STATUS.MESSAGE).optional().isIn(ENUM_STATUS),
+    check("tradename", "is required").optional().notEmpty(),
+
     check("type", BUSINESS.TYPE.MESSAGE).optional().isIn(ENUM_BUSINESS_TYPE),
-    check("contactName", "should be at least 3 char")
+    check("contactEmail", "should be a valid email address")
       .optional()
-      .isLength({ min: 3 }),
-    check("contactEmail", "should be at least 3 char").optional().isEmail(),
-    check("primaryPhone", "should be at least 3 char")
+      .isEmail(),
+    check("primaryPhone", "should be at least 6 chars")
       .optional()
-      .isLength({ min: 3 }),
-    check("primaryMobileNo", "should be at least 3 char")
+      .isLength({ min: 6 }),
+    check("primaryMobileNo", "should be at least 9 chars")
       .optional()
-      .isLength({ min: 3 }),
-    check("about", "should be at least 3 char").optional().isLength({ min: 3 }),
-    check("postcode", "should be at least 3 char")
-      .optional()
-      .isLength({ min: 3 }),
-    check("line1", "should be at least 3 char").optional().isLength({ min: 3 }),
-    check("city", "should be at least 3 char").optional().isLength({ min: 3 }),
-    check("country", "should be at least 3 char")
-      .optional()
-      .isLength({ min: 3 }),
-    check("facebok", "should be a valid url").optional().isURL(),
+      .isLength({ min: 9 }),
+    check("postcode", "should be at least 6 chars").optional().isLength({
+      min: 6,
+    }),
+    check("line1", "is required").optional().notEmpty(),
+    check("city", "is required").optional().notEmpty(),
+    check("country", "is required").optional().notEmpty(),
+    check("facebook", "should be a valid url").optional().isURL(),
     check("instagram", "should be a valid url").optional().isURL(),
     check("linkedin", "should be a valid url").optional().isURL(),
     check("pinterest", "should be a valid url").optional().isURL(),
