@@ -100,6 +100,9 @@ const signUpValidationRules = () => {
 const createUserValidationRules = () => {
   return [
     ...commonUserValidationRules,
+    body("password", USER.PASSWORD.MESSAGE).isLength({
+      min: USER.PASSWORD.LENGTH,
+    }),
     body("mobileNo", USER.MOBILE_NO.MESSAGE)
       .custom(isValidMobile)
       .bail()
@@ -118,12 +121,20 @@ const createUserValidationRules = () => {
 
 const updateUserValidationRules = () => {
   return [
-    ...commonUserValidationRules,
+    //...commonUserValidationRules,
+
+    body("name", USER.NAME.MESSAGE).optional().isLength({
+      min: USER.NAME.LENGTH,
+    }),
     body("email", USER.EMAIL.MESSAGE)
       .optional()
       .isEmail()
       .bail()
       .custom(isEmailAvailable),
+    body("password", USER.PASSWORD.MESSAGE).isLength({
+      min: USER.PASSWORD.LENGTH,
+    }),
+
     body("mobileNo", USER.MOBILE_NO.MESSAGE)
       .optional()
       .custom(isValidMobile)
