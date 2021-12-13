@@ -8,11 +8,14 @@ const {
   updateUserValidationRules,
 } = require("../validations/user");
 const validate = require("../validations/validate");
+const { USERS } = require("../constants/pages");
+const { CREATE, UPDATE, READ, DELETE } = require("../constants/rest");
 //super admin
 // create route
 router.post(
   "/",
-  isAuthorized(null, null, { isSuperAdminOnly: true }),
+  // isAuthorized(null, null, { isSuperAdminOnly: true }),
+  isAuthorized(USERS, CREATE),
   createUserValidationRules(),
   validate,
   user.create
@@ -21,7 +24,8 @@ router.post(
 // read route
 router.get(
   "/:userId",
-  isAuthorized(null, null, { isSuperAdminOnly: true }),
+  // isAuthorized(null, null, { isSuperAdminOnly: true }),
+  isAuthorized(USERS, READ),
   user.get
 );
 
@@ -35,7 +39,8 @@ router.get(
 // update route
 router.put(
   "/:userId",
-  isAuthorized(null, null, { isSuperAdminOnly: true }),
+  // isAuthorized(null, null, { isSuperAdminOnly: true }),
+  isAuthorized(USERS, UPDATE),
   updateUserValidationRules(),
   validate,
   user.update
@@ -44,7 +49,8 @@ router.put(
 // listing route
 router.get(
   "/",
-  isAuthorized(null, null, { isSuperAdminOnly: true }),
+  // isAuthorized(null, null, { isSuperAdminOnly: true }),
+  isAuthorized(USERS, READ),
   user.getAll
 );
 

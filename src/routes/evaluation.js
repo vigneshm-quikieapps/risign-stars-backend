@@ -6,6 +6,8 @@ const {
   updateEvaluationValidationRules,
 } = require("../validations/evaluation");
 const { isAuthorized } = require("../middlewares/auth");
+const { EVALUATION_SCHEME } = require("../constants/pages");
+const { CREATE, READ, UPDATE, DELETE } = require("../constants/rest");
 
 const {
   getAllEvaluations,
@@ -21,7 +23,8 @@ const validate = require("../validations/validate");
 //create route
 router.post(
   "/",
-  isAuthorized(null, null, { isSuperAdminOnly: true }),
+  // isAuthorized(null, null, { isSuperAdminOnly: true }),
+  isAuthorized(EVALUATION_SCHEME, CREATE),
   createEvaluationValidationRules(),
   validate,
   createEvaluation
@@ -33,14 +36,16 @@ router.get("/:evaluationSchemeId", isAuthorized(null, null), getEvaluation);
 //delete route
 router.delete(
   "/:evaluationSchemeId",
-  isAuthorized(null, null, { isSuperAdminOnly: true }),
+  isAuthorized(EVALUATION_SCHEME, DELETE),
+  // isAuthorized(null, null, { isSuperAdminOnly: true }),
   deleteEvaluation
 );
 
 //update route
 router.put(
   "/:evaluationSchemeId",
-  isAuthorized(null, null, { isSuperAdminOnly: true }),
+  // isAuthorized(null, null, { isSuperAdminOnly: true }),
+  isAuthorized(EVALUATION_SCHEME, UPDATE),
   updateEvaluationValidationRules(),
   validate,
   updateEvaluation

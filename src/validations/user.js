@@ -6,23 +6,23 @@ const { USER, ADDRESS } = require("../constants/validation");
 const { VerifyContactOTP } = require("../services/otp");
 const { isMobileNoAvailable, isValidMobile } = require("./helpers/mobileNo");
 
-const businessIdValidation = async (businessId, { req }) => {
-  try {
-    if (req.body.dataPrivileges.type != "ALL") {
-      if (!businessId) {
-        throw new Error();
-      }
+// const businessIdValidation = async (businessId, { req }) => {
+//   try {
+   
+//       if (!businessId) {
+//         throw new Error();
+//       }
 
-      let business = await Business.findById(businessId);
-      if (!business) {
-        throw new Error();
-      }
-    }
-    return true;
-  } catch (err) {
-    return Promise.reject(`Please select a valid Business`);
-  }
-};
+//       let business = await Business.findById(businessId);
+//       if (!business) {
+//         throw new Error();
+//       }
+  
+//     return true;
+//   } catch (err) {
+//     return Promise.reject(`Please select a valid Business`);
+//   }
+// };
 
 /**
  * contact may either be email or mobileNo
