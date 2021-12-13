@@ -131,7 +131,7 @@ const updateUserValidationRules = () => {
       .isEmail()
       .bail()
       .custom(isEmailAvailable),
-    body("password", USER.PASSWORD.MESSAGE).isLength({
+    body("password", USER.PASSWORD.MESSAGE).optional().isLength({
       min: USER.PASSWORD.LENGTH,
     }),
 
