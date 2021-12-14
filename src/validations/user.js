@@ -8,7 +8,7 @@ const { isMobileNoAvailable, isValidMobile } = require("./helpers/mobileNo");
 
 // const businessIdValidation = async (businessId, { req }) => {
 //   try {
-   
+
 //       if (!businessId) {
 //         throw new Error();
 //       }
@@ -17,7 +17,7 @@ const { isMobileNoAvailable, isValidMobile } = require("./helpers/mobileNo");
 //       if (!business) {
 //         throw new Error();
 //       }
-  
+
 //     return true;
 //   } catch (err) {
 //     return Promise.reject(`Please select a valid Business`);
@@ -120,12 +120,9 @@ const createUserValidationRules = () => {
     //   `data privileges type should be: ${DATA_PRIVILEGES_TYPE.join("/")}`
     // ).isIn(DATA_PRIVILEGES_TYPE),
     // body("dataPrivileges.*.businessId").custom(businessIdValidation),
-    body("dataPrivileges", "dataPrivileges should be a object")
-    .isObject(),
-    body("dataPrivileges.all", "should be a true/false")
-    .isBoolean(),
-    body("dataPrivileges.list", "should be an array")
-    .isArray(),
+    body("dataPrivileges", "dataPrivileges should be a object").isObject(),
+    body("dataPrivileges.all", "should be a true/false").isBoolean(),
+    body("dataPrivileges.list", "should be an array").isArray(),
   ];
 };
 
@@ -165,14 +162,10 @@ const updateUserValidationRules = () => {
     //   .isIn(DATA_PRIVILEGES_TYPE),
     // body("dataPrivileges.*.businessId").optional().custom(businessIdValidation),
     body("dataPrivileges", "dataPrivileges should be a object")
-    .optional()
-    .isObject(),
-    body("dataPrivileges.all", "should be a true/false")
-    .optional()
-    .isBoolean(),
-    body("dataPrivileges.list", "should be an array")
-    .optional()
-    .isArray(),
+      .optional()
+      .isObject(),
+    body("dataPrivileges.all", "should be a true/false").optional().isBoolean(),
+    body("dataPrivileges.list", "should be an array").optional().isArray(),
   ];
 };
 
