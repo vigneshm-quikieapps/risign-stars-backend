@@ -1,4 +1,3 @@
-const { businessIdValidation } = require("./businessClass");
 const { check } = require("express-validator");
 const { isValidBusinessId } = require("./helpers/business");
 

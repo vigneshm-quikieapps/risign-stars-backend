@@ -294,9 +294,10 @@ module.exports.getAllMemberOfALoggedInUser = async (req, res) => {
   try {
     let { authUserData } = req;
     let { dataPrivileges } = authUserData;
-    let businessIds = dataPrivileges.map(({ businessId }) =>
-      Types.ObjectId(businessId)
-    );
+    // let businessIds = dataPrivileges.map(({ businessId }) =>
+    //   Types.ObjectId(businessId)
+    // );
+    let businessIds = dataPrivileges.list;
 
     /**
      * get the member ids

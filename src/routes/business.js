@@ -52,7 +52,8 @@ const { getAllDiscountInABusiness } = require("../controllers/discounts");
 //create route
 router.post(
   "/",
-  isAuthorized(null, null, { isSuperAdminOnly: true }),
+  // isAuthorized(null, null, { isSuperAdminOnly: true }),
+  isAuthorized(BUSINESS_DEFINITION, CREATE),
   createBusinessValidationRules(),
   validate,
   createBusiness
@@ -72,14 +73,16 @@ router.get("/:businessId", getBusiness);
 //delete route
 router.delete(
   "/:businessId",
-  isAuthorized(null, null, { isSuperAdminOnly: true }),
+  // isAuthorized(null, null, { isSuperAdminOnly: true }),
+  isAuthorized(BUSINESS_DEFINITION, DELETE),
   deleteBusiness
 );
 
 //update route
 router.put(
   "/:businessId",
-  isAuthorized(null, null, { isSuperAdminOnly: true }),
+  // isAuthorized(null, null, { isSuperAdminOnly: true }),
+  isAuthorized(BUSINESS_DEFINITION, UPDATE),
   updateBusinessValidationRules(),
   validate,
   updateBusiness
