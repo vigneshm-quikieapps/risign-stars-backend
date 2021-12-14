@@ -113,7 +113,6 @@ module.exports.getAllClassesForALoggedInBusinessAdmin = async (req, res) => {
     let { dataPrivileges } = authUserData;
     let businessIds = dataPrivileges.list;
     // let businessIds = dataPrivileges.map((dataPriv) => dataPriv.businessId);
-
     /**
      * filter classes by business ids
      */
@@ -129,11 +128,14 @@ module.exports.getAllClassesForALoggedInBusinessAdmin = async (req, res) => {
       if (!businessIds.includes(query.businessId)) {
         throw new Error("does not have permisssion");
       }
-    } else {
+    } else if (!dataPrivileges.all) {
       /**
        * query all the classes of the businesses the user has permission
        */
-      query = { ...query, businessId: { $in: businessIds } };
+
+      if (!dataPrivileges.all) {
+        query = { ...query, businessId: { $in: businessIds } };
+      }
     }
 
     let response = await BusinessClass.paginate(query, options);
