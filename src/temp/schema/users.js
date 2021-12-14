@@ -43,7 +43,7 @@ module.exports.users = {
   phoneVerified: Boolean /** default false */,
   dataPrivileges: {
     all: Boolean,
-    list:Array
+    list: Array,
   },
   postcode: String,
   addressLine1: String,
