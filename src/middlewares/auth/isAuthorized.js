@@ -1,7 +1,7 @@
 const { StatusCodes } = require("http-status-codes");
 const UnauthorizedError = require("../../exceptions/UnauthorizedError");
 const { verify } = require("jsonwebtoken");
-const { hasPermission} = require("./utils");
+const { hasPermission } = require("./utils");
 const getRoleIds = require("./utils/getRoleIds");
 const getRoles = require("./utils/getRoles");
 const { User } = require("../../models");
@@ -59,9 +59,7 @@ const isAuthorized =
     // }
 
     switch (true) {
-      case page == null &&
-        action == null &&
-        !options.isAuthHandler:
+      case page == null && action == null && !options.isAuthHandler:
         //  &&
         // !options.isSuperAdminOnly:
         //it allows users who has valid access token
@@ -120,18 +118,21 @@ const checkIsAuthorized = async (req, res, next, { page, action, options }) => {
   }
 
   let tokenPayload = req.authUserData;
-  let businessId = await options.getResourceBusinessId(req, res);
+  let businessId;
+  if (options.getResourceBusinessId) {
+    businessId = await options?.getResourceBusinessId(req, res);
+  }
   //console.log("bussinessId from getResourceBusinessId funcn:", businessId);
   /**
    * if data privileges type is "ALL": the user has full access to any api
    * else check if the user has permission for that particular api
    */
   // if (!hasAllPermission(tokenPayload)) {
-    let roleIds = getRoleIds(tokenPayload);
-    let roles = await getRoles(roleIds);
-    if (!hasPermission(businessId, roles, { page, action }, tokenPayload)) {
-      throw new UnauthorizedError();
-    }
+  let roleIds = getRoleIds(tokenPayload);
+  let roles = await getRoles(roleIds);
+  if (!hasPermission(businessId, roles, { page, action }, tokenPayload)) {
+    throw new UnauthorizedError();
+  }
   // }
 
   /**

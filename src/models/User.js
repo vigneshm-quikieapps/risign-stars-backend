@@ -38,7 +38,7 @@ const UserSchema = new mongoose.Schema(
     // },
     isCoach: {
       type: Boolean,
-      default:false
+      default: false,
     },
     roles: [
       {
@@ -88,17 +88,17 @@ const UserSchema = new mongoose.Schema(
       type: ObjectId,
       ref: "User",
     },
-    dataPrivileges:{
-      all:{
-        type:Boolean,
-        default:false
+    dataPrivileges: {
+      all: {
+        type: Boolean,
+        default: false,
       },
-      list:[
+      list: [
         {
           type: ObjectId,
           ref: "Business",
         },
-      ]
+      ],
     },
     // dataPrivileges: [
     //   {

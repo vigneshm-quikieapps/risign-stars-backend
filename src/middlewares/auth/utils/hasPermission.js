@@ -1,14 +1,13 @@
 const hasFunctionalPrivileges = require("./hasFunctionalPrivileges");
-const hasAccessToBusiness=(businessId,tokenPayload)=>{
+const hasAccessToBusiness = (businessId, tokenPayload) => {
   let { dataPrivileges } = tokenPayload;
   if (!dataPrivileges) {
     return false;
   }
-  if(dataPrivileges.all) return true
+  if (dataPrivileges.all) return true;
 
   return dataPrivileges.list.includes(businessId);
- 
-}
+};
 
 const hasPermission = (businessId, roles, { page, action }, tokenPayload) => {
   //restricts bussiness admin from accessing other bussiness class
@@ -19,7 +18,7 @@ const hasPermission = (businessId, roles, { page, action }, tokenPayload) => {
   //     return true;
   //   }
   // });
-  if (!hasAccessToBusiness(businessId,tokenPayload)) return false;
+  if (!hasAccessToBusiness(businessId, tokenPayload)) return false;
 
   //checks whether the user has the functional previlages / permission
   let roleIndex = roles.findIndex(({ functionalPrivileges }) =>
@@ -30,4 +29,3 @@ const hasPermission = (businessId, roles, { page, action }, tokenPayload) => {
 };
 
 module.exports = hasPermission;
-
