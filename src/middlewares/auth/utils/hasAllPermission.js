@@ -8,7 +8,7 @@ const hasAllPermission = (tokenPayload) => {
   // return dataPrivileges.some(
   //   (dataPriv) => dataPriv.type === DATA_PRIVILEGES_ALL
   // );\
-  return false
+  return false;
 };
 
 module.exports = hasAllPermission;
