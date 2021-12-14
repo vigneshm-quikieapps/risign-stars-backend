@@ -6,6 +6,8 @@ const { generateTokens, RefreshToken } = require("../services/auth");
 const { OTPEmail } = require("../services/notification/Email");
 const { VerifyContactOTP } = require("../services/otp");
 const { SignUpEmail } = require("../services/notification/Email");
+const { StatusCodes } = require("http-status-codes");
+
 
 // Signup Method
 module.exports.signup = async (req, res) => {
@@ -109,7 +111,7 @@ module.exports.refreshToken = async (req, res) => {
     return res.send(data);
   } catch (err) {
     console.error(err);
-    return res.status(401).send(response);
+    return res.status(StatusCodes.UNAUTHORIZED).send(response);
   }
 };
 
