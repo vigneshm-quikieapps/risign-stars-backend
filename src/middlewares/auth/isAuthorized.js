@@ -1,7 +1,7 @@
 const { StatusCodes } = require("http-status-codes");
 const UnauthorizedError = require("../../exceptions/UnauthorizedError");
 const { verify } = require("jsonwebtoken");
-const { hasPermission, hasAllPermission } = require("./utils");
+const { hasPermission} = require("./utils");
 const getRoleIds = require("./utils/getRoleIds");
 const getRoles = require("./utils/getRoles");
 const { User } = require("../../models");
@@ -20,7 +20,7 @@ const { User } = require("../../models");
  *
  *
  * isAuthorized(null, null) : if the user is authenticated, let it pass
- * isAuthorized(page, action) : if ther user has permission, let it pass
+ * isAuthorized(page, action,{getResourceBusinessId}) : if the user has permission, let it pass
  * isAuthorized(null, null, { isAuthHandler }): if the user passes the auth handler, let it pass
  * isAuthorized(page, action, { isAuthHandler }): if the user either has permission or the auth handler passes, let it pass
  *
@@ -61,8 +61,9 @@ const isAuthorized =
     switch (true) {
       case page == null &&
         action == null &&
-        !options.isAuthHandler &&
-        !options.isSuperAdminOnly:
+        !options.isAuthHandler:
+        //  &&
+        // !options.isSuperAdminOnly:
         //it allows users who has valid access token
         next();
         break;
@@ -71,21 +72,21 @@ const isAuthorized =
         //it disables the authoraisation check
         next();
         break;
-      case options.isSuperAdminOnly:
-        //it checks for the Super Admin Only
-        try {
-          //it allows access only for Super Admin
-          if (!hasAllPermission(req.authUserData)) {
-            throw new UnauthorizedError();
-          }
-          next();
-        } catch (err) {
-          console.error(err.message);
-          return res
-            .status(StatusCodes.UNAUTHORIZED)
-            .send({ message: "Unauthorized" });
-        }
-        break;
+      // case options.isSuperAdminOnly:
+      //   //it checks for the Super Admin Only
+      //   try {
+      //     //it allows access only for Super Admin
+      //     if (!hasAllPermission(req.authUserData)) {
+      //       throw new UnauthorizedError();
+      //     }
+      //     next();
+      //   } catch (err) {
+      //     console.error(err.message);
+      //     return res
+      //       .status(StatusCodes.UNAUTHORIZED)
+      //       .send({ message: "Unauthorized" });
+      //   }
+      //   break;
       default:
         try {
           //it allows bussiness admin with required permission to the page
@@ -125,13 +126,13 @@ const checkIsAuthorized = async (req, res, next, { page, action, options }) => {
    * if data privileges type is "ALL": the user has full access to any api
    * else check if the user has permission for that particular api
    */
-  if (!hasAllPermission(tokenPayload)) {
+  // if (!hasAllPermission(tokenPayload)) {
     let roleIds = getRoleIds(tokenPayload);
     let roles = await getRoles(roleIds);
     if (!hasPermission(businessId, roles, { page, action }, tokenPayload)) {
       throw new UnauthorizedError();
     }
-  }
+  // }
 
   /**
    * if the code execution reaches here.

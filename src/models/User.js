@@ -32,9 +32,13 @@ const UserSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
-    userTypes: {
-      type: String,
-      enum: ENUM_USER_TYPES,
+    // userTypes: {
+    //   type: String,
+    //   enum: ENUM_USER_TYPES,
+    // },
+    isCoach: {
+      type: Boolean,
+      default:false
     },
     roles: [
       {
@@ -84,17 +88,29 @@ const UserSchema = new mongoose.Schema(
       type: ObjectId,
       ref: "User",
     },
-    dataPrivileges: [
-      {
-        type: {
-          type: String,
-          enum: DATA_PRIVILEGES_TYPE,
-        },
-        businessId: {
-          type: ObjectId,
-        } /** id of business */,
+    dataPrivileges:{
+      all:{
+        type:Boolean,
+        default:false
       },
-    ],
+      list:[
+        {
+          type: ObjectId,
+          ref: "Business",
+        },
+      ]
+    },
+    // dataPrivileges: [
+    //   {
+    //     type: {
+    //       type: String,
+    //       enum: DATA_PRIVILEGES_TYPE,
+    //     },
+    //     businessId: {
+    //       type: ObjectId,
+    //     } /** id of business */,
+    //   },
+    // ],
   },
   { timestamps: true }
 );

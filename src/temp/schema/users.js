@@ -41,13 +41,10 @@ module.exports.users = {
   ],
   emailVerified: Boolean /** default false */,
   phoneVerified: Boolean /** default false */,
-  dataPrivileges: [
-    {
-      type: ENUM_DATA_PRIVILEGES_TYPE,
-      businessId: String,
-      businessName: String,
-    },
-  ],
+  dataPrivileges: {
+    all: Boolean,
+    list:Array
+  },
   postcode: String,
   addressLine1: String,
   addressLine2: String,

@@ -81,8 +81,8 @@ module.exports.getAllCoach = (req, res) => {
    */
   let businessId = req.params.businessId;
   let cond = {
-    userTypes: "COACH",
-    "dataPrivileges.businessId": Types.ObjectId(businessId),
+    isCoach: true,
+    "dataPrivileges.list": Types.ObjectId(businessId),
   };
 
   let query = User.find(cond).sort({ _id: sortBy }).skip(skip).limit(limit);

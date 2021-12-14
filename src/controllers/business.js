@@ -129,9 +129,10 @@ module.exports.getAllBusinessesOfLoginUser = async (req, res) => {
     }
 
     let { dataPrivileges } = authUserData;
-    let businessIds = dataPrivileges.map(({ businessId }) =>
-      Types.ObjectId(businessId)
-    );
+    let businessIds = dataPrivileges.list;
+    // .map(( businessId ) =>
+    //   Types.ObjectId(businessId)
+    // );
 
     let query = getQuery(req);
     let options = getOptions(req);

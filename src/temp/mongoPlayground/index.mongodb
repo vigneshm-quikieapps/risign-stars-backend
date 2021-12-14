@@ -18,11 +18,9 @@ db.enrolments.updateOne({_id: ObjectId("614325d2857c58f373bad37e"), {
     "city": "city",
     "country": "India",
     "password": "$2a$10$9XBlJ9JvOtDCV0xcxEdo9e8ZDoI3/dLJudPSmQWhyhF/GaLc/8iri",
-    "dataPrivileges": [
-      {
-        "type": "ALL"
-      }
-    ],
+    "dataPrivileges": {
+        "all": true
+      },
     "createdAt": "2021-09-15T07:13:22.440Z",
     "updatedAt": "2021-09-15T16:28:56.325Z"
   }

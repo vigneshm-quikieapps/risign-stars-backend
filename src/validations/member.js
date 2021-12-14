@@ -1,7 +1,7 @@
 const { body } = require("express-validator");
 const { ADDRESS_TYPE, RELATIONSHIPS } = require("../constants/member");
 const { ENUM_GENDER } = require("../constants/user");
-const { businessIdValidation } = require("./businessClass");
+const { isValidBusinessId } = require("./helpers/business");
 const { userIdValidation } = require("./businessFinance");
 
 const createMemberValidationRules = () => {
@@ -43,7 +43,7 @@ const updateMemberValidationRules = () => {
     body("membership").optional().isArray(),
     body("membership.*.business", "min length should be 2")
       .optional()
-      .custom(businessIdValidation),
+      .custom(isValidBusinessId),
     body("membership.*.clubMembershipId", "min length should be 2")
       .optional()
       .isLength({ min: 2 }),
