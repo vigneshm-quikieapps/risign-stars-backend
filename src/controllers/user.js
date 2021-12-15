@@ -37,7 +37,10 @@ module.exports.create = async (req, res) => {
 module.exports.get = async (req, res) => {
   try {
     let { userId } = req.params;
-    let user = await User.findById(userId);
+    let user = await User.findById(userId).populate([
+      { path: "dataPrivileges.list", select: "name" },
+      { path: "roles", select: "name" },
+    ]);
     if (!user) {
       throw new DoesNotExistError();
     }
