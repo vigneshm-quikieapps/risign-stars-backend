@@ -136,7 +136,7 @@ module.exports.getAllBusinessesOfLoginUser = async (req, res) => {
 
     let query = getQuery(req);
     let options = getOptions(req);
-    query = { ...query, _id: { $in: businessIds } };
+    if (!dataPrivileges.all) query = { ...query, _id: { $in: businessIds } };
 
     let response = await Business.paginate(query, options);
 

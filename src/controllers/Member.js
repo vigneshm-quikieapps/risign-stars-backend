@@ -298,6 +298,8 @@ module.exports.getAllMemberOfALoggedInUser = async (req, res) => {
     //   Types.ObjectId(businessId)
     // );
     let businessIds = dataPrivileges.list;
+    let querys = {};
+    if (!dataPrivileges.all) querys = { businessId: { $in: businessIds } };
 
     /**
      * get the member ids
@@ -306,7 +308,7 @@ module.exports.getAllMemberOfALoggedInUser = async (req, res) => {
      */
     let membersEnrolled = await Enrolment.aggregate([
       {
-        $match: { businessId: { $in: businessIds } },
+        $match: querys,
       },
       { $project: { memberId: 1 } },
       { $group: { _id: "$memberId" } },
