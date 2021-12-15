@@ -124,7 +124,8 @@ function onSaveMiddleware(next) {
 }
 
 function onUpdateMiddleware(next) {
-  this._update.password = bcrypt.hashSync(this._update.password);
+  if (this._update.password)
+    this._update.password = bcrypt.hashSync(this._update.password);
   next();
 }
 
