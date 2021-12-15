@@ -102,9 +102,9 @@ const isAuthorized =
             await isAuthHandler(req, res);
             next();
           } catch (err2) {
-            console.error(err2.message);
+            console.error("err", err2.message);
             return res
-              .status(StatusCodes.UNAUTHORIZED)
+              .status(StatusCodes.FORBIDDEN)
               .send({ message: "Unauthorized" });
           }
         }
@@ -120,7 +120,7 @@ const checkIsAuthorized = async (req, res, next, { page, action, options }) => {
   let tokenPayload = req.authUserData;
   let businessId;
   if (options.getResourceBusinessId) {
-    businessId = await options?.getResourceBusinessId(req, res);
+    businessId = await options.getResourceBusinessId(req, res);
   }
   //console.log("bussinessId from getResourceBusinessId funcn:", businessId);
   /**
