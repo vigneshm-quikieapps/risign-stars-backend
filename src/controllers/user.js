@@ -59,7 +59,14 @@ module.exports.getAll = async (req, res) => {
     let query = getQuery(req);
     let options = getOptions(req);
 
-    let response = await User.paginate(query, options);
+    let response = await User.paginate(query, {
+      ...options,
+      populate: [
+        { path: "dataPrivileges.list", select: "name" },
+        { path: "roles", select: "name" },
+      ],
+    });
+
     return res.send(response);
   } catch (err) {
     return res.status(422).send({ message: err.message });
