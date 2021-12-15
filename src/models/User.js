@@ -123,7 +123,14 @@ function onSaveMiddleware(next) {
   next();
 }
 
+function onUpdateMiddleware(next) {
+  if (this._update.password)
+    this._update.password = bcrypt.hashSync(this._update.password);
+  next();
+}
+
 UserSchema.pre("save", onSaveMiddleware);
+UserSchema.pre("findOneAndUpdate", onUpdateMiddleware);
 
 UserSchema.methods.isValidPassword = function (password) {
   return bcrypt.compareSync(password, this.password);

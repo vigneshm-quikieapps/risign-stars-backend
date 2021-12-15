@@ -134,7 +134,7 @@ const getUserPayload = (payload) => {
     "mobileNo",
     "emailVerfied",
     "mobileNoVerified",
-    "password",
+    // "password",
   ];
 
   blacklist.forEach((field) => {
@@ -157,11 +157,11 @@ module.exports.update = async (req, res) => {
     let { userId } = req.params;
     let options = { new: true };
     let updatePayload = getUserPayload({ ...req.body });
-    let role = await User.findByIdAndUpdate(userId, updatePayload, options);
-    if (!role) {
+    let user = await User.findByIdAndUpdate(userId, updatePayload, options);
+    if (!user) {
       throw new DoesNotExistError();
     }
-    return res.send({ message: "updated successfully", role });
+    return res.send({ message: "updated successfully", user });
   } catch (err) {
     console.error(err);
     return res.status(422).send({ message: err.message });
