@@ -81,14 +81,15 @@ module.exports.enterTransaction = async (req, res) => {
     let transactionArray = [];
     if (billData.partialTransactions.length == 0) {
       if (amount <= billData.subtotal) {
-        let partialObj = {};
-        partialObj.amount = amount;
-        partialObj.reference = reference;
-        partialObj.method = PAYMENT_METHOD_MANUAL;
-        partialObj.transactionType = type;
-        partialObj.paidAt = now;
-        partialObj.updateMethod = PAYMENT_METHOD_MANUAL;
-        partialObj.processDate = now;
+        let partialObj = {
+          "amount":amount,
+          "reference":reference,
+          "method":PAYMENT_METHOD_MANUAL,
+          "transactionType":type,
+          "paidAt":now,
+          "updateMethod":PAYMENT_METHOD_MANUAL,
+          "processDate":now
+        };
         transactionArray.push(partialObj);
         let update = {
           $set: {
@@ -115,14 +116,15 @@ module.exports.enterTransaction = async (req, res) => {
       }
       let diff = billData.subtotal - totalSum;
       if (totalSum < billData.subtotal && amount <= diff) {
-        let partialObj = {};
-        partialObj.amount = amount;
-        partialObj.reference = reference;
-        partialObj.method = PAYMENT_METHOD_MANUAL;
-        partialObj.transactionType = type;
-        partialObj.paidAt = now;
-        partialObj.updateMethod = PAYMENT_METHOD_MANUAL;
-        partialObj.processDate = now;
+        let partialObj = {
+          "amount":amount,
+          "reference":reference,
+          "method":PAYMENT_METHOD_MANUAL,
+          "transactionType":type,
+          "paidAt":now,
+          "updateMethod":PAYMENT_METHOD_MANUAL,
+          "processDate":now
+        };
         transactionArray = billData.partialTransactions;
         transactionArray.push(partialObj);
         let update = {
@@ -198,28 +200,15 @@ module.exports.updateTransactions = async (req, res) => {
       let updatedBillTransactions = [];
       for (let i = 0; i < billData.length; i++) {
         let { billId } = billData[i];
+        // find the bill by bill id from bill data body object
         let bill = await Bill.findById(billId);
         if (bill) {
           if (bill.partialTransactions) {
             if (bill.partialTransactions.length > 0) {
               let { partialTransactions } = bill;
               let newPartialTransactions = [];
-              for (let j = 0; j < partialTransactions.length; j++) {
-                let index = billData[i].transactions.findIndex(
-                  ({ _id }) => _id === partialTransactions[j]._id.toString()
-                );
-                if (index > -1) {
-                  let id = partialTransactions[j]._id;
-                  let newObj = partialTransactions[j];
-                  for (let key in billData[i].transactions[index]) {
-                    newObj[key] = billData[i].transactions[index][key];
-                  }
-                  partialTransactions[j] = newObj;
-                  newPartialTransactions.push(partialTransactions[j]);
-                } else {
-                  newPartialTransactions.push(partialTransactions[j]);
-                }
-              }
+              // update the newPartialTransactions Array so that we can update the partial transactions array of bill
+              updateNewPartialTransactions(partialTransactions,billData[i],newPartialTransactions)
               let update = {
                 $set: {
                   partialTransactions: newPartialTransactions,
@@ -298,3 +287,23 @@ module.exports.getBillStatusOfMembersInASession = async (req, res) => {
     return res.send({ message: err.message });
   }
 };
+
+
+const updateNewPartialTransactions=(partialTransactions,billData,newPartialTransactions)=>{
+  for (let j = 0; j < partialTransactions.length; j++) {
+    let index = billData.transactions.findIndex(
+      ({ _id }) => _id === partialTransactions[j]._id.toString()
+    );
+    if (index > -1) {
+      let id = partialTransactions[j]._id;
+      let newObj = partialTransactions[j];
+      for (let key in billData.transactions[index]) {
+        newObj[key] = billData.transactions[index][key];
+      }
+      partialTransactions[j] = newObj;
+      newPartialTransactions.push(partialTransactions[j]);
+    } else {
+      newPartialTransactions.push(partialTransactions[j]);
+    }
+  }
+}
