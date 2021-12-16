@@ -435,110 +435,16 @@ module.exports.uploadXLXSFile = async (req, res) => {
   var sheet_name_list = workbook.SheetNames;
   //console.log(sheet_name_list); // getting as Sheet1
   let data = [];
-  //converting xlxs to json
-  sheet_name_list.forEach(function (y) {
-    var worksheet = workbook.Sheets[y];
-    //getting the complete sheet
-    // console.log(worksheet);
+  //converting xlxs to array of json data
+  xlsxToJson(sheet_name_list, workbook, data);
 
-    var headers = {};
-    for (var z in worksheet) {
-      if (z[0] === "!") continue;
-      //parse out the column, row, and value
-      var col = z.substring(0, 1);
-
-      // console.log(z);
-
-      var row = parseInt(z.substring(1));
-      // console.log(row);
-
-      var value = worksheet[z].v;
-      // if (row != 1 && col == "A") {
-      //   value = new Date(value);
-      // }
-
-      // console.log(z, row, value);
-
-      //store header names
-      if (row == 1) {
-        if (value.includes("Membership")) {
-          value = "membershipNumber";
-        }
-        if (value.includes("£")) {
-          value = "amount";
-        }
-        if (value.includes("Payment")) {
-          value = "paymentMethod";
-        }
-        if (value.includes("Type")) {
-          value = "type";
-        }
-        headers[col] = value;
-        // console.log(value);
-
-        // storing the header names
-        continue;
-      }
-
-      if (!data[row]) data[row] = {};
-      data[row][headers[col]] = value;
-    }
-    //drop those first two rows which are empty
-    data.shift();
-    data.shift();
-    //console.log(data);
-  });
   // console.log("data", data);
   let Errors = [];
   let amountError = [];
   let noDataFound = [];
   let classId = req.body.classId;
-  for (let i = 0; i < data.length; i++) {
-    let bill = data[i];
-    let index = i;
-    await Bill.findOne(
-      {
-        clubMembershipId: bill.membershipNumber,
-        classId: classId,
-        billDate: req.body.billDate,
-      },
-      (err, data) => {
-        //accumilate all errors inside Errors array
-        if (err) {
-          // console.log("in1");
-          Errors.push({
-            line: index + 1,
-            "err msg": "please enter valid fields to process payment",
-            bill: bill,
-          });
-          //console.log(Errors);
-        }
-        //accumilate all no data found errors inside noDataFound array
-        if (!data) {
-          noDataFound.push({
-            line: index + 1,
-            "err msg": "no Bill Found for this Data please enter a valid data",
-            bill: bill,
-          });
-          // console.log(noDataFound);
-        }
-        // if the amount is underpaid so accumulating all that erreors in amountError array
-        if (data) {
-          // console.log("in3", bill);
-
-          if (data.total < bill.amount) {
-            amountError.push({
-              line: index + 1,
-              "err msg": `amount ${bill.amount} should be equal to bill Amount: ${data.total}`,
-              bill: bill,
-            });
-          }
-
-          //console.log(noDataFound);
-        }
-      }
-    ).clone();
-  }
+  // check error in data
+  await checkError(data, Errors, amountError, noDataFound, req.body, classId);
 
   // console.log("results", req.file);
   if (
@@ -634,6 +540,117 @@ module.exports.uploadXLXSFile = async (req, res) => {
 var xlsxStorage = storageXlsx.filestorage;
 
 module.exports.businessXlsxUploadHelper = multer({ storage: xlsxStorage });
+
+const xlsxToJson = (sheet_name_list, workbook, data) => {
+  sheet_name_list.forEach(function (y) {
+    var worksheet = workbook.Sheets[y];
+    //getting the complete sheet
+    // console.log(worksheet);
+
+    var headers = {};
+    for (var z in worksheet) {
+      if (z[0] === "!") continue;
+      //parse out the column, row, and value
+      var col = z.substring(0, 1);
+
+      // console.log(z);
+
+      var row = parseInt(z.substring(1));
+      // console.log(row);
+
+      var value = worksheet[z].v;
+      // if (row != 1 && col == "A") {
+      //   value = new Date(value);
+      // }
+
+      // console.log(z, row, value);
+
+      //store header names
+      if (row == 1) {
+        if (value.includes("Membership")) {
+          value = "membershipNumber";
+        }
+        if (value.includes("£")) {
+          value = "amount";
+        }
+        if (value.includes("Payment")) {
+          value = "paymentMethod";
+        }
+        if (value.includes("Type")) {
+          value = "type";
+        }
+        headers[col] = value;
+        // console.log(value);
+
+        // storing the header names
+        continue;
+      }
+
+      if (!data[row]) data[row] = {};
+      data[row][headers[col]] = value;
+    }
+    //drop those first two rows which are empty
+    data.shift();
+    data.shift();
+    //console.log(data);
+  });
+};
+
+const checkError = async (
+  data,
+  Errors,
+  amountError,
+  noDataFound,
+  body,
+  classId
+) => {
+  for (let i = 0; i < data.length; i++) {
+    let bill = data[i];
+    let index = i;
+    await Bill.findOne(
+      {
+        clubMembershipId: bill.membershipNumber,
+        classId: classId,
+        billDate: body.billDate,
+      },
+      (err, data) => {
+        //accumilate all errors inside Errors array
+        if (err) {
+          // console.log("in1");
+          Errors.push({
+            line: index + 1,
+            "err msg": "please enter valid fields to process payment",
+            bill: bill,
+          });
+          //console.log(Errors);
+        }
+        //accumilate all no data found errors inside noDataFound array
+        if (!data) {
+          noDataFound.push({
+            line: index + 1,
+            "err msg": "no Bill Found for this Data please enter a valid data",
+            bill: bill,
+          });
+          // console.log(noDataFound);
+        }
+        // if the amount is underpaid so accumulating all that erreors in amountError array
+        if (data) {
+          // console.log("in3", bill);
+
+          if (data.total < bill.amount) {
+            amountError.push({
+              line: index + 1,
+              "err msg": `amount ${bill.amount} should be equal to bill Amount: ${data.total}`,
+              bill: bill,
+            });
+          }
+
+          //console.log(noDataFound);
+        }
+      }
+    ).clone();
+  }
+};
 //********************************************************************************************************************************************************* */
 
 var storage = multer.diskStorage({
