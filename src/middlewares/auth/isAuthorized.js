@@ -120,7 +120,7 @@ const checkIsAuthorized = async (req, res, next, { page, action, options }) => {
   let tokenPayload = req.authUserData;
   let businessId;
   if (options.getResourceBusinessId) {
-    businessId = await options?.getResourceBusinessId(req, res);
+    businessId = await options.getResourceBusinessId(req, res);
   }
   //console.log("bussinessId from getResourceBusinessId funcn:", businessId);
   /**

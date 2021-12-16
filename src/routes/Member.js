@@ -44,9 +44,7 @@ router.get("/:memberId/enrolments", getAllEnrolmentsOfAMember);
 
 router.post(
   "/",
-  isAuthorized(null, null, {
-    isAuthHandler: isAuthHandlerByUserIdFromBody,
-  }),
+  isAuthorized(null, null),
   createMemberValidationRules(),
   validate,
   member.create
@@ -55,9 +53,7 @@ router.get("/consent", memberConsent.get);
 
 router.put(
   "/:memberId",
-  isAuthorized(null, null, {
-    isAuthHandler: isAuthHandlerFromParams,
-  }),
+  isAuthorized(null, null),
   updateMemberValidationRules(),
   validate,
   member.update
@@ -66,9 +62,7 @@ router.get("/:memberId/emergency-contact", member.getEmergencyContact);
 
 router.post(
   "/:memberId",
-  isAuthorized(null, null, {
-    isAuthHandler: isAuthHandlerFromParams,
-  }),
+  isAuthorized(null, null),
   createEmergencyContactValidationRules(),
   validate,
   member.addNewEmergencyContact
@@ -76,35 +70,23 @@ router.post(
 
 router.put(
   "/contact/:memberId/update/:contactsId",
-  isAuthorized(null, null, {
-    isAuthHandler: isAuthHandlerFromParams,
-  }),
+  isAuthorized(null, null),
   updateEmergencyContactValidationRules(),
   validate,
   member.updateEmergencyContact
 );
 
-router.delete(
-  "/member/:memberId",
-  isAuthorized(null, null, {
-    isAuthHandler: isAuthHandlerFromParams,
-  }),
-  member.delete
-);
+router.delete("/member/:memberId", isAuthorized(null, null), member.delete);
 
 router.put(
   "/member/:memberId/:businessId",
-  isAuthorized(null, null, {
-    isAuthHandler: isAuthHandlerFromParams,
-  }),
+  isAuthorized(null, null),
   member.addMembership
 );
 
 router.post(
   "/:memberId/image-upload",
-  isAuthorized(null, null, {
-    isAuthHandler: isAuthHandlerFromParams,
-  }),
+  isAuthorized(null, null),
   member.memberImageUploadHelper.single("image"),
   member.uploadImage
 );

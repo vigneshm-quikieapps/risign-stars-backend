@@ -25,7 +25,7 @@ const { auditCreatedBy, auditUpdatedBy } = require("../helpers/audit");
 module.exports.create = async (req, res) => {
   try {
     let data = req.body;
-    data = auditCreatedBy(data);
+    data = auditCreatedBy(req, data);
     let member = await Member.create(data);
     return res
       .status(201)
