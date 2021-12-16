@@ -445,7 +445,6 @@ module.exports.uploadXLXSFile = async (req, res) => {
   let classId = req.body.classId;
   // check error in data
   await checkError(data, Errors, amountError, noDataFound, req.body, classId);
-
   // console.log("results", req.file);
   if (
     Errors.length !== 0 &&
@@ -497,8 +496,15 @@ module.exports.uploadXLXSFile = async (req, res) => {
       let xlsxData;
       let batchProcessId = null;
       if (process.env.storage === "s3") {
-        xlsxData = await Xlsx.create({ xlsxUrl: req.file.location });
-        batchProcessId = xlsxData._id;
+        let count = await Xlsx.count();
+        batchProcessId = count + 1;
+        // console.log("count", batchProcessId);
+
+        xlsxData = await Xlsx.create({
+          xlsxUrl: req.file.location,
+          batchProcessId: batchProcessId,
+        });
+        // batchProcessId = xlsxData._id;
       }
       // console.log("xlsxData", batchProcessId);
       let response = await Bill.bulkWrite(
@@ -635,8 +641,8 @@ const checkError = async (
         }
         // if the amount is underpaid so accumulating all that erreors in amountError array
         if (data) {
-          // console.log("in3", bill);
-
+          // businessId = data.businessId;
+          // console.log(businessId);
           if (data.total < bill.amount) {
             amountError.push({
               line: index + 1,

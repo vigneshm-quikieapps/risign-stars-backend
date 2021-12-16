@@ -8,6 +8,10 @@ const xlsxSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    batchProcessId: {
+      type: String,
+      required: true,
+    },
 
     // classsequence: {
     //   type: Number,
