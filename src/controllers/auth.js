@@ -43,9 +43,7 @@ module.exports.signin = async (req, res) => {
       throw new Error("Username or password is not correct");
     }
 
-    const { roles: _, ...userDataWithoutRoles } = user;
-
-    let data = generateTokens({ user: userDataWithoutRoles });
+    let data = generateTokens({ user });
 
     RefreshToken.send(res, data.refreshToken);
 

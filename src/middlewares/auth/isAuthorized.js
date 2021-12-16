@@ -72,7 +72,7 @@ const isAuthorized =
       default:
         try {
           // it allows business admin with required permission to the page
-          await checkIsAuthorized(req, res, next, { page, action, options });
+          await checkIsAuthorized(req, res, { page, action, options });
           next();
         } catch (err) {
           try {
@@ -96,7 +96,7 @@ const isAuthorized =
     }
   };
 
-const checkIsAuthorized = async (req, res, next, { page, action, options }) => {
+const checkIsAuthorized = async (req, res, { page, action, options }) => {
   if (page === null || action === null) {
     throw new Error("page or action not defined");
   }
