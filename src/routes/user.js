@@ -54,4 +54,6 @@ router.get(
   user.getAll
 );
 
+router.delete("/:userId", isAuthorized(USERS, DELETE), user.delete);
+
 module.exports = router;
