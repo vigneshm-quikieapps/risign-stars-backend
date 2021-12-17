@@ -12,6 +12,11 @@ const xlsxSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    status: {
+      type: String,
+      required: true,
+      default: "In Progress",
+    },
 
     // classsequence: {
     //   type: Number,

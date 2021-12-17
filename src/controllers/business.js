@@ -1,4 +1,4 @@
-const { Business, Bill, Xlsx } = require("../models");
+const { Business, Bill, Xlsx, Counter } = require("../models");
 const multer = require("multer");
 const XLSX = require("xlsx");
 const CSVToJSON = require("csvtojson");
@@ -11,6 +11,7 @@ const { Types } = require("mongoose");
 const DoesNotExistError = require("../exceptions/DoesNotExistError");
 const { auditCreatedBy } = require("../helpers/audit");
 const storageXlsx = require("../services/storage/xlsxS3");
+const { BATCH_PROCESS_ID } = require("../constants/counter");
 
 const unlinkAsync = promisify(fs.unlink);
 //parameter extractor
@@ -430,113 +431,76 @@ module.exports.uploadFile = (req, res) => {
 // };
 
 module.exports.uploadXLXSFile = async (req, res) => {
-  // console.log("good", req.file);
+  // get xlsx workbook
   var workbook = await storageXlsx.getWorkBook(req.file);
   var sheet_name_list = workbook.SheetNames;
-  //console.log(sheet_name_list); // getting as Sheet1
   let data = [];
-  //converting xlxs to array of json data
+
+  //converting xlxsworkbook to array of json data
   xlsxToJson(sheet_name_list, workbook, data);
 
-  // console.log("data", data);
   let Errors = [];
   let amountError = [];
   let noDataFound = [];
   let classId = req.body.classId;
-  // check error in data
+  // check errors in array of json data
   await checkError(data, Errors, amountError, noDataFound, req.body, classId);
-  // console.log("results", req.file);
+  let location = req.file.location ? req.file.location : "../temp/xlsx";
   if (
     Errors.length !== 0 &&
     amountError.length !== 0 &&
     noDataFound.length !== 0
   ) {
     // console.log("in1", value[0], value[1]);
-
+    let xlsxData = await createErrorRecordXlsx(req.body, location);
     return res.status(205).json({
       errors: Errors,
       dataNotFound: noDataFound,
       amountError: amountError,
+      xlsxData,
     });
   } else if (amountError.length !== 0 && noDataFound.length !== 0) {
-    // console.log("in2", value[0], value[1]);
-
+    let xlsxData = await createErrorRecordXlsx(req.body, location);
     return res.status(205).json({
       dataNotFound: noDataFound,
       amountError: amountError,
+      xlsxData,
     });
   } else if (Errors.length !== 0 && amountError.length !== 0) {
-    // console.log("in3", value[0], value[1]);
-
+    let xlsxData = await createErrorRecordXlsx(req.body, location);
     return res.status(205).json({
       errors: Errors,
       amountError: amountError,
+      xlsxData,
     });
   } else if (Errors.length !== 0 && noDataFound.length !== 0) {
-    // console.log("in", value[0], value[1]);
-
+    let xlsxData = await createErrorRecordXlsx(req.body, location);
     return res.status(205).json({
       errors: Errors,
       dataNotFound: noDataFound,
+      xlsxData,
     });
   } else if (Errors.length !== 0) {
-    return res.status(205).json({ errors: Errors });
+    let xlsxData = await createErrorRecordXlsx(req.body, location);
+    return res.status(205).json({ errors: Errors, xlsxData });
   } else if (amountError.length !== 0) {
-    //console.log(value[0]);
-
-    return res.status(205).json({ amountError: amountError });
+    let xlsxData = await createErrorRecordXlsx(req.body, location);
+    return res.status(205).json({ amountError: amountError, xlsxData });
   } else if (noDataFound.length !== 0) {
-    // console.log("value", value[2]);
-
-    return res.status(205).json({ dataNotFound: noDataFound });
+    let xlsxData = await createErrorRecordXlsx(req.body, location);
+    return res.status(205).json({ dataNotFound: noDataFound, xlsxData });
   } else {
     //**************************  if no errors present updating the whole bills from spreadsheet data  */
-    // console.log("else", Errors, amountError, noDataFound);
     try {
-      let xlsxData;
-      let batchProcessId = null;
-      if (process.env.storage === "s3") {
-        let count = await Xlsx.count();
-        batchProcessId = count + 1;
-        // console.log("count", batchProcessId);
-
-        xlsxData = await Xlsx.create({
-          xlsxUrl: req.file.location,
-          batchProcessId: batchProcessId,
-        });
-        // batchProcessId = xlsxData._id;
-      }
-      // console.log("xlsxData", batchProcessId);
-      let response = await Bill.bulkWrite(
-        data.map((bill) => ({
-          updateOne: {
-            filter: {
-              clubMembershipId: bill.membershipNumber,
-              classId: req.body.classId,
-              billDate: req.body.billDate,
-              "partialTransactions.0": { $exists: false },
-              total: { $eq: bill.amount },
-            },
-            // $expr: { $gt:["$total", "$partialTransactionAmount"] },
-            update: {
-              $push: {
-                partialTransactions: {
-                  amount: bill.amount,
-                  paidAt: bill.Date,
-                  transactionType: bill.type,
-                  method: bill.paymentMethod,
-                  batchProcessId: batchProcessId,
-                  processDate: bill.Date,
-                },
-              },
-            },
-            new: true,
-            useFindAndModify: false,
-          },
-        }))
+      // create new xlsx record
+      let { xlsxData, batchProcessId } = await createRecordXlsx(
+        req.body,
+        location,
+        "Completed-Successful"
       );
-      // console.log("response", response);
-      return res.status(200).send({ message: "updated successful" });
+      //  update bill transactions in batch
+      await billBulkWrite(data, req.body, batchProcessId);
+      return res.status(200).send({ message: "updated successful", xlsxData });
     } catch (err) {
       console.error(err);
       return res.status(422).send({ message: err.message });
@@ -551,26 +515,16 @@ const xlsxToJson = (sheet_name_list, workbook, data) => {
   sheet_name_list.forEach(function (y) {
     var worksheet = workbook.Sheets[y];
     //getting the complete sheet
-    // console.log(worksheet);
-
     var headers = {};
     for (var z in worksheet) {
       if (z[0] === "!") continue;
       //parse out the column, row, and value
       var col = z.substring(0, 1);
-
-      // console.log(z);
-
       var row = parseInt(z.substring(1));
-      // console.log(row);
-
       var value = worksheet[z].v;
       // if (row != 1 && col == "A") {
       //   value = new Date(value);
       // }
-
-      // console.log(z, row, value);
-
       //store header names
       if (row == 1) {
         if (value.includes("Membership")) {
@@ -586,9 +540,6 @@ const xlsxToJson = (sheet_name_list, workbook, data) => {
           value = "type";
         }
         headers[col] = value;
-        // console.log(value);
-
-        // storing the header names
         continue;
       }
 
@@ -598,7 +549,6 @@ const xlsxToJson = (sheet_name_list, workbook, data) => {
     //drop those first two rows which are empty
     data.shift();
     data.shift();
-    //console.log(data);
   });
 };
 
@@ -622,13 +572,11 @@ const checkError = async (
       (err, data) => {
         //accumilate all errors inside Errors array
         if (err) {
-          // console.log("in1");
           Errors.push({
             line: index + 1,
             "err msg": "please enter valid fields to process payment",
             bill: bill,
           });
-          //console.log(Errors);
         }
         //accumilate all no data found errors inside noDataFound array
         if (!data) {
@@ -637,12 +585,9 @@ const checkError = async (
             "err msg": "no Bill Found for this Data please enter a valid data",
             bill: bill,
           });
-          // console.log(noDataFound);
         }
         // if the amount is underpaid so accumulating all that erreors in amountError array
         if (data) {
-          // businessId = data.businessId;
-          // console.log(businessId);
           if (data.total < bill.amount) {
             amountError.push({
               line: index + 1,
@@ -650,12 +595,81 @@ const checkError = async (
               bill: bill,
             });
           }
-
-          //console.log(noDataFound);
         }
       }
     ).clone();
   }
+};
+
+const billBulkWrite = async (data, body, batchProcessId) => {
+  await Bill.bulkWrite(
+    data.map((bill) => ({
+      updateOne: {
+        filter: {
+          clubMembershipId: bill.membershipNumber,
+          classId: body.classId,
+          billDate: body.billDate,
+          "partialTransactions.0": { $exists: false },
+          total: { $eq: bill.amount },
+        },
+        // $expr: { $gt:["$total", "$partialTransactionAmount"] },
+        update: {
+          $push: {
+            partialTransactions: {
+              amount: bill.amount,
+              paidAt: bill.Date,
+              transactionType: bill.type,
+              method: bill.paymentMethod,
+              batchProcessId: batchProcessId,
+              processDate: bill.Date,
+            },
+          },
+        },
+        new: true,
+        useFindAndModify: false,
+      },
+    }))
+  );
+};
+
+const createRecordXlsx = async (body, location, status) => {
+  let filter = {
+    type: BATCH_PROCESS_ID,
+    businessId: body.businessId,
+  };
+  let counter = await Counter.findOne(filter);
+  let update = {
+    type: BATCH_PROCESS_ID,
+    businessId: body.businessId,
+  };
+  let options = { upsert: true, new: true };
+  let value;
+  if (counter) {
+    value = counter.sequence_value;
+    value += 1;
+    update = { ...update, sequence_value: value };
+  } else {
+    update = { ...update, sequence_value: 1 };
+  }
+  // increase the sequence value
+  counter = await Counter.findOneAndUpdate(filter, update, options);
+  let batchProcessId = counter.sequence_value;
+  // create new xlsx record
+  let xlsxData = await Xlsx.create({
+    xlsxUrl: location,
+    batchProcessId: batchProcessId,
+    status: status,
+  });
+  return { xlsxData, batchProcessId };
+};
+
+const createErrorRecordXlsx = async (body, location) => {
+  let { xlsxData, batchProcessId } = await createRecordXlsx(
+    body,
+    location,
+    "Completed-Errors"
+  );
+  return xlsxData;
 };
 //********************************************************************************************************************************************************* */
 
