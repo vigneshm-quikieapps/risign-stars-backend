@@ -4,19 +4,17 @@ const cors = require("cors");
 const cookieParser = require("cookie-parser");
 require("dotenv").config();
 
-var whitelist = [
-  "http://localhost:3000",
-  "https://localhost:3000",
-  "https://sudarshanshkrishna.github.io",
-];
-
 var corsOptions = {
-  // credentials: true,
+  credentials: process.env.NODE_ENV === "production",
+  origin:
+    process.env.NODE_ENV === "production"
+      ? process.env.ORIGINS.split(" ")
+      : "*",
 };
 
 app.use(express.json());
 app.use(cookieParser());
-app.use(cors());
+app.use(cors(corsOptions));
 
 /**
  * registering routes
