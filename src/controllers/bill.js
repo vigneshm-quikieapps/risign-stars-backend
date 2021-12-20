@@ -71,6 +71,72 @@ module.exports.billsOfAMemberInABusiness = async (req, res) => {
 //   }
 // };
 
+const enterFirstNewTransaction = async (
+  billId,
+  reference,
+  type,
+  amount,
+  session
+) => {
+  let transactionArray = [];
+  let now = new Date();
+  let partialObj = {
+    "amount":amount,
+    "reference":reference,
+    "method":PAYMENT_METHOD_MANUAL,
+    "transactionType":type,
+    "paidAt":now,
+    "updateMethod":PAYMENT_METHOD_MANUAL,
+    "processDate":now
+  };
+  transactionArray.push(partialObj);
+  let update = {
+    $set: {
+      partialTransactions: transactionArray,
+    },
+  };
+  let options = { new: true, useFindAndModify: false };
+
+  let bill = await Bill.findByIdAndUpdate(billId, update, options).session(
+    session
+  );
+  return { transactionArray, bill };
+};
+
+const enterNewTransaction = async (
+  billId,
+  reference,
+  type,
+  amount,
+  billData,
+  session
+) => {
+  let now = new Date();
+  let transactionArray = [];
+  let partialObj = {
+    "amount":amount,
+    "reference":reference,
+    "method":PAYMENT_METHOD_MANUAL,
+    "transactionType":type,
+    "paidAt":now,
+    "updateMethod":PAYMENT_METHOD_MANUAL,
+    "processDate":now
+  };
+  transactionArray = billData.partialTransactions;
+  transactionArray.push(partialObj);
+  let update = {
+    $set: {
+      partialTransactions: transactionArray,
+    },
+  };
+  let options = { new: true, useFindAndModify: false };
+
+  let bill = await Bill.findByIdAndUpdate(billId, update, options).session(
+    session
+  );
+  return bill;
+};
+
 module.exports.enterTransaction = async (req, res) => {
   const session = await mongoose.startSession();
   session.startTransaction();
@@ -78,69 +144,25 @@ module.exports.enterTransaction = async (req, res) => {
     let { billId, reference, type, amount } = req.body;
     let now = new Date();
     let billData = await Bill.findById(billId);
-    let transactionArray = [];
     if (billData.partialTransactions.length == 0) {
+      // record a first new transaction
       if (amount <= billData.subtotal) {
-        let partialObj = {
-          "amount":amount,
-          "reference":reference,
-          "method":PAYMENT_METHOD_MANUAL,
-          "transactionType":type,
-          "paidAt":now,
-          "updateMethod":PAYMENT_METHOD_MANUAL,
-          "processDate":now
-        };
-        transactionArray.push(partialObj);
-        let update = {
-          $set: {
-            partialTransactions: transactionArray,
-          },
-        };
-        let options = { new: true, useFindAndModify: false };
-
-        let bill = await Bill.findByIdAndUpdate(
-          billId,
-          update,
-          options
-        ).session(session);
+        let bill = await enterFirstNewTransaction(billId,reference,type,amount,session);
         await session.commitTransaction();
-
         return res.send({ message: "transaction recorded", bill });
       } else {
         throw new Error("Transaction amount is greater than sub total");
       }
     } else {
+      // record a new transaction
       let totalSum = 0;
       for (let i = 0; i < billData.partialTransactions.length; i++) {
         totalSum += billData.partialTransactions[i].amount;
       }
       let diff = billData.subtotal - totalSum;
       if (totalSum < billData.subtotal && amount <= diff) {
-        let partialObj = {
-          "amount":amount,
-          "reference":reference,
-          "method":PAYMENT_METHOD_MANUAL,
-          "transactionType":type,
-          "paidAt":now,
-          "updateMethod":PAYMENT_METHOD_MANUAL,
-          "processDate":now
-        };
-        transactionArray = billData.partialTransactions;
-        transactionArray.push(partialObj);
-        let update = {
-          $set: {
-            partialTransactions: transactionArray,
-          },
-        };
-        let options = { new: true, useFindAndModify: false };
-
-        let bill = await Bill.findByIdAndUpdate(
-          billId,
-          update,
-          options
-        ).session(session);
+        let bill = await enterNewTransaction(billId,reference,type,amount,billData,session);
         await session.commitTransaction();
-
         return res.send({ message: "transaction recorded", bill });
       } else {
         throw new Error("No due left cannot record this transaction");
@@ -206,24 +228,10 @@ module.exports.updateTransactions = async (req, res) => {
           if (bill.partialTransactions) {
             if (bill.partialTransactions.length > 0) {
               let { partialTransactions } = bill;
-              let newPartialTransactions = [];
               // update the newPartialTransactions Array so that we can update the partial transactions array of bill
-              updateNewPartialTransactions(partialTransactions,billData[i],newPartialTransactions)
-              let update = {
-                $set: {
-                  partialTransactions: newPartialTransactions,
-                },
-              };
-              let options = { new: true, useFindAndModify: false };
-
-              let updatedBill = await Bill.findByIdAndUpdate(
-                billId,
-                update,
-                options
-              ).session(session);
+              let updatedBill = updateNewPartialTransactions(partialTransactions,billData[i],billId,session);
               updatedBillTransactions.push(updatedBill);
             }
-            // return res.send({ message: "transaction recorded", updatedBill });
           } else {
             throw new Error("There is no partial transactions in a bill");
           }
@@ -289,7 +297,8 @@ module.exports.getBillStatusOfMembersInASession = async (req, res) => {
 };
 
 
-const updateNewPartialTransactions=(partialTransactions,billData,newPartialTransactions)=>{
+const updateNewPartialTransactions=(partialTransactions,billData,billId,session)=>{
+  let newPartialTransactions = [];
   for (let j = 0; j < partialTransactions.length; j++) {
     let index = billData.transactions.findIndex(
       ({ _id }) => _id === partialTransactions[j]._id.toString()
@@ -306,4 +315,17 @@ const updateNewPartialTransactions=(partialTransactions,billData,newPartialTrans
       newPartialTransactions.push(partialTransactions[j]);
     }
   }
+  let update = {
+    $set: {
+      partialTransactions: newPartialTransactions,
+    },
+  };
+  let options = { new: true, useFindAndModify: false };
+
+  let updatedBill = await Bill.findByIdAndUpdate(
+    billId,
+    update,
+    options
+  ).session(session);
+  return updatedBill
 }
