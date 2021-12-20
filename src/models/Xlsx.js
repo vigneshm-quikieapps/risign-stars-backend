@@ -1,6 +1,7 @@
 var mongoose = require("mongoose");
 const { ObjectId } = mongoose.Schema;
 const mongoosePaginate = require("mongoose-paginate-v2");
+const { IN_PROGRESS } = require("../constants/constant");
 
 const xlsxSchema = new mongoose.Schema(
   {
@@ -15,7 +16,7 @@ const xlsxSchema = new mongoose.Schema(
     status: {
       type: String,
       required: true,
-      default: "IN_PROGRESS",
+      default: IN_PROGRESS,
     },
 
     // classsequence: {
