@@ -17,7 +17,7 @@ var counterSchema = new mongoose.Schema(
     },
     year: {
       type: String,
-      required: true,
+      // required: true,
     },
     sequence_value: {
       type: Number,
