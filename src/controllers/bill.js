@@ -100,7 +100,7 @@ const enterFirstNewTransaction = async (
   let bill = await Bill.findByIdAndUpdate(billId, update, options).session(
     session
   );
-  return { transactionArray, bill };
+  return  bill ;
 };
 
 const enterNewTransaction = async (
