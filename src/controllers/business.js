@@ -259,7 +259,7 @@ module.exports.uploadFile = (req, res) => {
 //     //console.log("one");
 //     //validating the spreadsheet data for errors in them
 //     const promise1 = new Promise((resolve) => {
-//       let Errors = [];
+//       let errorsInData = [];
 //       let amountError = [];
 //       let noDataFound = [];
 //       let classId = req.body.classid;
@@ -272,14 +272,14 @@ module.exports.uploadFile = (req, res) => {
 //             billDate: req.body.BillDate,
 //           },
 //           (err, data) => {
-//             //accumilate all errors inside Errors array
+//             //accumilate all errors inside errorsInData array
 //             if (err) {
-//               Errors.push({
+//               errorsInData.push({
 //                 line: index + 1,
 //                 "err msg": "please enter valid fields to process payment",
 //                 bill: bill,
 //               });
-//               //console.log(Errors);
+//               //console.log(errorsInData);
 //             }
 //             //accumilate all no data found errors inside noDataFound array
 //             if (!data) {
@@ -305,7 +305,7 @@ module.exports.uploadFile = (req, res) => {
 //             }
 //           }
 //         );
-//         resolve([Errors, noDataFound, amountError]);
+//         resolve([errorsInData, noDataFound, amountError]);
 //       });
 //     });
 //     //returning errors faced during validations check
@@ -348,7 +348,7 @@ module.exports.uploadFile = (req, res) => {
 //             "data not found": value[1],
 //           });
 //         } else if (value[0].length !== 0) {
-//           //console.log(Errors);
+//           //console.log(errorsInData);
 //           //console.log(value[1]);
 //           return res.status(205).json({ errors: value[0] });
 //         } else if (value[1].length !== 0) {
@@ -434,27 +434,27 @@ module.exports.uploadXLXSFile = async (req, res) => {
   // get xlsx workbook
   var workbook = await storageXlsx.getWorkBook(req.file);
   var sheet_name_list = workbook.SheetNames;
-  let data = [];
+  // let data = [];
 
   //converting xlxsworkbook to array of json data
-  xlsxToJson(sheet_name_list, workbook, data);
-
-  let Errors = [];
-  let amountError = [];
-  let noDataFound = [];
+  let data = xlsxToJson(sheet_name_list, workbook);
   let classId = req.body.classId;
   // check errors in array of json data
-  await checkError(data, Errors, amountError, noDataFound, req.body, classId);
+  let { errorsInData, amountError, noDataFound } = await checkError(
+    data,
+    req.body,
+    classId
+  );
   let location = req.file.location ? req.file.location : "../temp/xlsx";
   if (
-    Errors.length !== 0 &&
+    errorsInData.length !== 0 &&
     amountError.length !== 0 &&
     noDataFound.length !== 0
   ) {
     // console.log("in1", value[0], value[1]);
     let xlsxData = await createErrorRecordXlsx(req.body, location);
     return res.status(205).json({
-      errors: Errors,
+      errors: errorsInData,
       dataNotFound: noDataFound,
       amountError: amountError,
       xlsxData,
@@ -466,23 +466,23 @@ module.exports.uploadXLXSFile = async (req, res) => {
       amountError: amountError,
       xlsxData,
     });
-  } else if (Errors.length !== 0 && amountError.length !== 0) {
+  } else if (errorsInData.length !== 0 && amountError.length !== 0) {
     let xlsxData = await createErrorRecordXlsx(req.body, location);
     return res.status(205).json({
-      errors: Errors,
+      errors: errorsInData,
       amountError: amountError,
       xlsxData,
     });
-  } else if (Errors.length !== 0 && noDataFound.length !== 0) {
+  } else if (errorsInData.length !== 0 && noDataFound.length !== 0) {
     let xlsxData = await createErrorRecordXlsx(req.body, location);
     return res.status(205).json({
-      errors: Errors,
+      errors: errorsInData,
       dataNotFound: noDataFound,
       xlsxData,
     });
-  } else if (Errors.length !== 0) {
+  } else if (errorsInData.length !== 0) {
     let xlsxData = await createErrorRecordXlsx(req.body, location);
-    return res.status(205).json({ errors: Errors, xlsxData });
+    return res.status(205).json({ errors: errorsInData, xlsxData });
   } else if (amountError.length !== 0) {
     let xlsxData = await createErrorRecordXlsx(req.body, location);
     return res.status(205).json({ amountError: amountError, xlsxData });
@@ -496,7 +496,7 @@ module.exports.uploadXLXSFile = async (req, res) => {
       let { xlsxData, batchProcessId } = await createRecordXlsx(
         req.body,
         location,
-        "Completed-Successful"
+        "COMPLETED_SUCCESSFUL"
       );
       //  update bill transactions in batch
       await billBulkWrite(data, req.body, batchProcessId);
@@ -511,7 +511,8 @@ var xlsxStorage = storageXlsx.filestorage;
 
 module.exports.businessXlsxUploadHelper = multer({ storage: xlsxStorage });
 
-const xlsxToJson = (sheet_name_list, workbook, data) => {
+const xlsxToJson = (sheet_name_list, workbook) => {
+  let data = [];
   sheet_name_list.forEach(function (y) {
     var worksheet = workbook.Sheets[y];
     //getting the complete sheet
@@ -550,16 +551,13 @@ const xlsxToJson = (sheet_name_list, workbook, data) => {
     data.shift();
     data.shift();
   });
+  return data;
 };
 
-const checkError = async (
-  data,
-  Errors,
-  amountError,
-  noDataFound,
-  body,
-  classId
-) => {
+const checkError = async (data, body, classId) => {
+  let errorsInData = [];
+  let amountError = [];
+  let noDataFound = [];
   for (let i = 0; i < data.length; i++) {
     let bill = data[i];
     let index = i;
@@ -570,9 +568,9 @@ const checkError = async (
         billDate: body.billDate,
       },
       (err, data) => {
-        //accumilate all errors inside Errors array
+        //accumilate all errors inside errorsInData array
         if (err) {
-          Errors.push({
+          errorsInData.push({
             line: index + 1,
             "err msg": "please enter valid fields to process payment",
             bill: bill,
@@ -599,6 +597,7 @@ const checkError = async (
       }
     ).clone();
   }
+  return { errorsInData, amountError, noDataFound };
 };
 
 const billBulkWrite = async (data, body, batchProcessId) => {
@@ -667,7 +666,7 @@ const createErrorRecordXlsx = async (body, location) => {
   let { xlsxData, batchProcessId } = await createRecordXlsx(
     body,
     location,
-    "Completed-Errors"
+    "COMPLETED_ERRORS_IN_DATA"
   );
   return xlsxData;
 };

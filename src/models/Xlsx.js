@@ -15,7 +15,7 @@ const xlsxSchema = new mongoose.Schema(
     status: {
       type: String,
       required: true,
-      default: "In Progress",
+      default: "IN_PROGRESS",
     },
 
     // classsequence: {
