@@ -8,7 +8,9 @@ var corsOptions = {
   credentials: true,
   origin:
     process.env.NODE_ENV === "production"
-      ? process.env.ORIGINS.split(" ")
+      ? process.env.ORIGINS
+        ? process.env.ORIGINS.split(" ")
+        : "*"
       : ["http://localhost:3000", "http://localhost:5000"],
 };
 console.log(corsOptions);
