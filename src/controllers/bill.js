@@ -232,7 +232,7 @@ module.exports.updateTransactions = async (req, res) => {
             if (bill.partialTransactions.length > 0) {
               let { partialTransactions } = bill;
               // update the newPartialTransactions Array so that we can update the partial transactions array of bill
-              let updatedBill = updateNewPartialTransactions(partialTransactions,billData[i],billId,session);
+              let updatedBill = await updateNewPartialTransactions(partialTransactions,billData[i],billId,session);
               updatedBillTransactions.push(updatedBill);
             }
           } else {
@@ -300,7 +300,7 @@ module.exports.getBillStatusOfMembersInASession = async (req, res) => {
 };
 
 // helper function to update the partial transactions of bill used in update transactions
-const updateNewPartialTransactions=(partialTransactions,billData,billId,session)=>{
+const updateNewPartialTransactions= async (partialTransactions,billData,billId,session)=>{
   let newPartialTransactions = [];
   for (let j = 0; j < partialTransactions.length; j++) {
     let index = billData.transactions.findIndex(
