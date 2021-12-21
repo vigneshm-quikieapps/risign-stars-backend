@@ -40,7 +40,9 @@ const isAuthorized =
       req.authUserData = await User.findById(tokenPayload._id);
       req.tokenData = tokenPayload;
     } catch (err) {
-      return res.status(StatusCodes.UNAUTHORIZED).send({ message: err.message });
+      return res
+        .status(StatusCodes.UNAUTHORIZED)
+        .send({ message: err.message });
     }
 
     // if (isAuthHandler) {

@@ -38,10 +38,11 @@ const getResourceBusinessIdByEnrollmentIdFromBody = require("../middlewares/auth
 /** routes */
 router.post(
   "/",
-  isAuthorized(CLASS_ENROLMENT, CREATE, {
-    getResourceBusinessId: getResourceBusinessIdBySession,
-    isAuthHandler,
-  }),
+  // isAuthorized(CLASS_ENROLMENT, CREATE, {
+  //   getResourceBusinessId: getResourceBusinessIdBySession,
+  //   isAuthHandler,
+  // }),
+  isAuthorized(null, null),
   createEnrolementValidationRules(),
   validate,
   newEnrolment

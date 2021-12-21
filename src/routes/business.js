@@ -96,8 +96,8 @@ router.get("/", getAllBusinessValidationRules(), validate, getAllBusinesses);
 router.get(
   "/:businessId/classes",
   // isAuthorized(CLASS_DEFINITION, "read"),
-  isAuthorized(CLASS_DEFINITION, READ, {
-    getResourceBusinessId: getResourceBusinessIdByParamsForBussiness,
+  isAuthorized(null, null, {
+    //getResourceBusinessId: getResourceBusinessIdByParamsForBussiness,
   }),
   getAllBusinessClass
 );
