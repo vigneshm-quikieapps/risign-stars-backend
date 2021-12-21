@@ -146,21 +146,29 @@ const createEnrolementValidationRules = () => {
     // body("name", "min length should be 2 and max length should be 70").isLength(
     //   { min: 2, max: 70 }
     // ),
-    body("consent").isObject(),
-    body("consent.allergies", "min length should be 2").isLength({
+    body("consent").optional().isObject(),
+    body("consent.allergies", "min length should be 2").optional().isLength({
       min: 2,
     }),
-    body("consent.condition", "min length should be 2").isLength({
+    body("consent.condition", "min length should be 2").optional().isLength({
       min: 2,
     }),
-    body("consent.photographConsent", "value should be boolean").isBoolean(
-      true
-    ),
-    body("consent.signedByParent", "value should be boolean").isBoolean(true),
-    body("newsletter").isObject(),
-    body("newsletter.email", "value should be boolean").isBoolean(true),
-    body("newsletter.telephone", "value should be boolean").isBoolean(true),
-    body("newsletter.sms", "value should be boolean").isBoolean(true),
+    body("consent.photographConsent", "value should be boolean")
+      .optional()
+      .isBoolean(true),
+    body("consent.signedByParent", "value should be boolean")
+      .optional()
+      .isBoolean(true),
+    body("newsletter").optional().isObject(),
+    body("newsletter.email", "value should be boolean")
+      .optional()
+      .isBoolean(true),
+    body("newsletter.telephone", "value should be boolean")
+      .optional()
+      .isBoolean(true),
+    body("newsletter.sms", "value should be boolean")
+      .optional()
+      .isBoolean(true),
     // body("startDate", "must be a valid date").isDate().trim(),
   ];
 };
@@ -220,10 +228,16 @@ const updateWaitlistEnrolmentValidationRules = () => {
     body("consent.signedByParent", "value should be boolean")
       .isBoolean(true)
       .optional(),
-    body("newsletter").isObject(),
-    body("newsletter.email", "value should be boolean").isBoolean(true),
-    body("newsletter.telephone", "value should be boolean").isBoolean(true),
-    body("newsletter.sms", "value should be boolean").isBoolean(true),
+    body("newsletter").optional().isObject(),
+    body("newsletter.email", "value should be boolean")
+      .optional()
+      .isBoolean(true),
+    body("newsletter.telephone", "value should be boolean")
+      .optional()
+      .isBoolean(true),
+    body("newsletter.sms", "value should be boolean")
+      .optional()
+      .isBoolean(true),
     // body("startDate", "must be a valid date").isDate().trim(),
   ];
 };

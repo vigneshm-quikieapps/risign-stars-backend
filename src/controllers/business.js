@@ -1,4 +1,4 @@
-const { Business, Bill } = require("../models");
+const { Business, Bill, Xlsx, Counter } = require("../models");
 const multer = require("multer");
 const XLSX = require("xlsx");
 const CSVToJSON = require("csvtojson");
@@ -10,6 +10,8 @@ const { promisify } = require("util");
 const { Types } = require("mongoose");
 const DoesNotExistError = require("../exceptions/DoesNotExistError");
 const { auditCreatedBy } = require("../helpers/audit");
+const storageXlsx = require("../services/storage/xlsxS3");
+const { BATCH_PROCESS_ID } = require("../constants/counter");
 
 const unlinkAsync = promisify(fs.unlink);
 //parameter extractor
@@ -183,251 +185,491 @@ module.exports.uploadFile = (req, res) => {
 };
 
 // Uploading the xlxs file
-module.exports.uploadXLXSFile = (req, res) => {
-  const filestorage = multer.diskStorage({
-    destination: (req, file, cb) => {
-      cb(null, "./temp/xlsx");
-    },
-    filename: (req, file, cb) => {
-      cb(null, file.originalname);
-    },
-  });
-  // Uploading the CSV file
-  const upload = multer({
-    storage: filestorage,
-    fileFilter: (req, file, cb) => {
-      //console.log(file);
-      if (path.extname(file.originalname) !== ".xlsx") {
-        return res.send("file type not valid!!");
-      }
+// module.exports.uploadXLXSFile = (req, res) => {
+//   const filestorage = multer.diskStorage({
+//     destination: (req, file, cb) => {
+//       cb(null, "./temp/xlsx");
+//     },
+//     filename: (req, file, cb) => {
+//       cb(null, file.originalname);
+//     },
+//   });
+//   // Uploading the CSV file
+//   const upload = multer({
+//     storage: filestorage,
+//     fileFilter: (req, file, cb) => {
+//       //console.log(file);
+//       if (path.extname(file.originalname) !== ".xlsx") {
+//         return res.send("file type not valid!!");
+//       }
 
-      cb(null, true);
-    },
-  }).single("payment");
-  upload(req, res, function (err) {
-    if (err) {
-      return res.json(err);
+//       cb(null, true);
+//     },
+//   }).single("payment");
+//   upload(req, res, function (err) {
+//     if (err) {
+//       return res.json(err);
+//     }
+//     //**************************** */
+//     //read xlsx file from folder
+//     var workbook = XLSX.readFile(`./temp/xlsx/${req.file.originalname}`, {
+//       type: "binary",
+//       cellDates: true,
+//     });
+//     var sheet_name_list = workbook.SheetNames;
+//     //console.log(sheet_name_list); // getting as Sheet1
+//     let data = [];
+//     //converting xlxs to json
+//     sheet_name_list.forEach(function (y) {
+//       var worksheet = workbook.Sheets[y];
+//       //getting the complete sheet
+//       // console.log(worksheet);
+
+//       var headers = {};
+//       for (var z in worksheet) {
+//         if (z[0] === "!") continue;
+//         //parse out the column, row, and value
+//         var col = z.substring(0, 1);
+//         // console.log(col);
+
+//         var row = parseInt(z.substring(1));
+//         // console.log(row);
+
+//         var value = worksheet[z].v;
+//         // console.log(value);
+
+//         //store header names
+//         if (row == 1) {
+//           headers[col] = value;
+//           // storing the header names
+//           continue;
+//         }
+
+//         if (!data[row]) data[row] = {};
+//         data[row][headers[col]] = value;
+//       }
+//       //drop those first two rows which are empty
+//       data.shift();
+//       data.shift();
+//       //console.log(data);
+//     });
+//     //*************************** */
+//     //************** */
+
+//     //console.log("one");
+//     //validating the spreadsheet data for errors in them
+//     const promise1 = new Promise((resolve) => {
+//       let errorsInData = [];
+//       let amountError = [];
+//       let noDataFound = [];
+//       let classId = req.body.classid;
+//       data.forEach((bill, index) => {
+//         //console.log("two");
+//         Bill.findOne(
+//           {
+//             clubMembershipId: bill.Membershipnumber,
+//             classId: classId,
+//             billDate: req.body.BillDate,
+//           },
+//           (err, data) => {
+//             //accumilate all errors inside errorsInData array
+//             if (err) {
+//               errorsInData.push({
+//                 line: index + 1,
+//                 "err msg": "please enter valid fields to process payment",
+//                 bill: bill,
+//               });
+//               //console.log(errorsInData);
+//             }
+//             //accumilate all no data found errors inside noDataFound array
+//             if (!data) {
+//               //return res.status(400);
+//               noDataFound.push({
+//                 line: index + 1,
+//                 "err msg":
+//                   "no Bill Found for this Data please enter a valid data",
+//                 bill: bill,
+//               });
+//               //console.log(noDataFound);
+//             }
+//             // if the amount is underpaid so accumulating all that erreors in amountError array
+//             if (data) {
+//               //return res.status(400);
+//               if (data.total < bill.Amount)
+//                 amountError.push({
+//                   line: index + 1,
+//                   "err msg": `amount ${bill.Amount} should be greater than or equal to bill Amount: ${data.total}`,
+//                   bill: bill,
+//                 });
+//               //console.log(noDataFound);
+//             }
+//           }
+//         );
+//         resolve([errorsInData, noDataFound, amountError]);
+//       });
+//     });
+//     //returning errors faced during validations check
+//     promise1
+//       .then(async (value) => {
+//         //******************** */
+//         //console.log(value);
+
+//         if (
+//           value[0].length !== 0 &&
+//           value[1].length !== 0 &&
+//           value[2].length !== 0
+//         ) {
+//           //console.log(value[0], value[1]);
+
+//           return res.status(205).json({
+//             errors: value[0],
+//             "data not found": value[1],
+//             amountError: value[2],
+//           });
+//         } else if (value[1].length !== 0 && value[2].length !== 0) {
+//           //console.log(value[0], value[1]);
+
+//           return res.status(205).json({
+//             "data not found": value[1],
+//             amountError: value[2],
+//           });
+//         } else if (value[0].length !== 0 && value[2].length !== 0) {
+//           //console.log(value[0], value[1]);
+
+//           return res.status(205).json({
+//             errors: value[0],
+//             amountError: value[2],
+//           });
+//         } else if (value[0].length !== 0 && value[1].length !== 0) {
+//           //console.log(value[0], value[1]);
+
+//           return res.status(205).json({
+//             errors: value[0],
+//             "data not found": value[1],
+//           });
+//         } else if (value[0].length !== 0) {
+//           //console.log(errorsInData);
+//           //console.log(value[1]);
+//           return res.status(205).json({ errors: value[0] });
+//         } else if (value[1].length !== 0) {
+//           //console.log(value[0]);
+
+//           return res.status(205).json({ "data not found": value[1] });
+//           //.json(value[0]);
+//         } else if (value[2].length !== 0) {
+//           //console.log(value[0]);
+
+//           return res.status(205).json({ amountError: value[2] });
+//           //.json(value[0]);
+//         } else {
+//           //if no errors present updating the whole bills from preadsheet data
+//           // data.map((bill, index) => {
+//           //   Bill.findOneAndUpdate(
+//           //     {
+//           //       clubMembershipId: bill.Membershipnumber,
+//           //       classId: req.body.classid,
+//           //       billDate: req.body.BillDate,
+//           //     },
+//           //     {
+//           //       $set: {
+//           //         paidAt: Date.now(),
+//           //       },
+//           //     },
+//           //     { new: true, useFindAndModify: false },
+//           //     (err) => {
+//           //       if (err) {
+//           //         console.log(err);
+//           //         return res.status(400).json({
+//           //           err: `Bill  updation failed !!! at line no ${index + 1}`,
+//           //         });
+//           //       }
+//           //     }
+//           //   );
+//           // });
+//           // return res.status(400).json({
+//           //   success: `Bill  updation done `,
+//           // });
+
+//           //**************************  if no errors present updating the whole bills from preadsheet data  */
+//           await Bill.bulkWrite(
+//             data.map((bill) => ({
+//               updateOne: {
+//                 filter: {
+//                   clubMembershipId: bill.Membershipnumber,
+//                   classId: req.body.classid,
+//                   billDate: req.body.BillDate,
+//                 },
+//                 update: {
+//                   $set: {
+//                     paidAt: Date.now(),
+//                   },
+//                 },
+//                 new: true,
+//                 useFindAndModify: false,
+//               },
+//             })) //,
+//             // {},
+//             // (err) => {
+//             //   if (err) {
+//             //     console.log(err);
+//             //     return res.status(400).json({
+//             //       err: `Bill  updation failed !!! at line no `,
+//             //     });
+//             //   }
+//             // }
+//           );
+//         }
+//       })
+//       //finally delete the uploaded spreadsheets from server
+//       .then(async () => {
+//         await unlinkAsync(`./temp/xlsx/${req.file.originalname}`);
+//         console.log("im here deleted spread sheet");
+//         return;
+//       });
+//     //console.log(data);
+//   });
+// };
+
+module.exports.uploadXLXSFile = async (req, res) => {
+  // get xlsx workbook
+  var workbook = await storageXlsx.getWorkBook(req.file);
+  var sheet_name_list = workbook.SheetNames;
+  // let data = [];
+
+  //converting xlxsworkbook to array of json data
+  let data = xlsxToJson(sheet_name_list, workbook);
+  let classId = req.body.classId;
+  // check errors in array of json data
+  let { errorsInData, amountError, noDataFound } = await checkError(
+    data,
+    req.body,
+    classId
+  );
+  let location = req.file.location ? req.file.location : "../temp/xlsx";
+  if (
+    errorsInData.length !== 0 &&
+    amountError.length !== 0 &&
+    noDataFound.length !== 0
+  ) {
+    // console.log("in1", value[0], value[1]);
+    let xlsxData = await createErrorRecordXlsx(req.body, location);
+    return res.status(205).json({
+      errors: errorsInData,
+      dataNotFound: noDataFound,
+      amountError: amountError,
+      xlsxData,
+    });
+  } else if (amountError.length !== 0 && noDataFound.length !== 0) {
+    let xlsxData = await createErrorRecordXlsx(req.body, location);
+    return res.status(205).json({
+      dataNotFound: noDataFound,
+      amountError: amountError,
+      xlsxData,
+    });
+  } else if (errorsInData.length !== 0 && amountError.length !== 0) {
+    let xlsxData = await createErrorRecordXlsx(req.body, location);
+    return res.status(205).json({
+      errors: errorsInData,
+      amountError: amountError,
+      xlsxData,
+    });
+  } else if (errorsInData.length !== 0 && noDataFound.length !== 0) {
+    let xlsxData = await createErrorRecordXlsx(req.body, location);
+    return res.status(205).json({
+      errors: errorsInData,
+      dataNotFound: noDataFound,
+      xlsxData,
+    });
+  } else if (errorsInData.length !== 0) {
+    let xlsxData = await createErrorRecordXlsx(req.body, location);
+    return res.status(205).json({ errors: errorsInData, xlsxData });
+  } else if (amountError.length !== 0) {
+    let xlsxData = await createErrorRecordXlsx(req.body, location);
+    return res.status(205).json({ amountError: amountError, xlsxData });
+  } else if (noDataFound.length !== 0) {
+    let xlsxData = await createErrorRecordXlsx(req.body, location);
+    return res.status(205).json({ dataNotFound: noDataFound, xlsxData });
+  } else {
+    //**************************  if no errors present updating the whole bills from spreadsheet data  */
+    try {
+      // create new xlsx record
+      let { xlsxData, batchProcessId } = await createRecordXlsx(
+        req.body,
+        location,
+        "COMPLETED_SUCCESSFUL"
+      );
+      //  update bill transactions in batch
+      await billBulkWrite(data, req.body, batchProcessId);
+      return res.status(200).send({ message: "updated successful", xlsxData });
+    } catch (err) {
+      console.error(err);
+      return res.status(422).send({ message: err.message });
     }
-    //**************************** */
-    //read xlsx file from folder
-    var workbook = XLSX.readFile(`./temp/xlsx/${req.file.originalname}`, {
-      type: "binary",
-      cellDates: true,
-    });
-    var sheet_name_list = workbook.SheetNames;
-    //console.log(sheet_name_list); // getting as Sheet1
-    let data = [];
-    //converting xlxs to json
-    sheet_name_list.forEach(function (y) {
-      var worksheet = workbook.Sheets[y];
-      //getting the complete sheet
-      // console.log(worksheet);
+  }
+};
+var xlsxStorage = storageXlsx.filestorage;
 
-      var headers = {};
-      for (var z in worksheet) {
-        if (z[0] === "!") continue;
-        //parse out the column, row, and value
-        var col = z.substring(0, 1);
-        // console.log(col);
+module.exports.businessXlsxUploadHelper = multer({ storage: xlsxStorage });
 
-        var row = parseInt(z.substring(1));
-        // console.log(row);
-
-        var value = worksheet[z].v;
-        // console.log(value);
-
-        //store header names
-        if (row == 1) {
-          headers[col] = value;
-          // storing the header names
-          continue;
+const xlsxToJson = (sheet_name_list, workbook) => {
+  let data = [];
+  sheet_name_list.forEach(function (y) {
+    var worksheet = workbook.Sheets[y];
+    //getting the complete sheet
+    var headers = {};
+    for (var z in worksheet) {
+      if (z[0] === "!") continue;
+      //parse out the column, row, and value
+      var col = z.substring(0, 1);
+      var row = parseInt(z.substring(1));
+      var value = worksheet[z].v;
+      // if (row != 1 && col == "A") {
+      //   value = new Date(value);
+      // }
+      //store header names
+      if (row == 1) {
+        if (value.includes("Membership")) {
+          value = "membershipNumber";
         }
-
-        if (!data[row]) data[row] = {};
-        data[row][headers[col]] = value;
+        if (value.includes("£")) {
+          value = "amount";
+        }
+        if (value.includes("Payment")) {
+          value = "paymentMethod";
+        }
+        if (value.includes("Type")) {
+          value = "type";
+        }
+        headers[col] = value;
+        continue;
       }
-      //drop those first two rows which are empty
-      data.shift();
-      data.shift();
-      //console.log(data);
-    });
-    //*************************** */
-    //************** */
 
-    //console.log("one");
-    //validating the spreadsheet data for errors in them
-    const promise1 = new Promise((resolve) => {
-      let Errors = [];
-      let amountError = [];
-      let noDataFound = [];
-      let classId = req.body.classid;
-      data.forEach((bill, index) => {
-        //console.log("two");
-        Bill.findOne(
-          {
-            clubMembershipId: bill.Membershipnumber,
-            classId: classId,
-            billDate: req.body.BillDate,
-          },
-          (err, data) => {
-            //accumilate all errors inside Errors array
-            if (err) {
-              Errors.push({
-                line: index + 1,
-                "err msg": "please enter valid fields to process payment",
-                bill: bill,
-              });
-              //console.log(Errors);
-            }
-            //accumilate all no data found errors inside noDataFound array
-            if (!data) {
-              //return res.status(400);
-              noDataFound.push({
-                line: index + 1,
-                "err msg":
-                  "no Bill Found for this Data please enter a valid data",
-                bill: bill,
-              });
-              //console.log(noDataFound);
-            }
-            // if the amount is underpaid so accumulating all that erreors in amountError array
-            if (data) {
-              //return res.status(400);
-              if (data.total < bill.Amount)
-                amountError.push({
-                  line: index + 1,
-                  "err msg": `amount ${bill.Amount} should be greater than or equal to bill Amount: ${data.total}`,
-                  bill: bill,
-                });
-              //console.log(noDataFound);
-            }
-          }
-        );
-        resolve([Errors, noDataFound, amountError]);
-      });
-    });
-    //returning errors faced during validations check
-    promise1
-      .then(async (value) => {
-        //******************** */
-        //console.log(value);
-
-        if (
-          value[0].length !== 0 &&
-          value[1].length !== 0 &&
-          value[2].length !== 0
-        ) {
-          //console.log(value[0], value[1]);
-
-          return res.status(205).json({
-            errors: value[0],
-            "data not found": value[1],
-            amountError: value[2],
-          });
-        } else if (value[1].length !== 0 && value[2].length !== 0) {
-          //console.log(value[0], value[1]);
-
-          return res.status(205).json({
-            "data not found": value[1],
-            amountError: value[2],
-          });
-        } else if (value[0].length !== 0 && value[2].length !== 0) {
-          //console.log(value[0], value[1]);
-
-          return res.status(205).json({
-            errors: value[0],
-            amountError: value[2],
-          });
-        } else if (value[0].length !== 0 && value[1].length !== 0) {
-          //console.log(value[0], value[1]);
-
-          return res.status(205).json({
-            errors: value[0],
-            "data not found": value[1],
-          });
-        } else if (value[0].length !== 0) {
-          //console.log(Errors);
-          //console.log(value[1]);
-          return res.status(205).json({ errors: value[0] });
-        } else if (value[1].length !== 0) {
-          //console.log(value[0]);
-
-          return res.status(205).json({ "data not found": value[1] });
-          //.json(value[0]);
-        } else if (value[2].length !== 0) {
-          //console.log(value[0]);
-
-          return res.status(205).json({ amountError: value[2] });
-          //.json(value[0]);
-        } else {
-          //if no errors present updating the whole bills from preadsheet data
-          // data.map((bill, index) => {
-          //   Bill.findOneAndUpdate(
-          //     {
-          //       clubMembershipId: bill.Membershipnumber,
-          //       classId: req.body.classid,
-          //       billDate: req.body.BillDate,
-          //     },
-          //     {
-          //       $set: {
-          //         paidAt: Date.now(),
-          //       },
-          //     },
-          //     { new: true, useFindAndModify: false },
-          //     (err) => {
-          //       if (err) {
-          //         console.log(err);
-          //         return res.status(400).json({
-          //           err: `Bill  updation failed !!! at line no ${index + 1}`,
-          //         });
-          //       }
-          //     }
-          //   );
-          // });
-          // return res.status(400).json({
-          //   success: `Bill  updation done `,
-          // });
-
-          //**************************  if no errors present updating the whole bills from preadsheet data  */
-          await Bill.bulkWrite(
-            data.map((bill) => ({
-              updateOne: {
-                filter: {
-                  clubMembershipId: bill.Membershipnumber,
-                  classId: req.body.classid,
-                  billDate: req.body.BillDate,
-                },
-                update: {
-                  $set: {
-                    paidAt: Date.now(),
-                  },
-                },
-                new: true,
-                useFindAndModify: false,
-              },
-            })) //,
-            // {},
-            // (err) => {
-            //   if (err) {
-            //     console.log(err);
-            //     return res.status(400).json({
-            //       err: `Bill  updation failed !!! at line no `,
-            //     });
-            //   }
-            // }
-          );
-        }
-      })
-      //finally delete the uploaded spreadsheets from server
-      .then(async () => {
-        await unlinkAsync(`./temp/xlsx/${req.file.originalname}`);
-        console.log("im here deleted spread sheet");
-        return;
-      });
-    //console.log(data);
+      if (!data[row]) data[row] = {};
+      data[row][headers[col]] = value;
+    }
+    //drop those first two rows which are empty
+    data.shift();
+    data.shift();
   });
+  return data;
 };
 
+const checkError = async (data, body, classId) => {
+  let errorsInData = [];
+  let amountError = [];
+  let noDataFound = [];
+  for (let i = 0; i < data.length; i++) {
+    let bill = data[i];
+    let index = i;
+    await Bill.findOne(
+      {
+        clubMembershipId: bill.membershipNumber,
+        classId: classId,
+        billDate: body.billDate,
+      },
+      (err, data) => {
+        //accumilate all errors inside errorsInData array
+        if (err) {
+          errorsInData.push({
+            line: index + 1,
+            "err msg": "please enter valid fields to process payment",
+            bill: bill,
+          });
+        }
+        //accumilate all no data found errors inside noDataFound array
+        if (!data) {
+          noDataFound.push({
+            line: index + 1,
+            "err msg": "no Bill Found for this Data please enter a valid data",
+            bill: bill,
+          });
+        }
+        // if the amount is underpaid so accumulating all that erreors in amountError array
+        if (data) {
+          if (data.total < bill.amount) {
+            amountError.push({
+              line: index + 1,
+              "err msg": `amount ${bill.amount} should be equal to bill Amount: ${data.total}`,
+              bill: bill,
+            });
+          }
+        }
+      }
+    ).clone();
+  }
+  return { errorsInData, amountError, noDataFound };
+};
+
+const billBulkWrite = async (data, body, batchProcessId) => {
+  await Bill.bulkWrite(
+    data.map((bill) => ({
+      updateOne: {
+        filter: {
+          clubMembershipId: bill.membershipNumber,
+          classId: body.classId,
+          billDate: body.billDate,
+          "partialTransactions.0": { $exists: false },
+          total: { $eq: bill.amount },
+        },
+        // $expr: { $gt:["$total", "$partialTransactionAmount"] },
+        update: {
+          $push: {
+            partialTransactions: {
+              amount: bill.amount,
+              paidAt: bill.Date,
+              transactionType: bill.type,
+              method: bill.paymentMethod,
+              batchProcessId: batchProcessId,
+              processDate: bill.Date,
+            },
+          },
+        },
+        new: true,
+        useFindAndModify: false,
+      },
+    }))
+  );
+};
+
+const createRecordXlsx = async (body, location, status) => {
+  let filter = {
+    type: BATCH_PROCESS_ID,
+    businessId: body.businessId,
+  };
+  let counter = await Counter.findOne(filter);
+  let update = {
+    type: BATCH_PROCESS_ID,
+    businessId: body.businessId,
+  };
+  let options = { upsert: true, new: true };
+  let value;
+  if (counter) {
+    value = counter.sequence_value;
+    value += 1;
+    update = { ...update, sequence_value: value };
+  } else {
+    update = { ...update, sequence_value: 1 };
+  }
+  // increase the sequence value
+  counter = await Counter.findOneAndUpdate(filter, update, options);
+  let batchProcessId = counter.sequence_value;
+  // create new xlsx record
+  let xlsxData = await Xlsx.create({
+    xlsxUrl: location,
+    batchProcessId: batchProcessId,
+    status: status,
+  });
+  return { xlsxData, batchProcessId };
+};
+
+const createErrorRecordXlsx = async (body, location) => {
+  let { xlsxData, batchProcessId } = await createRecordXlsx(
+    body,
+    location,
+    "COMPLETED_ERRORS_IN_DATA"
+  );
+  return xlsxData;
+};
 //********************************************************************************************************************************************************* */
 
 var storage = multer.diskStorage({

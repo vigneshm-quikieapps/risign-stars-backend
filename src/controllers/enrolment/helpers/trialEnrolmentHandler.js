@@ -32,7 +32,10 @@ const trialEnrolmentHandler = async (req, session) => {
     { userData, businessSessionData, businessClassData }
   );
 
-  return "enrolled in trial session successful";
+  return {
+    message: "enrolled in trial session successful",
+    status: "TRIAL_ENROLL",
+  };
 };
 
 module.exports = trialEnrolmentHandler;

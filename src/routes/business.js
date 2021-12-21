@@ -27,6 +27,7 @@ const {
   uploadXLXSFile,
   // convertXLXSFile,
   businessImageUploadHelper,
+  businessXlsxUploadHelper,
   uploadImage,
   getAllBusinessesOfLoginUser,
 } = require("../controllers/business");
@@ -112,6 +113,7 @@ router.post(
   isAuthorized(BUSINESS_DEFINITION, UPDATE, {
     getResourceBusinessId: getResourceBusinessIdByParamsForBussiness,
   }),
+  businessXlsxUploadHelper.single("payment"),
   uploadXLXSFile
 );
 //router.get("/convertxlxs/json", convertXLXSFile);

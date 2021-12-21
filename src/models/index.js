@@ -14,6 +14,7 @@ const Progress = require("./progress");
 const Role = require("./Role");
 const Term = require("./Term");
 const User = require("./User");
+const Xlsx = require("./Xlsx");
 const {
   AttendanceOfAClassByDate,
   AttendanceOfAClassByMonth,
@@ -40,4 +41,5 @@ module.exports = {
   Role,
   Term,
   User,
+  Xlsx,
 };
