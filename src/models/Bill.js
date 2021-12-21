@@ -45,6 +45,35 @@ const billSchema = new mongoose.Schema(
         endDate: Date,
       },
     ],
+    partialTransactions: [
+      {
+        amount: {
+          type: Number,
+        },
+        paidAt: {
+          type: Date,
+        },
+        transactionType: {
+          type: String,
+          enum: ENUM_TRANSACTION_TYPES,
+        },
+        method: {
+          type: String,
+        },
+        reference: {
+          type: String,
+        },
+        updateMethod: {
+          type: String,
+        },
+        processDate: {
+          type: Date,
+        },
+        batchProcessId: {
+          type: String,
+        },
+      },
+    ],
     subtotal: {
       type: Number,
       required: true,

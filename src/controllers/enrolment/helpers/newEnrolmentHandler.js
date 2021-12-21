@@ -37,7 +37,7 @@ const newEnrolmentHandler = async (req, res) => {
      */
     req.clubMembershipId = await getClubMembershipId(req, session);
 
-    let message = "enrolled successful";
+    let message = {};
     if (isTrialEnrolment) {
       message = await trialEnrolmentHandler(req, session);
     } else {
@@ -46,7 +46,7 @@ const newEnrolmentHandler = async (req, res) => {
 
     await session.commitTransaction();
 
-    return res.status(201).send({ message });
+    return res.status(201).send(message);
   } catch (err) {
     console.error(err);
     await session.abortTransaction();

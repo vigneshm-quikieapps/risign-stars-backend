@@ -86,7 +86,7 @@ const isAuthorized =
             await isAuthHandler(req, res);
             next();
           } catch (err2) {
-            console.error(err2.message);
+            console.error("err", err2.message);
             return res
               .status(StatusCodes.FORBIDDEN)
               .send({ message: "Unauthorized" });
