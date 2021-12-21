@@ -3,6 +3,7 @@ const router = express.Router();
 const {
   signup,
   signin,
+  logout,
   refreshToken,
   getOTPEmail,
   getOTPMobileNo,
@@ -22,6 +23,7 @@ const validate = require("../validations/validate");
 
 router.post("/sign-up", signUpValidationRules(), validate, signup);
 router.post("/sign-in", signInValidationRules(), validate, signin);
+router.post("/logout", logout);
 router.post("/refresh-token", refreshToken);
 router.post(
   "/get-otp/email",
