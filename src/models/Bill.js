@@ -66,10 +66,10 @@ const billSchema = new mongoose.Schema(
         updateMethod: {
           type: String,
         },
-        processDate:{
+        processDate: {
           type: Date,
         },
-        batchProcessId:{
+        batchProcessId: {
           type: String,
         },
       },
