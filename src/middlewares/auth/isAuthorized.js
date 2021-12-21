@@ -2,8 +2,6 @@ const { StatusCodes } = require("http-status-codes");
 const UnauthorizedError = require("../../exceptions/UnauthorizedError");
 const { verify } = require("jsonwebtoken");
 const { hasPermission } = require("./utils");
-const getRoleIds = require("./utils/getRoleIds");
-const getRoles = require("./utils/getRoles");
 const { User } = require("../../models");
 
 /**
@@ -37,10 +35,14 @@ const isAuthorized =
       token =
         req.headers.authorization && req.headers.authorization.split(" ")[1];
       let tokenPayload = verify(token, process.env.ACCESS_TOKEN_SECRET);
-      req.authUserData = await User.findById(tokenPayload._id);
+      req.authUserData = await User.findById(tokenPayload._id)
+        .populate("roles")
+        .exec();
       req.tokenData = tokenPayload;
     } catch (err) {
-      return res.status(StatusCodes.UNAUTHORIZED).send({ message: err.message });
+      return res
+        .status(StatusCodes.UNAUTHORIZED)
+        .send({ message: err.message });
     }
 
     // if (isAuthHandler) {
@@ -60,35 +62,17 @@ const isAuthorized =
 
     switch (true) {
       case page == null && action == null && !options.isAuthHandler:
-        //  &&
-        // !options.isSuperAdminOnly:
-        //it allows users who has valid access token
+        // it allows users who has valid access token
         next();
         break;
-
       case process.env.IS_AUTHORIZED_CHECK === "DISABLE":
-        //it disables the authoraisation check
+        // it disables the authorization check
         next();
         break;
-      // case options.isSuperAdminOnly:
-      //   //it checks for the Super Admin Only
-      //   try {
-      //     //it allows access only for Super Admin
-      //     if (!hasAllPermission(req.authUserData)) {
-      //       throw new UnauthorizedError();
-      //     }
-      //     next();
-      //   } catch (err) {
-      //     console.error(err.message);
-      //     return res
-      //       .status(StatusCodes.UNAUTHORIZED)
-      //       .send({ message: "Unauthorized" });
-      //   }
-      //   break;
       default:
         try {
-          //it allows bussiness admin with required permission to the page
-          await checkIsAuthorized(req, res, next, { page, action, options });
+          // it allows business admin with required permission to the page
+          await checkIsAuthorized(req, res, { page, action, options });
           next();
         } catch (err) {
           try {
@@ -112,28 +96,20 @@ const isAuthorized =
     }
   };
 
-const checkIsAuthorized = async (req, res, next, { page, action, options }) => {
+const checkIsAuthorized = async (req, res, { page, action, options }) => {
   if (page === null || action === null) {
     throw new Error("page or action not defined");
   }
 
-  let tokenPayload = req.authUserData;
+  let authUserData = req.authUserData;
   let businessId;
   if (options.getResourceBusinessId) {
     businessId = await options.getResourceBusinessId(req, res);
   }
-  //console.log("bussinessId from getResourceBusinessId funcn:", businessId);
-  /**
-   * if data privileges type is "ALL": the user has full access to any api
-   * else check if the user has permission for that particular api
-   */
-  // if (!hasAllPermission(tokenPayload)) {
-  let roleIds = getRoleIds(tokenPayload);
-  let roles = await getRoles(roleIds);
-  if (!hasPermission(businessId, roles, { page, action }, tokenPayload)) {
+
+  if (!hasPermission(businessId, { page, action }, authUserData)) {
     throw new UnauthorizedError();
   }
-  // }
 
   /**
    * if the code execution reaches here.

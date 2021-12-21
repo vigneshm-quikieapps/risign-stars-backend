@@ -8,7 +8,6 @@ const { VerifyContactOTP } = require("../services/otp");
 const { SignUpEmail } = require("../services/notification/Email");
 const { StatusCodes } = require("http-status-codes");
 
-
 // Signup Method
 module.exports.signup = async (req, res) => {
   try {
@@ -36,7 +35,6 @@ module.exports.signin = async (req, res) => {
     const { mobileNo, password } = req.body;
 
     let user = await User.findOne({ mobileNo }).populate("roles");
-
     if (!user) {
       throw new DoesNotExistError();
     }
@@ -46,6 +44,7 @@ module.exports.signin = async (req, res) => {
     }
 
     let data = generateTokens({ user });
+
     RefreshToken.send(res, data.refreshToken);
 
     let userData = JSON.parse(JSON.stringify(user));
@@ -59,7 +58,7 @@ module.exports.signin = async (req, res) => {
 
 // Protected Routes
 module.exports.isSignedIn = expressJwt({
-  // in this middleware the next() is already there or written in expressJwt so we no need to specify explicitely
+  // in this middleware the next() is already there or written in expressJwt so we no need to specify explicitly
   secret: "TEMPU",
   algorithms: ["RSA", "sha1", "RS256", "HS256"],
   userProperty: "auth", // this middleware put this auth onto the request
