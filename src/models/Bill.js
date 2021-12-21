@@ -48,7 +48,7 @@ const billSchema = new mongoose.Schema(
     partialTransactions: [
       {
         amount: {
-          type: Number
+          type: Number,
         },
         paidAt: {
           type: Date,
@@ -67,10 +67,10 @@ const billSchema = new mongoose.Schema(
           type: String,
         },
         processDate:{
-          type: Date
+          type: Date,
         },
         batchProcessId:{
-          type: String
+          type: String,
         },
       },
     ],
