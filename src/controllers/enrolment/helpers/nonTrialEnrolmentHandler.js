@@ -26,11 +26,11 @@ const nonTrialEnrolmentHandler = async (req, session) => {
    */
   if (fullcapacityfilled < fullcapacity) {
     await regularEnrolment(req, session);
-    return "enrolled successful";
+    return { message: "enrolled successful", status: "ENROLLED" };
   } else {
     // creating enrolment till session capacity
     await waitlistedEnrolment(req, session);
-    return "enrolled successful in waitlist";
+    return { message: "enrolled successful in waitlist", status: "WAITLISTED" };
   }
 };
 
