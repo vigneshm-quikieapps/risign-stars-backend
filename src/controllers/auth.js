@@ -8,7 +8,6 @@ const { VerifyContactOTP } = require("../services/otp");
 const { SignUpEmail } = require("../services/notification/Email");
 const { StatusCodes } = require("http-status-codes");
 
-
 // Signup Method
 module.exports.signup = async (req, res) => {
   try {
