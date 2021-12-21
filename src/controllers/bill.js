@@ -71,6 +71,7 @@ module.exports.billsOfAMemberInABusiness = async (req, res) => {
 //   }
 // };
 
+// helper function to enter a first new partial transaction of bill
 const enterFirstNewTransaction = async (
   billId,
   reference,
@@ -103,6 +104,7 @@ const enterFirstNewTransaction = async (
   return  bill ;
 };
 
+// helper function tp enter a new partial transaction of bill
 const enterNewTransaction = async (
   billId,
   reference,
@@ -136,7 +138,7 @@ const enterNewTransaction = async (
   );
   return bill;
 };
-
+// create the single partial transaction of a bill
 module.exports.enterTransaction = async (req, res) => {
   const session = await mongoose.startSession();
   session.startTransaction();
@@ -176,7 +178,7 @@ module.exports.enterTransaction = async (req, res) => {
     session.endSession();
   }
 };
-
+// delete the single partial transaction of a bill
 module.exports.deleteTransactions = async (req, res) => {
   const session = await mongoose.startSession();
   session.startTransaction();
@@ -185,6 +187,7 @@ module.exports.deleteTransactions = async (req, res) => {
     let billData = await Bill.findById(billId);
     if (billData) {
       if (billData.partialTransactions) {
+        // delete the partial transaction of bill with the help of transactionId and billid from body object
         let { partialTransactions } = billData;
         let newTransactions = partialTransactions.filter((transaction) => {
           return transaction._id != transactionId;
@@ -212,7 +215,7 @@ module.exports.deleteTransactions = async (req, res) => {
     session.endSession();
   }
 };
-
+// update the manual partial transaction of a bill in a batch
 module.exports.updateTransactions = async (req, res) => {
   const session = await mongoose.startSession();
   session.startTransaction();
@@ -296,7 +299,7 @@ module.exports.getBillStatusOfMembersInASession = async (req, res) => {
   }
 };
 
-
+// helper function to update the partial transactions of bill used in update transactions
 const updateNewPartialTransactions=(partialTransactions,billData,billId,session)=>{
   let newPartialTransactions = [];
   for (let j = 0; j < partialTransactions.length; j++) {
