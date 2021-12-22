@@ -2,7 +2,7 @@ const { sign } = require("jsonwebtoken");
 
 const create = (payload) => {
   return sign(payload, process.env.ACCESS_TOKEN_SECRET, {
-    expiresIn: 5 * 60,
+    expiresIn: process.env.NODE_ENV === "production" ? 5 * 60 : "7d",
   });
 };
 
