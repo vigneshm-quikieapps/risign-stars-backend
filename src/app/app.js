@@ -4,19 +4,15 @@ const cors = require("cors");
 const cookieParser = require("cookie-parser");
 require("dotenv").config();
 
-var whitelist = [
-  "http://localhost:3000",
-  "https://localhost:3000",
-  "https://sudarshanshkrishna.github.io",
-];
-
 var corsOptions = {
-  // credentials: true,
+  credentials: true,
+  origin: process.env.ORIGINS ? process.env.ORIGINS.split(" ") : "*",
 };
+console.log("[App] cors options: ", corsOptions);
 
 app.use(express.json());
 app.use(cookieParser());
-app.use(cors());
+app.use(cors(corsOptions));
 
 /**
  * registering routes
