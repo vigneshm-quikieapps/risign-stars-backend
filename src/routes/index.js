@@ -20,6 +20,7 @@ const testRoute = require("./testRoute");
 const enrolmentRoute = require("./enrolment");
 const progressRecordRoute = require("./progress");
 const billRoute = require("./bill");
+const postCoderRoute = require("./postcoder");
 
 const routes = (app) => {
   // API routes
@@ -53,6 +54,7 @@ const routes = (app) => {
   app.use("/api/notifications", notification);
   app.use("/api", authRoutes);
   app.use("/api/test", testRoute);
+  app.use("/api/address", postCoderRoute);
 
   // test route
   app.get("/", (req, res) => {
