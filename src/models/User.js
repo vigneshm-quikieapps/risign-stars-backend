@@ -27,6 +27,7 @@ const UserSchema = new mongoose.Schema(
     status: {
       type: String,
       enum: ["ACTIVE", "INACTIVE"],
+      default: "ACTIVE",
     },
     isDeleted: {
       type: Boolean,
@@ -40,10 +41,15 @@ const UserSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    isParent: {
+      type: Boolean,
+      default: true,
+    },
     roles: [
       {
         type: ObjectId,
         ref: "Role",
+        default: [],
       },
     ],
     mobileNo: {
@@ -97,6 +103,7 @@ const UserSchema = new mongoose.Schema(
         {
           type: ObjectId,
           ref: "Business",
+          default: [],
         },
       ],
     },
