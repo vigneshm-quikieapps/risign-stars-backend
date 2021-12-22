@@ -8,5 +8,7 @@ module.exports = (res, token) => {
     /// read https://security.stackexchange.com/a/223477
     sameSite: "None",
     secure: true,
+    // setting maxAge to 7 days
+    maxAge: 7 * 24 * 60 * 60 * 1000,
   });
 };
