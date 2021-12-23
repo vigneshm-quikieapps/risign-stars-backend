@@ -23,7 +23,8 @@ module.exports.signup = async (req, res) => {
 
 module.exports.logout = async (req, res) => {
   try {
-    RefreshToken.send(req, "");
+    RefreshToken.clear(res);
+    res.json({ message: "successfully logged out" });
   } catch (err) {
     return res.status(422).send({ message: err.message });
   }
@@ -104,10 +105,10 @@ module.exports.refreshToken = async (req, res) => {
     }
 
     const data = generateTokens({ user });
-    let { refreshToken } = data;
+    let { accessToken } = data;
 
-    RefreshToken.send(res, refreshToken);
-    return res.send(data);
+    // RefreshToken.send(res, refreshToken);
+    return res.send({ accessToken });
   } catch (err) {
     console.error(err);
     return res.status(StatusCodes.UNAUTHORIZED).send(response);
