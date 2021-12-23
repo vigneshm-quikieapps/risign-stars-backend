@@ -20,7 +20,7 @@ app.use(cors(corsOptions));
  * this should be last in importing modules
  */
 require("../routes")(app);
-// express error handler
+// express error handlers
 app.use(function (err, req, res, next) {
   console.error(err.stack)
   res.status(500).send('Something broke!')
