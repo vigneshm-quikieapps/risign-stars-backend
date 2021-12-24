@@ -22,7 +22,7 @@ app.use(cors(corsOptions));
 require("../routes")(app);
 // express error handlers
 app.use(function (err, req, res, next) {
-  console.error(err.stack)
+  console.error(err.stack);
   res.status(500).send('Something broke!')
 });
 
