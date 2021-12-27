@@ -49,10 +49,10 @@ module.exports.resetPassword = async (req, res) => {
  * @param {*} res
  * @returns
  */
-module.exports.forgotPasswordMobile = async ({ user }, res) => {
+module.exports.forgotPasswordMobile = async ({ user },res) => {
   try {
     let otp = await ResetPasswordOTP.generate(user.mobileNo);
-    ResetPasswordSms.send({ user, otp });
+    ResetPasswordSms.send({ to:user.mobileNo, otp });
 
     return res.send({
       message: "Reset Password OTP has been sent to your mobile number.",
