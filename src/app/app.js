@@ -14,7 +14,6 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(cors(corsOptions));
 
-
 /**
  * registering routes
  * this should be last in importing modules
@@ -22,8 +21,8 @@ app.use(cors(corsOptions));
 require("../routes")(app);
 // express error handler
 app.use(function (err, req, res, next) {
-  console.error(err.stack)
-  res.status(500).send('Something broke!')
+  console.error(err.stack);
+  res.status(500).send("Something broke!");
 });
 
 module.exports = app;
