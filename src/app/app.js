@@ -21,15 +21,8 @@ app.use(cors(corsOptions));
  */
 require("../routes")(app);
 // express error handlers
-// app.use(function (err, req, res, next) {
-//   console.error(err.stack);
-//   res.status(500).send('Something broke!')
-// });
-
 app.use(function errorHandler (err, req, res, next) {
-  if (res.headersSent) {
-    return next(err)
-  }
-  res.status(500).send('error', { error: err });
-})
+  console.log("error",err);
+  res.status(500).send({ error: process.env.NODE_ENV === 'production' ? 'Something went wrong !' : err});
+});
 module.exports = app;
