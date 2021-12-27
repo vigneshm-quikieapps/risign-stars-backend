@@ -25,9 +25,8 @@ const withdrawEnrolment = async (req, res) => {
       },
       { new: true }
     ).session(session);
-
     let sessionData = await BusinessSession.findOneAndUpdate(
-      { sessionId: req.body.sessionId },
+      { sessionId: enrolment.sessionId },
       {
         $inc: { fullcapacityfilled: -1 },
       },
@@ -43,11 +42,12 @@ const withdrawEnrolment = async (req, res) => {
     let { userData, businessSessionData, businessClassData } =
       await findUserEmail(memberId, "", sessionData.classId);
     let { email } = userData;
-    await session.commitTransaction();
     WithdrawEnrollmentEmail.send(
       { to: email },
-      { userData, sessionData, businessClassData }
+      { userData, sessionData, classData: businessClassData }
     );
+    await session.commitTransaction();
+
     return res.status(201).send({ message: "cancellation successfull" });
   } catch (err) {
     console.error(err);
