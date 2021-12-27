@@ -30,6 +30,6 @@ app.use(function errorHandler (err, req, res, next) {
   if (res.headersSent) {
     return next(err)
   }
-  res.status(500).send('error', { error: err })
+  res.status(500).send('error', { error: err });
 })
 module.exports = app;
