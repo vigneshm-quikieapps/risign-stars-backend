@@ -82,13 +82,13 @@ const enterFirstNewTransaction = async (
   let transactionArray = [];
   let now = new Date();
   let partialObj = {
-    "amount":amount,
-    "reference":reference,
-    "method":PAYMENT_METHOD_MANUAL,
-    "transactionType":type,
-    "paidAt":now,
-    "updateMethod":PAYMENT_METHOD_MANUAL,
-    "processDate":now
+    amount: amount,
+    reference: reference,
+    method: PAYMENT_METHOD_MANUAL,
+    transactionType: type,
+    paidAt: now,
+    updateMethod: PAYMENT_METHOD_MANUAL,
+    processDate: now,
   };
   transactionArray.push(partialObj);
   let update = {
@@ -101,7 +101,7 @@ const enterFirstNewTransaction = async (
   let bill = await Bill.findByIdAndUpdate(billId, update, options).session(
     session
   );
-  return  bill ;
+  return bill;
 };
 
 // helper function tp enter a new partial transaction of bill
@@ -116,13 +116,13 @@ const enterNewTransaction = async (
   let now = new Date();
   let transactionArray = [];
   let partialObj = {
-    "amount":amount,
-    "reference":reference,
-    "method":PAYMENT_METHOD_MANUAL,
-    "transactionType":type,
-    "paidAt":now,
-    "updateMethod":PAYMENT_METHOD_MANUAL,
-    "processDate":now
+    amount: amount,
+    reference: reference,
+    method: PAYMENT_METHOD_MANUAL,
+    transactionType: type,
+    paidAt: now,
+    updateMethod: PAYMENT_METHOD_MANUAL,
+    processDate: now,
   };
   transactionArray = billData.partialTransactions;
   transactionArray.push(partialObj);
@@ -149,7 +149,13 @@ module.exports.enterTransaction = async (req, res) => {
     if (billData.partialTransactions.length == 0) {
       // record a first new transaction
       if (amount <= billData.subtotal) {
-        let bill = await enterFirstNewTransaction(billId,reference,type,amount,session);
+        let bill = await enterFirstNewTransaction(
+          billId,
+          reference,
+          type,
+          amount,
+          session
+        );
         await session.commitTransaction();
         return res.send({ message: "transaction recorded", bill });
       } else {
@@ -163,14 +169,20 @@ module.exports.enterTransaction = async (req, res) => {
       }
       let diff = billData.subtotal - totalSum;
       if (totalSum < billData.subtotal && amount <= diff) {
-        let bill = await enterNewTransaction(billId,reference,type,amount,billData,session);
+        let bill = await enterNewTransaction(
+          billId,
+          reference,
+          type,
+          amount,
+          billData,
+          session
+        );
         await session.commitTransaction();
         return res.send({ message: "transaction recorded", bill });
       } else {
         throw new Error("No due left cannot record this transaction");
       }
     }
-
   } catch (err) {
     await session.abortTransaction();
     return res.status(422).send({ message: err.message });
@@ -232,7 +244,12 @@ module.exports.updateTransactions = async (req, res) => {
             if (bill.partialTransactions.length > 0) {
               let { partialTransactions } = bill;
               // update the newPartialTransactions Array so that we can update the partial transactions array of bill
-              let updatedBill = await updateNewPartialTransactions(partialTransactions,billData[i],billId,session);
+              let updatedBill = await updateNewPartialTransactions(
+                partialTransactions,
+                billData[i],
+                billId,
+                session
+              );
               updatedBillTransactions.push(updatedBill);
             }
           } else {
@@ -300,7 +317,12 @@ module.exports.getBillStatusOfMembersInASession = async (req, res) => {
 };
 
 // helper function to update the partial transactions of bill used in update transactions
-const updateNewPartialTransactions= async (partialTransactions,billData,billId,session)=>{
+const updateNewPartialTransactions = async (
+  partialTransactions,
+  billData,
+  billId,
+  session
+) => {
   let newPartialTransactions = [];
   for (let j = 0; j < partialTransactions.length; j++) {
     let index = billData.transactions.findIndex(
@@ -330,5 +352,5 @@ const updateNewPartialTransactions= async (partialTransactions,billData,billId,s
     update,
     options
   ).session(session);
-  return updatedBill
-}
+  return updatedBill;
+};

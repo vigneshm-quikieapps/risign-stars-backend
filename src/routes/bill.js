@@ -6,14 +6,14 @@ const {
   billsOfAMemberInABusiness,
   enterTransaction,
   deleteTransactions,
-  updateTransactions
+  updateTransactions,
 } = require("../controllers/bill");
 const validate = require("../validations/validate");
 const {
   billOfAMemberInAClassValidationRules,
   billOfAMemberInABusinessValidationRules,
   enterTransactionValidationRules,
-  deleteTransactionValidationRules
+  deleteTransactionValidationRules,
 } = require("../validations/bill");
 const { isAuthorized } = require("../middlewares/auth");
 const getResourceBusinessIdForBill = require("../middlewares/auth/utils/getResourceBusinessId/getResourceBusinessIdForBill");
@@ -54,9 +54,6 @@ router.post(
   deleteTransactions
 );
 
-router.post(
-  "/update-transactions",
-  updateTransactions
-);
+router.post("/update-transactions", updateTransactions);
 
 module.exports = router;

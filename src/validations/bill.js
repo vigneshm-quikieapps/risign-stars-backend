@@ -42,14 +42,12 @@ const enterTransactionValidationRules = () => {
 };
 
 const deleteTransactionValidationRules = () => {
-  return [
-    body("billId").custom(isValidBillId),
-  ];
+  return [body("billId").custom(isValidBillId)];
 };
 
 module.exports = {
   billOfAMemberInABusinessValidationRules,
   billOfAMemberInAClassValidationRules,
   enterTransactionValidationRules,
-  deleteTransactionValidationRules
+  deleteTransactionValidationRules,
 };
