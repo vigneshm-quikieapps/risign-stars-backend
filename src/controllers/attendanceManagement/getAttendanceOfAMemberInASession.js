@@ -52,8 +52,8 @@ const getAttendanceOfAMemberInASession = async (req, res) => {
         },
       },
     ]);
-
-    let attendance = [];
+    console.log("attendances", attendances);
+    let attendance = {};
     if (attendances.length) {
       attendance = attendances[0];
     }

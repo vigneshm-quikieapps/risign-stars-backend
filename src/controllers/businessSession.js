@@ -56,7 +56,7 @@ module.exports.getBusinessSession = async (req, res) => {
     let { businessSessionId } = req.params;
     let businessSession = await BusinessSession.findById(
       businessSessionId
-    ).populate("termData");
+    ).populate("termData", "coachId");
 
     return res.send({ businessSession });
   } catch (err) {
