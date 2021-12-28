@@ -1,5 +1,12 @@
 const ADDRESS_TYPE = ["PRIMARY", "SECONDARY"];
-const RELATIONSHIPS = ["FRIEND", "GRAND_PARENT", "UNCLE", "AUNT", "OTHER"];
+const RELATIONSHIPS = [
+  "PARENT",
+  "FRIEND",
+  "GRAND_PARENT",
+  "UNCLE",
+  "AUNT",
+  "OTHER",
+];
 
 module.exports = {
   ADDRESS_TYPE,
