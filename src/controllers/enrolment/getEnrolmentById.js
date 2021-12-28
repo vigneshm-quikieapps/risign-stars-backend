@@ -3,7 +3,7 @@ const { Enrolment } = require("../../models");
 const getEnrolmentById = async (req, res,next) => {
   try {
     let { enrolmentId } = req.params;
-    let enrolment = await Enrolment.find({ _id:enrolmentId })
+    let enrolment = await Enrolment.findOne({ _id:enrolmentId })
       .populate("business")
       .populate("class")
       .populate("session");
