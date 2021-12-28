@@ -9,6 +9,7 @@ const {
   trailEnrolment,
   returnFromSuspensionEnrolment,
   getAllEnrolmentOfAMemberInABusiness,
+  getEnrolmentById
 } = require("../controllers/enrolment");
 const suspendEnrolment = require("../controllers/enrolment/suspendEnrolment");
 const { isAuthorized } = require("../middlewares/auth");
@@ -46,6 +47,8 @@ router.post(
   validate,
   newEnrolment
 );
+
+router.get("/:enrolmentId", getEnrolmentById);
 
 router.post(
   "/of-a-member-in-a-business",
