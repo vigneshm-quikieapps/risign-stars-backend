@@ -77,16 +77,20 @@ const enterFirstNewTransaction = async (
   reference,
   type,
   amount,
+  paymentDate,
+  paymentMethod,
+  billData,
   session
 ) => {
   let transactionArray = [];
   let now = new Date();
+  let date = new Date(paymentDate);
   let partialObj = {
     "amount":amount,
     "reference":reference,
-    "method":PAYMENT_METHOD_MANUAL,
+    "method":paymentMethod,
     "transactionType":type,
-    "paidAt":now,
+    "paidAt":date,
     "updateMethod":PAYMENT_METHOD_MANUAL,
     "processDate":now
   };
@@ -96,6 +100,14 @@ const enterFirstNewTransaction = async (
       partialTransactions: transactionArray,
     },
   };
+  if(billData.subtotal==amount){
+    update = {
+      $set: {
+        partialTransactions: transactionArray,
+        paidAt:date,
+      },
+    };
+  }
   let options = { new: true, useFindAndModify: false };
 
   let bill = await Bill.findByIdAndUpdate(billId, update, options).session(
@@ -110,17 +122,21 @@ const enterNewTransaction = async (
   reference,
   type,
   amount,
+  paymentDate,
+  paymentMethod,
+  diff,
   billData,
   session
 ) => {
   let now = new Date();
+  let date = new Date(paymentDate);
   let transactionArray = [];
   let partialObj = {
     "amount":amount,
     "reference":reference,
-    "method":PAYMENT_METHOD_MANUAL,
+    "method":paymentMethod,
     "transactionType":type,
-    "paidAt":now,
+    "paidAt":date,
     "updateMethod":PAYMENT_METHOD_MANUAL,
     "processDate":now
   };
@@ -131,6 +147,14 @@ const enterNewTransaction = async (
       partialTransactions: transactionArray,
     },
   };
+  if(diff==amount){
+    update = {
+      $set: {
+        partialTransactions: transactionArray,
+        paidAt:date,
+      },
+    };
+  }
   let options = { new: true, useFindAndModify: false };
 
   let bill = await Bill.findByIdAndUpdate(billId, update, options).session(
@@ -143,13 +167,13 @@ module.exports.enterTransaction = async (req, res) => {
   const session = await mongoose.startSession();
   session.startTransaction();
   try {
-    let { billId, reference, type, amount } = req.body;
+    let { billId, reference, type, amount,paymentDate,paymentMethod } = req.body;
     let now = new Date();
     let billData = await Bill.findById(billId);
     if (billData.partialTransactions.length == 0) {
       // record a first new transaction
       if (amount <= billData.subtotal) {
-        let bill = await enterFirstNewTransaction(billId,reference,type,amount,session);
+        let bill = await enterFirstNewTransaction(billId,reference,type,amount,paymentDate,paymentMethod,billData,session);
         await session.commitTransaction();
         return res.send({ message: "transaction recorded", bill });
       } else {
@@ -163,7 +187,7 @@ module.exports.enterTransaction = async (req, res) => {
       }
       let diff = billData.subtotal - totalSum;
       if (totalSum < billData.subtotal && amount <= diff) {
-        let bill = await enterNewTransaction(billId,reference,type,amount,billData,session);
+        let bill = await enterNewTransaction(billId,reference,type,amount,paymentDate,paymentMethod,diff,billData,session);
         await session.commitTransaction();
         return res.send({ message: "transaction recorded", bill });
       } else {
