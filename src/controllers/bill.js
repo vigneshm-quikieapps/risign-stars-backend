@@ -356,3 +356,116 @@ const updateNewPartialTransactions= async (partialTransactions,billData,billId,s
   ).session(session);
   return updatedBill
 }
+
+module.exports.businessAdminDashboardinfo = async (req, res) => {
+  try {
+    let { businessId, startDate, endDate } = req.body;
+    // convert the start date and enddate to date object
+    let startDateObj = new Date(startDate);
+    let endDateObj = new Date(endDate);
+    // months of startdate and endate
+    let monthSd = startDateObj.getMonth();
+    let monthEd = endDateObj.getMonth();
+
+    let monthObj = {
+      0: "JAN",
+      1: "FEB",
+      2: "MAR",
+      3: "APR",
+      4: "May",
+      5: "JUN",
+      6: "JULY",
+      7: "AUG",
+      8: "SEP",
+      9: "OCT",
+      10: "NOV",
+      11: "DEC",
+    };
+    // difference between the months of start date and end date
+    let diffMonth = monthEd - monthSd;
+    // bill information response array
+    let respArr = await billInfo(
+      diffMonth,
+      monthObj,
+      startDateObj,
+      endDateObj,
+      businessId
+    );
+
+    return res.send({ message: "Successful", respArr });
+  } catch (err) {
+    return res.status(422).send({ message: err.message });
+  }
+};
+
+const billInfo = async (
+  diffMonth,
+  monthObj,
+  startDateObj,
+  endDateObj,
+  businessId
+) => {
+  let respArr = [];
+  for (let i = 0; i < diffMonth + 1; i++) {
+    // first day of month
+    let firstDay = new Date(
+      startDateObj.getFullYear(),
+      startDateObj.getMonth() + i,
+      1,
+      05,
+      30,
+      00
+    );
+    // last day of month
+    let lastDay = new Date(
+      startDateObj.getFullYear(),
+      startDateObj.getMonth() + i + 1,
+      1,
+      05,
+      29,
+      59
+    );
+    // bill paid
+    let billPaid = await Bill.find({
+      businessId: businessId,
+      paidAt: { $gte: firstDay, $lte: lastDay },
+      paid: true,
+    });
+    // unpaid bills
+    let billNotPaid = await Bill.find({
+      businessId: businessId,
+      dueDate: { $gte: firstDay, $lte: lastDay },
+      paid: false,
+    });
+
+    // total no of paid and unpaid bills in a month
+    let totalPaidBills = billPaid.length;
+    let totalUnPaidBills = billNotPaid.length;
+
+    let totalPaidAmount = 0;
+    let totalUnPaidAmount = 0;
+
+    // total paid amount in a month
+    totalPaidAmount = billPaid.reduce(
+      (prevValue, { subtotal }) => prevValue + subtotal,
+      0
+    );
+    // total unpaid amount in a month
+    totalUnPaidAmount = billNotPaid.reduce(
+      (prevValue, { subtotal }) => prevValue + subtotal,
+      0
+    );
+
+    let month = firstDay.getMonth();
+    let respObj = {
+      month: monthObj[month],
+      totalPaidBills: totalPaidBills,
+      totalUnPaidBills: totalUnPaidBills,
+      totalPaidAmount: totalPaidAmount,
+      totalUnPaidAmount: totalUnPaidAmount,
+    };
+
+    respArr.push(respObj);
+  }
+  return respArr;
+};
