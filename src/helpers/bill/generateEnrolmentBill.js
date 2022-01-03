@@ -1,5 +1,5 @@
 const getMonthlyCharges = require("./getMonthlyCharges");
-const { Bill } = require("../../models");
+const { Bill, Term } = require("../../models");
 const generateClubMembershipBillPayload = require("./generateClubMembershipBillPayload");
 const generatePartialMonthBillPayload = require("./generatePartialMonthBillPayload");
 const generateMonthBillPayload = require("./generateMonthBillPayload");
@@ -56,6 +56,41 @@ const generateEnrolmentBill = async (
    * generate the bills
    */
   let billPayloads = [];
+
+
+  /**
+   * generate upfront charges for term fees
+   */
+  let termBill = await Bill.findOne({
+    memberId: memberId,
+    businessId: businessId,
+    termId: term._id,
+  });
+  if (!termBill) {
+    let termData = await Term.findOne({ _id: term._id });
+    let items=[
+      {
+        name:termData.label,
+        amount:termData.termFee
+      }
+    ];
+    
+    let termBillObj = {
+      memberId: memberId,
+      businessId: businessId,
+      classId: classId,
+      clubMembershipId: clubMembershipId,
+      dueDate: term.endDate,
+      billDate: term.endDate,
+      generatedAt: now,
+      termId: term._id,
+      discount: 0,
+      items:items,
+      subtotal: termData.termFee,
+      total: termData.termFee,
+    };
+    billPayloads.push(termBillObj);
+  }
 
   /**
    * generate upfront charges for club membership fee
