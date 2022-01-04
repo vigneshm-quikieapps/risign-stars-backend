@@ -31,7 +31,7 @@ const regularEnrolment = async (req, session) => {
   const createEnrolmentData = enrolmentPayloadRequest(req);
   let { clubMembershipId } = createEnrolmentData;
 
-  await Enrolment.create(
+  let enrolment = await Enrolment.create(
     [
       {
         ...createEnrolmentData,
@@ -40,6 +40,7 @@ const regularEnrolment = async (req, session) => {
     ],
     { session }
   );
+  let enrolmentId=enrolment[0]._id;
 
   // creating progress Record
   /**
@@ -89,6 +90,7 @@ const regularEnrolment = async (req, session) => {
     sessionData,
     memberData,
     clubMembershipId,
+    enrolmentId
   };
   await generateEnrolmentBill(enrolmentBillData, session);
 

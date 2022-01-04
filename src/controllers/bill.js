@@ -20,11 +20,27 @@ module.exports.getAll = async (req, res) => {
   }
 };
 
+// Earlier this function is used 
+// module.exports.billsOfAMemberInAClass = async (req, res) => {
+//   try {
+//     let query = getQuery(req);
+//     let { memberId, classId } = req.body;
+//     query = { ...query, memberId, classId };
+//     let options = getOptions(req);
+
+//     let response = await Bill.paginate(query, options);
+//     return res.send(response);
+//   } catch (err) {
+//     return res.send({ message: err.message });
+//   }
+// };
+
+// Now api is using this function by taking enrolmentId instead of classId in body payload
 module.exports.billsOfAMemberInAClass = async (req, res) => {
   try {
     let query = getQuery(req);
-    let { memberId, classId } = req.body;
-    query = { ...query, memberId, classId };
+    let { memberId, enrolmentId } = req.body;
+    query = { ...query, memberId, enrolmentId };
     let options = getOptions(req);
 
     let response = await Bill.paginate(query, options);

@@ -3,6 +3,7 @@ const { isValidClassId } = require("./helpers/class");
 const { isValidMemberId } = require("./helpers/member");
 const { isValidBusinessId } = require("./helpers/business");
 const isValidBillId = require("./helpers/bill");
+const { isValidEnrolmentId } = require("./helpers/enrolment");
 const { ENUM_TRANSFER_ALLOWED } = require("../constants/enrolment");
 const {
   ENUM_TRANSACTION_TYPES,
@@ -12,7 +13,9 @@ const {
 const billOfAMemberInAClassValidationRules = () => {
   return [
     body("memberId", "should be a valid Member").custom(isValidMemberId),
-    body("classId", "should be a valid Class").custom(isValidClassId),
+    // body("classId", "should be a valid Class").custom(isValidClassId),
+    // Earlier classId was there  in body payload now enrolmentId is used
+    body("enrolmentId", "should be a valid Enrolment").custom(isValidEnrolmentId),
   ];
 };
 

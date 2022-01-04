@@ -99,6 +99,9 @@ const billSchema = new mongoose.Schema(
     termId:{
       type: ObjectId,
     },
+    enrolmentId:{
+      type: ObjectId,
+    },
     billDate: {
       /**
        * bill date is used to store the month, year info of the bill

@@ -10,6 +10,7 @@ const generateBillPayload = (data) => {
     generatedAt,
     items,
     memberId,
+    enrolmentId
   } = data;
 
   let subtotal = calculateSubtotal(items);
@@ -28,6 +29,7 @@ const generateBillPayload = (data) => {
     memberId,
     subtotal,
     total,
+    enrolmentId
   };
 };
 

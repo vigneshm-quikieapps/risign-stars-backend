@@ -15,7 +15,7 @@ const { getEnrolableMonthRange } = require("../dates");
  * @param {*} session
  */
 const generateEnrolmentBill = async (
-  { businessFinanceData, classData, sessionData, memberData, clubMembershipId },
+  { businessFinanceData, classData, sessionData, memberData, clubMembershipId, enrolmentId },
   session
 ) => {
   let now = new Date();
@@ -42,6 +42,7 @@ const generateEnrolmentBill = async (
     generatedAt: now,
     memberId,
     businessId,
+    enrolmentId
   };
   let monthlyPayload = {
     clubMembershipId,
@@ -50,6 +51,7 @@ const generateEnrolmentBill = async (
     memberId,
     businessId,
     classId,
+    enrolmentId
   };
 
   /**
@@ -88,6 +90,7 @@ const generateEnrolmentBill = async (
       items:items,
       subtotal: termData.termFee,
       total: termData.termFee,
+      enrolmentId:enrolmentId
     };
     billPayloads.push(termBillObj);
   }
