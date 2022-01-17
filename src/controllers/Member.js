@@ -208,7 +208,7 @@ module.exports.get = async (req, res) => {
     let member = await Member.findById(memberId).populate("userId");
     return res.send({ member });
   } catch (err) {
-    return res.send(422).send({ message: err.message });
+    return res.status(422).send({ message: err.message });
   }
 };
 
