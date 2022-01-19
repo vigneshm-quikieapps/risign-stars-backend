@@ -233,13 +233,16 @@ module.exports.deleteTransactions = async (req, res) => {
         let newTransactions = partialTransactions.filter((transaction) => {
           return transaction._id != transactionId;
         });
+        if (newTransactions.length == partialTransactions.length) {
+          throw new Error("Invalid Transaction Id");
+        }
         let update = {
           $set: {
             partialTransactions: newTransactions,
           },
-          $unset:{
-            paidAt:""
-          }
+          $unset: {
+            paidAt: "",
+          },
         };
         let options = { new: true, useFindAndModify: false };
 
@@ -250,6 +253,8 @@ module.exports.deleteTransactions = async (req, res) => {
         ).session(session);
         await session.commitTransaction();
         return res.send({ message: "transaction deleted", bill });
+      }else{
+        throw new Error("There is no transactions");
       }
     }
   } catch (err) {
@@ -276,7 +281,13 @@ module.exports.updateTransactions = async (req, res) => {
             if (bill.partialTransactions.length > 0) {
               let { partialTransactions } = bill;
               // update the newPartialTransactions Array so that we can update the partial transactions array of bill
-              let updatedBill = await updateNewPartialTransactions(partialTransactions,billData[i],billId,session);
+              let updatedBill = await updateNewPartialTransactions(
+                partialTransactions,
+                billData[i],
+                billId,
+                bill,
+                session
+              );
               updatedBillTransactions.push(updatedBill);
             }
           } else {
@@ -344,17 +355,35 @@ module.exports.getBillStatusOfMembersInASession = async (req, res) => {
 };
 
 // helper function to update the partial transactions of bill used in update transactions
-const updateNewPartialTransactions= async (partialTransactions,billData,billId,session)=>{
+const updateNewPartialTransactions = async (
+  partialTransactions,
+  billData,
+  billId,
+  bill,
+  session
+) => {
   let newPartialTransactions = [];
+  let paidDate = "";
+  let paidBoolean = false;
   for (let j = 0; j < partialTransactions.length; j++) {
     let index = billData.transactions.findIndex(
       ({ _id }) => _id === partialTransactions[j]._id.toString()
     );
+
     if (index > -1) {
       let id = partialTransactions[j]._id;
       let newObj = partialTransactions[j];
       for (let key in billData.transactions[index]) {
         newObj[key] = billData.transactions[index][key];
+        if (key == "amount") {
+          if (billData.transactions[index]["paidAt"]) {
+            paidDate = billData.transactions[index]["paidAt"];
+            paidBoolean = true;
+          } else {
+            paidDate = newObj["paidAt"];
+            paidBoolean = true;
+          }
+        }
       }
       partialTransactions[j] = newObj;
       newPartialTransactions.push(partialTransactions[j]);
@@ -362,20 +391,39 @@ const updateNewPartialTransactions= async (partialTransactions,billData,billId,s
       newPartialTransactions.push(partialTransactions[j]);
     }
   }
+  let options = { new: true, useFindAndModify: false };
+  let total = newPartialTransactions.reduce(
+    (previousValue, currentValue) => previousValue.amount + currentValue.amount
+  );
   let update = {
     $set: {
       partialTransactions: newPartialTransactions,
     },
   };
-  let options = { new: true, useFindAndModify: false };
-
+  if (total == bill.subtotal && paidBoolean) {
+    update = {
+      $set: {
+        partialTransactions: newPartialTransactions,
+        paidAt: paidDate,
+      },
+    };
+  } else if (total != bill.subtotal) {
+    update = {
+      $set: {
+        partialTransactions: newPartialTransactions,
+      },
+      $unset: {
+        paidAt: "",
+      },
+    };
+  }
   let updatedBill = await Bill.findByIdAndUpdate(
     billId,
     update,
     options
   ).session(session);
-  return updatedBill
-}
+  return updatedBill;
+};
 
 module.exports.businessAdminDashboardinfo = async (req, res) => {
   try {
