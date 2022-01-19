@@ -121,6 +121,7 @@ const enterFirstNewTransaction = async (
       $set: {
         partialTransactions: transactionArray,
         paidAt:date,
+
       },
     };
   }
@@ -236,6 +237,9 @@ module.exports.deleteTransactions = async (req, res) => {
           $set: {
             partialTransactions: newTransactions,
           },
+          $unset:{
+            paidAt:""
+          }
         };
         let options = { new: true, useFindAndModify: false };
 
