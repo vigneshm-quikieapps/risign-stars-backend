@@ -83,7 +83,7 @@ const enrolmentSchema = new mongoose.Schema(
 enrolmentSchema.statics.canEnrol = async function (filter) {
   let enrolment = await this.findOne(filter);
 
-  if (enrolment) {
+  if (enrolment && enrolment.enrolledStatus!='DROPPED') {
     throw new Error(
       "member can enrol in only one session for a particular class"
     );
