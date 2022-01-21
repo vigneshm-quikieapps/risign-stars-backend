@@ -18,6 +18,10 @@ const billSchema = new mongoose.Schema(
       enum: ENUM_STATUS,
       default: STATUS_ACTIVE,
     },
+    billStatus: {
+      type: String,
+      default: "NOT_PAID",
+    },
     classId: {
       type: ObjectId,
     },
