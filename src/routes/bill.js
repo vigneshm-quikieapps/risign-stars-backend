@@ -8,7 +8,8 @@ const {
   deleteTransactions,
   updateTransactions,
   businessAdminDashboardinfo,
-  memberActiveInActive
+  memberActiveInActive,
+  activeDropEnrolments
 } = require("../controllers/bill");
 const validate = require("../validations/validate");
 const {
@@ -70,5 +71,11 @@ router.post(
   "/memberActiveInActive",
   memberActiveInActive
 );
+
+router.post(
+  "/activeDropEnrolments",
+  activeDropEnrolments
+);
+
 
 module.exports = router;

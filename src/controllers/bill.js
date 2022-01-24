@@ -541,6 +541,8 @@ const billInfo = async (
 module.exports.memberActiveInActive = async (req, res) => {
   try {
     let { businessId } = req.body;
+
+    // find the enrollments as status enrolled 
     let enrolments = await Enrolment.find({
       businessId: businessId,
       enrolledStatus: "ENROLLED",
@@ -549,6 +551,7 @@ module.exports.memberActiveInActive = async (req, res) => {
       },
     }).populate("session");
 
+    // filter out the duplicate memberId
     let activeObj = {};
     for (let i = 0; i < enrolments.length; i++) {
       if (enrolments[i].session.endDate > new Date()) {
@@ -560,6 +563,7 @@ module.exports.memberActiveInActive = async (req, res) => {
       }
     }
 
+    // count the memberId
     let keyCount = 0;
     for (let key in activeObj) {
       keyCount += 1;
@@ -571,6 +575,81 @@ module.exports.memberActiveInActive = async (req, res) => {
     let inActive = total - keyCount;
 
     return res.status(200).send({ activeMembers: keyCount,inActiveMembers: inActive});
+  } catch (err) {
+    return res.status(422).send({ message: err.message });
+  }
+};
+
+
+module.exports.activeDropEnrolments = async (req, res) => {
+  try {
+    let { businessId, startDate, endDate } = req.body;
+    // convert the start date and enddate to date object
+    let startDateObj = new Date(startDate);
+    let endDateObj = new Date(endDate);
+    // months of startdate and endate
+    let monthSd = startDateObj.getMonth();
+    let monthEd = endDateObj.getMonth();
+
+    let monthObj = {
+      0: "JAN",
+      1: "FEB",
+      2: "MAR",
+      3: "APR",
+      4: "May",
+      5: "JUN",
+      6: "JULY",
+      7: "AUG",
+      8: "SEP",
+      9: "OCT",
+      10: "NOV",
+      11: "DEC",
+    };
+    // difference between the months of start date and end date
+    let diffMonth = monthEd - monthSd;
+    let respArr = [];
+    for (let i = 0; i < diffMonth + 1; i++) {
+      // first day of month
+      let firstDay = new Date(
+        startDateObj.getFullYear(),
+        startDateObj.getMonth() + i,
+        1,
+        05,
+        30,
+        00
+      );
+      // last day of month
+      let lastDay = new Date(
+        startDateObj.getFullYear(),
+        startDateObj.getMonth() + i + 1,
+        1,
+        05,
+        29,
+        59
+      );
+      let newActiveEnrolments = await Enrolment.count({
+        businessId,
+        registeredDate: { $gte: firstDay, $lte: lastDay },
+        enrolledStatus:"ENROLLED"
+      });
+
+      let newDropEnrolments = await Enrolment.count({
+        businessId,
+        droppedDate: { $gte: firstDay, $lte: lastDay },
+        enrolledStatus:"DROPPED"
+      });
+      let month = firstDay.getMonth();
+      let respObj = {
+        month: monthObj[month],
+        newActiveEnrolments: newActiveEnrolments,
+        newDropEnrolments: newDropEnrolments,
+      };
+
+      respArr.push(respObj);
+    }
+    return res.status(200).send({ message: "Successful", respArr });
+
+  
   } catch (err) {
     return res.status(422).send({ message: err.message });
   }
