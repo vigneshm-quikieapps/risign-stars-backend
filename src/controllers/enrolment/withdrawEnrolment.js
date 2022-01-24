@@ -21,6 +21,7 @@ const withdrawEnrolment = async (req, res) => {
         $set: {
           enrolledStatus: "DROPPED",
           discontinuationReason: "DROPPED",
+          droppedDate:new Date()
         },
       },
       { new: true }
