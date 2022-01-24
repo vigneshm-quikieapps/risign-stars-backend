@@ -7,7 +7,8 @@ const {
   enterTransaction,
   deleteTransactions,
   updateTransactions,
-  businessAdminDashboardinfo
+  businessAdminDashboardinfo,
+  memberActiveInActive
 } = require("../controllers/bill");
 const validate = require("../validations/validate");
 const {
@@ -63,6 +64,11 @@ router.post(
 router.post(
   "/business-admin-dashboard-bill-info",
   businessAdminDashboardinfo
+);
+
+router.post(
+  "/memberActiveInActive",
+  memberActiveInActive
 );
 
 module.exports = router;

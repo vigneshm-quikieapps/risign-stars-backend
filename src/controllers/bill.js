@@ -1,4 +1,4 @@
-const { Bill, Enrolment, BusinessSession } = require("../models");
+const { Bill, Enrolment, BusinessSession, Member } = require("../models");
 const {
   getQuery,
   getOptions,
@@ -536,4 +536,42 @@ const billInfo = async (
     respArr.push(respObj);
   }
   return respArr;
+};
+
+module.exports.memberActiveInActive = async (req, res) => {
+  try {
+    let { businessId } = req.body;
+    let enrolments = await Enrolment.find({
+      businessId: businessId,
+      enrolledStatus: "ENROLLED",
+      startDate: {
+        $lte: new Date(),
+      },
+    }).populate("session");
+
+    let activeObj = {};
+    for (let i = 0; i < enrolments.length; i++) {
+      if (enrolments[i].session.endDate > new Date()) {
+        if (enrolments[i].memberId in activeObj) {
+          activeObj[enrolments[i].memberId] += 1;
+        } else {
+          activeObj[enrolments[i].memberId] = 1;
+        }
+      }
+    }
+
+    let keyCount = 0;
+    for (let key in activeObj) {
+      keyCount += 1;
+    }
+
+    let total = await Member.count({
+      "membership.businessId": businessId,
+    });
+    let inActive = total - keyCount;
+
+    return res.status(200).send({ activeMembers: keyCount,inActiveMembers: inActive});
+  } catch (err) {
+    return res.status(422).send({ message: err.message });
+  }
 };
