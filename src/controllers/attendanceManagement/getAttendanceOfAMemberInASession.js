@@ -38,14 +38,18 @@ const getAttendanceOfAMemberInASession = async (req, res) => {
             in: { $concatArrays: ["$$value", "$$this"] },
           },
         },
+      },
+    };
+    let addField2 = {
+      $addFields: {
         totalCount: { $size: "$records" },
       },
     };
-
     let attendances = await AttendanceOfAMemberInAClass.aggregate([
       match1,
       group1,
       addField1,
+      addField2,
       {
         $project: {
           _id: 0,

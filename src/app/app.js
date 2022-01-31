@@ -14,15 +14,17 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(cors(corsOptions));
 
-
 /**
  * registering routes
  * this should be last in importing modules
  */
 require("../routes")(app);
 // express error handlers
-app.use(function errorHandler (err, req, res, next) {
-  console.log("error",err);
-  res.status(500).send({ error: process.env.NODE_ENV === 'production' ? 'Something went wrong !' : err});
+app.use(function errorHandler(err, req, res, next) {
+  console.log("error", err);
+  res.status(500).send({
+    error:
+      process.env.NODE_ENV === "production" ? "Something went wrong !" : err,
+  });
 });
 module.exports = app;

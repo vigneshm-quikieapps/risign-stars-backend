@@ -109,7 +109,7 @@ router.get(
 //router.post("/fileupload", uploadFile);
 
 router.post(
-  "/xlxsupload",
+  "/:businessId/xlxsupload",
   isAuthorized(BUSINESS_DEFINITION, UPDATE, {
     getResourceBusinessId: getResourceBusinessIdByParamsForBussiness,
   }),
