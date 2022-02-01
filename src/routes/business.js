@@ -118,9 +118,6 @@ router.post(
 );
 //router.get("/convertxlxs/json", convertXLXSFile);
 
-/**
- * finance
- */
 router.get("/:businessId/finance", getFinanceOfABusiness);
 
 router.put(
