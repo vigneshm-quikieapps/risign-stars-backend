@@ -89,7 +89,7 @@ module.exports.getAllBusinessClass = async (req, res) => {
 
     let { query, options } = getPaginationOptions(req);
     query = { ...query, businessId };
-
+    options = { ...options, populate: "categoryId" };
     let response = await BusinessClass.paginate(query, options);
     return res.send(response);
   } catch (err) {
