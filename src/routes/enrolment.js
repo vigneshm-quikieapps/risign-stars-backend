@@ -9,7 +9,7 @@ const {
   trailEnrolment,
   returnFromSuspensionEnrolment,
   getAllEnrolmentOfAMemberInABusiness,
-  getEnrolmentById
+  getEnrolmentById,
 } = require("../controllers/enrolment");
 const suspendEnrolment = require("../controllers/enrolment/suspendEnrolment");
 const { isAuthorized } = require("../middlewares/auth");
