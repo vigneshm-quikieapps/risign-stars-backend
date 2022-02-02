@@ -53,7 +53,7 @@ module.exports.getAllEvaluations = async (req, res) => {
  */
 module.exports.getEvaluation = async (req, res) => {
   try {
-    let { evaluationSchemeId } = req.body;
+    let { evaluationSchemeId } = req.params;
     let evaluationScheme = await EvaluationScheme.findById(evaluationSchemeId);
     return res.send({ evaluationScheme });
   } catch (err) {
