@@ -3,7 +3,7 @@ const { Enrolment, BusinessSession, Term } = require("../models");
 const { auditCreatedBy, auditUpdatedBy } = require("../helpers/audit");
 const moment = require("moment");
 
-//Business Session creation
+//Business Session Creation
 module.exports.createBusinessSession = async (req, res) => {
   try {
     const { startTime, endTime, pattern } = req.body;
