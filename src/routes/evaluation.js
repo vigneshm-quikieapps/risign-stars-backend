@@ -41,7 +41,7 @@ router.delete(
   deleteEvaluation
 );
 
-//update route
+//Update route
 router.put(
   "/:evaluationSchemeId",
   // isAuthorized(null, null, { isSuperAdminOnly: true }),
