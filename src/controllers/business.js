@@ -1,4 +1,4 @@
-const { Business, Bill, Xlsx, Counter } = require("../models");
+const { Business, Bill, Xlsx, Counter, Member } = require("../models");
 const multer = require("multer");
 const XLSX = require("xlsx");
 const CSVToJSON = require("csvtojson");
@@ -452,7 +452,14 @@ module.exports.uploadXLXSFile = async (req, res) => {
     noDataFound.length !== 0
   ) {
     // console.log("in1", value[0], value[1]);
-    let xlsxData = await createErrorRecordXlsx(req.body, location);
+    let xlsxData = await createErrorRecordXlsx(
+      req.body,
+      location,
+      data,
+      errorsInData,
+      amountError,
+      noDataFound
+    );
     return res.status(205).json({
       errors: errorsInData,
       dataNotFound: noDataFound,
@@ -460,34 +467,76 @@ module.exports.uploadXLXSFile = async (req, res) => {
       xlsxData,
     });
   } else if (amountError.length !== 0 && noDataFound.length !== 0) {
-    let xlsxData = await createErrorRecordXlsx(req.body, location);
+    let xlsxData = await createErrorRecordXlsx(
+      req.body,
+      location,
+      data,
+      errorsInData,
+      amountError,
+      noDataFound
+    );
     return res.status(205).json({
       dataNotFound: noDataFound,
       amountError: amountError,
       xlsxData,
     });
   } else if (errorsInData.length !== 0 && amountError.length !== 0) {
-    let xlsxData = await createErrorRecordXlsx(req.body, location);
+    let xlsxData = await createErrorRecordXlsx(
+      req.body,
+      location,
+      data,
+      errorsInData,
+      amountError,
+      noDataFound
+    );
     return res.status(205).json({
       errors: errorsInData,
       amountError: amountError,
       xlsxData,
     });
   } else if (errorsInData.length !== 0 && noDataFound.length !== 0) {
-    let xlsxData = await createErrorRecordXlsx(req.body, location);
+    let xlsxData = await createErrorRecordXlsx(
+      req.body,
+      location,
+      data,
+      errorsInData,
+      amountError,
+      noDataFound
+    );
     return res.status(205).json({
       errors: errorsInData,
       dataNotFound: noDataFound,
       xlsxData,
     });
   } else if (errorsInData.length !== 0) {
-    let xlsxData = await createErrorRecordXlsx(req.body, location);
+    let xlsxData = await createErrorRecordXlsx(
+      req.body,
+      location,
+      data,
+      errorsInData,
+      amountError,
+      noDataFound
+    );
     return res.status(205).json({ errors: errorsInData, xlsxData });
   } else if (amountError.length !== 0) {
-    let xlsxData = await createErrorRecordXlsx(req.body, location);
+    let xlsxData = await createErrorRecordXlsx(
+      req.body,
+      location,
+      data,
+      errorsInData,
+      amountError,
+      noDataFound
+    );
     return res.status(205).json({ amountError: amountError, xlsxData });
   } else if (noDataFound.length !== 0) {
-    let xlsxData = await createErrorRecordXlsx(req.body, location);
+    let xlsxData = await createErrorRecordXlsx(
+      req.body,
+      location,
+      data,
+      errorsInData,
+      amountError,
+      noDataFound
+    );
     return res.status(205).json({ dataNotFound: noDataFound, xlsxData });
   } else {
     //**************************  if no errors present updating the whole bills from spreadsheet data  */
@@ -496,7 +545,11 @@ module.exports.uploadXLXSFile = async (req, res) => {
       let { xlsxData, batchProcessId } = await createRecordXlsx(
         req.body,
         location,
-        "COMPLETED_SUCCESSFUL"
+        "COMPLETED_SUCCESSFUL",
+        data,
+        errorsInData,
+        amountError,
+        noDataFound
       );
       //  update bill transactions in batch
       await billBulkWrite(data, req.body, batchProcessId);
@@ -530,6 +583,9 @@ const xlsxToJson = (sheet_name_list, workbook) => {
       if (row == 1) {
         if (value.includes("Membership")) {
           value = "membershipNumber";
+        }
+        if (value.includes("Member")) {
+          value = "memberName";
         }
         if (value.includes("£")) {
           value = "amount";
@@ -631,7 +687,15 @@ const billBulkWrite = async (data, body, batchProcessId) => {
   );
 };
 
-const createRecordXlsx = async (body, location, status) => {
+const createRecordXlsx = async (
+  body,
+  location,
+  status,
+  data,
+  errorsInData,
+  amountError,
+  noDataFound
+) => {
   let filter = {
     type: BATCH_PROCESS_ID,
     businessId: body.businessId,
@@ -653,22 +717,124 @@ const createRecordXlsx = async (body, location, status) => {
   // increase the sequence value
   counter = await Counter.findOneAndUpdate(filter, update, options);
   let batchProcessId = counter.sequence_value;
+
+  let memberPaymentList = [];
+  await uploadPaymentList(data, noDataFound, amountError, errorsInData).then(
+    (res) => memberPaymentList.push(...res)
+  );
+
   // create new xlsx record
   let xlsxData = await Xlsx.create({
     xlsxUrl: location,
     batchProcessId: batchProcessId,
     status: status,
+    uploadPaymentList: memberPaymentList,
   });
   return { xlsxData, batchProcessId };
 };
 
-const createErrorRecordXlsx = async (body, location) => {
+const createErrorRecordXlsx = async (
+  body,
+  location,
+  data,
+  errorsInData,
+  amountError,
+  noDataFound
+) => {
   let { xlsxData, batchProcessId } = await createRecordXlsx(
     body,
     location,
-    "COMPLETED_ERRORS_IN_DATA"
+    "COMPLETED_ERRORS_IN_DATA",
+    data,
+    errorsInData,
+    amountError,
+    noDataFound
   );
   return xlsxData;
+};
+
+const uploadPaymentList = async (
+  data,
+  noDataFound,
+  amountError,
+  errorsInData
+) => {
+  if (
+    noDataFound.length > 0 ||
+    amountError.length > 0 ||
+    errorsInData.length > 0
+  ) {
+    let resultData = [];
+    noDataFound.length > 0 &&
+      (await noDataFound.map((li) => {
+        let dataObject = data.find(
+          (err) => li.bill.membershipNumber === err.membershipNumber
+        );
+        return resultData.push({
+          ...dataObject,
+          noDataFound: li["err msg"],
+          amountError: "",
+          errorsInData: "",
+          uploadStatus: "Error",
+        });
+      }));
+    amountError.length > 0 &&
+      (await amountError.map((li) => {
+        let dataObject = data.find(
+          (err) => li.bill.membershipNumber === err.membershipNumber
+        );
+        return resultData.push({
+          ...dataObject,
+          amountError: li["err msg"],
+          noDataFound: "",
+          errorsInData: "",
+          uploadStatus: "Error",
+        });
+      }));
+    errorsInData.length > 0 &&
+      (await errorsInData.map((li) => {
+        let dataObject = data.find(
+          (err) => li.bill.membershipNumber === err.membershipNumber
+        );
+        return resultData.push({
+          ...dataObject,
+          errorsInData: li["err msg"],
+          noDataFound: "",
+          amountError: "",
+          uploadStatus: "Error",
+        });
+      }));
+    let uniqueMemberList = data.map((x) => {
+      const item = resultData.find(
+        (li) => li.membershipNumber === x.membershipNumber
+      );
+      return item
+        ? item
+        : {
+            ...x,
+            uploadStatus: "Success",
+            noDataFound: "",
+            amountError: "",
+            errorsInData: "",
+          };
+    });
+    return uniqueMemberList;
+  }
+  if (
+    errorsInData.length <= 0 &&
+    amountError.length <= 0 &&
+    noDataFound.length <= 0
+  ) {
+    return data.map((li) => {
+      return {
+        ...li,
+        uploadStatus: "Success",
+        noDataFound: "",
+        amountError: "",
+        errorsInData: "",
+      };
+    });
+  }
 };
 //********************************************************************************************************************************************************* */
 
