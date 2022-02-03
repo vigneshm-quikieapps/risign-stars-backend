@@ -23,7 +23,7 @@ const validate = require("../validations/validate");
 //create route
 router.post(
   "/",
-  // isAuthorized(null, null, { isSuperAdminOnly: true }),
+  // isAuthorized(null, null, { isSuperAdminOnly: true })
   isAuthorized(EVALUATION_SCHEME, CREATE),
   createEvaluationValidationRules(),
   validate,
