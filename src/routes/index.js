@@ -21,6 +21,7 @@ const enrolmentRoute = require("./enrolment");
 const progressRecordRoute = require("./progress");
 const billRoute = require("./bill");
 const postCoderRoute = require("./postcoder");
+const xlsxRoute = require("./xlsx");
 
 const routes = (app) => {
   // API routes
@@ -55,6 +56,7 @@ const routes = (app) => {
   app.use("/api", authRoutes);
   app.use("/api/test", testRoute);
   app.use("/api/address", postCoderRoute);
+  app.use("/api/xlsx", xlsxRoute);
 
   // test route
   app.get("/", (req, res) => {
