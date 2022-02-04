@@ -45,6 +45,10 @@ const UserSchema = new mongoose.Schema(
       type: Boolean,
       default: true,
     },
+    isNewsletter: {
+      type: Boolean,
+      default: false,
+    },
     roles: [
       {
         type: ObjectId,
