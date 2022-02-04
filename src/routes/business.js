@@ -106,7 +106,7 @@ router.get(
 /**
  * file upload
  */
-//router.post("/fileupload", uploadFile);
+//router.post("/fileupload", uploadFile)
 
 router.post(
   "/:businessId/xlxsupload",
@@ -118,9 +118,6 @@ router.post(
 );
 //router.get("/convertxlxs/json", convertXLXSFile);
 
-/**
- * finance
- */
 router.get("/:businessId/finance", getFinanceOfABusiness);
 
 router.put(
