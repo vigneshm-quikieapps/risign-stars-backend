@@ -154,7 +154,7 @@ module.exports.updateBusinessFinance2 = async (req, res) => {
      * 1. updating charges and
      * 2. discountSchemes
      * from this API
-     * update charges will be in separate API
+     * update charges will be in separate api
      */
     delete updatePayload.discountSchemes;
     delete updatePayload.charges;
