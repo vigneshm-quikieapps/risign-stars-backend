@@ -19,11 +19,13 @@ module.exports.getXlsxById = async (req, res) => {
 //get all Xlsx
 module.exports.getAllXlsx = async (req, res) => {
   try {
-    let xlsx = await Xlsx.find().sort({ createdAt: "desc" });
+    let query = {};
+    let options = { sort: { createdAt: "desc" } };
+    let xlsx = await Xlsx.paginate(query, options);
     if (!xlsx) {
       throw new DoesNotExistError();
     }
-    return res.send({ xlsx });
+    return res.send(xlsx);
   } catch (err) {
     console.error(err);
     return res.status(422).send({ message: err.message });
