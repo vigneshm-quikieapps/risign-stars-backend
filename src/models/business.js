@@ -71,11 +71,27 @@ const businessSchema = new mongoose.Schema(
       type: String,
       trim: true,
     },
-    facebook: String,
-    instagram: String,
-    linkedin: String,
-    pinterest: String,
-    imageUrl: String,
+    socialMediaUrl: [
+      {
+        link: {
+          type: String,
+        },
+      },
+    ],
+    logoUrl: [
+      {
+        link: {
+          type: String,
+        },
+      },
+    ],
+    imageUrl: [
+      {
+        link: {
+          type: String,
+        },
+      },
+    ],
     updatedBy: {
       type: ObjectId,
       ref: "User",

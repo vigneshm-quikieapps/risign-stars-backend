@@ -60,13 +60,17 @@ function getBufferFromS3Promise(key) {
 
 const getWorkbookS3 = async (file) => {
   // console.log("key", file);
-  const buffer = await getBufferFromS3Promise(file.key);
-  // console.log("buffer",buffer,)
-  const workbook = XLSX.read(buffer, {
-    type: "array",
-    cellDates: true,
-  });
-  return workbook;
+  try {
+    const buffer = await getBufferFromS3Promise(file.key);
+    // console.log("buffer",buffer,)
+    const workbook = XLSX.read(buffer, {
+      type: "array",
+      cellDates: true,
+    });
+    return workbook;
+  } catch (err) {
+    console.log("buffer error", err);
+  }
 };
 
 // exports.getWorkbookS3 = getWorkbookS3;

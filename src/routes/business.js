@@ -129,7 +129,7 @@ router.put(
 );
 
 router.post(
-  "/:businessId/image-upload",
+  "/:businessId/imageupload",
   isAuthorized(BUSINESS_DEFINITION, CREATE, {
     getResourceBusinessId: getResourceBusinessIdByParamsForBussiness,
   }),
