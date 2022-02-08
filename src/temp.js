@@ -1,4 +1,4 @@
-// Template for Creating the Modal
+// Template for Creating the modal
 module.exports.Activity = {
   _id: String,
   name: String,
