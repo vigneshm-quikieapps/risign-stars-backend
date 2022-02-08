@@ -20,7 +20,7 @@ const getClubMembershipId = async (req, session) => {
 
     if (membership) {
       /**
-       * if clubmembership exists, return it
+       * if clubmembership exists, return It
        */
       return membership.clubMembershipId;
     }
