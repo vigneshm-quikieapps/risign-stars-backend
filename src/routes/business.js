@@ -5,6 +5,9 @@ const {
   getAllBusinessValidationRules,
   updateBusinessValidationRules,
   createBusinessValidationRules,
+  uploadXlsxValidationRules,
+  isFileXlsx,
+  xlsxValidateResult,
 } = require("../validations/business");
 const {
   getFinanceOfABusiness,
@@ -114,6 +117,9 @@ router.post(
     getResourceBusinessId: getResourceBusinessIdByParamsForBussiness,
   }),
   businessXlsxUploadHelper.single("payment"),
+  uploadXlsxValidationRules(),
+  xlsxValidateResult,
+  isFileXlsx,
   uploadXLXSFile
 );
 //router.get("/convertxlxs/json", convertXLXSFile);

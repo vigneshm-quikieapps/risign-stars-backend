@@ -460,11 +460,12 @@ module.exports.uploadXLXSFile = async (req, res) => {
       amountError,
       noDataFound
     );
-    return res.status(205).json({
+    return res.status(200).json({
       errors: errorsInData,
       dataNotFound: noDataFound,
       amountError: amountError,
       xlsxData,
+      message: "Payment upload failed",
     });
   } else if (amountError.length !== 0 && noDataFound.length !== 0) {
     let xlsxData = await createErrorRecordXlsx(
@@ -475,10 +476,11 @@ module.exports.uploadXLXSFile = async (req, res) => {
       amountError,
       noDataFound
     );
-    return res.status(205).json({
+    return res.status(200).json({
       dataNotFound: noDataFound,
       amountError: amountError,
       xlsxData,
+      message: "Payment upload failed",
     });
   } else if (errorsInData.length !== 0 && amountError.length !== 0) {
     let xlsxData = await createErrorRecordXlsx(
@@ -489,10 +491,11 @@ module.exports.uploadXLXSFile = async (req, res) => {
       amountError,
       noDataFound
     );
-    return res.status(205).json({
+    return res.status(200).json({
       errors: errorsInData,
       amountError: amountError,
       xlsxData,
+      message: "Payment upload failed",
     });
   } else if (errorsInData.length !== 0 && noDataFound.length !== 0) {
     let xlsxData = await createErrorRecordXlsx(
@@ -503,10 +506,11 @@ module.exports.uploadXLXSFile = async (req, res) => {
       amountError,
       noDataFound
     );
-    return res.status(205).json({
+    return res.status(200).json({
       errors: errorsInData,
       dataNotFound: noDataFound,
       xlsxData,
+      message: "Payment upload failed",
     });
   } else if (errorsInData.length !== 0) {
     let xlsxData = await createErrorRecordXlsx(
@@ -517,7 +521,11 @@ module.exports.uploadXLXSFile = async (req, res) => {
       amountError,
       noDataFound
     );
-    return res.status(205).json({ errors: errorsInData, xlsxData });
+    return res.status(200).json({
+      errors: errorsInData,
+      xlsxData,
+      message: "Payment upload failed",
+    });
   } else if (amountError.length !== 0) {
     let xlsxData = await createErrorRecordXlsx(
       req.body,
@@ -527,7 +535,11 @@ module.exports.uploadXLXSFile = async (req, res) => {
       amountError,
       noDataFound
     );
-    return res.status(205).json({ amountError: amountError, xlsxData });
+    return res.status(200).json({
+      amountError: amountError,
+      xlsxData,
+      message: "Payment upload failed",
+    });
   } else if (noDataFound.length !== 0) {
     let xlsxData = await createErrorRecordXlsx(
       req.body,
@@ -537,7 +549,11 @@ module.exports.uploadXLXSFile = async (req, res) => {
       amountError,
       noDataFound
     );
-    return res.status(205).json({ dataNotFound: noDataFound, xlsxData });
+    return res.status(200).json({
+      dataNotFound: noDataFound,
+      xlsxData,
+      message: "Payment upload failed",
+    });
   } else {
     //**************************  if no errors present updating the whole bills from spreadsheet data  */
     try {
@@ -553,7 +569,9 @@ module.exports.uploadXLXSFile = async (req, res) => {
       );
       //  update bill transactions in batch
       await billBulkWrite(data, req.body, batchProcessId);
-      return res.status(200).send({ message: "updated successful", xlsxData });
+      return res
+        .status(200)
+        .send({ message: "Payment upload successfull", xlsxData });
     } catch (err) {
       console.error(err);
       return res.status(422).send({ message: err.message });
