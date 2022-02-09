@@ -1,4 +1,4 @@
-const { query } = require("express-validator");
+const { query, param, validationResult } = require("express-validator");
 const { FILTER_TYPES } = require("../constants/constant");
 const { check } = require("express-validator");
 const { ENUM_STATUS, ENUM_BUSINESS_TYPE } = require("../constants/business");
@@ -115,8 +115,63 @@ const updateBusinessValidationRules = () => {
     check("pinterest", "should be a valid url").optional().isURL(),
   ];
 };
+
+//upload xlsx validation rules
+
+const isBusinessValid = async (businessId) => {
+  let business = await Business.findById(businessId);
+  if (business === null) return Promise.reject("Please input a valid business");
+};
+
+const isFileXlsx = async (req, res, next) => {
+  if (req.file) {
+    let mimetype = req.file.mimetype.split("/")[1];
+    if (mimetype !== "vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+      return res.status(200).json({
+        errors: [
+          {
+            Payment: "Please input a valid xlsx file format",
+          },
+        ],
+      });
+    next();
+  } else {
+    return res.status(200).json({
+      errors: [
+        {
+          Payment: "Payment file is required",
+        },
+      ],
+    });
+  }
+};
+
+const xlsxValidateResult = (req, res, next) => {
+  const errors = validationResult(req);
+  if (errors.isEmpty()) {
+    return next();
+  }
+  const extractedErrors = [];
+  errors.array().map((err) => extractedErrors.push({ [err.param]: err.msg }));
+
+  return res.status(200).json({
+    errors: extractedErrors,
+  });
+};
+
+const uploadXlsxValidationRules = () => {
+  return [
+    check("billDate", "is required").notEmpty().isDate(),
+    check("classId", "is required").notEmpty(),
+    check("businessId", "is required").notEmpty().custom(isBusinessValid),
+    param("businessId").custom(isBusinessValid),
+  ];
+};
 module.exports = {
   getAllBusinessValidationRules,
   updateBusinessValidationRules,
   createBusinessValidationRules,
+  uploadXlsxValidationRules,
+  isFileXlsx,
+  xlsxValidateResult,
 };
