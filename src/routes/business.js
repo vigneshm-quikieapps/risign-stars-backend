@@ -19,6 +19,10 @@ const {
 const validate = require("../validations/validate");
 const { BUSINESS_DEFINITION, CLASS_DEFINITION } = require("../constants/pages");
 const { CREATE, UPDATE, READ, DELETE } = require("../constants/rest");
+const {
+  BUSINESS_IMAGE_UPLOAD_LIMIT,
+  BUSINESS_LOGO_UPLOAD_LIMIT,
+} = require("../constants/business");
 const getResourceBusinessIdByParamsForBussiness = require("../middlewares/auth/utils/getResourceBusinessId/getResourceBusinessIdByParamsForBussiness");
 
 const {
@@ -144,11 +148,11 @@ router.post(
   businessImageUploadHelper.fields([
     {
       name: "images",
-      maxCount: 10,
+      maxCount: BUSINESS_IMAGE_UPLOAD_LIMIT,
     },
     {
       name: "logos",
-      maxCount: 3,
+      maxCount: BUSINESS_LOGO_UPLOAD_LIMIT,
     },
   ]),
   socialMedialinksValidationRules(),
