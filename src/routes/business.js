@@ -7,7 +7,9 @@ const {
   createBusinessValidationRules,
   uploadXlsxValidationRules,
   isFileXlsx,
-  xlsxValidateResult,
+  uploadValidateResult,
+  socialMedialinksValidationRules,
+  isImageTypeValid,
 } = require("../validations/business");
 const {
   getFinanceOfABusiness,
@@ -118,7 +120,7 @@ router.post(
   }),
   businessXlsxUploadHelper.single("payment"),
   uploadXlsxValidationRules(),
-  xlsxValidateResult,
+  uploadValidateResult,
   isFileXlsx,
   uploadXLXSFile
 );
@@ -135,11 +137,23 @@ router.put(
 );
 
 router.post(
-  "/:businessId/imageupload",
+  "/:businessId/update-other-info",
   isAuthorized(BUSINESS_DEFINITION, CREATE, {
     getResourceBusinessId: getResourceBusinessIdByParamsForBussiness,
   }),
-  businessImageUploadHelper.single("image"),
+  businessImageUploadHelper.fields([
+    {
+      name: "images",
+      maxCount: 10,
+    },
+    {
+      name: "logos",
+      maxCount: 3,
+    },
+  ]),
+  socialMedialinksValidationRules(),
+  uploadValidateResult,
+  isImageTypeValid,
   uploadImage
 );
 

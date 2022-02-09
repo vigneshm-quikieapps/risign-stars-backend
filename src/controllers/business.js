@@ -11,6 +11,7 @@ const { Types } = require("mongoose");
 const DoesNotExistError = require("../exceptions/DoesNotExistError");
 const { auditCreatedBy } = require("../helpers/audit");
 const storageXlsx = require("../services/storage/xlsxS3");
+const uploadImageS3Config = require("../services/storage/imageS3");
 const { BATCH_PROCESS_ID } = require("../constants/counter");
 
 const unlinkAsync = promisify(fs.unlink);
@@ -856,16 +857,18 @@ const uploadPaymentList = async (
 };
 //********************************************************************************************************************************************************* */
 
-var storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, "./src/uploads/businesses");
-  },
-  filename: function (req, file, cb) {
-    cb(null, file.originalname);
-  },
-});
+// var storage = multer.diskStorage({
+//   destination: function (req, file, cb) {
+//     cb(null, "./src/uploads/businesses");
+//   },
+//   filename: function (req, file, cb) {
+//     cb(null, file.originalname);
+//   },
+// });
 
-module.exports.businessImageUploadHelper = multer({ storage: storage });
+module.exports.businessImageUploadHelper = multer({
+  storage: uploadImageS3Config,
+});
 
 /**
  * upload Image functionality
@@ -873,35 +876,51 @@ module.exports.businessImageUploadHelper = multer({ storage: storage });
  * uploadImageLink function need changes before production
  */
 
-const UploadImageLink = (filename) => {
-  if (process.env.ENV_MODE === "PRODUCTION") {
-    return "s3.gg//";
-  } else {
-    return path.join(__dirname, `./src/uploads/businesses/${filename}`);
-  }
-};
-
 module.exports.uploadImage = async (req, res) => {
-  const link = UploadImageLink(req.file.originalname);
+  const { socialMediaUrl } = req.body;
+  const { images, logos } = req.files;
 
-  const business = await Business.updateOne(
-    { _id: req.params.businessId },
-    {
-      $set: {
-        imageUrl: link,
+  let imagelocation = [];
+  let logoLocation = [];
+  let socialMediaLinks = [];
+  socialMediaUrl?.split(",").length > 0 &&
+    socialMediaUrl
+      ?.split(",")
+      .map((link) => socialMediaLinks.push({ link: link }));
+
+  images?.length > 0 &&
+    images?.map((file) => imagelocation.push({ link: file.location }));
+
+  logos?.length > 0 &&
+    logos?.map((file) => logoLocation.push({ link: file.location }));
+
+  try {
+    const business = await Business.updateOne(
+      { _id: req.params.businessId },
+      {
+        $push: {
+          socialMediaUrl: {
+            $each: socialMediaLinks,
+          },
+          logoUrl: {
+            $each: logoLocation,
+          },
+          imageUrl: {
+            $each: imagelocation,
+          },
+        },
       },
-    },
-    { new: true, useFindAndModify: false, upsert: true }
-  );
+      { new: true, useFindAndModify: false }
+    );
 
-  if (!business) {
-    throw new Error("upload image unsucessful");
+    res.json({
+      message: "sucessfully uploaded",
+      business,
+    });
+  } catch (err) {
+    console.error(err);
+    return res.status(422).send({ message: err.message });
   }
-
-  res.json({
-    message: "sucessfully uploaded",
-    business,
-  });
 };
 
 // PAYMENT BY CLASS NOT WORKING BECAUSE LACK OF DATA, ONLY ON THE DUMMY DATA IT IS WORKING

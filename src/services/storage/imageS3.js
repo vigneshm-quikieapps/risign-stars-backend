@@ -3,7 +3,7 @@ const AWS = require("aws-sdk");
 const multer = require("multer");
 const multerS3 = require("multer-s3");
 
-const bucketName = process.env.BUCKET_NAME + "/image";
+const bucketName = process.env.BUCKET_NAME + "/images";
 const region = process.env.REGION;
 const accessKeyId = process.env.ACCESS_KEY_ID;
 const secretAccessKey = process.env.SECRET_ACCESS_KEY;
@@ -46,17 +46,15 @@ const s3Info = new S3({
 //   },
 // });
 
-const uploadImage = multer({
-  storage: multerS3({
-    s3: s3Info,
-    bucket: bucketName,
-    metadata: function (req, file, cb) {
-      cb(null, { fieldName: file.fieldname });
-    },
-    key: function (req, file, cb) {
-      cb(null, new Date().toISOString() + "-" + file.originalname);
-    },
-  }),
+const uploadImageS3Config = multerS3({
+  s3: s3Info,
+  bucket: bucketName,
+  metadata: function (req, file, cb) {
+    cb(null, { fieldName: file.fieldname });
+  },
+  key: function (req, file, cb) {
+    cb(null, new Date().toISOString() + "-" + file.originalname);
+  },
 });
 
-module.exports = uploadImage;
+module.exports = uploadImageS3Config;
