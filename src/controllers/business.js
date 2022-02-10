@@ -877,38 +877,53 @@ module.exports.businessImageUploadHelper = multer({
  */
 
 module.exports.uploadImage = async (req, res) => {
-  const { socialMediaUrl } = req.body;
-  const { images, logos } = req.files;
+  const { socialMediaUrl, oldImagesLinks, oldLogoLinks } = req.body;
+  const { newImages, newLogos } = req.files;
 
-  let imagelocation = [];
-  let logoLocation = [];
+  const oldImageLocation = [];
+  const oldLogoLocation = [];
+
+  oldImagesLinks?.split(",").length > 0 &&
+    oldImagesLinks
+      ?.split(",")
+      .map((link) => oldImageLocation.push({ link: link }));
+  oldLogoLinks?.split(",").length > 0 &&
+    oldLogoLinks
+      ?.split(",")
+      .map((link) => oldLogoLocation.push({ link: link }));
+
+  let imagelocation = [...oldImageLocation];
+  let logoLocation = [...oldLogoLocation];
   let socialMediaLinks = [];
+
   socialMediaUrl?.split(",").length > 0 &&
     socialMediaUrl
       ?.split(",")
       .map((link) => socialMediaLinks.push({ link: link }));
 
-  images?.length > 0 &&
-    images?.map((file) => imagelocation.push({ link: file.location }));
+  newImages?.length > 0 &&
+    newImages?.map((file) => imagelocation.push({ link: file.location }));
 
-  logos?.length > 0 &&
-    logos?.map((file) => logoLocation.push({ link: file.location }));
+  newLogos?.length > 0 &&
+    newLogos?.map((file) => logoLocation.push({ link: file.location }));
 
   try {
     const business = await Business.updateOne(
       { _id: req.params.businessId },
       {
-        $push: {
-          socialMediaUrl: {
-            $each: socialMediaLinks,
-          },
-          logoUrl: {
-            $each: logoLocation,
-          },
-          imageUrl: {
-            $each: imagelocation,
-          },
+        $set: {
+          socialMediaUrl: socialMediaLinks,
+          logoUrl: logoLocation,
+          imageUrl: imagelocation,
         },
+        // $push: {
+        //   logoUrl: {
+        //     $each: logoLocation,
+        //   },
+        //   imageUrl: {
+        //     $each: imagelocation,
+        //   },
+        // },
       },
       { new: true, useFindAndModify: false }
     );

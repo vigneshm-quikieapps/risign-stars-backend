@@ -147,11 +147,11 @@ router.post(
   }),
   businessImageUploadHelper.fields([
     {
-      name: "images",
+      name: "newImages",
       maxCount: BUSINESS_IMAGE_UPLOAD_LIMIT,
     },
     {
-      name: "logos",
+      name: "newLogos",
       maxCount: BUSINESS_LOGO_UPLOAD_LIMIT,
     },
   ]),

@@ -172,10 +172,10 @@ const uploadXlsxValidationRules = () => {
 
 const isImageTypeValid = async (req, res, next) => {
   let extensions = ["jpg", "jpeg", "png"];
-  let uploadedImageFileExtensions = req.files?.images?.map((image) =>
+  let uploadedImageFileExtensions = req.files?.newImages?.map((image) =>
     extensions.includes(image.mimetype.split("/")[1])
   );
-  let uploadedLogoFileExtensions = req.files?.logos?.map((logo) =>
+  let uploadedLogoFileExtensions = req.files?.newLogos?.map((logo) =>
     extensions.includes(logo.mimetype.split("/")[1])
   );
   if (
@@ -207,6 +207,8 @@ const socialMedialinksValidationRules = () => {
   return [
     param("businessId").custom(isBusinessValid),
     check("socialMediaUrl").optional().isString(),
+    check("oldImagesLinks").optional().isString(),
+    check("oldLogoLinks").optional().isString(),
   ];
 };
 
