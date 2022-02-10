@@ -108,7 +108,7 @@ module.exports.getAllClassesForALoggedInBusinessAdmin = async (req, res) => {
     let { authUserData } = req;
 
     /**
-     * get the business id
+     * get the business Id
      */
     let { dataPrivileges } = authUserData;
     let businessIds = dataPrivileges.list;
