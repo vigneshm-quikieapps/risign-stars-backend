@@ -146,7 +146,7 @@ const isFileXlsx = async (req, res, next) => {
   }
 };
 
-const xlsxValidateResult = (req, res, next) => {
+const uploadValidateResult = (req, res, next) => {
   const errors = validationResult(req);
   if (errors.isEmpty()) {
     return next();
@@ -167,11 +167,58 @@ const uploadXlsxValidationRules = () => {
     param("businessId").custom(isBusinessValid),
   ];
 };
+
+//upload images, logos and social media links validation rules
+
+const isImageTypeValid = async (req, res, next) => {
+  let extensions = ["jpg", "jpeg", "png"];
+  let uploadedImageFileExtensions = req.files?.newImages?.map((image) =>
+    extensions.includes(image.mimetype.split("/")[1])
+  );
+  let uploadedLogoFileExtensions = req.files?.newLogos?.map((logo) =>
+    extensions.includes(logo.mimetype.split("/")[1])
+  );
+  if (
+    uploadedImageFileExtensions !== undefined &&
+    uploadedImageFileExtensions.includes(false)
+  )
+    return res.status(200).json({
+      errors: [
+        {
+          image: "Please input a valid Image file format. Eg: jpg, jpeg, png",
+        },
+      ],
+    });
+  if (
+    uploadedLogoFileExtensions !== undefined &&
+    uploadedLogoFileExtensions.includes(false)
+  )
+    return res.status(200).json({
+      errors: [
+        {
+          logo: "Please input a valid logo file format. Eg: jpg, jpeg, png",
+        },
+      ],
+    });
+  next();
+};
+
+const socialMedialinksValidationRules = () => {
+  return [
+    param("businessId").custom(isBusinessValid),
+    check("socialMediaUrl").optional().isString(),
+    check("oldImagesLinks").optional().isString(),
+    check("oldLogoLinks").optional().isString(),
+  ];
+};
+
 module.exports = {
   getAllBusinessValidationRules,
   updateBusinessValidationRules,
   createBusinessValidationRules,
   uploadXlsxValidationRules,
   isFileXlsx,
-  xlsxValidateResult,
+  uploadValidateResult,
+  socialMedialinksValidationRules,
+  isImageTypeValid,
 };

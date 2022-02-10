@@ -68,8 +68,8 @@ const getWorkbookS3 = async (file) => {
       cellDates: true,
     });
     return workbook;
-  } catch (e) {
-    console.log("buffer error", e);
+  } catch (err) {
+    console.log("buffer error", err);
   }
 };
 

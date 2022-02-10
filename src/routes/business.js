@@ -7,7 +7,9 @@ const {
   createBusinessValidationRules,
   uploadXlsxValidationRules,
   isFileXlsx,
-  xlsxValidateResult,
+  uploadValidateResult,
+  socialMedialinksValidationRules,
+  isImageTypeValid,
 } = require("../validations/business");
 const {
   getFinanceOfABusiness,
@@ -17,6 +19,10 @@ const {
 const validate = require("../validations/validate");
 const { BUSINESS_DEFINITION, CLASS_DEFINITION } = require("../constants/pages");
 const { CREATE, UPDATE, READ, DELETE } = require("../constants/rest");
+const {
+  BUSINESS_IMAGE_UPLOAD_LIMIT,
+  BUSINESS_LOGO_UPLOAD_LIMIT,
+} = require("../constants/business");
 const getResourceBusinessIdByParamsForBussiness = require("../middlewares/auth/utils/getResourceBusinessId/getResourceBusinessIdByParamsForBussiness");
 
 const {
@@ -118,7 +124,7 @@ router.post(
   }),
   businessXlsxUploadHelper.single("payment"),
   uploadXlsxValidationRules(),
-  xlsxValidateResult,
+  uploadValidateResult,
   isFileXlsx,
   uploadXLXSFile
 );
@@ -135,11 +141,23 @@ router.put(
 );
 
 router.post(
-  "/:businessId/image-upload",
+  "/:businessId/update-other-info",
   isAuthorized(BUSINESS_DEFINITION, CREATE, {
     getResourceBusinessId: getResourceBusinessIdByParamsForBussiness,
   }),
-  businessImageUploadHelper.single("image"),
+  businessImageUploadHelper.fields([
+    {
+      name: "newImages",
+      maxCount: BUSINESS_IMAGE_UPLOAD_LIMIT,
+    },
+    {
+      name: "newLogos",
+      maxCount: BUSINESS_LOGO_UPLOAD_LIMIT,
+    },
+  ]),
+  socialMedialinksValidationRules(),
+  uploadValidateResult,
+  isImageTypeValid,
   uploadImage
 );
 
