@@ -98,7 +98,7 @@ module.exports.getAllBusinessClass = async (req, res) => {
 };
 
 /**
- * get all classes for the logged in business Admin
+ * get all classes for the logged in business Admi
  * @param {*} req
  * @param {*} res
  * @returns
