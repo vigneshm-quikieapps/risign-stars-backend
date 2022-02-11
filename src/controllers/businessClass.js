@@ -112,7 +112,7 @@ module.exports.getAllClassesForALoggedInBusinessAdmin = async (req, res) => {
      */
     let { dataPrivileges } = authUserData;
     let businessIds = dataPrivileges.list;
-    // let businessIds = dataPrivileges.map((dataPriv) => dataPriv.businessId
+    // let businessIds = dataPrivileges.map((dataPriv) => dataPriv.businessid
     /**
      * filter classes by business ids
      */
