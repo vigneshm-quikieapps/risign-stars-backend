@@ -12,7 +12,7 @@ console.log("[App] cors options: ", corsOptions);
 
 app.use(express.json());
 app.use(cookieParser());
-app.use(cors());
+app.use(cors(corsOptions));
 
 /**
  * registering routes
