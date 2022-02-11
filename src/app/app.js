@@ -6,7 +6,7 @@ require("dotenv").config();
 
 var corsOptions = {
   credentials: true,
-  origin: process.env.NODE_ENV ? process.env.ORIGINS.split(" ") : "*",
+  origin: process.env.ORIGINS ? process.env.ORIGINS.split(" ") : "*",
 };
 console.log("[App] cors options: ", corsOptions);
 
