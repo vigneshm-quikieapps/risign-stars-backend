@@ -6,13 +6,13 @@ require("dotenv").config();
 
 var corsOptions = {
   credentials: true,
-  origin: process.env.ORIGINS ? process.env.ORIGINS.split(" ") : "*",
+  origin: process.env.NODE_ENV ? process.env.ORIGINS.split(" ") : "*",
 };
 console.log("[App] cors options: ", corsOptions);
 
 app.use(express.json());
 app.use(cookieParser());
-app.use(cors(corsOptions));
+app.use(cors());
 
 /**
  * registering routes
