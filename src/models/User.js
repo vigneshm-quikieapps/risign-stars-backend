@@ -87,6 +87,10 @@ const UserSchema = new mongoose.Schema(
       type: String,
       trim: true,
     },
+    geo: {
+      type: String,
+      trim: true,
+    },
     password: {
       type: String,
     },

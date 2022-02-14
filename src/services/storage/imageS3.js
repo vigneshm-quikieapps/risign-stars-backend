@@ -49,6 +49,7 @@ const s3Info = new S3({
 const uploadImageS3Config = multerS3({
   s3: s3Info,
   bucket: bucketName,
+  acl: "public-read",
   metadata: function (req, file, cb) {
     cb(null, { fieldName: file.fieldname });
   },
