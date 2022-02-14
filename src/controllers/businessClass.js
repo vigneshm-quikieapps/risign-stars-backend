@@ -98,7 +98,7 @@ module.exports.getAllBusinessClass = async (req, res) => {
 };
 
 /**
- * get all classes for the logged in business Admin
+ * get all classes for the logged in business Admi
  * @param {*} req
  * @param {*} res
  * @returns
@@ -112,9 +112,9 @@ module.exports.getAllClassesForALoggedInBusinessAdmin = async (req, res) => {
      */
     let { dataPrivileges } = authUserData;
     let businessIds = dataPrivileges.list;
-    // let businessIds = dataPrivileges.map((dataPriv) => dataPriv.businessId
+    // let businessIds = dataPrivileges.map((dataPriv) =dataPriv.businessId
     /**
-     * filter classes by business ids
+     * filter classes by business id
      */
     let { query, options } = getPaginationOptions(req);
     query = { ...query };
