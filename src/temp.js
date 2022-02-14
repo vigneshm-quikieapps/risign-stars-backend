@@ -14,7 +14,7 @@ module.exports.Activity = {
     },
   ],
   classes: [
-    /** class ids */
+    /** class id */
   ],
   charges: [
     {
