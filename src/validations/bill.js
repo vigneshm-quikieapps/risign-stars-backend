@@ -13,9 +13,13 @@ const {
 const billOfAMemberInAClassValidationRules = () => {
   return [
     body("memberId", "should be a valid Member").custom(isValidMemberId),
-    // body("classId", "should be a valid Class").custom(isValidClassId),
+    body("classId", "should be a valid Class")
+      .optional()
+      .custom(isValidClassId),
     // Earlier classId was there  in body payload now enrolmentId is used
-    body("enrolmentId", "should be a valid Enrolment").custom(isValidEnrolmentId),
+    body("enrolmentId", "should be a valid Enrolment")
+      .optional()
+      .custom(isValidEnrolmentId),
   ];
 };
 
@@ -45,14 +49,12 @@ const enterTransactionValidationRules = () => {
 };
 
 const deleteTransactionValidationRules = () => {
-  return [
-    body("billId").custom(isValidBillId),
-  ];
+  return [body("billId").custom(isValidBillId)];
 };
 
 module.exports = {
   billOfAMemberInABusinessValidationRules,
   billOfAMemberInAClassValidationRules,
   enterTransactionValidationRules,
-  deleteTransactionValidationRules
+  deleteTransactionValidationRules,
 };

@@ -39,8 +39,8 @@ module.exports.getAll = async (req, res) => {
 module.exports.billsOfAMemberInAClass = async (req, res) => {
   try {
     let query = getQuery(req);
-    let { memberId, enrolmentId } = req.body;
-    query = { ...query, memberId, enrolmentId };
+    let { memberId, enrolmentId, classId } = req.body;
+    query = { ...query, memberId, enrolmentId, classId };
     let options = getOptions(req);
 
     let response = await Bill.paginate(query, options);
