@@ -24,7 +24,7 @@ const { findUserEmail } = require("../../../helpers/user/findUserEmail");
  */
 const regularEnrolment = async (req, session) => {
   let { memberData } = req;
-  let { businessId, memberId, consent, newsletter } = req.body;
+  let { businessId, memberId, consent, newsletter, isStandingOrder } = req.body;
   let sessionData = req.businessSessionData;
   // creating enrolment till session capacity
 
@@ -40,7 +40,7 @@ const regularEnrolment = async (req, session) => {
     ],
     { session }
   );
-  let enrolmentId=enrolment[0]._id;
+  let enrolmentId = enrolment[0]._id;
 
   // creating progress Record
   /**
@@ -90,7 +90,8 @@ const regularEnrolment = async (req, session) => {
     sessionData,
     memberData,
     clubMembershipId,
-    enrolmentId
+    enrolmentId,
+    isStandingOrder,
   };
   await generateEnrolmentBill(enrolmentBillData, session);
 

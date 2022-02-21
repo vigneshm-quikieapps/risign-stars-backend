@@ -15,7 +15,15 @@ const { getEnrolableMonthRange } = require("../dates");
  * @param {*} session
  */
 const generateEnrolmentBill = async (
-  { businessFinanceData, classData, sessionData, memberData, clubMembershipId, enrolmentId },
+  {
+    businessFinanceData,
+    classData,
+    sessionData,
+    memberData,
+    clubMembershipId,
+    enrolmentId,
+    isStandingOrder,
+  },
   session
 ) => {
   let now = new Date();
@@ -42,7 +50,7 @@ const generateEnrolmentBill = async (
     generatedAt: now,
     memberId,
     businessId,
-    enrolmentId
+    enrolmentId,
   };
   let monthlyPayload = {
     clubMembershipId,
@@ -51,14 +59,13 @@ const generateEnrolmentBill = async (
     memberId,
     businessId,
     classId,
-    enrolmentId
+    enrolmentId,
   };
 
   /**
    * generate the bills
    */
   let billPayloads = [];
-
 
   /**
    * generate upfront charges for term fees
@@ -70,13 +77,13 @@ const generateEnrolmentBill = async (
   });
   if (!termBill) {
     let termData = await Term.findOne({ _id: term._id });
-    let items=[
+    let items = [
       {
-        name:termData.label,
-        amount:termData.termFee
-      }
+        name: termData.label,
+        amount: termData.termFee,
+      },
     ];
-    
+
     let termBillObj = {
       memberId: memberId,
       businessId: businessId,
@@ -87,12 +94,15 @@ const generateEnrolmentBill = async (
       generatedAt: now,
       termId: term._id,
       discount: 0,
-      items:items,
+      items: items,
       subtotal: termData.termFee,
       total: termData.termFee,
-      enrolmentId:enrolmentId
+      enrolmentId: enrolmentId,
     };
-    billPayloads.push(termBillObj);
+    billPayloads.push({
+      ...termBillObj,
+      billStatus: isStandingOrder ? "STANDING_ORDER" : "NOT_PAID",
+    });
   }
 
   /**
@@ -107,7 +117,10 @@ const generateEnrolmentBill = async (
   let clubMembershipBillPayload = generateClubMembershipBillPayload(
     clubMembershipPayload
   );
-  billPayloads.push(clubMembershipBillPayload);
+  billPayloads.push({
+    ...clubMembershipBillPayload,
+    billStatus: isStandingOrder ? "STANDING_ORDER" : "NOT_PAID",
+  });
 
   /**
    * since 1st might not be whole month:
@@ -123,7 +136,10 @@ const generateEnrolmentBill = async (
     ...firstMonthPayload,
     pattern,
   });
-  billPayloads.push(firstMonthbillPayload);
+  billPayloads.push({
+    ...firstMonthbillPayload,
+    billStatus: isStandingOrder ? "STANDING_ORDER" : "NOT_PAID",
+  });
 
   /**
    * full charge from the 2nd month onwards till last second
@@ -136,7 +152,10 @@ const generateEnrolmentBill = async (
         billDate: monthRange[i],
       };
       const billPayload = generateMonthBillPayload(data);
-      billPayloads.push(billPayload);
+      billPayloads.push({
+        ...billPayload,
+        billStatus: isStandingOrder ? "STANDING_ORDER" : "NOT_PAID",
+      });
     }
 
     /**
@@ -154,7 +173,7 @@ const generateEnrolmentBill = async (
       generatePartialMonthBillPayload(lastMonthPayload);
     billPayloads.push(lastMonthbillPayload);
   }
-
+  console.log(billPayloads);
   /**
    * create the bill
    */
