@@ -113,12 +113,14 @@ const enterFirstNewTransaction = async (
   transactionArray.push(partialObj);
   let update = {
     $set: {
+      billStatus: "SUSPENDED",
       partialTransactions: transactionArray,
     },
   };
   if (billData.subtotal == amount) {
     update = {
       $set: {
+        billStatus: "SUSPENDED",
         partialTransactions: transactionArray,
         paidAt: date,
       },
@@ -142,11 +144,11 @@ const enterNewTransaction = async (
   paymentMethod,
   diff,
   billData,
-  session,
-  billStatus
+  session
 ) => {
   let now = new Date();
   let date = new Date(paymentDate);
+  // let billStatus = "SUSPENDED";
   let transactionArray = [];
   let partialObj = {
     amount: amount,
@@ -160,20 +162,18 @@ const enterNewTransaction = async (
   transactionArray = billData.partialTransactions;
   transactionArray.push(partialObj);
   let update = {
-    $set: {
-      partialTransactions: transactionArray,
-      billStatus: billStatus,
-    },
+    billStatus: "SUSPENDED",
+    partialTransactions: transactionArray,
   };
   if (diff == amount) {
     update = {
-      $set: {
-        partialTransactions: transactionArray,
-        paidAt: date,
-        billStatus: billStatus,
-      },
+      billStatus: "SUSPENDED",
+      partialTransactions: transactionArray,
+      paidAt: date,
     };
   }
+
+  // console.log("billStatus", billStatus);
   let options = { new: true, useFindAndModify: false };
 
   let bill = await Bill.findByIdAndUpdate(billId, update, options).session(
@@ -189,10 +189,12 @@ module.exports.enterTransaction = async (req, res) => {
     let { billId, reference, type, amount, paymentDate, paymentMethod } =
       req.body;
     let now = new Date();
-    let billStatus = "SUSPENDED";
+
     let billData = await Bill.findById(billId);
+
     if (billData.partialTransactions.length == 0) {
       // record a first new transaction
+
       if (amount <= billData.subtotal) {
         let bill = await enterFirstNewTransaction(
           billId,
@@ -202,8 +204,7 @@ module.exports.enterTransaction = async (req, res) => {
           paymentDate,
           paymentMethod,
           billData,
-          session,
-          billStatus
+          session
         );
         await session.commitTransaction();
         return res.send({ message: "transaction recorded", bill });
@@ -227,8 +228,7 @@ module.exports.enterTransaction = async (req, res) => {
           paymentMethod,
           diff,
           billData,
-          session,
-          billStatus
+          session
         );
         await session.commitTransaction();
         return res.send({ message: "transaction recorded", bill });
