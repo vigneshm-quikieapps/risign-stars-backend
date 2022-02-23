@@ -20,7 +20,7 @@ module.exports.getAll = async (req, res) => {
   }
 };
 
-// Earlier this function is used 
+// Earlier this function is used
 // module.exports.billsOfAMemberInAClass = async (req, res) => {
 //   try {
 //     let query = getQuery(req);
@@ -39,8 +39,8 @@ module.exports.getAll = async (req, res) => {
 module.exports.billsOfAMemberInAClass = async (req, res) => {
   try {
     let query = getQuery(req);
-    let { memberId, enrolmentId, classId } = req.body;
-    query = { ...query, memberId, enrolmentId, classId };
+    let { memberId, enrolmentId } = req.body;
+    query = { ...query, memberId, enrolmentId };
     let options = getOptions(req);
 
     let response = await Bill.paginate(query, options);
@@ -102,13 +102,13 @@ const enterFirstNewTransaction = async (
   let now = new Date();
   let date = new Date(paymentDate);
   let partialObj = {
-    "amount":amount,
-    "reference":reference,
-    "method":paymentMethod,
-    "transactionType":type,
-    "paidAt":date,
-    "updateMethod":PAYMENT_METHOD_MANUAL,
-    "processDate":now
+    amount: amount,
+    reference: reference,
+    method: paymentMethod,
+    transactionType: type,
+    paidAt: date,
+    updateMethod: PAYMENT_METHOD_MANUAL,
+    processDate: now,
   };
   transactionArray.push(partialObj);
   let update = {
@@ -116,12 +116,11 @@ const enterFirstNewTransaction = async (
       partialTransactions: transactionArray,
     },
   };
-  if(billData.subtotal==amount){
+  if (billData.subtotal == amount) {
     update = {
       $set: {
         partialTransactions: transactionArray,
-        paidAt:date,
-
+        paidAt: date,
       },
     };
   }
@@ -130,7 +129,7 @@ const enterFirstNewTransaction = async (
   let bill = await Bill.findByIdAndUpdate(billId, update, options).session(
     session
   );
-  return  bill ;
+  return bill;
 };
 
 // helper function tp enter a new partial transaction of bill
@@ -149,13 +148,13 @@ const enterNewTransaction = async (
   let date = new Date(paymentDate);
   let transactionArray = [];
   let partialObj = {
-    "amount":amount,
-    "reference":reference,
-    "method":paymentMethod,
-    "transactionType":type,
-    "paidAt":date,
-    "updateMethod":PAYMENT_METHOD_MANUAL,
-    "processDate":now
+    amount: amount,
+    reference: reference,
+    method: paymentMethod,
+    transactionType: type,
+    paidAt: date,
+    updateMethod: PAYMENT_METHOD_MANUAL,
+    processDate: now,
   };
   transactionArray = billData.partialTransactions;
   transactionArray.push(partialObj);
@@ -164,11 +163,11 @@ const enterNewTransaction = async (
       partialTransactions: transactionArray,
     },
   };
-  if(diff==amount){
+  if (diff == amount) {
     update = {
       $set: {
         partialTransactions: transactionArray,
-        paidAt:date,
+        paidAt: date,
       },
     };
   }
@@ -184,13 +183,23 @@ module.exports.enterTransaction = async (req, res) => {
   const session = await mongoose.startSession();
   session.startTransaction();
   try {
-    let { billId, reference, type, amount,paymentDate,paymentMethod } = req.body;
+    let { billId, reference, type, amount, paymentDate, paymentMethod } =
+      req.body;
     let now = new Date();
     let billData = await Bill.findById(billId);
     if (billData.partialTransactions.length == 0) {
       // record a first new transaction
       if (amount <= billData.subtotal) {
-        let bill = await enterFirstNewTransaction(billId,reference,type,amount,paymentDate,paymentMethod,billData,session);
+        let bill = await enterFirstNewTransaction(
+          billId,
+          reference,
+          type,
+          amount,
+          paymentDate,
+          paymentMethod,
+          billData,
+          session
+        );
         await session.commitTransaction();
         return res.send({ message: "transaction recorded", bill });
       } else {
@@ -204,14 +213,23 @@ module.exports.enterTransaction = async (req, res) => {
       }
       let diff = billData.subtotal - totalSum;
       if (totalSum < billData.subtotal && amount <= diff) {
-        let bill = await enterNewTransaction(billId,reference,type,amount,paymentDate,paymentMethod,diff,billData,session);
+        let bill = await enterNewTransaction(
+          billId,
+          reference,
+          type,
+          amount,
+          paymentDate,
+          paymentMethod,
+          diff,
+          billData,
+          session
+        );
         await session.commitTransaction();
         return res.send({ message: "transaction recorded", bill });
       } else {
         throw new Error("No due left cannot record this transaction");
       }
     }
-
   } catch (err) {
     await session.abortTransaction();
     return res.status(422).send({ message: err.message });
@@ -253,7 +271,7 @@ module.exports.deleteTransactions = async (req, res) => {
         ).session(session);
         await session.commitTransaction();
         return res.send({ message: "transaction deleted", bill });
-      }else{
+      } else {
         throw new Error("There is no transactions");
       }
     }
@@ -542,7 +560,7 @@ module.exports.memberActiveInActive = async (req, res) => {
   try {
     let { businessId } = req.body;
 
-    // find the enrollments as status enrolled 
+    // find the enrollments as status enrolled
     let enrolments = await Enrolment.find({
       businessId: businessId,
       enrolledStatus: "ENROLLED",
@@ -574,12 +592,13 @@ module.exports.memberActiveInActive = async (req, res) => {
     });
     let inActive = total - keyCount;
 
-    return res.status(200).send({ activeMembers: keyCount,inActiveMembers: inActive});
+    return res
+      .status(200)
+      .send({ activeMembers: keyCount, inActiveMembers: inActive });
   } catch (err) {
     return res.status(422).send({ message: err.message });
   }
 };
-
 
 module.exports.activeDropEnrolments = async (req, res) => {
   try {
@@ -630,13 +649,13 @@ module.exports.activeDropEnrolments = async (req, res) => {
       let newActiveEnrolments = await Enrolment.count({
         businessId,
         registeredDate: { $gte: firstDay, $lte: lastDay },
-        enrolledStatus:"ENROLLED"
+        enrolledStatus: "ENROLLED",
       });
 
       let newDropEnrolments = await Enrolment.count({
         businessId,
         droppedDate: { $gte: firstDay, $lte: lastDay },
-        enrolledStatus:"DROPPED"
+        enrolledStatus: "DROPPED",
       });
       let month = firstDay.getMonth();
       let respObj = {
@@ -648,8 +667,6 @@ module.exports.activeDropEnrolments = async (req, res) => {
       respArr.push(respObj);
     }
     return res.status(200).send({ message: "Successful", respArr });
-
-  
   } catch (err) {
     return res.status(422).send({ message: err.message });
   }
