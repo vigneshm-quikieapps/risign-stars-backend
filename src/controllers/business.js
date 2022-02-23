@@ -877,7 +877,14 @@ module.exports.businessImageUploadHelper = multer({
  */
 
 module.exports.uploadImage = async (req, res) => {
-  const { socialMediaUrl, oldImagesLinks, oldLogoLinks } = req.body;
+  const {
+    facebookUrl,
+    pinterestUrl,
+    linkedinUrl,
+    instagramUrl,
+    oldImagesLinks,
+    oldLogoLinks,
+  } = req.body;
   const { newImages, newLogos } = req.files;
 
   const oldImageLocation = [];
@@ -894,12 +901,6 @@ module.exports.uploadImage = async (req, res) => {
 
   let imagelocation = [...oldImageLocation];
   let logoLocation = [...oldLogoLocation];
-  let socialMediaLinks = [];
-
-  socialMediaUrl?.split(",").length > 0 &&
-    socialMediaUrl
-      ?.split(",")
-      .map((link) => socialMediaLinks.push({ link: link }));
 
   newImages?.length > 0 &&
     newImages?.map((file) => imagelocation.push({ link: file.location }));
@@ -912,18 +913,13 @@ module.exports.uploadImage = async (req, res) => {
       { _id: req.params.businessId },
       {
         $set: {
-          socialMediaUrl: socialMediaLinks,
+          facebookUrl: facebookUrl,
+          pinterestUrl: pinterestUrl,
+          linkedinUrl: linkedinUrl,
+          instagramUrl: instagramUrl,
           logoUrl: logoLocation,
           imageUrl: imagelocation,
         },
-        // $push: {
-        //   logoUrl: {
-        //     $each: logoLocation,
-        //   },
-        //   imageUrl: {
-        //     $each: imagelocation,
-        //   },
-        // },
       },
       { new: true, useFindAndModify: false }
     );
