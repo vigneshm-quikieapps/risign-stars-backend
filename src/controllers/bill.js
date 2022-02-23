@@ -142,7 +142,8 @@ const enterNewTransaction = async (
   paymentMethod,
   diff,
   billData,
-  session
+  session,
+  billStatus
 ) => {
   let now = new Date();
   let date = new Date(paymentDate);
@@ -161,6 +162,7 @@ const enterNewTransaction = async (
   let update = {
     $set: {
       partialTransactions: transactionArray,
+      billStatus: billStatus,
     },
   };
   if (diff == amount) {
@@ -168,6 +170,7 @@ const enterNewTransaction = async (
       $set: {
         partialTransactions: transactionArray,
         paidAt: date,
+        billStatus: billStatus,
       },
     };
   }
@@ -186,6 +189,7 @@ module.exports.enterTransaction = async (req, res) => {
     let { billId, reference, type, amount, paymentDate, paymentMethod } =
       req.body;
     let now = new Date();
+    let billStatus = "SUSPENDED";
     let billData = await Bill.findById(billId);
     if (billData.partialTransactions.length == 0) {
       // record a first new transaction
@@ -198,7 +202,8 @@ module.exports.enterTransaction = async (req, res) => {
           paymentDate,
           paymentMethod,
           billData,
-          session
+          session,
+          billStatus
         );
         await session.commitTransaction();
         return res.send({ message: "transaction recorded", bill });
@@ -222,7 +227,8 @@ module.exports.enterTransaction = async (req, res) => {
           paymentMethod,
           diff,
           billData,
-          session
+          session,
+          billStatus
         );
         await session.commitTransaction();
         return res.send({ message: "transaction recorded", bill });
@@ -248,6 +254,7 @@ module.exports.deleteTransactions = async (req, res) => {
       if (billData.partialTransactions) {
         // delete the partial transaction of bill with the help of transactionId and billid from body object
         let { partialTransactions } = billData;
+        let billStatus = "NOT_PAID";
         let newTransactions = partialTransactions.filter((transaction) => {
           return transaction._id != transactionId;
         });
@@ -257,6 +264,7 @@ module.exports.deleteTransactions = async (req, res) => {
         let update = {
           $set: {
             partialTransactions: newTransactions,
+            billStatus: billStatus,
           },
           $unset: {
             paidAt: "",
