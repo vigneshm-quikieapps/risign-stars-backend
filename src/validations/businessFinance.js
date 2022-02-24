@@ -257,8 +257,7 @@ const updateDiscountValidationRules = () => {
 const canApply = async (_, { req }) => {
   try {
     let { discountDetail } = req.enrolmentData;
-
-    if (discountDetail) {
+    if (!discountDetail.name === undefined) {
       throw new Error("not allowed, enrolment has atleast one discount");
     }
 
