@@ -6,7 +6,12 @@ const getAllEnrolmentOfAMember = async (req, res) => {
     let enrolments = await Enrolment.find({ memberId })
       .populate("business")
       .populate("class")
-      .populate("session");
+      .populate({
+        path: "session",
+        populate: {
+          path: "coachId",
+        },
+      });
     return res.send({ enrolments });
   } catch (err) {
     return res.send({ message: err.message });
