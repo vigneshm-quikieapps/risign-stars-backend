@@ -5,6 +5,7 @@ const {
   ENUM_STATUS,
   STATUS_ACTIVE,
   ENUM_TRANSACTION_TYPES,
+  ENUM_BILLING_TYPES,
 } = require("../constants/bill");
 
 const billSchema = new mongoose.Schema(
@@ -21,6 +22,11 @@ const billSchema = new mongoose.Schema(
     billStatus: {
       type: String,
       default: "NOT_PAID",
+    },
+    billType: {
+      type: String,
+      required: true,
+      enum: ENUM_BILLING_TYPES,
     },
     classId: {
       type: ObjectId,
@@ -100,10 +106,10 @@ const billSchema = new mongoose.Schema(
     comments: {
       type: String,
     },
-    termId:{
+    termId: {
       type: ObjectId,
     },
-    enrolmentId:{
+    enrolmentId: {
       type: ObjectId,
     },
     billDate: {

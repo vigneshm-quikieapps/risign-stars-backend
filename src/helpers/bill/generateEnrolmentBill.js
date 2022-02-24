@@ -4,6 +4,11 @@ const generateClubMembershipBillPayload = require("./generateClubMembershipBillP
 const generatePartialMonthBillPayload = require("./generatePartialMonthBillPayload");
 const generateMonthBillPayload = require("./generateMonthBillPayload");
 const { getEnrolableMonthRange } = require("../dates");
+const {
+  BILLING_TYPE_CLUB_MEMBERSHIP,
+  BILLING_TYPE_MONTHLY,
+  BILLING_TYPE_TERM,
+} = require("../../constants/bill");
 
 /**
  * Only Monthly charge is handled,
@@ -102,6 +107,7 @@ const generateEnrolmentBill = async (
     billPayloads.push({
       ...termBillObj,
       billStatus: isStandingOrder ? "STANDING_ORDER" : "NOT_PAID",
+      billType: BILLING_TYPE_TERM,
     });
   }
 
@@ -120,6 +126,7 @@ const generateEnrolmentBill = async (
   billPayloads.push({
     ...clubMembershipBillPayload,
     billStatus: isStandingOrder ? "STANDING_ORDER" : "NOT_PAID",
+    billType: BILLING_TYPE_CLUB_MEMBERSHIP,
   });
 
   /**
@@ -139,6 +146,7 @@ const generateEnrolmentBill = async (
   billPayloads.push({
     ...firstMonthbillPayload,
     billStatus: isStandingOrder ? "STANDING_ORDER" : "NOT_PAID",
+    billType: BILLING_TYPE_MONTHLY,
   });
 
   /**
@@ -155,6 +163,7 @@ const generateEnrolmentBill = async (
       billPayloads.push({
         ...billPayload,
         billStatus: isStandingOrder ? "STANDING_ORDER" : "NOT_PAID",
+        billType: BILLING_TYPE_MONTHLY,
       });
     }
 
@@ -171,7 +180,11 @@ const generateEnrolmentBill = async (
     };
     let lastMonthbillPayload =
       generatePartialMonthBillPayload(lastMonthPayload);
-    billPayloads.push(lastMonthbillPayload);
+    billPayloads.push({
+      ...lastMonthbillPayload,
+      billStatus: isStandingOrder ? "STANDING_ORDER" : "NOT_PAID",
+      billType: BILLING_TYPE_MONTHLY,
+    });
   }
   console.log(billPayloads);
   /**

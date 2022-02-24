@@ -574,7 +574,6 @@ module.exports.uploadXLXSFile = async (req, res) => {
         .status(200)
         .send({ message: "Payment upload successfull", xlsxData });
     } catch (err) {
-      console.error(err);
       return res.status(422).send({ message: err.message });
     }
   }
@@ -606,6 +605,9 @@ const xlsxToJson = (sheet_name_list, workbook) => {
         if (value.includes("Member")) {
           value = "memberName";
         }
+        if (value.includes("Bill")) {
+          value = "bill";
+        }
         if (value.includes("£")) {
           value = "amount";
         }
@@ -633,14 +635,40 @@ const checkError = async (data, body, classId) => {
   let errorsInData = [];
   let amountError = [];
   let noDataFound = [];
+
   for (let i = 0; i < data.length; i++) {
     let bill = data[i];
     let index = i;
+
+    // const billFilter = (bill, reqbody, classIdData) => {
+    //   if (bill.bill.toUpperCase() === "CLUBMEMBERSHIP") {
+    //     return {
+    //       clubMembershipId: bill.membershipNumber,
+    //       billType: bill.bill.toUpperCase(),
+    //       billDate: {
+    //         $gte: new Date(reqbody.billDate),
+    //       },
+    //     };
+    //   } else {
+    //     return {
+    //       clubMembershipId: bill.membershipNumber,
+    //       classId: classIdData,
+    //       billType: bill.bill.toUpperCase(),
+    //       billDate: {
+    //         $gte: new Date(body.billDate),
+    //       },
+    //     };
+    //   }
+    // };
+    // console.log(index + 1);
     await Bill.findOne(
       {
         clubMembershipId: bill.membershipNumber,
-        classId: classId,
-        billDate: body.billDate,
+        $or: [{ classId: classId }, { businessId: body.businessId }],
+        billType: bill.bill.toUpperCase(),
+        billDate: {
+          $gte: new Date(body.billDate),
+        },
       },
       (err, data) => {
         //accumilate all errors inside errorsInData array
@@ -661,7 +689,7 @@ const checkError = async (data, body, classId) => {
         }
         // if the amount is underpaid so accumulating all that erreors in amountError array
         if (data) {
-          if (data.total < bill.amount) {
+          if (data.total !== bill.amount) {
             amountError.push({
               line: index + 1,
               "err msg": `amount ${bill.amount} should be equal to bill Amount: ${data.total}`,
@@ -671,22 +699,151 @@ const checkError = async (data, body, classId) => {
         }
       }
     ).clone();
+    // if (bill.bill.toUpperCase() === "CLUBMEMBERSHIP") {
+
+    // } else {
+    //   await Bill.findOne(
+    //     {
+    //       clubMembershipId: bill.membershipNumber,
+    //       classId: classId,
+    //       billType: bill.bill.toUpperCase(),
+    //       billDate: {
+    //         $gte: new Date(body.billDate),
+    //       },
+    //     },
+    //     (err, data) => {
+    //       //accumilate all errors inside errorsInData array
+    //       if (err) {
+    //         errorsInData.push({
+    //           line: index + 1,
+    //           "err msg": "please enter valid fields to process payment",
+    //           bill: bill,
+    //         });
+    //       }
+    //       //accumilate all no data found errors inside noDataFound array
+    //       if (!data) {
+    //         noDataFound.push({
+    //           line: index + 1,
+    //           "err msg":
+    //             "no Bill Found for this Data please enter a valid data",
+    //           bill: bill,
+    //         });
+    //       }
+    //       // if the amount is underpaid so accumulating all that erreors in amountError array
+    //       if (data) {
+    //         if (data.total < bill.amount) {
+    //           amountError.push({
+    //             line: index + 1,
+    //             "err msg": `amount ${bill.amount} should be equal to bill Amount: ${data.total}`,
+    //             bill: bill,
+    //           });
+    //         }
+    //       }
+    //     }
+    //   ).clone();
+    // }
   }
+
+  // const billFilter = (bill, reqbody, classIdData) => {
+  //   if (bill.bill.toUpperCase() === "CLUBMEMBERSHIP") {
+  //     return {
+  //       clubMembershipId: bill.membershipNumber,
+  //       billType: bill.bill.toUpperCase(),
+  //       billDate: {
+  //         $gte: new Date(reqbody.billDate),
+  //       },
+  //     };
+  //   } else {
+  //     return {
+  //       // clubMembershipId: bill.membershipNumber,
+  //       // billType: bill.bill.toUpperCase(),
+  //       // classId: classIdData,
+  //       // billDate: {
+  //       //   $gte: new Date(reqbody.billDate),
+  //       // },
+  //       // "partialTransactions.0": { $exists: false },
+  //       // total: { $eq: bill.amount },
+  //       clubMembershipId: bill.membershipNumber,
+  //       classId: classIdData,
+  //       billType: bill.bill.toUpperCase(),
+  //       billDate: {
+  //         $gte: new Date(body.billDate),
+  //       },
+  //     };
+  //   }
+  // };
+
+  // await data.map((bill, index) => {
+  //   Bill.findOne(billFilter(bill, body, classId), (err, data) => {
+  //     //accumilate all errors inside errorsInData array
+  //     if (err) {
+  //       errorsInData.push({
+  //         line: index + 1,
+  //         "err msg": "please enter valid fields to process payment",
+  //         bill: bill,
+  //       });
+  //     }
+  //     //accumilate all no data found errors inside noDataFound array
+  //     if (!data) {
+  //       noDataFound.push({
+  //         line: index + 1,
+  //         "err msg": "no Bill Found for this Data please enter a valid data",
+  //         bill: bill,
+  //       });
+  //     }
+  //     // if the amount is underpaid so accumulating all that erreors in amountError array
+  //     if (data) {
+  //       if (data.total < bill.amount) {
+  //         amountError.push({
+  //           line: index + 1,
+  //           "err msg": `amount ${bill.amount} should be equal to bill Amount: ${data.total}`,
+  //           bill: bill,
+  //         });
+  //       }
+  //     }
+  //   }).clone();
+  // });
   return { errorsInData, amountError, noDataFound };
 };
 
 const billBulkWrite = async (data, body, batchProcessId) => {
+  const filterData = (bill, reqbody) => {
+    if (bill.bill.toUpperCase() === "CLUBMEMBERSHIP") {
+      return {
+        clubMembershipId: bill.membershipNumber,
+        billType: bill.bill.toUpperCase(),
+        billDate: {
+          $gte: new Date(reqbody.billDate),
+        },
+        "partialTransactions.0": { $exists: false },
+        total: { $eq: bill.amount },
+      };
+    } else {
+      return {
+        clubMembershipId: bill.membershipNumber,
+        billType: bill.bill.toUpperCase(),
+        classId: body.classId,
+        billDate: {
+          $gte: new Date(reqbody.billDate),
+        },
+        "partialTransactions.0": { $exists: false },
+        total: { $eq: bill.amount },
+      };
+    }
+  };
   await Bill.bulkWrite(
     data.map((bill) => ({
       updateOne: {
         filter: {
           clubMembershipId: bill.membershipNumber,
-          classId: body.classId,
-          billDate: body.billDate,
+          billType: bill.bill.toUpperCase(),
+          $or: [{ classId: body.classId }, { businessId: body.businessId }],
+          billDate: {
+            $gte: new Date(body.billDate),
+          },
           "partialTransactions.0": { $exists: false },
           total: { $eq: bill.amount },
         },
-        // $expr: { $gt:["$total", "$partialTransactionAmount"] },
         update: {
           $push: {
             partialTransactions: {
@@ -697,6 +854,9 @@ const billBulkWrite = async (data, body, batchProcessId) => {
               batchProcessId: batchProcessId,
               processDate: bill.Date,
             },
+          },
+          $set: {
+            billStatus: "PAID",
           },
         },
         new: true,
@@ -715,6 +875,7 @@ const createRecordXlsx = async (
   amountError,
   noDataFound
 ) => {
+  // console.log("create xlsx", noDataFound, amountError, errorsInData);
   let filter = {
     type: BATCH_PROCESS_ID,
     businessId: body.businessId,
@@ -778,6 +939,7 @@ const uploadPaymentList = async (
   amountError,
   errorsInData
 ) => {
+  // console.log("upload payment list", noDataFound, amountError, errorsInData);
   if (
     noDataFound.length > 0 ||
     amountError.length > 0 ||
@@ -787,7 +949,9 @@ const uploadPaymentList = async (
     noDataFound.length > 0 &&
       (await noDataFound.map((li) => {
         let dataObject = data.find(
-          (err) => li.bill.membershipNumber === err.membershipNumber
+          (err) =>
+            li.bill.membershipNumber === err.membershipNumber &&
+            li.bill.bill === err.bill
         );
         return resultData.push({
           ...dataObject,
@@ -800,7 +964,9 @@ const uploadPaymentList = async (
     amountError.length > 0 &&
       (await amountError.map((li) => {
         let dataObject = data.find(
-          (err) => li.bill.membershipNumber === err.membershipNumber
+          (err) =>
+            li.bill.membershipNumber === err.membershipNumber &&
+            li.bill.bill === err.bill
         );
         return resultData.push({
           ...dataObject,
@@ -813,7 +979,9 @@ const uploadPaymentList = async (
     errorsInData.length > 0 &&
       (await errorsInData.map((li) => {
         let dataObject = data.find(
-          (err) => li.bill.membershipNumber === err.membershipNumber
+          (err) =>
+            li.bill.membershipNumber === err.membershipNumber &&
+            li.bill.bill === err.bill
         );
         return resultData.push({
           ...dataObject,
@@ -823,21 +991,27 @@ const uploadPaymentList = async (
           uploadStatus: "Error",
         });
       }));
-    let uniqueMemberList = data.map((x) => {
-      const item = resultData.find(
-        (li) => li.membershipNumber === x.membershipNumber
+
+    //adding success state
+    const isSameData = (a, b) =>
+      a.membershipNumber === b.membershipNumber && a.bill === b.bill;
+
+    const onlyInLeft = (left, right, compareFunction) =>
+      left.filter(
+        (leftValue) =>
+          !right.some((rightValue) => compareFunction(leftValue, rightValue))
       );
-      return item
-        ? item
-        : {
-            ...x,
-            uploadStatus: "Success",
-            noDataFound: "",
-            amountError: "",
-            errorsInData: "",
-          };
-    });
-    return uniqueMemberList;
+
+    const difference = onlyInLeft(data, resultData, isSameData);
+    const differenceResult = {
+      ...difference[0],
+      uploadStatus: "Success",
+      noDataFound: "",
+      amountError: "",
+      errorsInData: "",
+    };
+
+    return [...resultData, differenceResult];
   }
   if (
     errorsInData.length <= 0 &&
@@ -929,7 +1103,6 @@ module.exports.uploadImage = async (req, res) => {
       business,
     });
   } catch (err) {
-    console.error(err);
     return res.status(422).send({ message: err.message });
   }
 };
