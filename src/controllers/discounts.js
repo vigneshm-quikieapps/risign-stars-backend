@@ -23,22 +23,20 @@ const { INACTIVE_STATUS } = require("../constants/discount");
 //create Discounts
 
 const discountAllFutureCharges = async (data, session) => {
-  let { memberId, classId } = data;
+  let { memberId, classId, enrolmentId } = data;
   let discountData = data.discount;
 
   let now = new Date();
-
   /**
    * discount all future bills
    */
   let condition = {
     memberId,
-    classId,
+    $or: [{ classId: classId }, { enrolmentId: enrolmentId }],
     billDate: { $gt: now },
   };
 
   let bills = await Bill.find(condition);
-
   let updatePayload = bills.map((bill) => {
     let discount = bill.total * (discountData.value / 100);
     let total = bill.subtotal - discount;
@@ -86,7 +84,7 @@ module.exports.applyDiscount = async (req, res) => {
     /**
      * update all future charges with discount
      */
-    let data = { classId, memberId, discount: discountData };
+    let data = { classId, memberId, discount: discountData, enrolmentId };
     await discountAllFutureCharges(data, session);
     session.commitTransaction();
 

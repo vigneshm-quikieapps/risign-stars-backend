@@ -640,27 +640,6 @@ const checkError = async (data, body, classId) => {
     let bill = data[i];
     let index = i;
 
-    // const billFilter = (bill, reqbody, classIdData) => {
-    //   if (bill.bill.toUpperCase() === "CLUBMEMBERSHIP") {
-    //     return {
-    //       clubMembershipId: bill.membershipNumber,
-    //       billType: bill.bill.toUpperCase(),
-    //       billDate: {
-    //         $gte: new Date(reqbody.billDate),
-    //       },
-    //     };
-    //   } else {
-    //     return {
-    //       clubMembershipId: bill.membershipNumber,
-    //       classId: classIdData,
-    //       billType: bill.bill.toUpperCase(),
-    //       billDate: {
-    //         $gte: new Date(body.billDate),
-    //       },
-    //     };
-    //   }
-    // };
-    // console.log(index + 1);
     await Bill.findOne(
       {
         clubMembershipId: bill.membershipNumber,
@@ -699,138 +678,11 @@ const checkError = async (data, body, classId) => {
         }
       }
     ).clone();
-    // if (bill.bill.toUpperCase() === "CLUBMEMBERSHIP") {
-
-    // } else {
-    //   await Bill.findOne(
-    //     {
-    //       clubMembershipId: bill.membershipNumber,
-    //       classId: classId,
-    //       billType: bill.bill.toUpperCase(),
-    //       billDate: {
-    //         $gte: new Date(body.billDate),
-    //       },
-    //     },
-    //     (err, data) => {
-    //       //accumilate all errors inside errorsInData array
-    //       if (err) {
-    //         errorsInData.push({
-    //           line: index + 1,
-    //           "err msg": "please enter valid fields to process payment",
-    //           bill: bill,
-    //         });
-    //       }
-    //       //accumilate all no data found errors inside noDataFound array
-    //       if (!data) {
-    //         noDataFound.push({
-    //           line: index + 1,
-    //           "err msg":
-    //             "no Bill Found for this Data please enter a valid data",
-    //           bill: bill,
-    //         });
-    //       }
-    //       // if the amount is underpaid so accumulating all that erreors in amountError array
-    //       if (data) {
-    //         if (data.total < bill.amount) {
-    //           amountError.push({
-    //             line: index + 1,
-    //             "err msg": `amount ${bill.amount} should be equal to bill Amount: ${data.total}`,
-    //             bill: bill,
-    //           });
-    //         }
-    //       }
-    //     }
-    //   ).clone();
-    // }
   }
-
-  // const billFilter = (bill, reqbody, classIdData) => {
-  //   if (bill.bill.toUpperCase() === "CLUBMEMBERSHIP") {
-  //     return {
-  //       clubMembershipId: bill.membershipNumber,
-  //       billType: bill.bill.toUpperCase(),
-  //       billDate: {
-  //         $gte: new Date(reqbody.billDate),
-  //       },
-  //     };
-  //   } else {
-  //     return {
-  //       // clubMembershipId: bill.membershipNumber,
-  //       // billType: bill.bill.toUpperCase(),
-  //       // classId: classIdData,
-  //       // billDate: {
-  //       //   $gte: new Date(reqbody.billDate),
-  //       // },
-  //       // "partialTransactions.0": { $exists: false },
-  //       // total: { $eq: bill.amount },
-  //       clubMembershipId: bill.membershipNumber,
-  //       classId: classIdData,
-  //       billType: bill.bill.toUpperCase(),
-  //       billDate: {
-  //         $gte: new Date(body.billDate),
-  //       },
-  //     };
-  //   }
-  // };
-
-  // await data.map((bill, index) => {
-  //   Bill.findOne(billFilter(bill, body, classId), (err, data) => {
-  //     //accumilate all errors inside errorsInData array
-  //     if (err) {
-  //       errorsInData.push({
-  //         line: index + 1,
-  //         "err msg": "please enter valid fields to process payment",
-  //         bill: bill,
-  //       });
-  //     }
-  //     //accumilate all no data found errors inside noDataFound array
-  //     if (!data) {
-  //       noDataFound.push({
-  //         line: index + 1,
-  //         "err msg": "no Bill Found for this Data please enter a valid data",
-  //         bill: bill,
-  //       });
-  //     }
-  //     // if the amount is underpaid so accumulating all that erreors in amountError array
-  //     if (data) {
-  //       if (data.total < bill.amount) {
-  //         amountError.push({
-  //           line: index + 1,
-  //           "err msg": `amount ${bill.amount} should be equal to bill Amount: ${data.total}`,
-  //           bill: bill,
-  //         });
-  //       }
-  //     }
-  //   }).clone();
-  // });
   return { errorsInData, amountError, noDataFound };
 };
 
 const billBulkWrite = async (data, body, batchProcessId) => {
-  const filterData = (bill, reqbody) => {
-    if (bill.bill.toUpperCase() === "CLUBMEMBERSHIP") {
-      return {
-        clubMembershipId: bill.membershipNumber,
-        billType: bill.bill.toUpperCase(),
-        billDate: {
-          $gte: new Date(reqbody.billDate),
-        },
-        "partialTransactions.0": { $exists: false },
-        total: { $eq: bill.amount },
-      };
-    } else {
-      return {
-        clubMembershipId: bill.membershipNumber,
-        billType: bill.bill.toUpperCase(),
-        classId: body.classId,
-        billDate: {
-          $gte: new Date(reqbody.billDate),
-        },
-        "partialTransactions.0": { $exists: false },
-        total: { $eq: bill.amount },
-      };
-    }
-  };
   await Bill.bulkWrite(
     data.map((bill) => ({
       updateOne: {
@@ -850,7 +702,7 @@ const billBulkWrite = async (data, body, batchProcessId) => {
               amount: bill.amount,
               paidAt: bill.Date,
               transactionType: bill.type,
-              method: bill.paymentMethod,
+              method: bill.paymentMethod.toUpperCase().split(" ").join("_"),
               batchProcessId: batchProcessId,
               processDate: bill.Date,
             },
@@ -875,7 +727,6 @@ const createRecordXlsx = async (
   amountError,
   noDataFound
 ) => {
-  // console.log("create xlsx", noDataFound, amountError, errorsInData);
   let filter = {
     type: BATCH_PROCESS_ID,
     businessId: body.businessId,
@@ -939,7 +790,6 @@ const uploadPaymentList = async (
   amountError,
   errorsInData
 ) => {
-  // console.log("upload payment list", noDataFound, amountError, errorsInData);
   if (
     noDataFound.length > 0 ||
     amountError.length > 0 ||
