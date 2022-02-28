@@ -853,15 +853,19 @@ const uploadPaymentList = async (
       );
 
     const difference = onlyInLeft(data, resultData, isSameData);
-    const differenceResult = {
-      ...difference[0],
-      uploadStatus: "Success",
-      noDataFound: "",
-      amountError: "",
-      errorsInData: "",
-    };
 
-    return [...resultData, differenceResult];
+    if (difference.length > 0) {
+      const differenceResult = {
+        ...difference[0],
+        uploadStatus: "Success",
+        noDataFound: "",
+        amountError: "",
+        errorsInData: "",
+      };
+      return [...resultData, differenceResult];
+    } else {
+      return [...resultData];
+    }
   }
   if (
     errorsInData.length <= 0 &&
