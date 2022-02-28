@@ -22,23 +22,18 @@ const xlsxSchema = new mongoose.Schema(
       {
         memberName: {
           type: String,
-          required: true,
         },
         membershipNumber: {
           type: String,
-          required: true,
         },
         amount: {
           type: Number,
-          required: true,
         },
         type: {
           type: String,
-          required: true,
         },
         paymentMethod: {
           type: String,
-          required: true,
         },
         uploadStatus: {
           type: String,
