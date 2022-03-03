@@ -303,8 +303,28 @@ const genUpdateForMultipleProgressMarking = ({ status, now }) => {
   }
 };
 
-const genUpdateLevels = (status) => {
-  return { $set: { "levels.$[level].status": status } };
+const statusUpdate = (skills) => {
+  var len = skills.length;
+  // console.log(skills);
+  var awarded = 0;
+  var inProgress = 0;
+  var notStarted = 0;
+  skills.forEach((skill) => {
+    skill.status === "AWARDED"
+      ? awarded++
+      : skills.status === "IN_PROGRESS"
+      ? inProgress++
+      : notStarted++;
+  });
+  if (awarded === len) {
+    return "AWARDED";
+  } else {
+    if (notStarted === len) {
+      return "NOT_STARTED";
+    } else {
+      return "IN_PROGRESS";
+    }
+  }
 };
 
 /**
@@ -318,31 +338,7 @@ module.exports.multipleProgressMarking = async (req, res) => {
   try {
     let { progressId } = req.body;
     let skillsData = [...req.body.skills];
-    let levelData = [];
-
-    if (req.body.levels) {
-      levelData = [...req.body.levels];
-    }
     let now = new Date();
-    let bulkLevelPayload = [];
-    // console.log(Array.isArray(levelData));
-
-    if (levelData !== []) {
-      bulkLevelPayload = levelData.map(({ levelId, status }) => {
-        let levelUpdate = genUpdateLevels(status);
-        console.log(levelUpdate);
-        return {
-          updateOne: {
-            filter: {
-              _id: progressId,
-            },
-            update: levelUpdate,
-            arrayFilters: [{ "level._id": Types.ObjectId(levelId) }],
-          },
-        };
-      });
-    }
-
     let bulkWritePayloadArr = skillsData.map(({ levelId, skillId, status }) => {
       let update = genUpdateForMultipleProgressMarking({
         status,
@@ -366,20 +362,29 @@ module.exports.multipleProgressMarking = async (req, res) => {
     let response = await Progress.bulkWrite(bulkWritePayloadArr, {
       ordered: false,
     });
-    if (levelData !== []) {
-      response = await Progress.bulkWrite(bulkLevelPayload, { ordered: false });
-    }
-    // Progress.findOne({ _id: progressId }, (err, prog) => {
-    //   if (prog !== undefined) {
-    //     var flag = 0;
-    //     prog.levels.forEach((level) => {
-    //       let awaflat =true;
-    //       level.skills.forEach(skill =>{
-    //         if(skill.status === 'NOT_STA')
-    //       })
-    //     });
-    //   }
-    // });
+    Progress.findOne({ _id: progressId }, (err, prog) => {
+      if (prog !== undefined) {
+        prog.levels.forEach((level) => {
+          let status = statusUpdate(level.skills);
+          console.log(status);
+          console.log(level._id);
+          Progress.findOne(
+            { _id: progressId, "levels._id": level._id },
+            (err, find) => {
+              console.log(find);
+            }
+          );
+          Progress.findOneAndUpdate(
+            { _id: progressId, "levels._id": level._id },
+            { $set: { "levels.$.status": status } },
+            { new: true },
+            (err, find) => {
+              console.log(find);
+            }
+          );
+        });
+      }
+    });
     return res.send({ message: "updated successful", response });
   } catch (err) {
     console.error(err);
