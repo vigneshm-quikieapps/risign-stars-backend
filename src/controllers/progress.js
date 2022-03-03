@@ -9,6 +9,7 @@ const {
 const { Types } = require("mongoose");
 const { getPaginationOptions } = require("../helpers/query");
 const { auditCreatedBy } = require("../helpers/audit");
+const { IN_PROGRESS } = require("../constants/constant");
 
 //pogress extractor
 // module.exports.getProgressIdById = (req, res, next, id) => {
@@ -302,6 +303,10 @@ const genUpdateForMultipleProgressMarking = ({ status, now }) => {
   }
 };
 
+const genUpdateLevels = (status) => {
+  return { $set: { "levels.$[level].status": status } };
+};
+
 /**
  * endpoint for: multiple marking of progress skill status
  *
@@ -313,7 +318,30 @@ module.exports.multipleProgressMarking = async (req, res) => {
   try {
     let { progressId } = req.body;
     let skillsData = [...req.body.skills];
+    let levelData = [];
+
+    if (req.body.levels) {
+      levelData = [...req.body.levels];
+    }
     let now = new Date();
+    let bulkLevelPayload = [];
+    // console.log(Array.isArray(levelData));
+
+    if (levelData !== []) {
+      bulkLevelPayload = levelData.map(({ levelId, status }) => {
+        let levelUpdate = genUpdateLevels(status);
+        console.log(levelUpdate);
+        return {
+          updateOne: {
+            filter: {
+              _id: progressId,
+            },
+            update: levelUpdate,
+            arrayFilters: [{ "level._id": Types.ObjectId(levelId) }],
+          },
+        };
+      });
+    }
 
     let bulkWritePayloadArr = skillsData.map(({ levelId, skillId, status }) => {
       let update = genUpdateForMultipleProgressMarking({
@@ -338,7 +366,20 @@ module.exports.multipleProgressMarking = async (req, res) => {
     let response = await Progress.bulkWrite(bulkWritePayloadArr, {
       ordered: false,
     });
-
+    if (levelData !== []) {
+      response = await Progress.bulkWrite(bulkLevelPayload, { ordered: false });
+    }
+    // Progress.findOne({ _id: progressId }, (err, prog) => {
+    //   if (prog !== undefined) {
+    //     var flag = 0;
+    //     prog.levels.forEach((level) => {
+    //       let awaflat =true;
+    //       level.skills.forEach(skill =>{
+    //         if(skill.status === 'NOT_STA')
+    //       })
+    //     });
+    //   }
+    // });
     return res.send({ message: "updated successful", response });
   } catch (err) {
     console.error(err);
