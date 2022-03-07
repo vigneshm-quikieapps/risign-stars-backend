@@ -1,5 +1,6 @@
 const regularEnrolment = require("./regularEnrolment");
 const waitlistedEnrolment = require("./waitlistedEnrolment");
+const updateSessionStatus = require("./updateSessionStatus");
 
 const nonTrialEnrolmentHandler = async (req, session) => {
   let { businessSessionData } = req;
@@ -17,6 +18,7 @@ const nonTrialEnrolmentHandler = async (req, session) => {
    * numberOfMembersApplicable: total number of members applicable should not be greater than the sum of fullCapacity and waitlistCapacity
    */
   if (numberOfMembersApplied >= numberOfMembersApplicable) {
+    await updateSessionStatus(req, "ENROLLMENT_CLOSED", session);
     throw new Error("Maximum limit of enrolment is reached");
   }
 
@@ -26,10 +28,12 @@ const nonTrialEnrolmentHandler = async (req, session) => {
    */
   if (fullcapacityfilled < fullcapacity) {
     await regularEnrolment(req, session);
+    await updateSessionStatus(req, "OPEN_FOR_ENROLLMENT", session);
     return { message: "enrolled successful", status: "ENROLLED" };
   } else {
     // creating enrolment till session capacity
     await waitlistedEnrolment(req, session);
+    await updateSessionStatus(req, "OPEN_FOR_WAITLIST_ENROLLMENT", session);
     return { message: "enrolled successful in waitlist", status: "WAITLISTED" };
   }
 };
