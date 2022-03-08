@@ -639,15 +639,25 @@ const checkError = async (data, body, classId) => {
   for (let i = 0; i < data.length; i++) {
     let bill = data[i];
     let index = i;
+    let additionalfilter;
 
-    await Bill.findOne(
+    if (bill.bill.toUpperCase() === "CLUBMEMBERSHIP") {
+      additionalfilter = { businessId: body.businessId };
+    } else {
+      additionalfilter = { classId: classId };
+    }
+
+    const response = await Bill.findOne(
       {
         clubMembershipId: bill.membershipNumber,
-        $or: [{ classId: classId }, { businessId: body.businessId }],
+        // $or: [{ classId: classId }, { businessId: body.businessId }],
         billType: bill.bill.toUpperCase(),
         billDate: {
           $gte: new Date(body.billDate),
         },
+        "partialTransactions.0": { $exists: false },
+        total: { $eq: bill.amount },
+        ...additionalfilter,
       },
       (err, data) => {
         //accumilate all errors inside errorsInData array
@@ -658,43 +668,54 @@ const checkError = async (data, body, classId) => {
             bill: bill,
           });
         }
-        //accumilate all no data found errors inside noDataFound array
-        if (!data) {
-          noDataFound.push({
-            line: index + 1,
-            "err msg": "no Bill Found for this Data please enter a valid data",
-            bill: bill,
-          });
-        }
-        // if the amount is underpaid so accumulating all that erreors in amountError array
-        if (data) {
-          if (data.total !== bill.amount) {
-            amountError.push({
-              line: index + 1,
-              "err msg": `amount ${bill.amount} should be equal to bill Amount: ${data.total}`,
-              bill: bill,
-            });
-          }
-        }
       }
     ).clone();
+
+    if (response) {
+      // if the amount is underpaid so accumulating all that erreors in amountError array
+      if (response.total !== bill.amount) {
+        amountError.push({
+          line: index + 1,
+          "err msg": `amount ${bill.amount} should be equal to bill Amount: ${data.total}`,
+          bill: bill,
+        });
+      }
+    }
+
+    if (!response) {
+      //accumilate all no data found errors inside noDataFound array
+      noDataFound.push({
+        line: index + 1,
+        "err msg": "no Bill Found for this Data please enter a valid data",
+        bill: bill,
+      });
+    }
   }
+
   return { errorsInData, amountError, noDataFound };
 };
 
 const billBulkWrite = async (data, body, batchProcessId) => {
+  function conditionalFilter(bill) {
+    if (bill.bill.toUpperCase() === "CLUBMEMBERSHIP") {
+      return { businessId: body.businessId };
+    } else {
+      return { classId: body.classId };
+    }
+  }
   await Bill.bulkWrite(
     data.map((bill) => ({
       updateOne: {
         filter: {
           clubMembershipId: bill.membershipNumber,
           billType: bill.bill.toUpperCase(),
-          $or: [{ classId: body.classId }, { businessId: body.businessId }],
+          // $or: [{ classId: body.classId }, { businessId: body.businessId }],
           billDate: {
             $gte: new Date(body.billDate),
           },
           "partialTransactions.0": { $exists: false },
           total: { $eq: bill.amount },
+          ...conditionalFilter(bill),
         },
         update: {
           $push: {

@@ -14,7 +14,10 @@ module.exports.createBusinessSession = async (req, res) => {
     sessionPayload = auditCreatedBy(req, sessionPayload);
     sessionPayload.businessId = req.classData.businessId;
 
-    let businessSession = await BusinessSession.create(sessionPayload);
+    let businessSession = await BusinessSession.create({
+      ...sessionPayload,
+      status: "OPEN_FOR_ENROLMENT",
+    });
     businessSession = await BusinessSession.findById(businessSession._id)
       .populate({
         path: "coach",

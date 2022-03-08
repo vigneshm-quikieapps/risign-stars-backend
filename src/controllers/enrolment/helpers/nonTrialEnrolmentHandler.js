@@ -28,12 +28,21 @@ const nonTrialEnrolmentHandler = async (req, session) => {
    */
   if (fullcapacityfilled < fullcapacity) {
     await regularEnrolment(req, session);
-    await updateSessionStatus(req, "OPEN_FOR_ENROLLMENT", session);
+
+    if (fullcapacity - fullcapacityfilled === 1) {
+      await updateSessionStatus(req, "OPEN_FOR_WAITLIST_ENROLLMENT", session);
+    } else {
+      await updateSessionStatus(req, "OPEN_FOR_ENROLLMENT", session);
+    }
     return { message: "enrolled successful", status: "ENROLLED" };
   } else {
     // creating enrolment till session capacity
     await waitlistedEnrolment(req, session);
-    await updateSessionStatus(req, "OPEN_FOR_WAITLIST_ENROLLMENT", session);
+    if (waitcapacity - waitcapacityfilled === 1) {
+      await updateSessionStatus(req, "ENROLLMENT_CLOSED", session);
+    } else {
+      await updateSessionStatus(req, "OPEN_FOR_WAITLIST_ENROLLMENT", session);
+    }
     return { message: "enrolled successful in waitlist", status: "WAITLISTED" };
   }
 };
