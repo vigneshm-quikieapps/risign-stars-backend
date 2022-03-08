@@ -811,6 +811,7 @@ const uploadPaymentList = async (
   amountError,
   errorsInData
 ) => {
+  console.log(noDataFound);
   if (
     noDataFound.length > 0 ||
     amountError.length > 0 ||
@@ -822,7 +823,8 @@ const uploadPaymentList = async (
         let dataObject = data.find(
           (err) =>
             li.bill.membershipNumber === err.membershipNumber &&
-            li.bill.bill === err.bill
+            li.bill.bill === err.bill &&
+            li.bill.amount === err.amount
         );
         return resultData.push({
           ...dataObject,
@@ -837,7 +839,8 @@ const uploadPaymentList = async (
         let dataObject = data.find(
           (err) =>
             li.bill.membershipNumber === err.membershipNumber &&
-            li.bill.bill === err.bill
+            li.bill.bill === err.bill &&
+            li.bill.amount === err.amount
         );
         return resultData.push({
           ...dataObject,
@@ -852,7 +855,8 @@ const uploadPaymentList = async (
         let dataObject = data.find(
           (err) =>
             li.bill.membershipNumber === err.membershipNumber &&
-            li.bill.bill === err.bill
+            li.bill.bill === err.bill &&
+            li.bill.amount === err.amount
         );
         return resultData.push({
           ...dataObject,
@@ -875,6 +879,7 @@ const uploadPaymentList = async (
 
     const difference = onlyInLeft(data, resultData, isSameData);
 
+    // console.log(resultData, difference);
     if (difference.length > 0) {
       const differenceResult = {
         ...difference[0],
