@@ -9,6 +9,7 @@ const {
 const { Types } = require("mongoose");
 const { getPaginationOptions } = require("../helpers/query");
 const { auditCreatedBy } = require("../helpers/audit");
+const { IN_PROGRESS } = require("../constants/constant");
 
 //pogress extractor
 // module.exports.getProgressIdById = (req, res, next, id) => {
@@ -302,6 +303,30 @@ const genUpdateForMultipleProgressMarking = ({ status, now }) => {
   }
 };
 
+const statusUpdate = (skills) => {
+  var len = skills.length;
+  // console.log(skills);
+  var awarded = 0;
+  var inProgress = 0;
+  var notStarted = 0;
+  skills.forEach((skill) => {
+    skill.status === "AWARDED"
+      ? awarded++
+      : skills.status === "IN_PROGRESS"
+      ? inProgress++
+      : notStarted++;
+  });
+  if (awarded === len) {
+    return "AWARDED";
+  } else {
+    if (notStarted === len) {
+      return "NOT_STARTED";
+    } else {
+      return "IN_PROGRESS";
+    }
+  }
+};
+
 /**
  * endpoint for: multiple marking of progress skill status
  *
@@ -314,7 +339,6 @@ module.exports.multipleProgressMarking = async (req, res) => {
     let { progressId } = req.body;
     let skillsData = [...req.body.skills];
     let now = new Date();
-
     let bulkWritePayloadArr = skillsData.map(({ levelId, skillId, status }) => {
       let update = genUpdateForMultipleProgressMarking({
         status,
@@ -338,7 +362,29 @@ module.exports.multipleProgressMarking = async (req, res) => {
     let response = await Progress.bulkWrite(bulkWritePayloadArr, {
       ordered: false,
     });
-
+    Progress.findOne({ _id: progressId }, (err, prog) => {
+      if (prog !== undefined) {
+        prog.levels.forEach((level) => {
+          let status = statusUpdate(level.skills);
+          console.log(status);
+          console.log(level._id);
+          Progress.findOne(
+            { _id: progressId, "levels._id": level._id },
+            (err, find) => {
+              console.log(find);
+            }
+          );
+          Progress.findOneAndUpdate(
+            { _id: progressId, "levels._id": level._id },
+            { $set: { "levels.$.status": status } },
+            { new: true },
+            (err, find) => {
+              console.log(find);
+            }
+          );
+        });
+      }
+    });
     return res.send({ message: "updated successful", response });
   } catch (err) {
     console.error(err);
