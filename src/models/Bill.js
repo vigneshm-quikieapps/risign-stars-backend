@@ -31,6 +31,9 @@ const billSchema = new mongoose.Schema(
     classId: {
       type: ObjectId,
     },
+    sessionId: {
+      type: ObjectId,
+    },
     clubMembershipId: {
       type: String,
       required: true,

@@ -33,7 +33,7 @@ const generateEnrolmentBill = async (
 ) => {
   let now = new Date();
 
-  let { term, classId, pattern, startDate, endDate } = sessionData;
+  let { term, id, classId, pattern, startDate, endDate } = sessionData;
   // let { startDate, endDate } = term;
   let { charges: businessFinanceCharges, businessId } = businessFinanceData;
   let classCharges = classData.charges;
@@ -145,6 +145,7 @@ const generateEnrolmentBill = async (
   });
   billPayloads.push({
     ...firstMonthbillPayload,
+    sessionId: id,
     billStatus: isStandingOrder ? "STANDING_ORDER" : "NOT_PAID",
     billType: BILLING_TYPE_MONTHLY,
   });
@@ -162,6 +163,7 @@ const generateEnrolmentBill = async (
       const billPayload = generateMonthBillPayload(data);
       billPayloads.push({
         ...billPayload,
+        sessionId: id,
         billStatus: isStandingOrder ? "STANDING_ORDER" : "NOT_PAID",
         billType: BILLING_TYPE_MONTHLY,
       });
@@ -182,6 +184,7 @@ const generateEnrolmentBill = async (
       generatePartialMonthBillPayload(lastMonthPayload);
     billPayloads.push({
       ...lastMonthbillPayload,
+      sessionId: id,
       billStatus: isStandingOrder ? "STANDING_ORDER" : "NOT_PAID",
       billType: BILLING_TYPE_MONTHLY,
     });
