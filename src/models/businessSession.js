@@ -14,6 +14,10 @@ const businessSessionSchema = new mongoose.Schema(
       ref: "Business",
       immutable: true,
     },
+    status: {
+      type: String,
+      required: true,
+    },
     classId: {
       type: ObjectId,
       ref: "BusinessClass",
