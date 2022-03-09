@@ -58,6 +58,7 @@ module.exports.createBusinessClass = async (req, res) => {
 
       return {
         ...sessionData,
+        status: "OPEN_FOR_ENROLMENT",
         pattern: updatedPattern,
         businessId,
         classId,
