@@ -363,7 +363,11 @@ module.exports.getBillStatusOfMembersInASession = async (req, res) => {
     query = {
       ...query,
       memberId: { $in: enrolledMemberIds },
-      billDate: new Date(date),
+      sessionId: sessionId,
+      // billDate: new Date(date),
+      billDate: {
+        $gte: new Date(date),
+      },
     };
 
     options.populate = [
