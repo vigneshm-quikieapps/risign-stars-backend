@@ -350,7 +350,7 @@ module.exports.getBillStatusOfMembersInASession = async (req, res) => {
     let fromBillDate = new Date(date);
     let toBillDate = new Date(
       fromBillDate.getFullYear(),
-      fromBillDate.getMonth() + 1,
+      fromBillDate.getMonth(),
       1
     );
     console.log(fromBillDate, toBillDate);
