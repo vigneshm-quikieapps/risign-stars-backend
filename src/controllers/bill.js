@@ -353,7 +353,7 @@ module.exports.getBillStatusOfMembersInASession = async (req, res) => {
       fromBillDate.getMonth() + 1,
       1
     );
-
+    console.log(fromBillDate, toBillDate);
     let enrolment = await Enrolment.find(
       {
         sessionId,
@@ -374,7 +374,7 @@ module.exports.getBillStatusOfMembersInASession = async (req, res) => {
       // billDate: new Date(date),
       billDate: {
         $gte: fromBillDate,
-        $lte: toBillDate,
+        $lte: new Date(`toBillDate`),
       },
     };
 
