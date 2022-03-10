@@ -374,7 +374,7 @@ module.exports.getBillStatusOfMembersInASession = async (req, res) => {
       // billDate: new Date(date),
       billDate: {
         $gte: fromBillDate,
-        $lte: new Date(`toBillDate`),
+        $lte: new Date(toBillDate),
       },
     };
 
