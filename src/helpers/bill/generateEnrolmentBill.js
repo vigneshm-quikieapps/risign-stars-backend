@@ -77,7 +77,8 @@ const generateEnrolmentBill = async (
    */
   let termBill = await Bill.findOne({
     memberId: memberId,
-    businessId: businessId,
+    // businessId: businessId,
+    classId: classId,
     termId: term._id,
   });
   if (!termBill) {

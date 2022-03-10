@@ -681,7 +681,7 @@ const checkError = async (data, body, classId) => {
         });
       }
     }
-
+    console.log(response);
     if (!response) {
       //accumilate all no data found errors inside noDataFound array
       noDataFound.push({
@@ -730,10 +730,10 @@ const billBulkWrite = async (data, body, batchProcessId) => {
           },
           $set: {
             billStatus: "PAID",
+            paidAt: bill.Date,
           },
         },
         new: true,
-        useFindAndModify: false,
       },
     }))
   );
@@ -811,7 +811,7 @@ const uploadPaymentList = async (
   amountError,
   errorsInData
 ) => {
-  console.log(noDataFound);
+  // console.log(noDataFound);
   if (
     noDataFound.length > 0 ||
     amountError.length > 0 ||
