@@ -8,6 +8,7 @@ const { PAYMENT_METHOD_MANUAL } = require("../constants/bill");
 const { ENUM_TRANSFER_ALLOWED } = require("../constants/enrolment");
 const mongoose = require("mongoose");
 const { ObjectId } = require("mongoose").Types;
+const moment = require("moment");
 
 module.exports.getAll = async (req, res) => {
   try {
@@ -348,12 +349,9 @@ module.exports.getBillStatusOfMembersInASession = async (req, res) => {
     let { sessionId, date } = req.body;
 
     let fromBillDate = new Date(date);
-    let toBillDate = new Date(
-      fromBillDate.getFullYear(),
-      fromBillDate.getMonth(),
-      1
-    );
-    console.log(fromBillDate, toBillDate);
+    let toBillDate = moment(fromBillDate).clone().endOf("Month").toDate();
+    toBillDate = moment(toBillDate).format("YYYY-MM-DD");
+    console.log(fromBillDate, new Date(toBillDate));
     let enrolment = await Enrolment.find(
       {
         sessionId,
