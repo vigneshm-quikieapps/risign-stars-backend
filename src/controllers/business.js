@@ -13,6 +13,7 @@ const { auditCreatedBy } = require("../helpers/audit");
 const storageXlsx = require("../services/storage/xlsxS3");
 const uploadImageS3Config = require("../services/storage/imageS3");
 const { BATCH_PROCESS_ID } = require("../constants/counter");
+const moment = require("moment");
 
 const unlinkAsync = promisify(fs.unlink);
 //parameter extractor
@@ -647,13 +648,21 @@ const checkError = async (data, body, classId) => {
       additionalfilter = { classId: classId };
     }
 
+    let fromSearchBillDate = new Date(body.billDate);
+    let toSearchBillDate = moment(fromSearchBillDate)
+      .clone()
+      .endOf("Month")
+      .toDate();
+    toSearchBillDate = moment(toSearchBillDate).format("YYYY-MM-DD");
+
     const response = await Bill.findOne(
       {
         clubMembershipId: bill.membershipNumber,
         // $or: [{ classId: classId }, { businessId: body.businessId }],
         billType: bill.bill.toUpperCase(),
         billDate: {
-          $gte: new Date(body.billDate),
+          $gte: fromSearchBillDate,
+          $lte: new Date(toSearchBillDate),
         },
         "partialTransactions.0": { $exists: false },
         total: { $eq: bill.amount },
@@ -703,6 +712,11 @@ const billBulkWrite = async (data, body, batchProcessId) => {
       return { classId: body.classId };
     }
   }
+
+  let fromBillDate = new Date(body.billDate);
+  let toBillDate = moment(fromBillDate).clone().endOf("Month").toDate();
+  toBillDate = moment(toBillDate).format("YYYY-MM-DD");
+
   await Bill.bulkWrite(
     data.map((bill) => ({
       updateOne: {
@@ -711,7 +725,8 @@ const billBulkWrite = async (data, body, batchProcessId) => {
           billType: bill.bill.toUpperCase(),
           // $or: [{ classId: body.classId }, { businessId: body.businessId }],
           billDate: {
-            $gte: new Date(body.billDate),
+            $gte: fromBillDate,
+            $lte: new Date(toBillDate),
           },
           "partialTransactions.0": { $exists: false },
           total: { $eq: bill.amount },

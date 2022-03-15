@@ -32,11 +32,11 @@ const updateTermValidationRules = () => {
       .isLength({ min: 3 }),
     check(
       "startdate",
-      "starttime   should be a date in format: 'MM-DD-YYYY'"
+      "starttime should be a date in format: 'MM-DD-YYYY'"
     ).optional(),
     check(
       "startdate",
-      "endtime   should be a date in format: 'MM-DD-YYYY'"
+      "endtime should be a date in format: 'MM-DD-YYYY'"
     ).optional(),
     check("termFee", "Term fee should be a positive Number")
       .optional()
