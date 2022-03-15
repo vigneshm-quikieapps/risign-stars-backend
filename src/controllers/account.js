@@ -36,7 +36,7 @@ module.exports.resetPassword = async (req, res) => {
     /** TODO: sent mail, password has been changed */
 
     return res.send({
-      message: "Password has been reset successfully",
+      message: "Password has been reset successfully.",
     });
   } catch (err) {
     return res.send({ message: err.message });
@@ -49,10 +49,10 @@ module.exports.resetPassword = async (req, res) => {
  * @param {*} res
  * @returns
  */
-module.exports.forgotPasswordMobile = async ({ user },res) => {
+module.exports.forgotPasswordMobile = async ({ user }, res) => {
   try {
     let otp = await ResetPasswordOTP.generate(user.mobileNo);
-    ResetPasswordSms.send({ to:user.mobileNo, otp });
+    ResetPasswordSms.send({ to: user.mobileNo, otp });
 
     return res.send({
       message: "Reset Password OTP has been sent to your mobile number.",
@@ -78,7 +78,7 @@ module.exports.resetPasswordMobile = async (req, res) => {
     /** TODO: sent mail, password has been changed */
 
     return res.send({
-      message: "Password has been reset successfully",
+      message: "Password has been reset successfully.",
     });
   } catch (err) {
     return res.send({ message: err.message });
@@ -92,7 +92,7 @@ module.exports.changePassword = async (req, res) => {
     user.save();
 
     return res.send({
-      message: "Password has been changed successfully",
+      message: "Password has been changed successfully.",
     });
   } catch (err) {
     return res.send({ message: err.message });

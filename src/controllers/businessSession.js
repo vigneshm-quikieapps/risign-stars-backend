@@ -27,7 +27,7 @@ module.exports.createBusinessSession = async (req, res) => {
 
     return res
       .status(201)
-      .send({ message: "create successful", businessSession });
+      .send({ message: "Create successful.", businessSession });
   } catch (err) {
     return res.status(422).send({ message: err.message });
   }
@@ -95,7 +95,7 @@ module.exports.updateBusinessSession = async (req, res) => {
         !moment(endDate).isSame(businessSession.endDate))
     ) {
       throw new Error(
-        "startDate / endDate update is not allowed, session has at least one enrolment"
+        "StartDate / EndDate update is not allowed, Session has at least one Enrolment."
       );
     }
 
@@ -106,7 +106,7 @@ module.exports.updateBusinessSession = async (req, res) => {
       { new: true, useFindAndModify: false }
     ).populate("termData");
 
-    return res.send({ message: "update successful", businessSession });
+    return res.send({ message: "Update successful.", businessSession });
   } catch (err) {
     return res.status(422).send({ message: err.message });
   }
@@ -124,12 +124,12 @@ module.exports.deleteBusinessSession = async (req, res) => {
     let enrolmentCount = await Enrolment.count({ sessionId });
 
     if (enrolmentCount) {
-      throw new Error("delete not allowed, session has at least one enrolment");
+      throw new Error("Delete not allowed, Session has atleast one Erolment.");
     }
 
     await BusinessSession.deleteOne({ _id: sessionId });
 
-    return res.send({ message: "delete successful" });
+    return res.send({ message: "Delete successful." });
   } catch (err) {
     return res.status(422).send({ message: err.message });
   }

@@ -73,7 +73,7 @@ module.exports.createBusinessClass = async (req, res) => {
       "sessions"
     );
 
-    return res.send({ message: "created successful", businessClass });
+    return res.send({ message: "Created successfully.", businessClass });
   } catch (err) {
     await session.abortTransaction();
     console.error(err);
@@ -127,7 +127,7 @@ module.exports.getAllClassesForALoggedInBusinessAdmin = async (req, res) => {
        * throw an error
        */
       if (!businessIds.includes(query.businessId)) {
-        throw new Error("does not have permisssion");
+        throw new Error("Does not have permisssion.");
       }
     } else if (!dataPrivileges.all) {
       /**
@@ -186,7 +186,7 @@ module.exports.updateBusinessClass = async (req, res) => {
       { new: true, useFindAndModify: false }
     );
 
-    return res.send({ message: "update successful", businessClass });
+    return res.send({ message: "Update successful.", businessClass });
   } catch (err) {
     return res.status(422).send({ message: err.message });
   }
@@ -197,7 +197,7 @@ module.exports.isBusinessClassRestricted = (req, res, next) => {
   let Class = req.Class;
   if (!Class) {
     return res.status(400).json({
-      err: "should be a valid class id",
+      err: "Should be a valid Class id.",
     });
   }
 
@@ -213,7 +213,7 @@ module.exports.deleteBusinessClass = async (req, res) => {
     let businessClass = await BusinessClass.findById(classId);
 
     if (!businessClass) {
-      throw new Error("invalid class id");
+      throw new Error("Invalid class id.");
     }
 
     let enrolmentCount = await Enrolment.count({
@@ -222,7 +222,7 @@ module.exports.deleteBusinessClass = async (req, res) => {
 
     if (enrolmentCount) {
       throw new Error(
-        "delete not allowed, there is atlest one enrolment in the class"
+        "Delete not allowed, there is atleast one Enrolment in the class."
       );
     }
 
@@ -231,7 +231,7 @@ module.exports.deleteBusinessClass = async (req, res) => {
 
     await session.commitTransaction();
 
-    return res.send({ message: "delete successful" });
+    return res.send({ message: "Delete successful." });
   } catch (err) {
     return res.status(422).send({ message: err.message });
   } finally {

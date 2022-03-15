@@ -33,7 +33,7 @@ const trialEnrolmentHandler = async (req, session) => {
   );
 
   return {
-    message: "enrolled in trial session successful",
+    message: "Enrolled in Trial Session successful.",
     status: "TRIAL_ENROLL",
   };
 };

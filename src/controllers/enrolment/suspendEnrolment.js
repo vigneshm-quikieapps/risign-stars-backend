@@ -44,7 +44,7 @@ const suspendEnrolment = async (req, res) => {
       { to: email },
       { userData, sessionData, businessClassData }
     );
-    return res.status(201).send({ message: "suspension successful" });
+    return res.status(201).send({ message: "Suspension successful." });
   } catch (err) {
     console.error(err);
     await session.abortTransaction();

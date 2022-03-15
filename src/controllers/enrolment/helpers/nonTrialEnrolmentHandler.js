@@ -19,7 +19,7 @@ const nonTrialEnrolmentHandler = async (req, session) => {
    */
   if (numberOfMembersApplied >= numberOfMembersApplicable) {
     await updateSessionStatus(req, "ENROLLMENT_CLOSED", session);
-    throw new Error("Maximum limit of enrolment is reached");
+    throw new Error("Maximum limit of Enrolment is reached.");
   }
 
   /**
@@ -34,7 +34,7 @@ const nonTrialEnrolmentHandler = async (req, session) => {
     } else {
       await updateSessionStatus(req, "OPEN_FOR_ENROLLMENT", session);
     }
-    return { message: "enrolled successful", status: "ENROLLED" };
+    return { message: "Enrolled successful.", status: "ENROLLED" };
   } else {
     // creating enrolment till session capacity
     await waitlistedEnrolment(req, session);
@@ -43,7 +43,10 @@ const nonTrialEnrolmentHandler = async (req, session) => {
     } else {
       await updateSessionStatus(req, "OPEN_FOR_WAITLIST_ENROLLMENT", session);
     }
-    return { message: "enrolled successful in waitlist", status: "WAITLISTED" };
+    return {
+      message: "Enrolled successful in Waitlist.",
+      status: "WAITLISTED",
+    };
   }
 };
 

@@ -88,7 +88,7 @@ module.exports.applyDiscount = async (req, res) => {
     await discountAllFutureCharges(data, session);
     session.commitTransaction();
 
-    return res.send({ message: "applied successful" });
+    return res.send({ message: "Applied successful." });
   } catch (err) {
     session.abortTransaction();
     return res.status(422).send({ message: err.message });
@@ -100,7 +100,7 @@ module.exports.createDiscounts = async (req, res) => {
     let payload = { ...req.body };
     payload = auditCreatedBy(req, payload);
     const discount = await Discounts.create(payload);
-    return res.send({ message: "create successful", discount });
+    return res.send({ message: "Create successful.", discount });
   } catch (err) {
     console.log({ err });
     return res.status(422).send({ message: err.message });
@@ -117,7 +117,7 @@ module.exports.updateDiscounts = async (req, res) => {
       { $set: payload },
       { new: true }
     );
-    return res.send({ message: "update successful", discount });
+    return res.send({ message: "Update successful.", discount });
   } catch (err) {
     console.log(err);
     return res.status(422).send({ message: err.message });
@@ -139,7 +139,7 @@ module.exports.getDiscounts = (req, res) => {
   Discounts.findOne({ businessId: req.params.businessId }, (err, discount) => {
     if (err) {
       return res.status(400).json({
-        err: "Discountnot found!!   ",
+        err: "Discount not found!!",
       });
     }
 
@@ -157,7 +157,7 @@ module.exports.deleteDiscounts = async (req, res) => {
       /**
        * discount is already soft deleted
        */
-      throw new Error("Does not exist");
+      throw new Error("Does not exist.");
     }
 
     await Discounts.findOneAndUpdate(
@@ -165,7 +165,7 @@ module.exports.deleteDiscounts = async (req, res) => {
       { $set: { isDeleted: true, status: INACTIVE_STATUS } }
     );
 
-    return res.send({ message: "delete successful" });
+    return res.send({ message: "Delete successful." });
   } catch (err) {
     console.error(err);
     return res.status(422).send({ message: err.message });
@@ -262,7 +262,7 @@ module.exports.deleteDiscountScheme = (req, res) => {
     (err, discount) => {
       if (err) {
         return res.status(400).json({
-          err: "Discounts updation failed ",
+          err: "Discounts updation failed. ",
         });
       }
 
@@ -289,7 +289,7 @@ module.exports.updateDiscountsScheme = (req, res) => {
       if (err) {
         console.log(err);
         return res.status(400).json({
-          err: "Discounts updation failed ",
+          err: "Discounts updation failed .",
         });
       }
 
@@ -313,7 +313,7 @@ module.exports.updateStatusOfDiscountsScheme = (req, res) => {
       if (err) {
         console.log(err);
         return res.status(400).json({
-          err: "Discounts status updation failed ",
+          err: "Discounts status updation failed. ",
         });
       }
 

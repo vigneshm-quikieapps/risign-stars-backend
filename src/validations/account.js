@@ -28,7 +28,7 @@ const isRegisteredUser = async (filter, { req }) => {
     return true;
   } catch (err) {
     console.error(err);
-    return Promise.reject("User not found");
+    return Promise.reject("User not found.");
   }
 };
 
@@ -48,7 +48,7 @@ const isValidResetPasswordToken = async (token, { req }) => {
     return true;
   } catch (err) {
     console.error(err);
-    return Promise.reject("Invalid Reset Password Token");
+    return Promise.reject("Invalid Reset Password Token.");
   }
 };
 
@@ -59,19 +59,19 @@ const isValidResetPasswordOTP = async (otp, { req }) => {
     const valid = await ResetPasswordOTP.verify(contact, otp);
 
     if (!valid) {
-      throw new Error("invalid");
+      throw new Error("Invalid");
     }
 
     return true;
   } catch (err) {
     console.error(err);
-    return Promise.reject("Invalid Reset Password OTP");
+    return Promise.reject("Invalid Reset Password OTP.");
   }
 };
 
 const forgotPasswordValidationRules = () => {
   return [
-    body("email", "Invalid email").isEmail().bail().custom(isRegisteredEmail),
+    body("email", "Invalid email.").isEmail().bail().custom(isRegisteredEmail),
   ];
 };
 
@@ -80,7 +80,7 @@ const resetPasswordValidationRules = () => {
     body("password", USER.PASSWORD.MESSAGE).isLength({
       min: USER.PASSWORD.LENGTH,
     }),
-    body("token", "Invalid Token").custom(isValidResetPasswordToken),
+    body("token", "Invalid Token.").custom(isValidResetPasswordToken),
   ];
 };
 
@@ -96,7 +96,7 @@ const isRegisteredUserForgotPassword = async (mobileNo, params) => {
   let { email } = params.req.body;
 
   if (!email) {
-    return Promise.reject("email is also required");
+    return Promise.reject("Email is also required.");
   }
 
   let filter = { mobileNo, email };
@@ -109,11 +109,11 @@ const isRegisteredUserForgotPassword = async (mobileNo, params) => {
  */
 const forgotPasswordMobileValidationRules = () => {
   return [
-    body("mobileNo", "Invalid mobile number")
+    body("mobileNo", "Invalid mobile number.")
       .custom(isValidMobile)
       .bail()
       .custom(isRegisteredUserForgotPassword),
-    body("email", "is required").isEmail(),
+    body("email", "is required.").isEmail(),
   ];
 };
 
@@ -123,11 +123,11 @@ const forgotPasswordMobileValidationRules = () => {
  */
 const resetPasswordMobileValidationRules = () => {
   return [
-    body("mobileNo", "Invalid mobile number")
+    body("mobileNo", "Invalid mobile number.")
       .custom(isValidMobile)
       .bail()
       .custom(isRegisteredUserForgotPassword),
-    body("email", "is required").isEmail(),
+    body("email", "is required.").isEmail(),
     body("password", USER.PASSWORD.MESSAGE).isLength({
       min: USER.PASSWORD.LENGTH,
     }),
@@ -138,7 +138,7 @@ const resetPasswordMobileValidationRules = () => {
 const confirmPasswordRules = (confirmNewPassword, { req }) => {
   if (req.body.newPassword !== confirmNewPassword) {
     return Promise.reject(
-      "new password and confirm new password should be equal"
+      "New password and confirm New password should be Equal."
     );
   }
   return true;
@@ -157,21 +157,21 @@ const checkPassword = async (currentPassword, { req }) => {
 
     return true;
   } catch (err) {
-    return Promise.reject("Incorrect current password");
+    return Promise.reject("Incorrect current password.");
   }
 };
 
 const changePasswordValidationRules = () => {
   return [
-    body("currentPassword", "Invalid Current Password")
+    body("currentPassword", "Invalid Current Password.")
       .isLength({
         min: USER.PASSWORD.LENGTH,
       })
       .custom(checkPassword),
-    body("newPassword", "Invalid New Password").isLength({
+    body("newPassword", "Invalid New Password.").isLength({
       min: USER.PASSWORD.LENGTH,
     }),
-    body("confirmNewPassword", "Confirm New Password")
+    body("confirmNewPassword", "Confirm New Password.")
       .isLength({
         min: USER.PASSWORD.LENGTH,
       })

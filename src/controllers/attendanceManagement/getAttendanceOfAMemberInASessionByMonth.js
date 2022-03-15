@@ -39,7 +39,7 @@ const getAttendanceOfAMemberInASessionByMonth = async (req, res) => {
     ]);
 
     if (!attendance) {
-      throw new Error("Attendance not found");
+      throw new Error("Attendance not found.");
     }
     return res.send({ attendance });
   } catch (err) {

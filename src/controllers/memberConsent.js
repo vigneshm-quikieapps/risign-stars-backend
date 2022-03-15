@@ -5,7 +5,7 @@ module.exports.get = (req, res) => {
     let { clubMembershipId } = req.body;
     let consent = MemberConsent.findOne({ clubMembershipId });
     if (!consent) {
-      throw new Error("Not found");
+      throw new Error("Not found.");
     }
     return res.send({ consent });
   } catch (err) {
@@ -25,7 +25,7 @@ module.exports.getByClubMembershipId = async (req, res) => {
     let { clubMembershipId } = req.params;
     let memberConsent = await MemberConsent.find({ clubMembershipId });
     if (!memberConsent) {
-      throw new Error("Not found");
+      throw new Error("Not found.");
     }
     return res.send({ memberConsent });
   } catch (err) {

@@ -9,7 +9,7 @@ module.exports.getUserById = (req, res, next, id) => {
   User.findById(id).exec((error, user) => {
     if (error || !user) {
       return res.status(400).json({
-        error: "No User was Found in DB",
+        error: "No User was Found in DB.",
       });
     }
     req.profile = user;
@@ -27,7 +27,7 @@ module.exports.create = async (req, res) => {
     let user = await User.create(data);
     return res
       .status(201)
-      .send({ message: "added successfully", user, password });
+      .send({ message: "Added successfully.", user, password });
   } catch (err) {
     console.error(err);
     return res.status(422).send({ message: err.message });
@@ -161,7 +161,7 @@ module.exports.update = async (req, res) => {
     if (!user) {
       throw new DoesNotExistError();
     }
-    return res.send({ message: "updated successfully", user });
+    return res.send({ message: "Updated successfully.", user });
   } catch (err) {
     console.error(err);
     return res.status(422).send({ message: err.message });
@@ -175,7 +175,7 @@ module.exports.delete = async (req, res) => {
     if (!deletedCount) {
       throw new DoesNotExistError();
     }
-    return res.send({ message: "deleted successfully" });
+    return res.send({ message: "Deleted successfully." });
   } catch (err) {
     console.error(err);
     return res.status(422).send({ message: err.message });

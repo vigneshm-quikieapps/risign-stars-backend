@@ -37,7 +37,7 @@ module.exports.createBusiness = (req, res) => {
     if (err) {
       console.error(err.message);
       return res.status(400).json({
-        error: "unable to save evaluation to database",
+        error: "Unable to save Evaluation to database.",
       });
     }
     res.json(business);
@@ -68,7 +68,7 @@ module.exports.deleteBusiness = async (req, res) => {
     if (!deletedCount) {
       throw new DoesNotExistError();
     }
-    return res.send({ message: "deleted successfully" });
+    return res.send({ message: "Deleted successfully." });
   } catch (err) {
     console.error(err);
     return res.status(422).send({ message: err.message });
@@ -99,7 +99,7 @@ module.exports.updateBusiness = async (req, res) => {
     if (!business) {
       throw new DoesNotExistError();
     }
-    return res.send({ message: "updated successfully" });
+    return res.send({ message: "Updated successfully." });
   } catch (err) {
     console.error(err);
     return res.status(422).send({ message: err.message });
@@ -128,7 +128,7 @@ module.exports.getAllBusinessesOfLoginUser = async (req, res) => {
     let { authUserData } = req;
 
     if (!authUserData) {
-      throw new Error("User does not exist");
+      throw new Error("User does not exist.");
     }
 
     let { dataPrivileges } = authUserData;
@@ -466,7 +466,7 @@ module.exports.uploadXLXSFile = async (req, res) => {
       dataNotFound: noDataFound,
       amountError: amountError,
       xlsxData,
-      message: "Payment upload failed",
+      message: "Payment upload failed.",
     });
   } else if (amountError.length !== 0 && noDataFound.length !== 0) {
     let xlsxData = await createErrorRecordXlsx(
@@ -481,7 +481,7 @@ module.exports.uploadXLXSFile = async (req, res) => {
       dataNotFound: noDataFound,
       amountError: amountError,
       xlsxData,
-      message: "Payment upload failed",
+      message: "Payment upload failed.",
     });
   } else if (errorsInData.length !== 0 && amountError.length !== 0) {
     let xlsxData = await createErrorRecordXlsx(
@@ -496,7 +496,7 @@ module.exports.uploadXLXSFile = async (req, res) => {
       errors: errorsInData,
       amountError: amountError,
       xlsxData,
-      message: "Payment upload failed",
+      message: "Payment upload failed.",
     });
   } else if (errorsInData.length !== 0 && noDataFound.length !== 0) {
     let xlsxData = await createErrorRecordXlsx(
@@ -511,7 +511,7 @@ module.exports.uploadXLXSFile = async (req, res) => {
       errors: errorsInData,
       dataNotFound: noDataFound,
       xlsxData,
-      message: "Payment upload failed",
+      message: "Payment upload failed.",
     });
   } else if (errorsInData.length !== 0) {
     let xlsxData = await createErrorRecordXlsx(
@@ -525,7 +525,7 @@ module.exports.uploadXLXSFile = async (req, res) => {
     return res.status(200).json({
       errors: errorsInData,
       xlsxData,
-      message: "Payment upload failed",
+      message: "Payment upload failed.",
     });
   } else if (amountError.length !== 0) {
     let xlsxData = await createErrorRecordXlsx(
@@ -539,7 +539,7 @@ module.exports.uploadXLXSFile = async (req, res) => {
     return res.status(200).json({
       amountError: amountError,
       xlsxData,
-      message: "Payment upload failed",
+      message: "Payment upload failed.",
     });
   } else if (noDataFound.length !== 0) {
     let xlsxData = await createErrorRecordXlsx(
@@ -553,7 +553,7 @@ module.exports.uploadXLXSFile = async (req, res) => {
     return res.status(200).json({
       dataNotFound: noDataFound,
       xlsxData,
-      message: "Payment upload failed",
+      message: "Payment upload failed.",
     });
   } else {
     //**************************  if no errors present updating the whole bills from spreadsheet data  */
@@ -572,7 +572,7 @@ module.exports.uploadXLXSFile = async (req, res) => {
       await billBulkWrite(data, req.body, batchProcessId);
       return res
         .status(200)
-        .send({ message: "Payment upload successfull", xlsxData });
+        .send({ message: "Payment upload successful.", xlsxData });
     } catch (err) {
       return res.status(422).send({ message: err.message });
     }
@@ -979,7 +979,7 @@ module.exports.uploadImage = async (req, res) => {
     );
 
     res.json({
-      message: "sucessfully uploaded",
+      message: "Sucessfully uploaded.",
       business,
     });
   } catch (err) {

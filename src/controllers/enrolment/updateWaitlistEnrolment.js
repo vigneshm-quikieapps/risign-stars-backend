@@ -96,13 +96,13 @@ const updateWaitlistEnrolment = async (req, res) => {
           { userData, businessSessionData, businessClassData }
         );
         await session.commitTransaction();
-        return res.status(201).send({ message: "enrolled successful!" });
+        return res.status(201).send({ message: "Enrolled successful." });
       } else {
-        throw new Error("User is not in waitlist");
+        throw new Error("User is not in Waitlist.");
       }
     } else {
       throw new Error(
-        "Cannot be enrolled beacause maximum limit of enrolment is reached"
+        "Cannot be Enrolled beacause maximum limit of Enrolment is reached."
       );
     }
 

@@ -7,7 +7,7 @@ module.exports.saveNotificationData = (req, res) => {
   notification.save((err, noti) => {
     if (err) {
       return res.status(400).json({
-        error: "unable to send the Notification",
+        error: "Unable to send the Notification.",
       });
     }
     res.json(noti);
@@ -18,13 +18,13 @@ module.exports.sendNotification = (req, res) => {
   // notification object with title and text
   var notification = {
     title: "Todays Deal",
-    text: "Mobile Devices at 50% off. Only for today",
+    text: "Mobile Devices at 50% off. Only for today.",
   };
   let FCMData = [];
   Notification.find().exec((err, item) => {
     if (err) {
       return res.status(400).json({
-        err: "cannot Get the Notification",
+        err: "Cannot Get the Notification.",
       });
     }
 
@@ -53,7 +53,7 @@ module.exports.sendNotification = (req, res) => {
       .catch(function (error) {
         if (error) {
           return res.status(400).json({
-            err: "cannot Get the Notification",
+            err: "Cannot Get the Notification.",
           });
         }
       });

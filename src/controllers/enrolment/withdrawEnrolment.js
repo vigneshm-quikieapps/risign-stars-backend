@@ -21,7 +21,7 @@ const withdrawEnrolment = async (req, res) => {
         $set: {
           enrolledStatus: "DROPPED",
           discontinuationReason: "DROPPED",
-          droppedDate:new Date()
+          droppedDate: new Date(),
         },
       },
       { new: true }
@@ -46,10 +46,10 @@ const withdrawEnrolment = async (req, res) => {
     let { email } = userData;
     WithdrawEnrollmentEmail.send(
       { to: email },
-      { userData, sessionData, classData:businessClassData }
+      { userData, sessionData, classData: businessClassData }
     );
     await session.commitTransaction();
-    return res.status(201).send({ message: "cancellation successfull" });
+    return res.status(201).send({ message: "Cancellation successful." });
   } catch (err) {
     console.error(err);
     await session.abortTransaction();

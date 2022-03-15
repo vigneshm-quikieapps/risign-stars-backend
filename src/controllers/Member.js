@@ -29,7 +29,7 @@ module.exports.create = async (req, res) => {
     let member = await Member.create(data);
     return res
       .status(201)
-      .send({ message: "Member Added Successfully", member });
+      .send({ message: "Member Added Successfully.", member });
   } catch (err) {
     console.error(err);
     return res.status(422).send({ message: err.message });
@@ -50,7 +50,7 @@ module.exports.update = async (req, res) => {
     if (!member) {
       throw new DoesNotExistError();
     }
-    return res.send({ message: "updated successfully", member });
+    return res.send({ message: "Updated successfully.", member });
   } catch (err) {
     console.error(err);
     return res.status(422).send({ message: err.message });
@@ -65,7 +65,7 @@ module.exports.delete = async (req, res) => {
     if (!deletedCount) {
       throw new DoesNotExistError();
     }
-    return res.send({ message: "deleted successfully" });
+    return res.send({ message: "Deleted successfully." });
   } catch (err) {
     console.error(err);
     return res.status(422).send({ message: err.message });
@@ -93,7 +93,7 @@ module.exports.addNewEmergencyContact = (req, res) => {
     (err, contact) => {
       if (err) {
         return res.status(400).json({
-          error: "Unable to save EmergencyContacts  ",
+          error: "Unable to save EmergencyContacts.",
         });
       }
       return res.json(contact);
@@ -121,7 +121,7 @@ module.exports.updateEmergencyContact = (req, res) => {
     (err, contact) => {
       if (err) {
         return res.status(400).json({
-          err: "contact updation failed ",
+          err: "Contact updation failed.",
         });
       }
 
@@ -143,15 +143,15 @@ module.exports.getEmergencyContact = async (req, res) => {
 module.exports.addMembership = async (req, res) => {
   try {
     if (!req.params.memberId) {
-      throw new Error("Please enter a valid Member Id");
+      throw new Error("Please enter a valid Member Id.");
     }
     if (!req.params.businessId) {
-      throw new Error("Please enter a valid business Id");
+      throw new Error("Please enter a valid Business Id.");
     }
     let member = await Member.findById(req.params.memberId);
 
     if (!member) {
-      throw new Error("Please enter a valid Member Id");
+      throw new Error("Please enter a valid Member Id.");
     }
     let business = await Member.findOne({
       _id: req.params.memberId,
@@ -167,7 +167,7 @@ module.exports.addMembership = async (req, res) => {
         { new: true, useFindAndModify: false }
       );
       return res.json({
-        updatedMsg: "new membership id created",
+        updatedMsg: "New membership Id created.",
         updated,
       });
     }
@@ -176,7 +176,7 @@ module.exports.addMembership = async (req, res) => {
       (item) => item.businessId === req.params.businessId
     );
     return res.json({
-      success: "Club membership exists use existing club membership id",
+      success: "Clubmembership exists, Use existing Clubmembership id.",
       Membership,
     });
   } catch (err) {
@@ -254,11 +254,11 @@ module.exports.uploadImage = async (req, res) => {
   );
 
   if (!member) {
-    throw new Error("upload image unsucessful");
+    throw new Error("Upload image unsucessful.");
   }
 
   res.json({
-    message: "sucessfully uploaded",
+    message: "Sucessfully uploaded.",
     member,
   });
 };

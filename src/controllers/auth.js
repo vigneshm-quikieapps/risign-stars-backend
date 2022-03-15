@@ -15,7 +15,7 @@ module.exports.signup = async (req, res) => {
     data = { ...data, mobileNoVerified: true };
     await User.create(data);
     SignUpEmail.send(data);
-    return res.status(201).send({ message: "created successfully" });
+    return res.status(201).send({ message: "Created successfully." });
   } catch (err) {
     return res.status(400).send({ message: err.message });
   }
@@ -24,7 +24,7 @@ module.exports.signup = async (req, res) => {
 module.exports.logout = async (req, res) => {
   try {
     RefreshToken.clear(res);
-    res.json({ message: "successfully logged out" });
+    res.json({ message: "Successfully logged out." });
   } catch (err) {
     return res.status(422).send({ message: err.message });
   }
@@ -41,7 +41,7 @@ module.exports.signin = async (req, res) => {
     }
 
     if (!user.isValidPassword(password)) {
-      throw new Error("Username or password is not correct");
+      throw new Error("Username or Password is not correct.");
     }
 
     let data = generateTokens({ user });
@@ -84,7 +84,7 @@ module.exports.refreshToken = async (req, res) => {
   try {
     const token = req.cookies && req.cookies.jid;
     if (!token) {
-      response = { ...response, message: "refresh token not found" };
+      response = { ...response, message: "Refresh token not found." };
       throw new Error();
     }
 
@@ -92,7 +92,7 @@ module.exports.refreshToken = async (req, res) => {
     try {
       payload = RefreshToken.verify(token);
     } catch (err) {
-      response = { ...response, message: "invalid refresh token" };
+      response = { ...response, message: "Invalid refresh token." };
       throw err;
     }
 
@@ -100,7 +100,7 @@ module.exports.refreshToken = async (req, res) => {
     const user = await User.findById(userId);
 
     if (!user) {
-      response = { ...response, message: "user does not exist" };
+      response = { ...response, message: "User does not exist." };
       throw new Error();
     }
 
@@ -127,7 +127,7 @@ module.exports.getOTPMobileNo = async (req, res) => {
     let { mobileNo } = req.body;
     let otp = await VerifyContactOTP.generate(mobileNo);
     VerifyMobileSms.send({ to: mobileNo, otp });
-    return res.send({ message: `OTP has been sent to ${mobileNo}`, otp });
+    return res.send({ message: `OTP has been sent to ${mobileNo}.`, otp });
   } catch (err) {
     return res.status(422).send({ message: err.message });
   }
@@ -144,7 +144,7 @@ module.exports.getOTPEmail = async (req, res) => {
     let { email } = req.body;
     let otp = await VerifyContactOTP.generate(email);
     OTPEmail.send({ to: email, otp });
-    return res.send({ otp, message: "OTP has been sent to email" });
+    return res.send({ otp, message: "OTP has been sent to email." });
   } catch (err) {
     return res.status(422).send({ message: err.message });
   }

@@ -208,9 +208,9 @@ module.exports.enterTransaction = async (req, res) => {
           session
         );
         await session.commitTransaction();
-        return res.send({ message: "transaction recorded", bill });
+        return res.send({ message: "Transaction recorded.", bill });
       } else {
-        throw new Error("Transaction amount is greater than sub total");
+        throw new Error("Transaction amount is greater than sub total.");
       }
     } else {
       // record a new transaction
@@ -232,9 +232,9 @@ module.exports.enterTransaction = async (req, res) => {
           session
         );
         await session.commitTransaction();
-        return res.send({ message: "transaction recorded", bill });
+        return res.send({ message: "Transaction recorded.", bill });
       } else {
-        throw new Error("No due left cannot record this transaction");
+        throw new Error("No due left cannot record this transaction.");
       }
     }
   } catch (err) {
@@ -260,7 +260,7 @@ module.exports.deleteTransactions = async (req, res) => {
           return transaction._id != transactionId;
         });
         if (newTransactions.length == partialTransactions.length) {
-          throw new Error("Invalid Transaction Id");
+          throw new Error("Invalid Transaction Id.");
         }
         let update = {
           $set: {
@@ -279,9 +279,9 @@ module.exports.deleteTransactions = async (req, res) => {
           options
         ).session(session);
         await session.commitTransaction();
-        return res.send({ message: "transaction deleted", bill });
+        return res.send({ message: "Transaction deleted.", bill });
       } else {
-        throw new Error("There is no transactions");
+        throw new Error("There is no transactions.");
       }
     }
   } catch (err) {
@@ -318,15 +318,15 @@ module.exports.updateTransactions = async (req, res) => {
               updatedBillTransactions.push(updatedBill);
             }
           } else {
-            throw new Error("There is no partial transactions in a bill");
+            throw new Error("There is no partial transactions in a bill.");
           }
         } else {
-          throw new Error(`There is no bill of this ${billId} bill id `);
+          throw new Error(`There is no bill of this ${billId} bill id .`);
         }
       }
       await session.commitTransaction();
       return res.send({
-        message: "transaction updated",
+        message: "Transaction updated.",
         updatedBillTransactions,
       });
     }
@@ -496,7 +496,7 @@ module.exports.businessAdminDashboardinfo = async (req, res) => {
       businessId
     );
 
-    return res.send({ message: "Successful", respArr });
+    return res.send({ message: "Successful.", respArr });
   } catch (err) {
     return res.status(422).send({ message: err.message });
   }
@@ -684,7 +684,7 @@ module.exports.activeDropEnrolments = async (req, res) => {
 
       respArr.push(respObj);
     }
-    return res.status(200).send({ message: "Successful", respArr });
+    return res.status(200).send({ message: "Successful.", respArr });
   } catch (err) {
     return res.status(422).send({ message: err.message });
   }
@@ -699,7 +699,7 @@ module.exports.markStandingOrder = async (req, res) => {
       },
     });
     return res.send({
-      message: "transaction updated",
+      message: "Transaction updated.",
     });
   } catch (err) {
     return res.send({ message: err.message });

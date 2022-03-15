@@ -21,7 +21,7 @@ module.exports.create = async (req, res) => {
       ...req.body,
       createdBy: req.authUserData._id,
     });
-    return res.status(201).send({ message: "added successfully", role });
+    return res.status(201).send({ message: "Added successfully.", role });
   } catch (err) {
     console.error(err);
     return res.status(422).send({ message: err.message });
@@ -57,7 +57,7 @@ module.exports.update = async (req, res) => {
     if (!role) {
       throw new DoesNotExistError();
     }
-    return res.send({ message: "updated successfully", role });
+    return res.send({ message: "Updated successfully.", role });
   } catch (err) {
     console.error(err);
     return res.status(422).send({ message: err.message });
@@ -71,7 +71,7 @@ module.exports.delete = async (req, res) => {
     if (!deletedCount) {
       throw new DoesNotExistError();
     }
-    return res.send({ message: "deleted successfully" });
+    return res.send({ message: "Deleted successfully." });
   } catch (err) {
     console.error(err);
     return res.status(422).send({ message: err.message });

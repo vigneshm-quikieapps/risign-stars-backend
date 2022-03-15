@@ -34,7 +34,7 @@ const isMembersPartOfTheSession = async (sessionId, { req }) => {
       membersIsPartOfSessionCount != memberIds.length
     ) {
       throw new Error(
-        "attendance of all members in the session should be added together"
+        "Attendance of all Members in the Session should be added together."
       );
     }
 
@@ -60,7 +60,7 @@ module.exports.addAttendance = () => {
     // .bail()
     // .custom(canAddAttendance),
     check("records", "should be a array").isArray(),
-    check("records.*.memberId", "should be a valid member id").isMongoId(),
+    check("records.*.memberId", "should be a valid Member id").isMongoId(),
     check("records.*.attended", "should be a boolean").isBoolean(),
     check("records.*.comments", "should be a array").optional(),
   ];

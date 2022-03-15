@@ -47,7 +47,7 @@ const getAttendanceOfASessionByDate = async (req, res) => {
         if (enrolments.length == 0) {
           attendance = {};
           attendance.records = [];
-          return res.send({ message: "No enrollments are there", attendance });
+          return res.send({ message: "No Enrolments are there.", attendance });
         }
         // create the record for the members
         req.body.records = [];

@@ -25,7 +25,7 @@ module.exports.createTerm = async (req, res) => {
     let payload = { ...req.body };
     payload = auditCreatedBy(req, payload);
     let term = await Term.create(payload);
-    return res.status(201).send({ message: "create successful", term });
+    return res.status(201).send({ message: "Create successful.", term });
   } catch (err) {
     return res.status(422).send({ message: err.message });
   }
@@ -98,13 +98,13 @@ module.exports.updateTerm = async (req, res) => {
           { new: true, useFindAndModify: false }
         );
 
-        return res.send({ message: "update successful", term });
+        return res.send({ message: "Update successful.", term });
       } else {
         // return res.send({
         //   message: "not allowed, members are already enrolled in this term",
         // });
         throw new Error(
-          "not allowed, members are already enrolled in this term"
+          "Not allowed, Members are already Enrolled in this Term."
         );
       }
     } else {
@@ -112,7 +112,7 @@ module.exports.updateTerm = async (req, res) => {
       //   message: "not allowed, there is at least 1 session using the term",
       // });
       throw new Error(
-        "not allowed, there is at least 1 session using the term"
+        "Not allowed, there is atleast one Session using the Term."
       );
     }
   } catch (err) {
@@ -133,12 +133,12 @@ module.exports.deleteTerm = async (req, res) => {
 
     if (sessionCount) {
       throw new Error(
-        "not allowed, there is at least 1 session using the term"
+        "Not allowed, there is atleast one Session using the Term."
       );
     }
 
     await Term.deleteOne({ _id: termId });
-    return res.send({ message: "delete successful" });
+    return res.send({ message: "Delete successful." });
   } catch (err) {
     return res.status(422).send({ message: err.message });
   }

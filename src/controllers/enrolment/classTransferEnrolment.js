@@ -43,7 +43,7 @@ const classTransferEnrolment = async (req, res) => {
     await cancelAllFutureBills(data, session);
 
     await session.commitTransaction();
-    return res.status(201).send({ message: "class transfer successful" });
+    return res.status(201).send({ message: "Class transfer successful." });
   } catch (err) {
     console.error(err);
     await session.abortTransaction();

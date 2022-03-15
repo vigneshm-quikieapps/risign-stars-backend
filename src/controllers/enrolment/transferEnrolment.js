@@ -14,7 +14,7 @@ const transferEnrolment = async (req, res) => {
     let { fullcapacity, fullcapacityfilled } = newSessionData;
 
     if (fullcapacityfilled >= fullcapacity) {
-      throw new Error("No Seats available in the session");
+      throw new Error("No Seats available in the Session.");
     }
     let enrolmentId = req.body.enrolmentId;
     let enrolment = await Enrolment.findById({ _id: enrolmentId });
@@ -31,7 +31,7 @@ const transferEnrolment = async (req, res) => {
       { to: email },
       { userData, businessSessionData, businessClassData, newSession }
     );
-    return res.status(201).send({ message: "Transfer successful" });
+    return res.status(201).send({ message: "Transfer successful." });
   } catch (err) {
     console.error(err);
     await session.abortTransaction();

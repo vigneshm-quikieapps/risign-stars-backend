@@ -96,7 +96,7 @@ module.exports.createOrGetProgress = async (req, res) => {
     });
 
     if (!member) {
-      throw new Error("No progress record as member doesn't exist");
+      throw new Error("No Progress record as Member doesn't exist.");
     }
 
     /** check if progress record already exists */
@@ -138,11 +138,11 @@ module.exports.getAProgress = async (req, res) => {
     });
 
     if (!progress) {
-      throw new Error("No Progress found");
+      throw new Error("No Progress found.");
     }
     res.status(200).json({
       success: true,
-      message: "Showing progress record of a member",
+      message: "Showing Progress record of a Member",
       progress: progress,
     });
   } catch (err) {
@@ -244,15 +244,15 @@ module.exports.markAProgress = async (req, res) => {
     }
 
     if (!message) {
-      throw new Error("No progress record");
+      throw new Error("No progress record.");
     }
 
     if (message.matchedCount <= 0) {
-      throw new Error("skill not found");
+      throw new Error("Skill not found.");
     }
 
     return res.status(200).json({
-      message: "Skill updation successfull",
+      message: "Skill updation successful.",
     });
   } catch (err) {
     res.status(422).json({ message: err.message });
@@ -385,7 +385,7 @@ module.exports.multipleProgressMarking = async (req, res) => {
         });
       }
     });
-    return res.send({ message: "updated successful", response });
+    return res.send({ message: "Updated successful.", response });
   } catch (err) {
     console.error(err);
     return res.status(422).send({ message: err.message });

@@ -38,7 +38,7 @@ const addAttendance = async (req, res) => {
 
     await session.commitTransaction();
 
-    return res.status(201).send({ message: "added successful" });
+    return res.status(201).send({ message: "Added successful." });
   } catch (err) {
     console.log(err);
     await session.abortTransaction();

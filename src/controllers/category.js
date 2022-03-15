@@ -21,7 +21,7 @@ module.exports.createCategory = async (req, res) => {
     let payload = { ...req.body };
     payload = auditCreatedBy(req, payload);
     const category = await Category.create(payload);
-    return res.status(201).send({ message: "create successful", category });
+    return res.status(201).send({ message: "Create successful.", category });
   } catch (err) {
     return res.status(422).send({ message: err.message });
   }
@@ -74,7 +74,9 @@ module.exports.removeCategory = async (req, res) => {
     let businessClassCount = await BusinessClass.count({ categoryId });
 
     if (businessClassCount) {
-      throw new Error("not allowed, it is used in at least 1 class definition");
+      throw new Error(
+        "Not allowed, it is used in atleast one Class definition."
+      );
     }
 
     let category = await Category.deleteOne({ _id: categoryId });
@@ -83,7 +85,7 @@ module.exports.removeCategory = async (req, res) => {
       throw new DoesNotExistError();
     }
 
-    return res.send({ message: "deleted successful" });
+    return res.send({ message: "Deleted successful." });
   } catch (err) {
     return res.status(422).send({ message: err.message });
   }

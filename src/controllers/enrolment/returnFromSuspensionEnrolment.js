@@ -53,7 +53,7 @@ const returnFromSuspensionEnrolment = async (req, res) => {
     );
     return res
       .status(201)
-      .send({ message: "return from suspension successful" });
+      .send({ message: "Return from Suspension successful." });
   } catch (err) {
     console.error(err);
     await session.abortTransaction();

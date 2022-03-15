@@ -87,7 +87,7 @@ module.exports.getFinanceOfABusiness = async (req, res) => {
     });
 
     if (!businessFinance) {
-      throw new Error("Does not exists");
+      throw new Error("Does not exists.");
     }
 
     return res.send({ businessFinance });
@@ -101,7 +101,7 @@ module.exports.deleteBusinessFinance = async (req, res) => {
   try {
     let { businessFinanceId } = req.params;
     await BusinessFinance.deleteOne({ _id: businessFinanceId });
-    return res.send({ message: "delete successful" });
+    return res.send({ message: "Delete successful." });
   } catch (err) {
     return res.send({ message: err.message });
   }
@@ -134,7 +134,7 @@ module.exports.updateBusinessFinance = async (req, res) => {
       { new: true, useFindAndModify: false }
     );
 
-    return res.send({ message: "update successful", businessFinance });
+    return res.send({ message: "Update successful.", businessFinance });
   } catch (err) {
     return res.status(422).send({ message: err.message });
   }
@@ -146,7 +146,7 @@ module.exports.updateBusinessFinance2 = async (req, res) => {
     let updatePayload = { ...req.body };
 
     if (!businessId) {
-      throw new Error("Does not exist");
+      throw new Error("Does not exist.");
     }
 
     /**
@@ -166,10 +166,10 @@ module.exports.updateBusinessFinance2 = async (req, res) => {
     );
 
     if (!businessFinance) {
-      throw new Error("Does not exist");
+      throw new Error("Does not exist.");
     }
 
-    return res.send({ message: "update successful", businessFinance });
+    return res.send({ message: "Update successful.", businessFinance });
   } catch (err) {
     return res.status(422).send({ message: err.message });
   }
@@ -194,7 +194,7 @@ module.exports.addDiscountToBusinessFinance = async (req, res) => {
       }
     );
 
-    return res.send({ message: "discount added successful", businessFinance });
+    return res.send({ message: "Discount added successful.", businessFinance });
   } catch (err) {
     return res.send({ message: err.message });
   }
@@ -247,7 +247,7 @@ module.exports.getAllBusinessFinance = (req, res) => {
   query.exec((err, businessFinance) => {
     if (err) {
       return res.status(400).json({
-        error: "NO BusinessFinance FOUND",
+        error: "NO BusinessFinance FOUND.",
       });
     }
     res.json(businessFinance);
