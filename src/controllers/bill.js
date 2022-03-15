@@ -689,3 +689,19 @@ module.exports.activeDropEnrolments = async (req, res) => {
     return res.status(422).send({ message: err.message });
   }
 };
+
+module.exports.markStandingOrder = async (req, res) => {
+  try {
+    let { billId } = req.body;
+    const response = await Bill.findByIdAndUpdate(billId, {
+      $set: {
+        billStatus: "STANDING_ORDER",
+      },
+    });
+    return res.send({
+      message: "transaction updated",
+    });
+  } catch (err) {
+    return res.send({ message: err.message });
+  }
+};

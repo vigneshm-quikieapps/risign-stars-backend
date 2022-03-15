@@ -9,14 +9,15 @@ const {
   updateTransactions,
   businessAdminDashboardinfo,
   memberActiveInActive,
-  activeDropEnrolments
+  activeDropEnrolments,
+  markStandingOrder,
 } = require("../controllers/bill");
 const validate = require("../validations/validate");
 const {
   billOfAMemberInAClassValidationRules,
   billOfAMemberInABusinessValidationRules,
   enterTransactionValidationRules,
-  deleteTransactionValidationRules
+  deleteTransactionValidationRules,
 } = require("../validations/bill");
 const { isAuthorized } = require("../middlewares/auth");
 const getResourceBusinessIdForBill = require("../middlewares/auth/utils/getResourceBusinessId/getResourceBusinessIdForBill");
@@ -57,25 +58,14 @@ router.post(
   deleteTransactions
 );
 
-router.post(
-  "/update-transactions",
-  updateTransactions
-);
+router.post("/update-transactions", updateTransactions);
 
-router.post(
-  "/business-admin-dashboard-bill-info",
-  businessAdminDashboardinfo
-);
+router.post("/business-admin-dashboard-bill-info", businessAdminDashboardinfo);
 
-router.post(
-  "/memberActiveInActive",
-  memberActiveInActive
-);
+router.post("/memberActiveInActive", memberActiveInActive);
 
-router.post(
-  "/activeDropEnrolments",
-  activeDropEnrolments
-);
+router.post("/activeDropEnrolments", activeDropEnrolments);
 
+router.post("/update-bill-as-standing-order", markStandingOrder);
 
 module.exports = router;
