@@ -5,7 +5,7 @@ const Role = require("../models/Role");
 const isUniqueCode = async (code) => {
   let roleCount = await Role.count({ code });
   if (roleCount) {
-    return Promise.reject("code already exists");
+    return Promise.reject("Code already exists.");
   }
   return true;
 };
@@ -13,7 +13,7 @@ const isUniqueCode = async (code) => {
 const isUniqueName = async (name) => {
   let roleCount = await Role.count({ name });
   if (roleCount) {
-    return Promise.reject("name already exists");
+    return Promise.reject("Name already exists.");
   }
   return true;
 };

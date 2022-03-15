@@ -16,7 +16,7 @@ const createTermValidationRules = () => {
       format: "YYYY-MM-DD",
       strictMode: true,
     }),
-    check("termFee", "term fee should be a positive Number").isInt({ min: 0 }),
+    check("termFee", "Term fee should be a positive Number").isInt({ min: 0 }),
     // check(
     //   "classsequence",
     //   "classsequence should be a Number/Integer  "
@@ -38,7 +38,7 @@ const updateTermValidationRules = () => {
       "startdate",
       "endtime   should be a date in format: 'MM-DD-YYYY'"
     ).optional(),
-    check("termFee", "term fee should be a positive Number")
+    check("termFee", "Term fee should be a positive Number")
       .optional()
       .isInt({ min: 0 }),
     // check("classsequence", "classsequence should be a Numbre/Integer  ")

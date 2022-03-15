@@ -21,7 +21,7 @@ const checkValidSession =
       req[dataField] = businessSession;
       return true;
     } catch (err) {
-      return Promise.reject(`should be a valid session`);
+      return Promise.reject(`should be a valid session.`);
     }
   };
 
@@ -54,7 +54,7 @@ const isTrialSessionAllowed =
       }
       return true;
     } catch (err) {
-      return Promise.reject(`Trial session not available`);
+      return Promise.reject(`Trial session not available.`);
     }
   };
 
@@ -90,7 +90,7 @@ const isEnroledEnrolment = async (enrolmentId, { req }) => {
 
     if (!ENROLLED_STATUS_GROUP.includes(enrolledStatus)) {
       throw new Error(
-        `enrolment should be in ${ENROLLED_STATUS_GROUP.join(" / ")} status`
+        `Enrolment should be in ${ENROLLED_STATUS_GROUP.join(" / ")} status.`
       );
     }
   } catch (err) {
@@ -103,7 +103,7 @@ const isSuspendedEnrolment = async (enrolmentId, { req }) => {
     let { enrolledStatus } = req.enrolmentData;
 
     if (enrolledStatus !== STATUS_SUSPEND) {
-      throw new Error(`enrolment should be in ${STATUS_SUSPEND} status`);
+      throw new Error(`Enrolment should be in ${STATUS_SUSPEND} status.`);
     }
   } catch (err) {
     return Promise.reject(err.message);
@@ -259,7 +259,7 @@ const isAllowedToSessionTransfer = async (_, { req }) => {
 
     if (ENUM_TRANSFER_NOT_ALLOWED.includes(enrolledStatus)) {
       throw new Error(
-        `session transfer is not allowed for enrolled status: ${enrolledStatus}`
+        `Session transfer is not allowed for Enroled status: ${enrolledStatus}.`
       );
     }
 
@@ -281,7 +281,7 @@ const hasSeatsAvailable = async (_, { req }) => {
     let { fullcapacity, fullcapacityfilled } = req.newSessionData;
 
     if (fullcapacityfilled >= fullcapacity) {
-      throw new Error("capacity not available in session");
+      throw new Error("Capacity not available in Session.");
     }
 
     return true;

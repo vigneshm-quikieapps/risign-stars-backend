@@ -75,7 +75,7 @@ const updateMemberValidationRules = () => {
 };
 const createEmergencyContactValidationRules = () => {
   return [
-    body("contacts", "contacts should be an array").isArray(),
+    body("contacts", "Contacts should be an array").isArray(),
     body("contacts.*.addressType", "Address type invalid type").isIn(
       ADDRESS_TYPE
     ),
@@ -93,7 +93,7 @@ const createEmergencyContactValidationRules = () => {
 };
 const updateEmergencyContactValidationRules = () => {
   return [
-    body("contacts", "contacts should be an array").optional().isArray(),
+    body("contacts", "Contacts should be an array").optional().isArray(),
     body("contacts.*.addressType", "Address type invalid type")
       .optional()
       .isIn(ADDRESS_TYPE),

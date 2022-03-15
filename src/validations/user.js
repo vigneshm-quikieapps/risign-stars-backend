@@ -40,7 +40,7 @@ const verifyOtp = async (to, otp) => {
     return true;
   } catch (err) {
     console.error(err.message);
-    return Promise.reject("Please enter valid OTP");
+    return Promise.reject("Please enter valid OTP.");
   }
 };
 

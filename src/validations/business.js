@@ -14,7 +14,7 @@ const businessFilter = (filters) => {
     let filter = JSON.parse(filters[i]);
     let { field, type, value } = filter;
     if (!field || typeof field != "string") {
-      return Promise.reject(`filters[${i}].field should be string`);
+      return Promise.reject(`filters[${i}].field should be string.`);
     }
     if (!type || typeof type != "string" || !FILTER_TYPES.includes(type)) {
       return Promise.reject(
@@ -22,7 +22,7 @@ const businessFilter = (filters) => {
       );
     }
     if (!value || typeof value != "string") {
-      return Promise.reject(`filters[${i}].value should be string`);
+      return Promise.reject(`filters[${i}].value should be string.`);
     }
   }
   return true;
@@ -36,7 +36,7 @@ const isUniqueCode = async (code) => {
   let business = await Business.find({ code: code });
   if (business.length)
     return Promise.reject(
-      "This code is already used in another business. Please input a new unique code"
+      "This code is already used in another Business. Please input a new unique code."
     );
 };
 
@@ -55,10 +55,10 @@ const createBusinessValidationRules = () => {
     check("contactEmail", "should be a valid email address")
       .optional()
       .isEmail(),
-    check("primaryPhone", "should be at least 6 chars")
+    check("primaryPhone", "should be atleast 6 chars")
       .optional()
       .isLength({ min: 6 }),
-    check("primaryMobileNo", "should be at least 9 chars")
+    check("primaryMobileNo", "should be atleast 9 chars")
       .optional()
       .isLength({ min: 9 }),
     check("postcode", "should be at least 6 chars").isLength({
@@ -97,13 +97,13 @@ const updateBusinessValidationRules = () => {
     check("contactEmail", "should be a valid email address")
       .optional()
       .isEmail(),
-    check("primaryPhone", "should be at least 6 chars")
+    check("primaryPhone", "should be atleast 6 chars")
       .optional()
       .isLength({ min: 6 }),
-    check("primaryMobileNo", "should be at least 9 chars")
+    check("primaryMobileNo", "should be atleast 9 chars")
       .optional()
       .isLength({ min: 9 }),
-    check("postcode", "should be at least 6 chars").optional().isLength({
+    check("postcode", "should be atleast 6 chars").optional().isLength({
       min: 6,
     }),
     check("line1", "is required").optional().notEmpty(),
@@ -120,7 +120,8 @@ const updateBusinessValidationRules = () => {
 
 const isBusinessValid = async (businessId) => {
   let business = await Business.findById(businessId);
-  if (business === null) return Promise.reject("Please input a valid business");
+  if (business === null)
+    return Promise.reject("Please input a valid Business.");
 };
 
 const isFileXlsx = async (req, res, next) => {
@@ -130,7 +131,7 @@ const isFileXlsx = async (req, res, next) => {
       return res.status(200).json({
         errors: [
           {
-            Payment: "Please input a valid xlsx file format",
+            Payment: "Please input a valid xlsx file format.",
           },
         ],
       });
@@ -139,7 +140,7 @@ const isFileXlsx = async (req, res, next) => {
     return res.status(200).json({
       errors: [
         {
-          Payment: "Payment file is required",
+          Payment: "Payment file is required.",
         },
       ],
     });
@@ -185,7 +186,7 @@ const isImageTypeValid = async (req, res, next) => {
     return res.status(200).json({
       errors: [
         {
-          image: "Please input a valid Image file format. Eg: jpg, jpeg, png",
+          image: "Please input a valid Image file format. Eg: jpg, jpeg, png.",
         },
       ],
     });
@@ -196,7 +197,7 @@ const isImageTypeValid = async (req, res, next) => {
     return res.status(200).json({
       errors: [
         {
-          logo: "Please input a valid logo file format. Eg: jpg, jpeg, png",
+          logo: "Please input a valid logo file format. Eg: jpg, jpeg, png.",
         },
       ],
     });

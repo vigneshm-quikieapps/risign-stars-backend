@@ -240,12 +240,14 @@ const addNewDiscountValidationRules = () => {
 };
 const updateDiscountValidationRules = () => {
   return [
-    check("name", "name should be a String and at least 3 char long").isLength({
-      min: 3,
-    }),
+    check("name", "name should be a String and at least 3 char long.").isLength(
+      {
+        min: 3,
+      }
+    ),
     check(
       "type",
-      "type should be a String and at least 3 char long ,SHOULD BE PERCENTAGE"
+      "Type should be a String and at least 3 char long ,SHOULD BE PERCENTAGE."
     ).isIn(["PERCENTAGE"]),
     check("value", "value should be a Number and an Int").isInt(),
     check("status", "status should be ACTIVE/INACTIVE ")
@@ -258,7 +260,7 @@ const canApply = async (_, { req }) => {
   try {
     let { discountDetail } = req.enrolmentData;
     if (!discountDetail.name === undefined) {
-      throw new Error("not allowed, enrolment has atleast one discount");
+      throw new Error("Not allowed, Enrolment has at least one discount.");
     }
 
     return true;

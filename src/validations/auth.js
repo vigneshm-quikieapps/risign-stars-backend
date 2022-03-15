@@ -3,12 +3,12 @@ const { RefreshToken } = require("../services/auth");
 const { isValidMobile } = require("./helpers/mobileNo");
 
 const getOTPEmailValidationRules = () => {
-  return [body("email", "should be a valid Email").isEmail()];
+  return [body("email", "should be a valid Email.").isEmail()];
 };
 
 const getOTPMobileNoValidationRules = () => {
   return [
-    body("mobileNo", "should be a valid mobile number").custom(isValidMobile),
+    body("mobileNo", "should be a valid mobile number.").custom(isValidMobile),
   ];
 };
 

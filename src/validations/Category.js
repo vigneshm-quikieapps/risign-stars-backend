@@ -17,7 +17,7 @@ const checkIsUnique = async (name) => {
     return true;
   } catch (err) {
     return Promise.reject(
-      `'${name}' already exists!! Please Enter a Unique Name for Category `
+      `'${name}' Already exists!! Please Enter a Unique Name for Category `
     );
   }
 };

@@ -31,12 +31,12 @@ const levelsValidator = (levels, { req }) => {
 
   /** numbers of levels should be equal to the number of levelCount */
   if (levels.length !== parseInt(levelCount)) {
-    return Promise.reject("number of levels should be equal to levelCount");
+    return Promise.reject("Number of levels should be equal to levelCount.");
   }
 
   /** levels must be an array of skills */
   if (!levels.every(checkSkills)) {
-    return Promise.reject("skills must be an array of strings");
+    return Promise.reject("Skills must be an array of strings.");
   }
 
   return true;

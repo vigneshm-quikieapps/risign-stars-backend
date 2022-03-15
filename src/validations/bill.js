@@ -25,8 +25,8 @@ const billOfAMemberInAClassValidationRules = () => {
 
 const billOfAMemberInABusinessValidationRules = () => {
   return [
-    body("memberId", "should be a valid member ID").custom(isValidMemberId),
-    body("businessId", "should be a valid business ID").custom(
+    body("memberId", "should be a valid Member ID").custom(isValidMemberId),
+    body("businessId", "should be a valid Business ID").custom(
       isValidBusinessId
     ),
   ];
