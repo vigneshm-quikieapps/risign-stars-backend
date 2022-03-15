@@ -85,7 +85,7 @@ enrolmentSchema.statics.canEnrol = async function (filter) {
 
   if (enrolment && enrolment.enrolledStatus != "DROPPED") {
     throw new Error(
-      "member can enrol in only one session for a particular class"
+      "Member can enrol in only one session for a particular class"
     );
   }
 };

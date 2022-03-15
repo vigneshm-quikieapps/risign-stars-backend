@@ -124,7 +124,7 @@ module.exports.deleteBusinessSession = async (req, res) => {
     let enrolmentCount = await Enrolment.count({ sessionId });
 
     if (enrolmentCount) {
-      throw new Error("Delete not allowed, Session has atleast one Erolment.");
+      throw new Error("Delete not allowed, Session has at least one Erolment.");
     }
 
     await BusinessSession.deleteOne({ _id: sessionId });

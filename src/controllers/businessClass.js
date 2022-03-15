@@ -222,7 +222,7 @@ module.exports.deleteBusinessClass = async (req, res) => {
 
     if (enrolmentCount) {
       throw new Error(
-        "Delete not allowed, there is atleast one Enrolment in the class."
+        "Delete not allowed, there is at least one Enrolment in the class."
       );
     }
 

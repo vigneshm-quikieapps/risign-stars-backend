@@ -75,7 +75,7 @@ module.exports.removeCategory = async (req, res) => {
 
     if (businessClassCount) {
       throw new Error(
-        "Not allowed, it is used in atleast one Class definition."
+        "Not allowed, it is used in at least one Class definition."
       );
     }
 

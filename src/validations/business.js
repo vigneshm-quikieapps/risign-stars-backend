@@ -55,10 +55,10 @@ const createBusinessValidationRules = () => {
     check("contactEmail", "should be a valid email address")
       .optional()
       .isEmail(),
-    check("primaryPhone", "should be atleast 6 chars")
+    check("primaryPhone", "should be at least 6 chars")
       .optional()
       .isLength({ min: 6 }),
-    check("primaryMobileNo", "should be atleast 9 chars")
+    check("primaryMobileNo", "should be at least 9 chars")
       .optional()
       .isLength({ min: 9 }),
     check("postcode", "should be at least 6 chars").isLength({
@@ -97,13 +97,13 @@ const updateBusinessValidationRules = () => {
     check("contactEmail", "should be a valid email address")
       .optional()
       .isEmail(),
-    check("primaryPhone", "should be atleast 6 chars")
+    check("primaryPhone", "should be at least 6 chars")
       .optional()
       .isLength({ min: 6 }),
-    check("primaryMobileNo", "should be atleast 9 chars")
+    check("primaryMobileNo", "should be at least 9 chars")
       .optional()
       .isLength({ min: 9 }),
-    check("postcode", "should be atleast 6 chars").optional().isLength({
+    check("postcode", "should be at least 6 chars").optional().isLength({
       min: 6,
     }),
     check("line1", "is required").optional().notEmpty(),

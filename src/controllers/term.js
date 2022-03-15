@@ -112,7 +112,7 @@ module.exports.updateTerm = async (req, res) => {
       //   message: "not allowed, there is at least 1 session using the term",
       // });
       throw new Error(
-        "Not allowed, there is atleast one Session using the Term."
+        "Not allowed, there is at least one Session using the Term."
       );
     }
   } catch (err) {
@@ -133,7 +133,7 @@ module.exports.deleteTerm = async (req, res) => {
 
     if (sessionCount) {
       throw new Error(
-        "Not allowed, there is atleast one Session using the Term."
+        "Not allowed, there is atl east one Session using the Term."
       );
     }
 
