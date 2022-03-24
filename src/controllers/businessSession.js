@@ -27,7 +27,7 @@ module.exports.createBusinessSession = async (req, res) => {
 
     return res
       .status(201)
-      .send({ message: "Create successful.", businessSession });
+      .send({ message: "Session create successful.", businessSession });
   } catch (err) {
     return res.status(422).send({ message: err.message });
   }
@@ -106,7 +106,7 @@ module.exports.updateBusinessSession = async (req, res) => {
       { new: true, useFindAndModify: false }
     ).populate("termData");
 
-    return res.send({ message: "Update successful.", businessSession });
+    return res.send({ message: "Session update successful.", businessSession });
   } catch (err) {
     return res.status(422).send({ message: err.message });
   }
@@ -129,7 +129,7 @@ module.exports.deleteBusinessSession = async (req, res) => {
 
     await BusinessSession.deleteOne({ _id: sessionId });
 
-    return res.send({ message: "Delete successful." });
+    return res.send({ message: "Session delete successful." });
   } catch (err) {
     return res.status(422).send({ message: err.message });
   }

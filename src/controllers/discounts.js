@@ -88,7 +88,7 @@ module.exports.applyDiscount = async (req, res) => {
     await discountAllFutureCharges(data, session);
     session.commitTransaction();
 
-    return res.send({ message: "Applied successful." });
+    return res.send({ message: "Discount applied successfully." });
   } catch (err) {
     session.abortTransaction();
     return res.status(422).send({ message: err.message });
@@ -100,7 +100,7 @@ module.exports.createDiscounts = async (req, res) => {
     let payload = { ...req.body };
     payload = auditCreatedBy(req, payload);
     const discount = await Discounts.create(payload);
-    return res.send({ message: "Create successful.", discount });
+    return res.send({ message: "Discount created successfully.", discount });
   } catch (err) {
     console.log({ err });
     return res.status(422).send({ message: err.message });
@@ -117,7 +117,7 @@ module.exports.updateDiscounts = async (req, res) => {
       { $set: payload },
       { new: true }
     );
-    return res.send({ message: "Update successful.", discount });
+    return res.send({ message: "Discount updated successfully.", discount });
   } catch (err) {
     console.log(err);
     return res.status(422).send({ message: err.message });
@@ -165,7 +165,7 @@ module.exports.deleteDiscounts = async (req, res) => {
       { $set: { isDeleted: true, status: INACTIVE_STATUS } }
     );
 
-    return res.send({ message: "Delete successful." });
+    return res.send({ message: "Discount deleted successfully." });
   } catch (err) {
     console.error(err);
     return res.status(422).send({ message: err.message });

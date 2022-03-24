@@ -44,9 +44,10 @@ module.exports.createBusinessFinance = async (req, res) => {
 
     await session.commitTransaction();
 
-    return res
-      .status(201)
-      .send({ message: "create successful", businessFinance });
+    return res.status(201).send({
+      message: "Business finance created successfully.",
+      businessFinance,
+    });
   } catch (err) {
     await session.abortTransaction();
     console.error(err);
@@ -101,7 +102,7 @@ module.exports.deleteBusinessFinance = async (req, res) => {
   try {
     let { businessFinanceId } = req.params;
     await BusinessFinance.deleteOne({ _id: businessFinanceId });
-    return res.send({ message: "Delete successful." });
+    return res.send({ message: "Business finance deleted successfully." });
   } catch (err) {
     return res.send({ message: err.message });
   }
@@ -134,7 +135,10 @@ module.exports.updateBusinessFinance = async (req, res) => {
       { new: true, useFindAndModify: false }
     );
 
-    return res.send({ message: "Update successful.", businessFinance });
+    return res.send({
+      message: "Business finance updated successfully.",
+      businessFinance,
+    });
   } catch (err) {
     return res.status(422).send({ message: err.message });
   }
@@ -169,7 +173,10 @@ module.exports.updateBusinessFinance2 = async (req, res) => {
       throw new Error("Does not exist.");
     }
 
-    return res.send({ message: "Update successful.", businessFinance });
+    return res.send({
+      message: "Business finance updated successfully.",
+      businessFinance,
+    });
   } catch (err) {
     return res.status(422).send({ message: err.message });
   }
@@ -194,7 +201,10 @@ module.exports.addDiscountToBusinessFinance = async (req, res) => {
       }
     );
 
-    return res.send({ message: "Discount added successful.", businessFinance });
+    return res.send({
+      message: "Discount added successfully.",
+      businessFinance,
+    });
   } catch (err) {
     return res.send({ message: err.message });
   }

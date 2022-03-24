@@ -25,7 +25,9 @@ module.exports.createTerm = async (req, res) => {
     let payload = { ...req.body };
     payload = auditCreatedBy(req, payload);
     let term = await Term.create(payload);
-    return res.status(201).send({ message: "Create successful.", term });
+    return res
+      .status(201)
+      .send({ message: "Term created successfully.", term });
   } catch (err) {
     return res.status(422).send({ message: err.message });
   }
@@ -98,7 +100,7 @@ module.exports.updateTerm = async (req, res) => {
           { new: true, useFindAndModify: false }
         );
 
-        return res.send({ message: "Update successful.", term });
+        return res.send({ message: "Term updated successfully.", term });
       } else {
         // return res.send({
         //   message: "not allowed, members are already enrolled in this term",
@@ -138,7 +140,7 @@ module.exports.deleteTerm = async (req, res) => {
     }
 
     await Term.deleteOne({ _id: termId });
-    return res.send({ message: "Delete successful." });
+    return res.send({ message: "Term deleted successfully." });
   } catch (err) {
     return res.status(422).send({ message: err.message });
   }

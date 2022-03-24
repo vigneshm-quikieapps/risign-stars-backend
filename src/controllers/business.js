@@ -69,7 +69,7 @@ module.exports.deleteBusiness = async (req, res) => {
     if (!deletedCount) {
       throw new DoesNotExistError();
     }
-    return res.send({ message: "Deleted successfully." });
+    return res.send({ message: "Business definition Deleted successfully." });
   } catch (err) {
     console.error(err);
     return res.status(422).send({ message: err.message });
@@ -100,7 +100,7 @@ module.exports.updateBusiness = async (req, res) => {
     if (!business) {
       throw new DoesNotExistError();
     }
-    return res.send({ message: "Updated successfully." });
+    return res.send({ message: "Business definition updated successfully." });
   } catch (err) {
     console.error(err);
     return res.status(422).send({ message: err.message });
@@ -573,7 +573,7 @@ module.exports.uploadXLXSFile = async (req, res) => {
       await billBulkWrite(data, req.body, batchProcessId);
       return res
         .status(200)
-        .send({ message: "Payment upload successful.", xlsxData });
+        .send({ message: "Payment uploaded successfully.", xlsxData });
     } catch (err) {
       return res.status(422).send({ message: err.message });
     }
@@ -994,7 +994,7 @@ module.exports.uploadImage = async (req, res) => {
     );
 
     res.json({
-      message: "Sucessfully uploaded.",
+      message: "Business definition updated Sucessfully.",
       business,
     });
   } catch (err) {

@@ -94,20 +94,20 @@ const createBusinessFinanceValidationRules = () => {
     check("businessId", "businessId should be a valid businessId")
       .isLength({ min: 3 })
       .custom(businessIdValidation),
-    check("bankDetails", "bankDetails should be a object").isObject(),
+    check("bankDetails", "Bank details should be a object").isObject(),
     check(
       "bankDetails.accHolderName",
-      "accHolderName should be a String and at least 3 char long"
+      "Account holder name should be a String and at least 3 char long"
     ).isLength({ min: 3 }),
     check(
       "bankDetails.bankName",
-      "bankName should be a String and at least 3 char long"
+      "Bank name should be a String and at least 3 char long"
     ).isLength({ min: 3 }),
     check(
       "bankDetails.sortCode",
-      "sortCode should be a String and at least 3 char long"
+      "Sort code should be a String and at least 3 char long"
     ).isLength({ min: 3 }),
-    check("bankDetails.accNo", "accNo should be a Number")
+    check("bankDetails.accNo", "Account No should be a Number")
       .isInt()
       .isLength({ min: 1 }),
     check("charges", "charges should be an Array and should not be empty")
@@ -136,28 +136,28 @@ const updateBusinessFinanceValidationRules = () => {
       .isLength({ min: 3 })
       .optional()
       .custom(businessIdValidation),
-    check("bankDetails", "bankDetails should be a object")
+    check("bankDetails", "Bank details should be a object")
       .optional()
       .isObject(),
     check(
       "bankDetails.accHolderName",
-      "accHolderName should be a String and at least 3 char long"
+      "Account holder name should be a String and at least 3 char long"
     )
       .optional()
       .isLength({ min: 3 }),
     check(
       "bankDetails.bankName",
-      "bankName should be a String and at least 3 char long"
+      "Bank name should be a String and at least 3 char long"
     )
       .optional()
       .isLength({ min: 3 }),
     check(
       "bankDetails.sortCode",
-      "sortCode should be a String and at least 3 char long"
+      "Sort code should be a String and at least 3 char long"
     )
       .optional()
       .isLength({ min: 3 }),
-    check("bankDetails.accNo", "accNo should be a Number")
+    check("bankDetails.accNo", "Account No should be a Number")
       .optional()
       .isInt()
       .isLength({ min: 1 }),

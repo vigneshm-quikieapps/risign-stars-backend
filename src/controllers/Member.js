@@ -50,7 +50,7 @@ module.exports.update = async (req, res) => {
     if (!member) {
       throw new DoesNotExistError();
     }
-    return res.send({ message: "Updated successfully.", member });
+    return res.send({ message: "Member updated successfully.", member });
   } catch (err) {
     console.error(err);
     return res.status(422).send({ message: err.message });
@@ -65,7 +65,7 @@ module.exports.delete = async (req, res) => {
     if (!deletedCount) {
       throw new DoesNotExistError();
     }
-    return res.send({ message: "Deleted successfully." });
+    return res.send({ message: "Member deleted successfully." });
   } catch (err) {
     console.error(err);
     return res.status(422).send({ message: err.message });

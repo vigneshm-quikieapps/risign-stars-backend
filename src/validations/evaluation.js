@@ -41,7 +41,9 @@ const createEvaluationValidationRules = () => {
       .optional()
       .isIn(EVALUATION_STATUS),
     check("levelCount", "levelCount should be an Integer").isInt(),
-    check("levels", "levels should be a array").custom(levelsValidator),
+    check("levels", "levels should be a array")
+      .optional()
+      .custom(levelsValidator),
     // check("updatedBy", "updatedBy should be a valid userId")
     //   .optional()
     //   .isLength({ min: 12 }),

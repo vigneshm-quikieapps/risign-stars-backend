@@ -73,7 +73,7 @@ module.exports.createBusinessClass = async (req, res) => {
       "sessions"
     );
 
-    return res.send({ message: "Created successfully.", businessClass });
+    return res.send({ message: "Class created successfully.", businessClass });
   } catch (err) {
     await session.abortTransaction();
     console.error(err);
@@ -186,7 +186,7 @@ module.exports.updateBusinessClass = async (req, res) => {
       { new: true, useFindAndModify: false }
     );
 
-    return res.send({ message: "Update successful.", businessClass });
+    return res.send({ message: "Class updated successfully.", businessClass });
   } catch (err) {
     return res.status(422).send({ message: err.message });
   }
@@ -231,7 +231,7 @@ module.exports.deleteBusinessClass = async (req, res) => {
 
     await session.commitTransaction();
 
-    return res.send({ message: "Delete successful." });
+    return res.send({ message: "Class deleted successfully." });
   } catch (err) {
     return res.status(422).send({ message: err.message });
   } finally {

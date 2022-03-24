@@ -21,7 +21,9 @@ module.exports.createCategory = async (req, res) => {
     let payload = { ...req.body };
     payload = auditCreatedBy(req, payload);
     const category = await Category.create(payload);
-    return res.status(201).send({ message: "Create successful.", category });
+    return res
+      .status(201)
+      .send({ message: "Category created successfully.", category });
   } catch (err) {
     return res.status(422).send({ message: err.message });
   }
@@ -61,7 +63,7 @@ module.exports.updateCategory = async (req, res) => {
       options
     );
 
-    return res.send({ category });
+    return res.send({ message: "Category updated successfully.", category });
   } catch (err) {
     return res.send({ message: err.message });
   }
@@ -85,7 +87,7 @@ module.exports.removeCategory = async (req, res) => {
       throw new DoesNotExistError();
     }
 
-    return res.send({ message: "Deleted successful." });
+    return res.send({ message: "Category deleted successfully." });
   } catch (err) {
     return res.status(422).send({ message: err.message });
   }

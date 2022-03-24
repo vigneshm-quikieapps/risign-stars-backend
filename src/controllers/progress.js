@@ -385,7 +385,7 @@ module.exports.multipleProgressMarking = async (req, res) => {
         });
       }
     });
-    return res.send({ message: "Updated successful.", response });
+    return res.send({ message: "Progress updated successfully.", response });
   } catch (err) {
     console.error(err);
     return res.status(422).send({ message: err.message });

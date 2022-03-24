@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 
 const validate = require("../validations/validate");
+const validateArrayResults = require("../validations/validateArrayResults");
 const {
   // getBusinessClassIdById,
   getBusinessClass,
@@ -43,7 +44,7 @@ router.post(
     getResourceBusinessId: getResourceBusinessIdInCreate,
   }),
   createClassValidationRules(),
-  validate,
+  validateArrayResults(["charges", "session"]),
   createBusinessClass
 );
 

@@ -27,7 +27,7 @@ module.exports.create = async (req, res) => {
     let user = await User.create(data);
     return res
       .status(201)
-      .send({ message: "Added successfully.", user, password });
+      .send({ message: "User added successfully.", user, password });
   } catch (err) {
     console.error(err);
     return res.status(422).send({ message: err.message });
@@ -161,7 +161,7 @@ module.exports.update = async (req, res) => {
     if (!user) {
       throw new DoesNotExistError();
     }
-    return res.send({ message: "Updated successfully.", user });
+    return res.send({ message: "User updated successfully.", user });
   } catch (err) {
     console.error(err);
     return res.status(422).send({ message: err.message });
@@ -175,7 +175,7 @@ module.exports.delete = async (req, res) => {
     if (!deletedCount) {
       throw new DoesNotExistError();
     }
-    return res.send({ message: "Deleted successfully." });
+    return res.send({ message: "User deleted successfully." });
   } catch (err) {
     console.error(err);
     return res.status(422).send({ message: err.message });

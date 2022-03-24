@@ -26,9 +26,10 @@ module.exports.createEvaluation = async (req, res) => {
     let payload = { ...req.body };
     payload = auditCreatedBy(req, payload);
     const evaluationScheme = await EvaluationScheme.create(payload);
-    res
-      .status(201)
-      .json({ message: "Created successfully.", evaluationScheme });
+    res.status(201).json({
+      message: "Evaluation scheme created successfully.",
+      evaluationScheme,
+    });
   } catch (err) {
     return res.status().send({ message: err.message });
   }
@@ -77,7 +78,10 @@ module.exports.updateEvaluation = async (req, res) => {
       { new: true, useFindAndModify: false }
     );
 
-    return res.send({ message: "Update successful.", evaluationScheme });
+    return res.send({
+      message: "Evaluation scheme updated successfully.",
+      evaluationScheme,
+    });
   } catch (err) {
     return res.status(422).send({ message: err.message });
   }
@@ -100,7 +104,7 @@ module.exports.deleteEvaluation = async (req, res) => {
       throw new DoesNotExistError();
     }
 
-    return res.send({ message: "Delete successful." });
+    return res.send({ message: "Evaluation scheme deleted successfully." });
   } catch (err) {
     return res.status(422).send({ message: err.message });
   }
