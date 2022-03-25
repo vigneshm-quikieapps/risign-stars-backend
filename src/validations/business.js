@@ -52,15 +52,15 @@ const createBusinessValidationRules = () => {
     check("tradename", "is required").notEmpty(),
 
     check("type", BUSINESS.TYPE.MESSAGE).isIn(ENUM_BUSINESS_TYPE),
-    check("contactEmail", "should be a valid email address")
-      .optional()
-      .isEmail(),
-    check("primaryPhone", "should be at least 6 chars")
-      .optional()
-      .isLength({ min: 6 }),
-    check("primaryMobileNo", "should be at least 9 chars")
-      .optional()
-      .isLength({ min: 9 }),
+    // check("contactEmail", "should be a valid email address")
+    //   .optional()
+    //   .isEmail(),
+    // check("primaryPhone", "should be at least 6 chars")
+    //   .optional()
+    //   .isLength({ min: 6 }),
+    // check("primaryMobileNo", "should be at least 9 chars")
+    //   .optional()
+    //   .isLength({ min: 9 }),
     check("postcode", "should be at least 6 chars").isLength({
       min: 6,
     }),
@@ -94,15 +94,15 @@ const updateBusinessValidationRules = () => {
     check("tradename", "is required").optional().notEmpty(),
 
     check("type", BUSINESS.TYPE.MESSAGE).optional().isIn(ENUM_BUSINESS_TYPE),
-    check("contactEmail", "should be a valid email address")
-      .optional()
-      .isEmail(),
-    check("primaryPhone", "should be at least 6 chars")
-      .optional()
-      .isLength({ min: 6 }),
-    check("primaryMobileNo", "should be at least 9 chars")
-      .optional()
-      .isLength({ min: 9 }),
+    // check("contactEmail", "should be a valid email address")
+    //   .optional()
+    //   .isEmail(),
+    // check("primaryPhone", "should be at least 6 chars")
+    //   .optional()
+    //   .isLength({ min: 6 }),
+    // check("primaryMobileNo", "should be at least 9 chars")
+    //   .optional()
+    //   .isLength({ min: 9 }),
     check("postcode", "should be at least 6 chars").optional().isLength({
       min: 6,
     }),
