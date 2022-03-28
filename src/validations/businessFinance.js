@@ -125,8 +125,14 @@ const createBusinessFinanceValidationRules = () => {
       .optional()
       .isIn(ENUM_PAY_FREQUENCY),
     check("paymentChannels", "should be a Object").isObject(),
-    check("paymentChannels.online", "should be a true/false").isBoolean(),
-    check("paymentChannels.manual", "should be a true/false").isBoolean(),
+    check(
+      "paymentChannels.online",
+      "payment channels should be a true/false"
+    ).isBoolean(),
+    check(
+      "paymentChannels.manual",
+      "payment channels should be a true/false"
+    ).isBoolean(),
     check("discountSchemes.*.name").isLength({ min: 3 }),
     check("discountSchemes.*.value").isInt(),
     check(
