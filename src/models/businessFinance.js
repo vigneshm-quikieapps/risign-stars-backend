@@ -46,7 +46,7 @@ const businessFinanceSchema = new mongoose.Schema(
         },
         amount: {
           type: Number,
-          required: true,
+          // required: true,
         },
         payFrequency: {
           type: String,

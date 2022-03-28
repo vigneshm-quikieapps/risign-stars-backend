@@ -112,13 +112,18 @@ const createBusinessFinanceValidationRules = () => {
       .isLength({ min: 1 }),
     check("charges", "charges should be an Array and should not be empty")
       .isArray()
-      .notEmpty(),
-    check("charges.*.name", "should be at least 3 char").isLength({ min: 3 }),
-    check("charges.*.amount", "should be a number").isNumeric(),
+      .optional(),
+    // .notEmpty(),
+    check("charges.*.name", "should be at least 3 char")
+      .optional()
+      .isLength({ min: 3 }),
+    check("charges.*.amount", "should be a number").optional().isNumeric(),
     check(
       "charges.*.payFrequency",
       `should be either: ${ENUM_PAY_FREQUENCY.join(" / ")}`
-    ).isIn(ENUM_PAY_FREQUENCY),
+    )
+      .optional()
+      .isIn(ENUM_PAY_FREQUENCY),
     check("paymentChannels", "should be a Object").isObject(),
     check("paymentChannels.online", "should be a true/false").isBoolean(),
     check("paymentChannels.manual", "should be a true/false").isBoolean(),
