@@ -33,9 +33,11 @@ module.exports.logout = async (req, res) => {
 // Signed Method
 module.exports.signin = async (req, res) => {
   try {
-    const { mobileNo, password } = req.body;
+    const { email, mobileNo, password } = req.body;
 
-    let user = await User.findOne({ mobileNo }).populate("roles");
+    const filterUser = email === undefined ? { mobileNo } : { email };
+
+    let user = await User.findOne(filterUser).populate("roles");
     if (!user) {
       throw new DoesNotExistError();
     }

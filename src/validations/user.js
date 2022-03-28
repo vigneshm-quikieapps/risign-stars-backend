@@ -191,7 +191,8 @@ const updateUserValidationRules = () => {
  */
 const signInValidationRules = () => {
   return [
-    body("mobileNo", USER.MOBILE_NO.MESSAGE).custom(isValidMobile),
+    body("email", USER.EMAIL.MESSAGE).optional().isEmail(),
+    body("mobileNo", USER.MOBILE_NO.MESSAGE).optional().custom(isValidMobile),
     body("password", USER.PASSWORD.MESSAGE).isLength({
       min: USER.PASSWORD.LENGTH,
     }),
