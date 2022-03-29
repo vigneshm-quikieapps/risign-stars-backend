@@ -39,7 +39,8 @@ module.exports.signin = async (req, res) => {
 
     let user = await User.findOne(filterUser).populate("roles");
     if (!user) {
-      throw new DoesNotExistError();
+      // throw new DoesNotExistError();
+      throw new Error(`User does not exist.`);
     }
 
     if (!user.isValidPassword(password)) {
