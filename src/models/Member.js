@@ -49,7 +49,9 @@ const memberSchema = new mongoose.Schema(
         },
       },
     ],
-    imageUrl: String,
+    imageUrl: {
+      type: String,
+    },
     updatedBy: {
       type: ObjectId,
       ref: "User",

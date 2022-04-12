@@ -7,6 +7,7 @@ const { Types } = require("mongoose");
 const { Enrolment, User } = require("../models");
 const getQuery2 = require("../helpers/query/getQuery2");
 const { auditCreatedBy, auditUpdatedBy } = require("../helpers/audit");
+const uploadImageS3Config = require("../services/storage/imageS3");
 
 //parameter extractor
 // module.exports.getmemberIdById = (req, res, next, id) => {
@@ -224,43 +225,59 @@ var storage = multer.diskStorage({
   },
 });
 
-module.exports.memberImageUploadHelper = multer({ storage: storage });
-
 /**
  * upload Image functionality
  */
 
-const UploadImageLink = (filename) => {
-  if (process.env.ENV_MODE === "DEVELOPMENT") {
-    return path.join(__dirname, `./src/uploads/members/${filename}`);
-  } else {
-    return "https://";
-  }
-};
+module.exports.memberImageUploadHelper = multer({
+  storage: uploadImageS3Config,
+});
 
 module.exports.uploadImage = async (req, res) => {
-  // console.log(req.file.originalname);
-  // console.log(req.body.hi);
-  const link = UploadImageLink(req.file.originalname);
+  const { location } = req.file;
 
-  const member = await Member.updateOne(
-    { _id: req.params.memberId },
-    {
-      $set: {
-        imageUrl: link,
+  // console.log(req, req.params.memberId);
+  try {
+    const member = await Member.updateOne(
+      { _id: req.params.memberId },
+      {
+        $set: {
+          imageUrl: location,
+        },
       },
-    },
-    { new: true, useFindAndModify: false, upsert: true }
-  );
+      { new: true, useFindAndModify: false }
+    );
 
-  if (!member) {
-    throw new Error("Upload image unsucessful.");
+    if (!member) {
+      throw new Error("Upload image unsucessful.");
+    }
+
+    res.json({
+      message: "Image Sucessfully uploaded.",
+      member,
+    });
+  } catch (err) {
+    return res.status(422).send({ message: err.message });
   }
 
-  res.json({
-    message: "Sucessfully uploaded.",
-    member,
-  });
+  // const member = await Member.updateOne(
+  //   { _id: req.params.memberId },
+  //   {
+  //     $set: {
+  //       imageUrl: link,
+  //     },
+  //   },
+  //   { new: true, useFindAndModify: false, upsert: true }
+  // );
+
+  // if (!member) {
+  //   throw new Error("Upload image unsucessful.");
+  // }
+
+  // res.json({
+  //   message: "Sucessfully uploaded.",
+  //   member,
+  // });
 };
 
 const getFilters = (req) => {
